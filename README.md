@@ -64,6 +64,13 @@ Platform for sharing rides between company employees
 ---
 
 ## Contributing
+You're encouraged to contribute to our project if you've found any issues or missing functionality that you would want to see. Here you can see [the list of issues](https://github.com/ita-social-projects/SoftServeCar-Back-End/issues) and here you can create [a new issue](https://github.com/ita-social-projects/SoftServeCar-Back-End/issues/new/choose).
+
+Before sending any pull request, please discuss requirements/changes to be implemented using an existing issue or by creating a new one. All pull requests should be done into `dev` branch.
+
+Though there are two GitHub projects: [SoftServeCar-Back-End](https://github.com/ita-social-projects/SoftServeCar-Back-End) for back-end part and [SoftServeCar-Front-End](https://github.com/ita-social-projects/SoftServeCar-Front-End) for front-end part) all of the requirements are listed in the first one - [SoftServeCar-Back-End](https://github.com/ita-social-projects/SoftServeCar-Back-End). 
+
+Every pull request should be linked to an issue. So if you make changes on front-end part you should create an issue there (subtask) with a link to corresponding requirement (story, task or epic) on back-end.
 
 ### Git flow
 > To get started...
