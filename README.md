@@ -1,4 +1,4 @@
-<a href="https://softserve.academy/"><img src="https://github.com/ita-social-projects/SoftServeCar-Back-End/blob/master/docs-images/carpool.jpg" title="SoftServe IT Academy" alt="SoftServe IT Academy"></a>
+<a href="https://softserve.academy/"><img src="https://github.com/ita-social-projects/SoftServeCar-Back-End/blob/master/docs-images/carpool.jpg" title="SoftServe IT Academy" alt="SoftServe IT Academy" width="50%" height="50%"></a>
 
 # SoftServe Car
 
@@ -118,7 +118,7 @@ Reach out to me at one of the following places!
 
 ## License
 
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+[![License](http://img.shields.io/:license-mit-ff69b4.svg?style=flat-square)](http://badges.mit-license.org)
 
 - **[MIT license](http://opensource.org/licenses/mit-license.php)**
 - Copyright 2020 © <a href="https://softserve.academy/" target="_blank"> SoftServe IT Academy</a>.
