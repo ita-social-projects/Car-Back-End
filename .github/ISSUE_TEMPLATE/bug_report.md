@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: '[Affected functionality] Clear and concise summary, e.g. "[Create news] ''Publish''
-button is not displayed on the ''Preview'' page"'
+  button is not displayed on the ''Preview'' page"'
 labels: bug
 assignees: ''
 
@@ -43,4 +43,4 @@ E.g.: "User story #100
 [Test case](https://jira.softserve.academy/browse/100)"
 
 **Labels to be added**
-"Bug", Priority ("pri: "), Severity ("severity:"), Type ("UI, "Functional"), "API" (for back-end bugs).
+"Bug" ("bug"), Priority ("pri: ")
