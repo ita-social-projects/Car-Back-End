@@ -72,6 +72,9 @@ Though there are two GitHub projects: [SoftServeCar-Back-End](https://github.com
 
 Every pull request should be linked to an issue. So if you make changes on front-end part you should create an issue there (subtask) with a link to corresponding requirement (story, task or epic) on back-end.
 
+All Pull Requests should start from prefix #xxx-yyy where xxx - task number and and yyy - short description e.g. #020-CreateAdminPanel
+Pull request should not contain any files that is not required by task.
+
 ### Git flow
 > To get started...
 #### Step 1
