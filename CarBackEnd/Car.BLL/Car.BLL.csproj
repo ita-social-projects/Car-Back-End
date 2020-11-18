@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Dto\" />
+    <Folder Include="MapperProfile\" />
+    <Folder Include="Services\Implementation\" />
+    <Folder Include="Services\Interfaces\" />
+  </ItemGroup>
+
+</Project>
