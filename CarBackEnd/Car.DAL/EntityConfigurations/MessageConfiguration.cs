@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class UserConfiguration : IEntityTypeConfiguration<User>
+    class MessageConfiguration : IEntityTypeConfiguration<Message>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<Message> builder)
         {
-          
+            
         }
     }
 }
