@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Car.DAL.Entities
 {
-    class User : IEntityBase
+    public class User : IEntityBase
     {
         public int Id { get; set; }
         public string Name { get; set; }
