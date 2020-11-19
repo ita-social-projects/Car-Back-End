@@ -20,7 +20,7 @@ namespace CarBackEnd.ServiceExtension
                 connectionString = configuration.GetConnectionString("AzureConnection");
 
             services.AddDbContext<CarContext>(options =>
-                  options.UseSqlServer(connectionString, x => x.MigrationsAssembly("CarBackEnd")));
+                  options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Car.DAL")));
         }
     }
 }
