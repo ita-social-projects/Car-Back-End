@@ -7,10 +7,10 @@ namespace Car.DAL.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Car.DAL.Entities.Car> builder)
         {
-            builder.HasKey(k => k.Id);
-            builder.HasOne(car => car.User)
-                .WithMany(u => u.UserCars)
-                .HasForeignKey(key => key.UserId);
+            builder.HasKey(car => car.Id);
+            builder.HasOne(car => car.Owner)
+                .WithMany(user => user.UserCars)
+                .HasForeignKey(car => car.UserId);
         }
     }
 }

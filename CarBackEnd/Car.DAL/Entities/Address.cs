@@ -1,7 +1,7 @@
 ﻿
 namespace Car.DAL.Entities
 {
-    class Address : IEntityBase
+    public class Address : IEntityBase
     {
         public int Id { get; set; }
         public string City { get; set; }

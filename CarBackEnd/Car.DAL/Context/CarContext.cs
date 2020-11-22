@@ -11,7 +11,7 @@ namespace Car.DAL.Context
         DbSet<Journey> Journeys { get; set; }
         DbSet<UserJourney> UserJourney { get; set; }
         DbSet<Address> Addresses { get; set; }
-        DbSet<Car.DAL.Entities.Car> Car { get; set; }
+        DbSet<Car.DAL.Entities.Car> Cars { get; set; }
         DbSet<Message> Messages { get; set; }
         DbSet<Notification> Notifications { get; set; }
         DbSet<UserPreferences> UserPreferences { get; set; }
@@ -31,7 +31,7 @@ namespace Car.DAL.Context
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
             modelBuilder.ApplyConfiguration(new UserPreferencesConfiguration());
             modelBuilder.ApplyConfiguration(new StopConfiguration());
-            modelBuilder.ApplyConfiguration(new Schedule());
+            modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
         }
     }
 }

@@ -11,6 +11,6 @@ namespace Car.DAL.Entities
         public string ImageCar { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
+        public User Owner { get; set; }
     }
 }

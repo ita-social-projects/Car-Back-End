@@ -9,6 +9,6 @@ namespace Car.DAL.Entities
         public bool DoAllowEating { get; set; }
         public string Comments { get; set; }
 
-        public User User { get; set; }
+        public User Owner { get; set; }
     }
 }

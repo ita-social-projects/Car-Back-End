@@ -1,7 +1,7 @@
 ﻿
 namespace Car.DAL.Entities
 {
-    class Schedule : IEntityBase
+    public class Schedule : IEntityBase
     {
         public int Id { get; set; }
         public string Name { get; set; }
