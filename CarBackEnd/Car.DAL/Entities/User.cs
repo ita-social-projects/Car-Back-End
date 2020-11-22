@@ -12,6 +12,7 @@ namespace Car.DAL.Entities
         public string Location { get; set; }
         public DateTime HireDate { get; set; }
         public string Email { get; set; }
+        public string ImageAvatar { get; set; }
 
         public IEnumerable<Car> UserCars { get; set; }
         public UserPreferences UserPreferences { get; set; }
