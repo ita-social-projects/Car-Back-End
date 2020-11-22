@@ -8,7 +8,11 @@ namespace Car.DAL.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
-            
+            builder.HasKey(notification => notification.Id);
+
+            builder.HasOne(notification => notification.User)
+               .WithMany(user => user.UserNotifications)
+               .HasForeignKey(notification => notification.UserId);
         }
     }
 }

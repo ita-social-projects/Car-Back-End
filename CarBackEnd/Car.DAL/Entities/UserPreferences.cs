@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Car.DAL.Entities
 {
-    class UserPreferences
+    public class UserPreferences : IEntityBase
     {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public bool DoAllowSmoking { get; set; }
+        public bool DoAllowEating { get; set; }
+        public string Comments { get; set; }
+
+        public User User { get; set; }
     }
 }

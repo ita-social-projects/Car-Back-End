@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Car.DAL.Entities
 {
@@ -13,5 +11,14 @@ namespace Car.DAL.Entities
         public string Location { get; set; }
         public DateTime HireDate { get; set; }
         public string Email { get; set; }
+
+        public IEnumerable<Car> UserCars { get; set; }
+        public UserPreferences UserPreferences { get; set; }
+        public IEnumerable<Notification> UserNotifications { get; set; }
+        public Stop UserStop { get; set; }
+        public Journey DriverJourney { get; set; }
+        public IEnumerable<UserJourney> UserJourneys { get; set; }
+        public virtual IEnumerable<Message> UserMessages { get; set; }
+        public virtual IEnumerable<Message> ReceivedMessages { get; set; }
     }
 }
