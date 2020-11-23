@@ -6,52 +6,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Car.DAL.Infrastructure
 {
-    public class BaseRepository<TEntity> : IRepository<TEntity> where TEntity : class, IEntityBase
+    public class BaseRepository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
+        internal readonly CarContext context;
         internal DbSet<TEntity> entities;
-        private readonly UnitOfWork unitOfWork;
 
-        public BaseRepository(UnitOfWork _unitOfWork)
+        public BaseRepository(CarContext _context)
         {
-            unitOfWork = _unitOfWork;
-            entities = _unitOfWork.db.Set<TEntity>();
+            context = _context;
+            entities = context.Set<TEntity>();
         }
-        public void Add(TEntity entity)
+
+        public TEntity Add(TEntity entity)
         {
-            entities.Add(entity);
-            unitOfWork.Save();
+            return entities.Add(entity) as TEntity;
         }
 
         public void AddRange(IEnumerable<TEntity> entity)
         {
             entities.AddRange(entity);
-            unitOfWork.Save();
         }
 
-        public void Delete(TEntity entityToDelete)
+        public bool Delete(TEntity entityToDelete)
         {
-            entities.Remove(entityToDelete);
-            unitOfWork.Save();
+            return entities.Remove(entityToDelete) != null;
         }
 
         public void DeleteRange(IEnumerable<TEntity> entity)
         {
             entities.RemoveRange(entity);
-            unitOfWork.Save();
         }
 
-        public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null)
+        public IQueryable<TEntity> Query(params Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<TEntity> query = entities;
-            if (filter != null)
+            DbSet<TEntity> dbSet = context.Set<TEntity>();
+            IQueryable<TEntity> query = null;
+            foreach (var include in includes)
             {
-                query = query.Where(filter);
+                query = dbSet.Include(include);
             }
-            return query.ToList();
+            return query ?? dbSet;
         }
 
         public TEntity GetById(params object[] keys)
@@ -59,10 +56,9 @@ namespace Car.DAL.Infrastructure
             return entities.Find(keys);
         }
 
-        public void Update(TEntity entityToUpdate)
+        public TEntity Update(TEntity entityToUpdate)
         {
-            entities.Update(entityToUpdate);
-            unitOfWork.Save();
+            return entities.Update(entityToUpdate) as TEntity;
         }
     }
 }

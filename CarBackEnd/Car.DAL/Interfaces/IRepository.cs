@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using Car.DAL.Entities;
 
 namespace Car.DAL.Interfaces
 {
     public interface IRepository<TEntity> where TEntity : class
     {
         /// <summary>
-        /// Filters data, if filter != null, in other way gets all TEntity
+        /// Joins entity with entities in parameters
         /// </summary>
-        /// <param name="filter">Filters used in Where</param>
-        /// <returns>IEnumarable of entity framework's entities</returns>
-        IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null);
+        /// <param name="includes">entity to join</param>
+        /// <returns>IQueryable of this entity or joined with includes</returns>
+        public IQueryable<TEntity> Query(params Expression<Func<TEntity, object>>[] includes);
 
         /// <summary>
         /// Finds and returns TEntity based on Primary Key
@@ -27,7 +25,8 @@ namespace Car.DAL.Interfaces
         /// Adds entity into DBContext
         /// </summary>
         /// <param name="entity">entity framework's entity to add</param>
-        void Add(TEntity entity);
+        /// <returns>added entity framework's entity</returns>
+        TEntity Add(TEntity entity);
 
         /// <summary>
         /// Adds range of entities into DBContext
@@ -39,7 +38,8 @@ namespace Car.DAL.Interfaces
         /// Removes entity from DBContext
         /// </summary>
         /// <param name="entityToDelete">entity framework's entity to delete</param>
-        void Delete(TEntity entityToDelete);
+        /// <returns>true if entity was successfully deleted, and false in other way</returns>
+        bool Delete(TEntity entityToDelete);
 
         /// <summary>
         /// Removes range of entities from DBContext
@@ -51,6 +51,7 @@ namespace Car.DAL.Interfaces
         /// Updates entity
         /// </summary>
         /// <param name="entityToUpdate">entity framework's entity to update</param>
-        void Update(TEntity entityToUpdate);
+        /// <returns>updated entity framework's entity</returns>
+        TEntity Update(TEntity entityToUpdate);
     }
 }

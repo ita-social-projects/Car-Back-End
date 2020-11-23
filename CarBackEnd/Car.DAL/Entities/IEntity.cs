@@ -4,5 +4,5 @@ using System.Text;
 
 namespace Car.DAL.Entities
 {
-    public interface IEntityBase { }
+    public interface IEntity { }
 }

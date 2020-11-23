@@ -1,9 +1,6 @@
 ﻿using Car.DAL.Context;
 using Car.DAL.Interfaces;
 using Car.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.DAL.Infrastructure
@@ -12,7 +9,6 @@ namespace Car.DAL.Infrastructure
     {
         private CarContext context;
         private BaseRepository<User> userRepository;
-
         public UnitOfWork(CarContext _context)
         {
             context = _context;
@@ -24,12 +20,11 @@ namespace Car.DAL.Infrastructure
             {
                 if (this.userRepository == null)
                 {
-                    this.userRepository = new BaseRepository<User>(this);
+                    this.userRepository = new BaseRepository<User>(context);
                 }
                 return userRepository;
             }
         }
-
         public void Save()
         {
             context.SaveChanges();
