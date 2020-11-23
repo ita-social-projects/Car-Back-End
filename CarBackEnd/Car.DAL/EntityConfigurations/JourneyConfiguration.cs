@@ -8,7 +8,15 @@ namespace Car.DAL.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Journey> builder)
         {
-           
+            builder.HasKey(journey => journey.Id);
+
+            builder.HasOne(journey => journey.Schedule)
+                 .WithOne(schedule => schedule.Journey)
+                 .HasForeignKey<Journey>(js => js.ScheduleId);
+
+            builder.HasOne(journey => journey.Driver)
+                .WithOne(user => user.DriverJourney)
+                .HasForeignKey<Journey>(ju => ju.DriverId);
         }
     }
 }

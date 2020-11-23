@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class UserConfiguration : IEntityTypeConfiguration<User>
+    class StopConfiguration : IEntityTypeConfiguration<Stop>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<Stop> builder)
         {
-            builder.HasKey(user => user.Id);
+            builder.HasKey(stop => stop.Id);
         }
     }
 }

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class UserConfiguration : IEntityTypeConfiguration<User>
+    class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<Schedule> builder)
         {
-            builder.HasKey(user => user.Id);
+            builder.HasKey(schedule => schedule.Id);
         }
     }
 }

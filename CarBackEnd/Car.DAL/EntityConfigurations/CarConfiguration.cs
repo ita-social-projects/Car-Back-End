@@ -7,7 +7,10 @@ namespace Car.DAL.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Car.DAL.Entities.Car> builder)
         {
-            throw new System.NotImplementedException();
+            builder.HasKey(car => car.Id);
+            builder.HasOne(car => car.Owner)
+                .WithMany(user => user.UserCars)
+                .HasForeignKey(car => car.UserId);
         }
     }
 }
