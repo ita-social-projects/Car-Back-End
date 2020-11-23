@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class UserConfiguration : IEntityTypeConfiguration<User>
+    class AddressConfiguration : IEntityTypeConfiguration<Address>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<Address> builder)
         {
-            builder.HasKey(user => user.Id);
+            builder.HasKey(address => address.Id);
         }
     }
 }
