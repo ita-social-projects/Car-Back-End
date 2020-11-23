@@ -24,3 +24,8 @@ steps:
     publishWebProjects: True
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise with MSDN'
+    appName: 'Car-Back-End'
+    package: $(System.DefaultWorkingDirectory)/**/*.zip  
