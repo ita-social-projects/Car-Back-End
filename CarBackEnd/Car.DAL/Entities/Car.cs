@@ -1,7 +1,7 @@
 ﻿
 namespace Car.DAL.Entities
 {
-    public class Car : IEntityBase
+    public class Car : IEntity
     {
         public int Id { get; set; }
         public string Brand { get; set; }

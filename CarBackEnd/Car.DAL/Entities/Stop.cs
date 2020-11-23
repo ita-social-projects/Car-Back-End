@@ -1,7 +1,7 @@
 ﻿
 namespace Car.DAL.Entities
 {
-    public class Stop : IEntityBase
+    public class Stop : IEntity
     {
         public int Id { get; set; }
         public int JourneyId { get; set; }

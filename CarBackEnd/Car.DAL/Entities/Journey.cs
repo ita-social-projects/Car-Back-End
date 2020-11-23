@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Car.DAL.Entities
 {
-    public class Journey : IEntityBase
+    public class Journey : IEntity
     {
         public int Id { get; set; }
         public int RouteDistance { get; set; }
