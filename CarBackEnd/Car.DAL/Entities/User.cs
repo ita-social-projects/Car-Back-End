@@ -20,7 +20,7 @@ namespace Car.DAL.Entities
         public Stop UserStop { get; set; }
         public Journey DriverJourney { get; set; }
         public IEnumerable<UserJourney> UserJourneys { get; set; }
-        public virtual IEnumerable<Message> UserMessages { get; set; }
+        public virtual IEnumerable<Message> SentMessages { get; set; }
         public virtual IEnumerable<Message> ReceivedMessages { get; set; }
     }
 }

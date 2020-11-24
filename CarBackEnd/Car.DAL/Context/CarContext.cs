@@ -2,7 +2,6 @@
 using Car.DAL.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Car.DAL.Context
 {
     public class CarContext : DbContext
@@ -11,7 +10,7 @@ namespace Car.DAL.Context
         DbSet<Journey> Journeys { get; set; }
         DbSet<UserJourney> UserJourney { get; set; }
         DbSet<Address> Addresses { get; set; }
-        DbSet<Car.DAL.Entities.Car> Cars { get; set; }
+        DbSet<Entities.Car> Cars { get; set; }
         DbSet<Message> Messages { get; set; }
         DbSet<Notification> Notifications { get; set; }
         DbSet<UserPreferences> UserPreferences { get; set; }
