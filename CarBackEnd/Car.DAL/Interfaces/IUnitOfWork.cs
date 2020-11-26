@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Car.DAL.Interfaces
 {
-    public class IUnitOfWork : IDisposable
+    public class IUnitOfWork<TEntity> : IDisposable where TEntity:class
     {
         DbContext db { get; }
         private bool disposed = false;
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -18,6 +19,7 @@ namespace Car.DAL.Interfaces
             }
             disposed = true;
         }
+
         public void Dispose()
         {
             Dispose(true);
