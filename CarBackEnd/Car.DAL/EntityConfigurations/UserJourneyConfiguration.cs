@@ -19,7 +19,7 @@ namespace Car.DAL.EntityConfigurations
                 .HasForeignKey(userJourney => userJourney.UserId);
 
             builder.HasOne(userJourney => userJourney.Journey)
-                .WithMany(journey => journey.Users)
+                .WithMany(journey => journey.Participents)
                 .HasForeignKey(userJourney => userJourney.JourneyId);
         }
     }
