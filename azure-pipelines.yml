@@ -1,7 +1,7 @@
 # ASP.NET CORE
 # random comment
 trigger:
-- master
+- develop
 pool:
   vmImage: 'ubuntu-latest'
 variables:
