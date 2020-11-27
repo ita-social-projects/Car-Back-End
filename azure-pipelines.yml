@@ -1,11 +1,12 @@
-# ASP.NET CORE
-# random comment
 trigger:
 - develop
+
 pool:
   vmImage: 'ubuntu-latest'
+
 variables:
   buildConfiguration: 'Release'
+
 steps:
 - task: NuGetCommand@2
   inputs:
@@ -13,15 +14,12 @@ steps:
     restoreSolution: '/*.sln'
     feedsToUse: 'select'
 
-
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: 'CarBackEnd/Car.Tests/Car.Tests.csproj'
     publishTestResults: false
     
-
-
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
