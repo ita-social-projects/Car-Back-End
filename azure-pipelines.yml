@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+# ASP.NET CORE
+
+>>>>>>> 3974a679a78749003b6c0de7b5fdafee748ee964
 trigger:
 - develop
 
@@ -6,7 +11,11 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 3974a679a78749003b6c0de7b5fdafee748ee964
 steps:
 - task: NuGetCommand@2
   inputs:
