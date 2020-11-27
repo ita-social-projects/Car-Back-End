@@ -9,8 +9,8 @@ namespace Car.DAL.Entities
         public string Color { get; set; }
         public string PlateNumber { get; set; }
         public string ImageCar { get; set; }
-
         public int UserId { get; set; }
+
         public User Owner { get; set; }
     }
 }

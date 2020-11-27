@@ -14,7 +14,7 @@ namespace Car.DAL.Entities
         public int? DriverId { get; set; }
         public int? ScheduleId { get; set; }
 
-        public IEnumerable<UserJourney> Users { get; set; }
+        public IEnumerable<UserJourney> Participents { get; set; }
         public IEnumerable<Stop> UserStops { get; set; }
         public Schedule Schedule { get; set; }
         public User Driver { get; set; }
