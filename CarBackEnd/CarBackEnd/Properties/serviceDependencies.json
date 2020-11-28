@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "appInsights1": {
+      "type": "appInsights",
+      "connectionId": "APPINSIGHTS_INSTRUMENTATIONKEY"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "CarConnection"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "AzureConnection"
+    }
+  }
+}
