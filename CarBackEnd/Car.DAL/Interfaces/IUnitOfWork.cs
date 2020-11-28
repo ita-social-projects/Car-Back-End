@@ -3,27 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Car.DAL.Interfaces
 {
-    public class IUnitOfWork<TEntity> : IDisposable where TEntity:class
+    public interface IUnitOfWork<TEntity> : IDisposable where TEntity:class
     {
         DbContext db { get; }
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    db.Dispose();
-                }
-            }
-            disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
     }
 }

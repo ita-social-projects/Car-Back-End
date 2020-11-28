@@ -2,6 +2,7 @@
 using Car.DAL.Interfaces;
 using Car.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Car.DAL.Infrastructure
 {
@@ -34,6 +35,26 @@ namespace Car.DAL.Infrastructure
         public void SaveChanges()
         {
             context.SaveChanges();
+        }
+
+        private bool disposed = false;
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+            }
+            disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
