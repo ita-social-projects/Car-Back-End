@@ -1,5 +1,6 @@
-﻿
-namespace Car.DAL.Entities
+﻿namespace Car.DAL.Entities
 {
-    public interface IEntityBase { }
+    public interface IEntityBase
+    {
+    }
 }

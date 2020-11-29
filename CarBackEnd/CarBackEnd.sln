@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Car.DAL", "Car.DAL\Car.DAL.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Car.BLL", "Car.BLL\Car.BLL.csproj", "{B0974FB7-2594-451A-8723-08FE610373DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car.Tests", "Car.Tests\Car.Tests.csproj", "{FC51E560-3989-44D3-9652-2940293B5285}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Car.Tests", "Car.Tests\Car.Tests.csproj", "{FC51E560-3989-44D3-9652-2940293B5285}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8C31BB34-7206-404C-8FC5-1E40153E5E2D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
