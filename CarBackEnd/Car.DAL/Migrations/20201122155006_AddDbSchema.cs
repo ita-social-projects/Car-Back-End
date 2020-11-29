@@ -16,7 +16,7 @@ namespace Car.DAL.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Latitude = table.Column<double>(type: "float", nullable: false),
-                    Longitude = table.Column<double>(type: "float", nullable: false)
+                    Longitude = table.Column<double>(type: "float", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -34,7 +34,7 @@ namespace Car.DAL.Migrations
                     Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PlateNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageCar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace Car.DAL.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SenderId = table.Column<int>(type: "int", nullable: false),
-                    ReceiverId = table.Column<int>(type: "int", nullable: false)
+                    ReceiverId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -84,7 +84,7 @@ namespace Car.DAL.Migrations
                     UserId = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -103,7 +103,7 @@ namespace Car.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -119,7 +119,7 @@ namespace Car.DAL.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     DoAllowSmoking = table.Column<bool>(type: "bit", nullable: false),
                     DoAllowEating = table.Column<bool>(type: "bit", nullable: false),
-                    Comments = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Comments = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -144,7 +144,7 @@ namespace Car.DAL.Migrations
                     Comments = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsFree = table.Column<bool>(type: "bit", nullable: false),
                     DriverId = table.Column<int>(type: "int", nullable: true),
-                    ScheduleId = table.Column<int>(type: "int", nullable: true)
+                    ScheduleId = table.Column<int>(type: "int", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -171,7 +171,7 @@ namespace Car.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     JourneyId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false)
+                    AddressId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -201,7 +201,7 @@ namespace Car.DAL.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    JourneyId = table.Column<int>(type: "int", nullable: false)
+                    JourneyId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {

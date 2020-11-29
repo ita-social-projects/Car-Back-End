@@ -17,7 +17,9 @@ namespace Car.DAL.Infrastructure
         {
             context = _context;
         }
+
         public DbContext db { get => context; }
+
         public BaseRepository<User> UserRepository
         {
             get
@@ -26,6 +28,7 @@ namespace Car.DAL.Infrastructure
                 {
                     this.userRepository = new BaseRepository<User>(this);
                 }
+
                 return userRepository;
             }
         }

@@ -10,7 +10,8 @@ using System.Text;
 
 namespace Car.DAL.Infrastructure
 {
-    public class BaseRepository<TEntity> : IRepository<TEntity> where TEntity : class, IEntityBase
+    public class BaseRepository<TEntity> : IRepository<TEntity>
+        where TEntity : class, IEntityBase
     {
         internal DbSet<TEntity> entities;
         private readonly UnitOfWork unitOfWork;
@@ -20,6 +21,7 @@ namespace Car.DAL.Infrastructure
             unitOfWork = _unitOfWork;
             entities = _unitOfWork.db.Set<TEntity>();
         }
+
         public void Add(TEntity entity)
         {
             entities.Add(entity);
@@ -51,6 +53,7 @@ namespace Car.DAL.Infrastructure
             {
                 query = query.Where(filter);
             }
+
             return query.ToList();
         }
 

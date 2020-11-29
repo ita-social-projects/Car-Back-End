@@ -35,11 +35,12 @@ namespace CarBackEnd
                     {
                         appInsightKey = hostingContext.Configuration["iKeyForProduction"];
                     }
+
                     logging.AddApplicationInsights(appInsightKey);
                     logging
                         .AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.
-                                ApplicationInsightsLoggerProvider>
-                            ("", LogLevel.Information);
+                                ApplicationInsightsLoggerProvider>(
+                        string.Empty, LogLevel.Information);
                 });
     }
 }

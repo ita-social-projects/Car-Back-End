@@ -8,7 +8,15 @@ namespace Car.DAL.Interfaces
     public class IUnitOfWork : IDisposable
     {
         DbContext db { get; }
+
         private bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -18,12 +26,8 @@ namespace Car.DAL.Interfaces
                     db.Dispose();
                 }
             }
+
             disposed = true;
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

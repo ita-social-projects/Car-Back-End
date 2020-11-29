@@ -15,6 +15,7 @@ namespace Car.BLL.Services.Implementation
         {
             _webHostEnvironment = webHostEnvironment;
         }
+
         public async Task<string> UploadImage(IFormFile img, string folderPath)
         {
             if (img == null)
@@ -35,6 +36,7 @@ namespace Car.BLL.Services.Implementation
             {
                 await img.CopyToAsync(fileStream);
             }
+
             return dbPathFile;
         }
 

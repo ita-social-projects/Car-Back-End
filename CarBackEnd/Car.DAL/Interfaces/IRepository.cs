@@ -7,7 +7,8 @@ using Car.DAL.Entities;
 
 namespace Car.DAL.Interfaces
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity>
+        where TEntity : class
     {
         /// <summary>
         /// Filters data, if filter != null, in other way gets all TEntity

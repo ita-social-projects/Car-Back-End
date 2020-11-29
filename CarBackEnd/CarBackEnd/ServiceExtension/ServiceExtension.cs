@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Car.DAL.Context;
 
-
 namespace CarBackEnd.ServiceExtension
 {
     public static class ServiceExtension
@@ -15,9 +14,13 @@ namespace CarBackEnd.ServiceExtension
             string connectionString;
 
             if (!env.IsProduction())
+            {
                 connectionString = configuration.GetConnectionString("CarConnection");
+            }
             else
+            {
                 connectionString = configuration.GetConnectionString("AzureConnection");
+            }
 
             services.AddDbContext<CarContext>(options =>
                   options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Car.DAL")));

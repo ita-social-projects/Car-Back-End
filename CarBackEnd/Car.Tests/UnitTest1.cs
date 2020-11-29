@@ -8,7 +8,6 @@ namespace Car.Tests
         [Fact]
         public void Test1()
         {
-
         }
     }
 }
