@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Car.DAL.Entities
 {
-    public class User : IEntityBase
+    public class User : IEntity
     {
         public int Id { get; set; }
 
@@ -33,7 +33,7 @@ namespace Car.DAL.Entities
 
         public IEnumerable<UserJourney> UserJourneys { get; set; }
 
-        public virtual IEnumerable<Message> UserMessages { get; set; }
+        public virtual IEnumerable<Message> SentMessages { get; set; }
 
         public virtual IEnumerable<Message> ReceivedMessages { get; set; }
     }

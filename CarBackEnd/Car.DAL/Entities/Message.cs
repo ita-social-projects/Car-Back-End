@@ -2,7 +2,7 @@
 
 namespace Car.DAL.Entities
 {
-    public class Message : IEntityBase
+    public class Message : IEntity
     {
         public int Id { get; set; }
 
