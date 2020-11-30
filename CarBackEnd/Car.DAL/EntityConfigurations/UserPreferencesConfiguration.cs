@@ -12,7 +12,7 @@ namespace Car.DAL.EntityConfigurations
 
             builder.HasOne(preferences => preferences.Owner)
                 .WithOne(user => user.UserPreferences)
-                .HasForeignKey<UserPreferences>(userPref => userPref.UserId);
+                .HasForeignKey<UserPreferences>(userPreferences => userPreferences.UserId);
         }
     }
 }

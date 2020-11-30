@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Car.DAL.Migrations
 {
     [DbContext(typeof(CarContext))]
-    [Migration("20201122160139_AddColumnImageAvatarToUser")]
-    partial class AddColumnImageAvatarToUser
+    [Migration("20201124204135_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -326,7 +326,7 @@ namespace Car.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("Car.DAL.Entities.User", "Sender")
-                        .WithMany("UserMessages")
+                        .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -375,7 +375,7 @@ namespace Car.DAL.Migrations
             modelBuilder.Entity("Car.DAL.Entities.UserJourney", b =>
                 {
                     b.HasOne("Car.DAL.Entities.Journey", "Journey")
-                        .WithMany("Users")
+                        .WithMany("Participents")
                         .HasForeignKey("JourneyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -409,7 +409,7 @@ namespace Car.DAL.Migrations
 
             modelBuilder.Entity("Car.DAL.Entities.Journey", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Participents");
 
                     b.Navigation("UserStops");
                 });
@@ -425,11 +425,11 @@ namespace Car.DAL.Migrations
 
                     b.Navigation("ReceivedMessages");
 
+                    b.Navigation("SentMessages");
+
                     b.Navigation("UserCars");
 
                     b.Navigation("UserJourneys");
-
-                    b.Navigation("UserMessages");
 
                     b.Navigation("UserNotifications");
 

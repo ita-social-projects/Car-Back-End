@@ -1,6 +1,6 @@
 ﻿namespace Car.DAL.Entities
 {
-    public class UserJourney : IEntityBase
+    public class UserJourney : IEntity
     {
         public int UserId { get; set; }
 

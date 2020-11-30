@@ -8,16 +8,16 @@ namespace Car.DAL.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {
-            builder.HasKey(mess => mess.Id);
+            builder.HasKey(message => message.Id);
 
-            builder.HasOne(mess => mess.Sender)
-                .WithMany(user => user.UserMessages)
-                .HasForeignKey(mess => mess.SenderId)
+            builder.HasOne(message => message.Sender)
+                .WithMany(user => user.SentMessages)
+                .HasForeignKey(message => message.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(mess => mess.Receiver)
+            builder.HasOne(message => message.Receiver)
                 .WithMany(user => user.ReceivedMessages)
-                .HasForeignKey(mess => mess.ReceiverId)
+                .HasForeignKey(message => message.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -11,12 +11,12 @@ namespace Car.DAL.EntityConfigurations
             builder.HasKey(journey => journey.Id);
 
             builder.HasOne(journey => journey.Schedule)
-                 .WithOne(schedule => schedule.Journey)
-                 .HasForeignKey<Journey>(js => js.ScheduleId);
+                .WithOne(schedule => schedule.Journey)
+                .HasForeignKey<Journey>(journey => journey.ScheduleId);
 
             builder.HasOne(journey => journey.Driver)
                 .WithOne(user => user.DriverJourney)
-                .HasForeignKey<Journey>(ju => ju.DriverId);
+                .HasForeignKey<Journey>(journey => journey.DriverId);
         }
     }
 }

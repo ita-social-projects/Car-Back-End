@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Car.DAL.Entities
 {
-    public class Journey : IEntityBase
+    public class Journey : IEntity
     {
         public int Id { get; set; }
 
@@ -21,7 +21,7 @@ namespace Car.DAL.Entities
 
         public int? ScheduleId { get; set; }
 
-        public IEnumerable<UserJourney> Users { get; set; }
+        public IEnumerable<UserJourney> Participents { get; set; }
 
         public IEnumerable<Stop> UserStops { get; set; }
 

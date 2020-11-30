@@ -14,7 +14,7 @@ namespace Car.DAL.Context
 
         DbSet<Address> Addresses { get; set; }
 
-        DbSet<Car.DAL.Entities.Car> Cars { get; set; }
+        DbSet<Entities.Car> Cars { get; set; }
 
         DbSet<Message> Messages { get; set; }
 

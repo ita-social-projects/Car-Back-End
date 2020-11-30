@@ -324,7 +324,7 @@ namespace Car.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("Car.DAL.Entities.User", "Sender")
-                        .WithMany("UserMessages")
+                        .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -373,7 +373,7 @@ namespace Car.DAL.Migrations
             modelBuilder.Entity("Car.DAL.Entities.UserJourney", b =>
                 {
                     b.HasOne("Car.DAL.Entities.Journey", "Journey")
-                        .WithMany("Users")
+                        .WithMany("Participents")
                         .HasForeignKey("JourneyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -407,7 +407,7 @@ namespace Car.DAL.Migrations
 
             modelBuilder.Entity("Car.DAL.Entities.Journey", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Participents");
 
                     b.Navigation("UserStops");
                 });
@@ -423,11 +423,11 @@ namespace Car.DAL.Migrations
 
                     b.Navigation("ReceivedMessages");
 
+                    b.Navigation("SentMessages");
+
                     b.Navigation("UserCars");
 
                     b.Navigation("UserJourneys");
-
-                    b.Navigation("UserMessages");
 
                     b.Navigation("UserNotifications");
 

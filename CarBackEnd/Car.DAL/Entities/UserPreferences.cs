@@ -1,6 +1,6 @@
 ﻿namespace Car.DAL.Entities
 {
-    public class UserPreferences : IEntityBase
+    public class UserPreferences : IEntity
     {
         public int Id { get; set; }
 
