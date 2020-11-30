@@ -5,6 +5,10 @@
 
 # User-specific files
 CarBackEnd/CarBackEnd/appsettings.json
+CarBackEnd/CarBackEnd/wwwroot/Credentials/
+CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-avatar-drive.json
+CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-car-drive.json
+CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-test-drive.json
 *.rsuser
 *.suo
 *.user
