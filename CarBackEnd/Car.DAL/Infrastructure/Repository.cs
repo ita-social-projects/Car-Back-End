@@ -9,10 +9,11 @@ using System.Linq.Expressions;
 
 namespace Car.DAL.Infrastructure
 {
-    public sealed class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
+    public sealed class Repository<TEntity> : IRepository<TEntity>
+        where TEntity : class, IEntity
     {
-        internal readonly CarContext context;
-        internal DbSet<TEntity> dbEntities;
+        private readonly CarContext context;
+        private DbSet<TEntity> dbEntities;
 
         public Repository(CarContext _context)
         {
@@ -71,6 +72,7 @@ namespace Car.DAL.Infrastructure
             {
                 query = dbSet.Include(include);
             }
+
             return query ?? dbSet;
         }
 

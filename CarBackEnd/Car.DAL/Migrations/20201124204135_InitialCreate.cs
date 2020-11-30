@@ -16,7 +16,7 @@ namespace Car.DAL.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Latitude = table.Column<double>(type: "float", nullable: false),
-                    Longitude = table.Column<double>(type: "float", nullable: false)
+                    Longitude = table.Column<double>(type: "float", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -29,7 +29,7 @@ namespace Car.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -48,7 +48,7 @@ namespace Car.DAL.Migrations
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageAvatar = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ImageAvatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -66,7 +66,7 @@ namespace Car.DAL.Migrations
                     Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PlateNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageCar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -91,7 +91,7 @@ namespace Car.DAL.Migrations
                     Comments = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsFree = table.Column<bool>(type: "bit", nullable: false),
                     DriverId = table.Column<int>(type: "int", nullable: true),
-                    ScheduleId = table.Column<int>(type: "int", nullable: true)
+                    ScheduleId = table.Column<int>(type: "int", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -119,7 +119,7 @@ namespace Car.DAL.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SenderId = table.Column<int>(type: "int", nullable: false),
-                    ReceiverId = table.Column<int>(type: "int", nullable: false)
+                    ReceiverId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -147,7 +147,7 @@ namespace Car.DAL.Migrations
                     UserId = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -160,6 +160,19 @@ namespace Car.DAL.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            _ = migrationBuilder.CreateTable(
+                name: "Schedule",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schedule", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "UserPreferences",
                 columns: table => new
@@ -169,7 +182,7 @@ namespace Car.DAL.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     DoAllowSmoking = table.Column<bool>(type: "bit", nullable: false),
                     DoAllowEating = table.Column<bool>(type: "bit", nullable: false),
-                    Comments = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Comments = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -183,6 +196,37 @@ namespace Car.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Journeys",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RouteDistance = table.Column<int>(type: "int", nullable: false),
+                    DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CountOfSeats = table.Column<int>(type: "int", nullable: false),
+                    Comments = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsFree = table.Column<bool>(type: "bit", nullable: false),
+                    DriverId = table.Column<int>(type: "int", nullable: true),
+                    ScheduleId = table.Column<int>(type: "int", nullable: true),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Journeys", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Journeys_Schedule_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedule",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Journeys_User_DriverId",
+                        column: x => x.DriverId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Stops",
                 columns: table => new
                 {
@@ -190,7 +234,7 @@ namespace Car.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     JourneyId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false)
+                    AddressId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -220,7 +264,7 @@ namespace Car.DAL.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    JourneyId = table.Column<int>(type: "int", nullable: false)
+                    JourneyId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {

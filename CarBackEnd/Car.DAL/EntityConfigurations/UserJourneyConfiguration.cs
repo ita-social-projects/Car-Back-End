@@ -8,10 +8,10 @@ namespace Car.DAL.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<UserJourney> builder)
         {
-            builder.HasKey(userJourney => new 
-            { 
-                userJourney.UserId, 
-                userJourney.JourneyId 
+            builder.HasKey(userJourney => new
+            {
+                userJourney.UserId,
+                userJourney.JourneyId,
             });
 
             builder.HasOne(userJourney => userJourney.User)

@@ -6,7 +6,8 @@ using System;
 
 namespace Car.DAL.Infrastructure
 {
-    public sealed class UnitOfWork<TEntity> : IUnitOfWork<TEntity> where TEntity:class, IEntity
+    public sealed class UnitOfWork<TEntity> : IUnitOfWork<TEntity>
+        where TEntity : class, IEntity
     {
         private CarContext context;
 
@@ -39,6 +40,12 @@ namespace Car.DAL.Infrastructure
 
         private bool disposed = false;
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         private void Dispose(bool disposing)
         {
             if (!disposed)
@@ -48,13 +55,8 @@ namespace Car.DAL.Infrastructure
                     db.Dispose();
                 }
             }
-            disposed = true;
-        }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            disposed = true;
         }
     }
 }
