@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CarBackEnd</name>
+    </assembly>
+    <members>
+        <member name="M:CarBackEnd.Controllers.ValuesController.Get">
+            <summary>
+            returns list of values
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
