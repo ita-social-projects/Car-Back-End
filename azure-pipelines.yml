@@ -38,5 +38,10 @@ steps:
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
     artifactName: 'CarBackEnd'
-
+    
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise Subscription'
+    appName: 'Car-app'
+    package: $(System.DefaultWorkingDirectory)/**/*.zip    
 
