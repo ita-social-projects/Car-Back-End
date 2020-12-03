@@ -4,29 +4,48 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
-  
-steps:
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '/*.sln'
-    feedsToUse: 'select'
 
+steps:
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'test'
-    projects: 'CarBackEnd/Car.Tests/Car.Tests.csproj'
-    publishTestResults: false
-    
+    command: 'restore'
+    feedsToUse: 'select'
+    vstsFeed: 'my-vsts-feed' # A series of numbers and letters
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: 'CarBackEnd/CarBackEnd/CarBackEnd.csproj'
-
+    arguments: '--configuration $(buildConfiguration)'
+  displayName: 'dotnet build $(buildConfiguration)'
+  
+steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+    
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: build
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)' # Update this to match your need
+    
+steps:
+# ...
+# do this after other tasks such as building
+- task: DotNetCoreCLI@2
+  inputs:
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+    
+steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: publish
@@ -34,7 +53,7 @@ steps:
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
 
-
+steps:
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'Visual Studio Enterprise Subscription'
