@@ -43,5 +43,5 @@ steps:
   inputs:
     azureSubscription: 'Visual Studio Enterprise Subscription'
     appName: 'Car-app'
-    package: $(System.DefaultWorkingDirectory)/**/*.dll    
+    package: $(Build.ArtifactStagingDirectory)/**/*.dll    
 
