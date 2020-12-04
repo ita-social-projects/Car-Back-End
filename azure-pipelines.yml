@@ -1,25 +1,21 @@
 # ASP.NET CORE
 
 trigger:
-- develop
+- azure-cd
 
 pool:
-  vmImage: 'ubuntu-18.04' # examples of other options: 'macOS-10.15', 'windows-2019'
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
- 
+  
 steps:
 - task: UseDotNet@2
+  displayName: 'Install .NET Core SDK'
   inputs:
-    version: '3.1.x'
+    version: 3.1.x
+    performMultiLevelLookup: true
     includePreviewVersions: true # Required for preview versions
-
-- task: UseDotNet@2
-  inputs:
-    version: '3.0.x'
-    packageType: runtime
-
     
 - task: DotNetCoreCLI@2
   inputs:
@@ -53,10 +49,10 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: 'ls "/home/vsts/work/1/a/"'
+    script: 'ls "D:\a\1\a"'
     
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'Visual Studio Enterprise Subscription'
     appName: 'Car-app'
-    package: /home/vsts/work/1/a/*.zip  
+    package: D:\a\1\a\*.zip 
