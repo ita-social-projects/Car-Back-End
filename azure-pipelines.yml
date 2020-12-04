@@ -38,9 +38,10 @@ steps:
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
 
-- task: AzureWebApp@1
+- task: Bash@3
   inputs:
-    command: ls D:\a\1\a\CarBackEnd\
+    targetType: 'inline'
+    script: ls D:\a\1\a\CarBackEnd\
 
 #- task: AzureWebApp@1
  # inputs:
