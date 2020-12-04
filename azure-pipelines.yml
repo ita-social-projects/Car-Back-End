@@ -1,7 +1,7 @@
 # ASP.NET CORE
 
 trigger:
-- azure-cd
+- develop
 
 pool:
   vmImage: 'windows-latest'
