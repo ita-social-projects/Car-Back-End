@@ -41,6 +41,7 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
+    command: ls D:\a\1\a\CarBackEnd\
     azureSubscription: 'Visual Studio Enterprise Subscription'
     appName: 'Car-app'
     package: $(Build.ArtifactStagingDirectory)/**/*.dll    
