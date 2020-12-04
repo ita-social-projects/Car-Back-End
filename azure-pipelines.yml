@@ -4,28 +4,40 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
   
 steps:
-- task: NuGetCommand@2
+- task: UseDotNet@2
+  displayName: 'Install .NET Core SDK'
   inputs:
-    command: 'restore'
-    restoreSolution: '/*.sln'
-    feedsToUse: 'select'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: 'CarBackEnd/Car.Tests/Car.Tests.csproj'
-    publishTestResults: false
+    version: 3.1.x
+    performMultiLevelLookup: true
+    includePreviewVersions: true # Required for preview versions
     
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'build'
-    projects: 'CarBackEnd/CarBackEnd/CarBackEnd.csproj'
+    command: restore
+    projects: '**/*.csproj'
+    
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: build
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)' # Update this to match your need
+    
+
+# ...
+# do this after other tasks such as building
+- task: DotNetCoreCLI@2
+  inputs:
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -33,10 +45,14 @@ steps:
     publishWebProjects: True
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
-    
-- task: PublishBuildArtifacts@1
+
+- task: Bash@3
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'CarBackEnd'
-
-
+    targetType: 'inline'
+    script: 'ls "D:\a\1\a"'
+    
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise Subscription'
+    appName: 'Car-app'
+    package: D:\a\1\a\*.zip  
