@@ -41,7 +41,7 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: ls $(Build.ArtifactStagingDirectory)
+    script: 'ls $(Build.ArtifactStagingDirectory)'
 
 #- task: AzureWebApp@1
  # inputs:
