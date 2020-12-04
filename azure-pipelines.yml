@@ -42,6 +42,12 @@ steps:
   inputs:
     targetType: 'inline'
     script: 'ls "D:\a\1\a"'
+    
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise Subscription'
+    appName: 'Car-app'
+    package: D:\a\1\a\*.zip  
 
 #- task: AzureWebApp@1
  # inputs:
