@@ -13,5 +13,9 @@ namespace Car.BLL.Services.Interfaces
         Task<IEnumerable<TFile>> GetAllFiles();
 
         Task<TFile> GetFileById(string fileId);
+
+        Task<byte[]> GetFileBytesById(string fileId);
+
+        void SetCredentials(string credentialFilePath);
     }
 }
