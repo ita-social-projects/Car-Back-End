@@ -93,7 +93,7 @@ namespace Car.DAL.Infrastructure
         /// <returns>updated entity</returns>
         public TEntity Update(TEntity entity)
         {
-            return dbEntities.Update(entity) as TEntity;
+            return dbEntities.Update(entity).Entity;
         }
     }
 }
