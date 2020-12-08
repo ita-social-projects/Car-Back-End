@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Car.BLL.Dto;
 using Car.BLL.Services.Interfaces;
+using Car.DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
+using File = Google.Apis.Drive.v3.Data.File;
 
 namespace CarBackEnd.Controllers
 {
@@ -10,10 +12,14 @@ namespace CarBackEnd.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
+        private readonly IImageService<User, File> imageService;
 
-        public UserController(IUserService userService)
+        public UserController(
+            IUserService userService,
+            IImageService<User, File> imageService)
         {
             this.userService = userService;
+            this.imageService = imageService;
         }
 
         /// <summary>
@@ -36,19 +42,18 @@ namespace CarBackEnd.Controllers
         [HttpPut("{userId}/avatar")]
         public async Task<IActionResult> UploadUserAvatar(int userId, [FromForm] FormImage userFile)
         {
-           return Ok(await userService.UploadUserAvatar(userId, userFile.image));
+           return Ok(await imageService.UploadImage(userId, userFile.image));
         }
 
         /// <summary>
         /// Deletes the user avatar.
         /// </summary>
         /// <param name="userId">The user identifier.</param>
-        /// <param name="userFileId">The user file identifier.</param>
         /// <returns>The user entity</returns>
-        [HttpDelete("{userId}/avatar/{userFileId}")]
-        public async Task<IActionResult> DeleteUserAvatar(int userId, string userFileId)
+        [HttpDelete("{userId}/avatar")]
+        public async Task<IActionResult> DeleteUserAvatar(int userId)
         {
-            return Ok(await userService.DeleteUserAvatar(userId, userFileId));
+            return Ok(await imageService.DeleteImage(userId));
         }
 
         /// <summary>
@@ -59,7 +64,7 @@ namespace CarBackEnd.Controllers
         [HttpGet("avatar/{userId}")]
         public async Task<IActionResult> GetUserFileById(int userId)
         {
-            return Ok(await userService.GetUserFileBytesById(userId));
+            return Ok(await imageService.GetImageBytesById(userId));
         }
     }
 }
