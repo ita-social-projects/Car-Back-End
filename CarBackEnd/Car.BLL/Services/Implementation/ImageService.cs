@@ -1,9 +1,12 @@
 ﻿using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Car.DAL.Interfaces;
+using Car.BLL.Dto;
 using Microsoft.AspNetCore.Http;
 using System;
+using Car.BLL.Exceptions;
 using System.Threading.Tasks;
+using System.Net;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.BLL.Services.Implementation
@@ -28,13 +31,31 @@ namespace Car.BLL.Services.Implementation
 
         public async Task<TEntity> DeleteImage(int entityId)
         {
-            TEntity entity = unitOfWork.GetRepository().GetById(entityId);
+            var entity = unitOfWork.GetRepository().GetById(entityId);
 
-            await driveService.DeleteFile(entity.ImageId);
+            if (entity == null)
+            {
+                throw new ApplicationCustomException($"This entity id - {entityId} wasn't found")
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Severity = Severity.Error,
+                };
+            }
+
+            var result = await driveService.DeleteFile(entity.ImageId);
+
+            if (result != string.Empty)
+            {
+                throw new ApplicationCustomException($"The image wasn't deleted")
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Severity = Severity.Error,
+                };
+            }
 
             entity.ImageId = null;
 
-            TEntity newEntity = unitOfWork.GetRepository().Update(entity);
+            var newEntity = unitOfWork.GetRepository().Update(entity);
             unitOfWork.SaveChanges();
 
             return newEntity;
@@ -42,7 +63,17 @@ namespace Car.BLL.Services.Implementation
 
         public async Task<string> GetImageBytesById(int entityId)
         {
-            TEntity entity = unitOfWork.GetRepository().GetById(entityId);
+            var entity = unitOfWork.GetRepository().GetById(entityId);
+
+            if (entity == null)
+            {
+                throw new ApplicationCustomException($"This entity id - {entityId} wasn't found")
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Severity = Severity.Error,
+                };
+            }
+
             byte[] buffer = await driveService.GetFileBytesById(entity.ImageId);
 
             return Convert.ToBase64String(buffer);
@@ -50,17 +81,44 @@ namespace Car.BLL.Services.Implementation
 
         public async Task<TEntity> UploadImage(int entityId, IFormFile entityFile)
         {
-            TEntity entity = unitOfWork.GetRepository().GetById(entityId);
+            if (entityFile == null)
+            {
+                throw new ApplicationCustomException("Received file is null")
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Severity = Severity.Warning,
+                };
+            }
 
-            File newFile = await driveService.UploadFile(
+            var entity = unitOfWork.GetRepository().GetById(entityId);
+
+            if (entity == null)
+            {
+                throw new ApplicationCustomException($"This entity id - {entityId} wasn't found")
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Severity = Severity.Error,
+                };
+            }
+
+            var newFile = await driveService.UploadFile(
                  entityFile.OpenReadStream(),
                  strategy.GetFolderId(),
                  strategy.GetFileName(entity),
                  "image/png");
 
+            if (newFile == null || newFile.Id == null)
+            {
+                throw new ApplicationCustomException("This image wasn't uploaded")
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Severity = Severity.Error,
+                };
+            }
+
             entity.ImageId = newFile.Id;
 
-            TEntity newEntity = unitOfWork.GetRepository().Update(entity);
+            var newEntity = unitOfWork.GetRepository().Update(entity);
 
             unitOfWork.SaveChanges();
             return newEntity;

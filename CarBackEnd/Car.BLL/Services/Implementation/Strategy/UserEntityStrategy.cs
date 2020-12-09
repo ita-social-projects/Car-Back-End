@@ -21,7 +21,7 @@ namespace Car.BLL.Services.Implementation.Strategy
 
         public string GetFileName(User user)
         {
-            StringBuilder fileName = new StringBuilder();
+            var fileName = new StringBuilder();
 
             fileName.Append(user.Id).Append("_")
            .Append(user.Name).Append("_")

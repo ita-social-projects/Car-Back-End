@@ -15,16 +15,16 @@ namespace Car.BLL.Services.Implementation
         /// <returns>Stream of compressed file</returns>
         public Stream CompressFile(Stream fileStream, int imageQuality)
         {
-            Image image = Image.FromStream(fileStream);
+            var image = Image.FromStream(fileStream);
 
             ImageCodecInfo jpegCodec = null;
 
-            EncoderParameter imageQualitysParameter = new EncoderParameter(
+            var imageQualitysParameter = new EncoderParameter(
                 Encoder.Quality, imageQuality);
 
             ImageCodecInfo[] alleCodecs = ImageCodecInfo.GetImageEncoders();
 
-            EncoderParameters codecParameter = new EncoderParameters(1);
+            var codecParameter = new EncoderParameters(1);
             codecParameter.Param[0] = imageQualitysParameter;
 
             for (int i = 0; i < alleCodecs.Length; i++)
@@ -36,7 +36,7 @@ namespace Car.BLL.Services.Implementation
                 }
             }
 
-            Stream compressedFile = new MemoryStream();
+            var compressedFile = new MemoryStream();
 
             image.Save(compressedFile, jpegCodec, codecParameter);
 

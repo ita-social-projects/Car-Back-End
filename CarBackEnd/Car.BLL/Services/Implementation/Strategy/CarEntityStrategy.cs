@@ -20,7 +20,7 @@ namespace Car.BLL.Services.Implementation.Strategy
 
         public string GetFileName(DAL.Entities.Car car)
         {
-            StringBuilder fileName = new StringBuilder();
+            var fileName = new StringBuilder();
 
             fileName.Append(car.Id).Append("_")
            .Append(car.Brand).Append("_")
