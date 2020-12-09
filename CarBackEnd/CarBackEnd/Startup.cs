@@ -45,7 +45,10 @@ namespace CarBackEnd
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCustomMiddelwareHendler();
+
             app.UseRouting();
+
             app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
