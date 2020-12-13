@@ -5,11 +5,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\User\source\repos\Car-Back-End\CarBackEnd\CarBackEnd\CarBackEnd.xml</DocumentationFile>
+    <DocumentationFile>F:\SoftServeCarProject\BackEnd2\Car-Back-End\CarBackEnd\CarBackEnd\CarBackEnd.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -32,10 +31,11 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.6.3" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Car.DAL\Car.DAL.csproj" />
+    <ProjectReference Include="..\Car.BLL\Car.BLL.csproj" />
   </ItemGroup>
 
 </Project>

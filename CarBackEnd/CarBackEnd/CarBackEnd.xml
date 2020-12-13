@@ -4,11 +4,65 @@
         <name>CarBackEnd</name>
     </assembly>
     <members>
-        <member name="M:CarBackEnd.Controllers.ValuesController.Get">
+        <member name="M:CarBackEnd.Controllers.CarController.GetCarById(System.Int32)">
             <summary>
-            returns list of values
+            Gets the car by identifier.
             </summary>
-            <returns></returns>
+            <param name="carId">The car identifier.</param>
+            <returns>The car entity</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.CarController.UploadCarPhoto(System.Int32,Car.BLL.Dto.FormImage)">
+            <summary>
+            Uploads the car photo.
+            </summary>
+            <param name="carId">The car identifier.</param>
+            <param name="carFile">The car file.</param>
+            <returns>The car entity</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.CarController.DeleteCarPhoto(System.Int32,System.String)">
+            <summary>
+            Deletes the car photo.
+            </summary>
+            <param name="carId">The car identifier.</param>
+            <param name="carFileId">The car file identifier.</param>
+            <returns>The car entity</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.CarController.GetCarFileById(System.Int32)">
+            <summary>
+            Gets the car file by identifier.
+            </summary>
+            <param name="carId">The car identifier.</param>
+            <returns>Base64 array of car photo</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.UserController.GetUserById(System.Int32)">
+            <summary>
+            Gets the user by identifier.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <returns>The user entity</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.UserController.UploadUserAvatar(System.Int32,Car.BLL.Dto.FormImage)">
+            <summary>
+            Uploads the user avatar.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="userFile">The user file.</param>
+            <returns>The user entity</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.UserController.DeleteUserAvatar(System.Int32,System.String)">
+            <summary>
+            Deletes the user avatar.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="userFileId">The user file identifier.</param>
+            <returns>The user entity</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.UserController.GetUserFileById(System.Int32)">
+            <summary>
+            Gets the user file by identifier.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <returns>Base64 array of user avatar</returns>
         </member>
     </members>
 </doc>
