@@ -41,7 +41,7 @@ namespace Car.BLL.Services.Implementation
                 });
 
                 message.Content = body;
-                message.Subject = $"Your journey was cancelled";
+                message.Subject = $"Your journey has been cancelled";
 
                 await _smtpClient.SendAsync(CreateEmailMessage(message), _emailConfig);
             }

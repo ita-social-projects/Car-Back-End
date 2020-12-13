@@ -25,15 +25,16 @@ namespace CarBackEnd.Controllers
         [HttpPost]
         public async Task Post([FromForm] FormImage userFile)
         {
+            // put email you want to receive message
             Car.DAL.Entities.User passanger1 = new Car.DAL.Entities.User
             {
-                Email = "gavrylyakbogdan@gmail.com",
+                Email = "put your email here",
                 Name = "Name1",
                 Surname = "Surname1",
             };
             Car.DAL.Entities.User passanger2 = new Car.DAL.Entities.User
             {
-                Email = "gavrylyakbogdan@gmail.com",
+                Email = "put your email here",
                 Name = "Name2",
                 Surname = "Surname2",
             };
