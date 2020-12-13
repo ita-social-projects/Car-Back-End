@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 
 namespace Car.BLL.Services.Interfaces
 {
-    interface IImageService
+    public interface IImageService<TEntity, TFile>
     {
-        Task<string> UploadImage(IFormFile image, string folderPath);
+        Task<TEntity> UploadImage(int entityiD, IFormFile entityFile);
 
-        void DeleteImage(string imagePath);
+        Task<TEntity> DeleteImage(int entityiD);
+
+        Task<string> GetImageBytesById(int entityId);
     }
 }
