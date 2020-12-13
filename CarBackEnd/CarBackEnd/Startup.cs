@@ -33,7 +33,7 @@ namespace CarBackEnd
         {
             services.AddDbContext(Configuration);
             services.AddControllers();
-            services.AddCustomServices();
+            services.AddServices();
             services.AddCorsSettings();
         }
 
@@ -42,10 +42,10 @@ namespace CarBackEnd
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCustomMiddelwareHendler();
+            app.UseMiddelwareHendler();
 
             app.UseRouting();
 

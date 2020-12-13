@@ -9,9 +9,9 @@ using File = Google.Apis.Drive.v3.Data.File;
 
 namespace CarBackEnd.ServiceExtension
 {
-    public static class CustomServicesExtension
+    public static class ServicesExtension
     {
-        public static void AddCustomServices(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<ICompressor, CompressorWithQuality>();
             services.AddScoped<IDriveService<File>, GoogleDriveService>();

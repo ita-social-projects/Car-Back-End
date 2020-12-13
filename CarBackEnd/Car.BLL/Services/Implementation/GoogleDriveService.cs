@@ -33,7 +33,7 @@ namespace Car.BLL.Services.Implementation
         /// Deletes the file.
         /// </summary>
         /// <param name="fileId">The file identifier.</param>
-        /// <returns>Task</returns>
+        /// <returns>Empty string if successful</returns>
         public Task<string> DeleteFile(string fileId)
         {
             return service.Files.Delete(fileId).ExecuteAsync();
@@ -70,6 +70,10 @@ namespace Car.BLL.Services.Implementation
             return stream.GetBuffer();
         }
 
+        /// <summary>
+        /// Sets the credentials.
+        /// </summary>
+        /// <param name="credentialFilePath">The credential file path.</param>
         public void SetCredentials(string credentialFilePath)
         {
             var keyFilePath = Path.Combine(
@@ -88,6 +92,14 @@ namespace Car.BLL.Services.Implementation
             });
         }
 
+        /// <summary>
+        /// Uploads the file.
+        /// </summary>
+        /// <param name="fileStream">The file stream.</param>
+        /// <param name="folderId">The folder identifier.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="contentType">Type of the content.</param>
+        /// <returns>Uploaded file</returns>
         public async Task<File> UploadFile(Stream fileStream, string folderId, string fileName, string contentType)
         {
             const int quality = 40;

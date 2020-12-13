@@ -4,7 +4,6 @@ using Car.DAL.Interfaces;
 using Car.BLL.Dto;
 using Microsoft.AspNetCore.Http;
 using System;
-using Car.BLL.Exceptions;
 using System.Threading.Tasks;
 using System.Net;
 using File = Google.Apis.Drive.v3.Data.File;
@@ -35,7 +34,7 @@ namespace Car.BLL.Services.Implementation
 
             if (entity == null)
             {
-                throw new ApplicationCustomException($"This entity id - {entityId} wasn't found")
+                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
                 {
                     StatusCode = (int)HttpStatusCode.NotFound,
                     Severity = Severity.Error,
@@ -46,7 +45,7 @@ namespace Car.BLL.Services.Implementation
 
             if (result != string.Empty)
             {
-                throw new ApplicationCustomException($"The image wasn't deleted")
+                throw new Exceptions.DefaultApplicationException($"The image wasn't deleted")
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError,
                     Severity = Severity.Error,
@@ -67,7 +66,7 @@ namespace Car.BLL.Services.Implementation
 
             if (entity == null)
             {
-                throw new ApplicationCustomException($"This entity id - {entityId} wasn't found")
+                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
                 {
                     StatusCode = (int)HttpStatusCode.NotFound,
                     Severity = Severity.Error,
@@ -83,7 +82,7 @@ namespace Car.BLL.Services.Implementation
         {
             if (entityFile == null)
             {
-                throw new ApplicationCustomException("Received file is null")
+                throw new Exceptions.DefaultApplicationException("Received file is null")
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest,
                     Severity = Severity.Warning,
@@ -94,7 +93,7 @@ namespace Car.BLL.Services.Implementation
 
             if (entity == null)
             {
-                throw new ApplicationCustomException($"This entity id - {entityId} wasn't found")
+                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
                 {
                     StatusCode = (int)HttpStatusCode.NotFound,
                     Severity = Severity.Error,
@@ -107,9 +106,9 @@ namespace Car.BLL.Services.Implementation
                  strategy.GetFileName(entity),
                  "image/png");
 
-            if (newFile == null || newFile.Id == null)
+            if (newFile == null)
             {
-                throw new ApplicationCustomException("This image wasn't uploaded")
+                throw new Exceptions.DefaultApplicationException("This image wasn't uploaded")
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError,
                     Severity = Severity.Error,
