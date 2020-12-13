@@ -12,6 +12,6 @@ namespace Car.DAL.Interfaces
 
         Repository<TEntity> GetRepository();
 
-        public void SaveChanges();
+        void SaveChanges();
     }
 }

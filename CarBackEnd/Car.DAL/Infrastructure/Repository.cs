@@ -28,7 +28,7 @@ namespace Car.DAL.Infrastructure
         /// <returns>added entity</returns>
         public TEntity Add(TEntity entity)
         {
-            return dbEntities.Add(entity) as TEntity;
+            return dbEntities.Add(entity).Entity;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Car.DAL.Infrastructure
         /// <returns>true if entity was successfully deleted, and false in other way</returns>
         public bool Delete(TEntity entity)
         {
-            return dbEntities.Remove(entity) != null;
+            return dbEntities.Remove(entity).Entity != null;
         }
 
         /// <summary>
@@ -60,17 +60,17 @@ namespace Car.DAL.Infrastructure
         }
 
         /// <summary>
-        /// Joins entity with entities in parameters
+        /// Gets all entity records with included entities
         /// </summary>
-        /// <param name="includes">entity to join</param>
-        /// <returns>IQueryable of this entity or joined with includes</returns>
+        /// <param name="includes">included entities</param>
+        /// <returns>IQueryable of all entity records with included entities, if includes is null this function is equal GetAll</returns>
         public IQueryable<TEntity> Query(params Expression<Func<TEntity, object>>[] includes)
         {
             DbSet<TEntity> dbSet = context.Set<TEntity>();
-            IQueryable<TEntity> query = null;
+            IQueryable<TEntity> query = dbSet;
             foreach (var include in includes)
             {
-                query = dbSet.Include(include);
+                query = query.Include(include);
             }
 
             return query ?? dbSet;
