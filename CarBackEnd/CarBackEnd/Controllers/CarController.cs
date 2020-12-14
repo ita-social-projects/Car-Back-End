@@ -2,6 +2,7 @@
 using Car.BLL.Dto;
 using Car.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using File = Google.Apis.Drive.v3.Data.File;
 
 namespace CarBackEnd.Controllers
 {
@@ -10,10 +11,14 @@ namespace CarBackEnd.Controllers
     public class CarController : ControllerBase
     {
         private readonly ICarService carService;
+        private readonly IImageService<Car.DAL.Entities.Car, File> imageService;
 
-        public CarController(ICarService carService)
+        public CarController(
+            ICarService carService,
+            IImageService<Car.DAL.Entities.Car, File> imageService)
         {
             this.carService = carService;
+            this.imageService = imageService;
         }
 
         /// <summary>
@@ -36,19 +41,18 @@ namespace CarBackEnd.Controllers
         [HttpPut("{carId}/photo")]
         public async Task<IActionResult> UploadCarPhoto(int carId, [FromForm] FormImage carFile)
         {
-            return Ok(await carService.UploadCarPhoto(carId, carFile.image));
+            return Ok(await imageService.UploadImage(carId, carFile.image));
         }
 
         /// <summary>
         /// Deletes the car photo.
         /// </summary>
         /// <param name="carId">The car identifier.</param>
-        /// <param name="carFileId">The car file identifier.</param>
         /// <returns>The car entity</returns>
-        [HttpDelete("{carId}/photo/{carFileId}")]
-        public async Task<IActionResult> DeleteCarPhoto(int carId, string carFileId)
+        [HttpDelete("{carId}/photo")]
+        public async Task<IActionResult> DeleteCarPhoto(int carId)
         {
-            return Ok(await carService.DeleteCarAvatar(carId, carFileId));
+            return Ok(await imageService.DeleteImage(carId));
         }
 
         /// <summary>
@@ -59,7 +63,7 @@ namespace CarBackEnd.Controllers
         [HttpGet("photo/{carId}")]
         public async Task<IActionResult> GetCarFileById(int carId)
         {
-            return Ok(await carService.GetCarFileBytesById(carId));
+            return Ok(await imageService.GetImageBytesById(carId));
         }
     }
 }

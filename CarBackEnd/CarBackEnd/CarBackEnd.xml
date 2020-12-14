@@ -19,12 +19,11 @@
             <param name="carFile">The car file.</param>
             <returns>The car entity</returns>
         </member>
-        <member name="M:CarBackEnd.Controllers.CarController.DeleteCarPhoto(System.Int32,System.String)">
+        <member name="M:CarBackEnd.Controllers.CarController.DeleteCarPhoto(System.Int32)">
             <summary>
             Deletes the car photo.
             </summary>
             <param name="carId">The car identifier.</param>
-            <param name="carFileId">The car file identifier.</param>
             <returns>The car entity</returns>
         </member>
         <member name="M:CarBackEnd.Controllers.CarController.GetCarFileById(System.Int32)">
@@ -49,12 +48,11 @@
             <param name="userFile">The user file.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:CarBackEnd.Controllers.UserController.DeleteUserAvatar(System.Int32,System.String)">
+        <member name="M:CarBackEnd.Controllers.UserController.DeleteUserAvatar(System.Int32)">
             <summary>
             Deletes the user avatar.
             </summary>
             <param name="userId">The user identifier.</param>
-            <param name="userFileId">The user file identifier.</param>
             <returns>The user entity</returns>
         </member>
         <member name="M:CarBackEnd.Controllers.UserController.GetUserFileById(System.Int32)">

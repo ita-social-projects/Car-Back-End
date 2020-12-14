@@ -8,7 +8,7 @@ namespace Car.BLL.Services.Interfaces
     {
         Task<TFile> UploadFile(Stream fileStream, string folderId, string fileName, string contentType);
 
-        Task DeleteFile(string fileId);
+        Task<string> DeleteFile(string fileId);
 
         Task<IEnumerable<TFile>> GetAllFiles();
 

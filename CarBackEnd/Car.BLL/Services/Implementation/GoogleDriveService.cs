@@ -33,10 +33,10 @@ namespace Car.BLL.Services.Implementation
         /// Deletes the file.
         /// </summary>
         /// <param name="fileId">The file identifier.</param>
-        /// <returns>Task</returns>
-        public async Task DeleteFile(string fileId)
+        /// <returns>Empty string if successful</returns>
+        public Task<string> DeleteFile(string fileId)
         {
-           await service.Files.Delete(fileId).ExecuteAsync();
+            return service.Files.Delete(fileId).ExecuteAsync();
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Car.BLL.Services.Implementation
         /// <returns>All files</returns>
         public async Task<IEnumerable<File>> GetAllFiles()
         {
-           return (await service.Files.List().ExecuteAsync()).Files;
+            return (await service.Files.List().ExecuteAsync()).Files;
         }
 
         /// <summary>
@@ -53,9 +53,9 @@ namespace Car.BLL.Services.Implementation
         /// </summary>
         /// <param name="fileId">The file identifier.</param>
         /// <returns>The file instance</returns>
-        public async Task<File> GetFileById(string fileId)
+        public Task<File> GetFileById(string fileId)
         {
-            return await service.Files.Get(fileId).ExecuteAsync();
+            return service.Files.Get(fileId).ExecuteAsync();
         }
 
         /// <summary>
@@ -65,11 +65,15 @@ namespace Car.BLL.Services.Implementation
         /// <returns>base64 array of file</returns>
         public async Task<byte[]> GetFileBytesById(string fileId)
         {
-            using MemoryStream stream = new MemoryStream();
+            using var stream = new MemoryStream();
             await service.Files.Get(fileId).DownloadAsync(stream);
             return stream.GetBuffer();
         }
 
+        /// <summary>
+        /// Sets the credentials.
+        /// </summary>
+        /// <param name="credentialFilePath">The credential file path.</param>
         public void SetCredentials(string credentialFilePath)
         {
             var keyFilePath = Path.Combine(
@@ -88,9 +92,19 @@ namespace Car.BLL.Services.Implementation
             });
         }
 
+        /// <summary>
+        /// Uploads the file.
+        /// </summary>
+        /// <param name="fileStream">The file stream.</param>
+        /// <param name="folderId">The folder identifier.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="contentType">Type of the content.</param>
+        /// <returns>Uploaded file</returns>
         public async Task<File> UploadFile(Stream fileStream, string folderId, string fileName, string contentType)
         {
-            File fileMetadata = new File();
+            const int quality = 40;
+
+            var fileMetadata = new File();
             fileMetadata.Name = fileName;
             fileMetadata.Parents = new List<string> { folderId };
 
@@ -98,7 +112,7 @@ namespace Car.BLL.Services.Implementation
 
             using (fileStream)
             {
-                using Stream compresedFile = compressor.CompressFile(fileStream, 40);
+                using var compresedFile = compressor.CompressFile(fileStream, quality);
                 request = service.Files.Create(fileMetadata, compresedFile, contentType);
                 request.Fields = "id, name, webViewLink, size";
                 await request.UploadAsync();

@@ -1,6 +1,6 @@
 ﻿namespace Car.DAL.Entities
 {
-    public class Car : IEntity
+    public class Car : IEntity, IEntityWithImage
     {
         public int Id { get; set; }
 
@@ -12,7 +12,7 @@
 
         public string PlateNumber { get; set; }
 
-        public string ImageCar { get; set; }
+        public string ImageId { get; set; }
 
         public int UserId { get; set; }
 

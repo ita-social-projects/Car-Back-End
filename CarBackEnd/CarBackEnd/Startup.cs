@@ -18,10 +18,17 @@ namespace CarBackEnd
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, ILogger<Startup> logger, IWebHostEnvironment environment)
+        public Startup(ILogger<Startup> logger, IWebHostEnvironment environment)
         {
-            Configuration = configuration;
             Environment = environment;
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Environment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
             _logger = logger;
         }
 
@@ -42,10 +49,14 @@ namespace CarBackEnd
                 .GetSection("EmailConfiguration")
                 .Get<EmailConfiguration>();
             services.AddSingleton(emailConfig);
-            services.AddDbContext(Configuration, Environment);
+            services.AddDbContext(Configuration);
             services.AddControllers();
+            services.AddServices();
+            services.AddCorsSettings();
+
             services.AddLogging();
             services.AddApplicationInsightsTelemetry();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SoftServe Car-API", Version = "v1" });
@@ -53,8 +64,6 @@ namespace CarBackEnd
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-            services.AddCors(options => options.AddDefaultPolicy(
-                builder => builder.AllowAnyOrigin()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,9 +79,11 @@ namespace CarBackEnd
                 _logger.LogInformation("Configuring for Production environment");
             }
 
+            app.UseMiddelwareHendler();
+
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {
