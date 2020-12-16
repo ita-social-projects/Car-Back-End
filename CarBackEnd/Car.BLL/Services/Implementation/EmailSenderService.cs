@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Mail;
 using RazorClassLibraryForEmails.Views.Emails.CancelJourney;
 using RazorClassLibraryForEmails.Services;
+using Microsoft.Extensions.Options;
 
 namespace Car.BLL.Services.Implementation
 {
@@ -16,29 +17,27 @@ namespace Car.BLL.Services.Implementation
         private readonly IRazorViewToStringRenderer _razorViewToStringRenderer;
 
         public EmailSenderService(
-            EmailConfiguration emailConfig,
+            IOptions<EmailConfiguration> emailConfig,
             ISmptClient smtpClient,
             IRazorViewToStringRenderer razorViewToStringRenderer)
         {
-            _emailConfig = emailConfig;
+            _emailConfig = emailConfig.Value;
             _smtpClient = smtpClient;
             _razorViewToStringRenderer = razorViewToStringRenderer;
         }
 
-        [Obsolete]
         public async Task CancelJourneyAsync(Message message)
         {
             for (int i = 0; i < message.Recipients.Count; i++)
             {
                 string body = await _razorViewToStringRenderer.RenderViewToStringAsync(
-                "/Views/Emails/CancelJourney/CancelJourney.cshtml",
-                new CancelJourneyViewModel
-                {
-                    PassangerName = message.Recipients[i].Name,
-                    DriverName = message.DriverAddress.Name,
-                    TimeOfStoppage = message.CancelDate,
-                    Attachments = message.Attachments,
-                });
+               "/Views/Emails/CancelJourney/CancelJourney.cshtml",
+               new CancelJourneyViewModel
+               {
+                   DriverName = message.DriverAddress.Name,
+                   TimeOfStoppage = message.CancelDate,
+                   Attachments = message.Attachments,
+               });
 
                 message.Content = body;
                 message.Subject = $"Your journey has been cancelled";
@@ -47,7 +46,6 @@ namespace Car.BLL.Services.Implementation
             }
         }
 
-        [Obsolete]
         private MimeMessage CreateEmailMessage(Message message)
         {
             var mailMessage = new MailMessage

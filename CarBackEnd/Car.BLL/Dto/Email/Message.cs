@@ -18,12 +18,5 @@ namespace Car.BLL.Dto.Email
         public DateTime CancelDate { get; set; }
 
         public MailboxAddress DriverAddress { get; set; }
-
-        public Message(IEnumerable<MailboxAddress> to)
-        {
-            Recipients = new List<MailboxAddress>();
-
-            Recipients.AddRange(to);
-        }
     }
 }

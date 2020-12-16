@@ -45,10 +45,7 @@ namespace CarBackEnd
             services.AddScoped<IEmailSenderService, EmailSenderService>();
             services.AddSingleton<ISmptClient, SmtpClientService>();
             services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
-            var emailConfig = Configuration
-                .GetSection("EmailConfiguration")
-                .Get<EmailConfiguration>();
-            services.AddSingleton(emailConfig);
+            services.Configure<EmailConfiguration>(Configuration.GetSection(nameof(EmailConfiguration)));
             services.AddDbContext(Configuration);
             services.AddControllers();
             services.AddServices();
