@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using userEntity = Car.DAL.Entities.User;
+﻿using userEntity = Car.DAL.Entities.User;
 
 namespace Car.BLL.Services.Interfaces
 {

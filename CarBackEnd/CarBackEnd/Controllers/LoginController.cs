@@ -1,6 +1,5 @@
 ﻿using CarBackEnd.Model;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -9,9 +8,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Car.DAL.Entities;
-using Car.DAL.Infrastructure;
-using System.Linq;
-using Car.DAL.Context;
 using Car.BLL.Services.Interfaces;
 
 namespace CarBackEnd.Controllers
@@ -42,7 +38,7 @@ namespace CarBackEnd.Controllers
             }
 
             var tokenString = GenerateJSONWebToken(user);
-            response = Ok(new { token = tokenString, userId =user.Id});
+            response = Ok(new { token = tokenString, userId =user.Id });
 
             return response;
         }
@@ -72,7 +68,7 @@ namespace CarBackEnd.Controllers
 
         private User AuthenticateUser(UserModel login, User defaultUser = null)
         {
-            defaultUser = _loginService.GetUser(login.EmailAddress); 
+            defaultUser = _loginService.GetUser(login.EmailAddress);
             if (defaultUser == null)
             {
                 defaultUser = new User()
