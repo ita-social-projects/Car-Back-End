@@ -19,6 +19,7 @@ namespace CarBackEnd.ServiceExtension
             services.AddScoped<ICarService, CarService>();
             services.AddScoped<IImageService<User, File>, ImageService<User>>();
             services.AddScoped<IImageService<Car.DAL.Entities.Car, File>, ImageService<Car.DAL.Entities.Car>>();
+            services.AddScoped<ILoginService, LoginService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IUnitOfWork<User>, UnitOfWork<User>>();

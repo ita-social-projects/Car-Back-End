@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\Nazar\Cource\SoftServe\SoftServeCar\Car-Back-End\CarBackEnd\CarBackEnd\CarBackEnd.xml</DocumentationFile>
+    <DocumentationFile>C:\Users\User\source\test\Car-Back-End\CarBackEnd\CarBackEnd\CarBackEnd.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.16.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.16.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

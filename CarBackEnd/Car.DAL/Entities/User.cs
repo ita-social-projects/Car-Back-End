@@ -21,6 +21,8 @@ namespace Car.DAL.Entities
 
         public string ImageId { get; set; }
 
+        //public string AzureId { get; set; }
+
         public IEnumerable<Car> UserCars { get; set; }
 
         public UserPreferences UserPreferences { get; set; }
