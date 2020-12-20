@@ -33,6 +33,14 @@
             <param name="carId">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
+        <member name="M:CarBackEnd.Controllers.LoginController.Login(CarBackEnd.Model.UserModel)">
+            <summary>
+            checks if the user exists and returns a token for client app,
+            if user doesn't exist it creates a user and saves them to DB
+            </summary>
+            <param name="userModel">User model params</param>
+            <returns>token for client</returns>
+        </member>
         <member name="M:CarBackEnd.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
             Gets the user by identifier.
