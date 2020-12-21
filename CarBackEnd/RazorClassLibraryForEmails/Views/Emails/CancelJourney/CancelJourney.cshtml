@@ -1,0 +1,27 @@
+﻿@using RazorClassLibraryForEmails.Views.Emails.CancelJourney
+@model CancelJourneyViewModel
+
+@{
+    ViewData["EmailTitle"] = "Important Information!";
+}
+
+<br />
+<p>
+    We have to inform you that driver: @Model.DriverName has cancelled the journey at @Model.TimeOfStoppage
+</p>
+
+<br />
+
+@if (Model.Attachments != null)
+{
+    <img src=cid:imgpath height=100 width=100 alt="Image" />
+}
+
+
+<br />
+
+<p>
+
+</p>
+
+<br />

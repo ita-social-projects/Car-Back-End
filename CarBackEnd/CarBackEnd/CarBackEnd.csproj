@@ -2,10 +2,12 @@
 
   <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<Nullable>annotations</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\User\source\test\Car-Back-End\CarBackEnd\CarBackEnd\CarBackEnd.xml</DocumentationFile>
+    <DocumentationFile>F:\SoftServeCarProject\BackEnd8\Car-Back-End\CarBackEnd\CarBackEnd\CarBackEnd.xml</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
 
   <ItemGroup>

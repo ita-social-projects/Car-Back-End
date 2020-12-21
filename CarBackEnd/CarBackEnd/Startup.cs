@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Car.BLL.Dto.Email;
+using Car.BLL.Services.Implementation;
+using Car.BLL.Services.Interfaces;
 using CarBackEnd.ServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RazorClassLibraryForEmails.Services;
 
 namespace CarBackEnd
 {
@@ -42,6 +46,14 @@ namespace CarBackEnd
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.AddScoped<IEmailSenderService, EmailSenderService>();
+            services.AddSingleton<ISmptClient, SmtpClientService>();
+            services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+            services.Configure<EmailConfiguration>(Configuration.GetSection(nameof(EmailConfiguration)));
+
+
             services.AddDbContext(Configuration);
             services.AddControllers();
             services.AddServices();
