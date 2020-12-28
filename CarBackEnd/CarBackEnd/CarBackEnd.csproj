@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <DocumentationFile>..\CarBackEnd\CarBackEnd\CarBackEnd.xml</DocumentationFile>
-  </PropertyGroup>
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
