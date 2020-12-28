@@ -88,8 +88,8 @@ namespace RazorClassLibraryForEmails.Services
         }
 
     }
-    public interface IRazorViewToStringRenderer
+    /*public interface IRazorViewToStringRenderer
     {
         Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model);
-    }
+    }*/
 }

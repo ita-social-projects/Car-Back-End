@@ -6,6 +6,7 @@ using System.Net.Mail;
 using RazorClassLibraryForEmails.Views.Emails.CancelJourney;
 using RazorClassLibraryForEmails.Services;
 using Microsoft.Extensions.Options;
+using System.Linq;
 
 namespace Car.BLL.Services.Implementation
 {
@@ -27,22 +28,19 @@ namespace Car.BLL.Services.Implementation
 
         public async Task CancelJourneyAsync(Message message)
         {
-            for (int i = 0; i < message.Recipients.Count; i++)
-            {
-                string body = await _razorViewToStringRenderer.RenderViewToStringAsync(
-               "/Views/Emails/CancelJourney/CancelJourney.cshtml",
-               new CancelJourneyViewModel
-               {
-                   DriverName = message.DriverAddress.Name,
-                   TimeOfStoppage = message.CancelDate,
-                   Attachments = message.Attachments,
-               });
+            var body = await _razorViewToStringRenderer.RenderViewToStringAsync(
+              "/Views/Emails/CancelJourney/CancelJourney.cshtml",
+              new CancelJourneyViewModel
+              {
+                  DriverName = message.DriverAddress.Name,
+                  TimeOfStoppage = message.CancelDate,
+                  Attachments = message.Attachments,
+              });
 
-                message.Content = body;
-                message.Subject = $"Your journey has been cancelled";
+            message.Content = body;
+            message.Subject = $"Your journey has been cancelled";
 
-                await _smtpClient.SendAsync(CreateEmailMessage(message), _emailConfig);
-            }
+            await _smtpClient.SendAsync(CreateEmailMessage(message), _emailConfig);
         }
 
         private MimeMessage CreateEmailMessage(Message message)
