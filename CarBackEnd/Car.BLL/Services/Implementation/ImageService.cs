@@ -1,53 +1,126 @@
 ﻿using Car.BLL.Services.Interfaces;
+using Car.DAL.Entities;
+using Car.DAL.Interfaces;
+using Car.BLL.Dto;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
 using System;
-using System.IO;
 using System.Threading.Tasks;
+using System.Net;
+using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.BLL.Services.Implementation
 {
-    class ImageService : IImageService
+    public class ImageService<TEntity> : IImageService<TEntity, File>
+        where TEntity : class, IEntityWithImage
     {
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IDriveService<File> driveService;
+        private readonly IUnitOfWork<TEntity> unitOfWork;
+        private readonly IEntityTypeStrategy<TEntity> strategy;
 
-        public ImageService(IWebHostEnvironment webHostEnvironment)
+        public ImageService(
+            IDriveService<File> driveService,
+            IUnitOfWork<TEntity> unitOfWork,
+            IEntityTypeStrategy<TEntity> strategy)
         {
-            _webHostEnvironment = webHostEnvironment;
+            this.driveService = driveService;
+            this.unitOfWork = unitOfWork;
+            this.strategy = strategy;
+            driveService.SetCredentials(strategy.GetCredentialFilePath());
         }
 
-        public async Task<string> UploadImage(IFormFile img, string folderPath)
+        public async Task<TEntity> DeleteImage(int entityId)
         {
-            if (img == null)
+            var entity = unitOfWork.GetRepository().GetById(entityId);
+
+            if (entity == null)
             {
-                return null;
+                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Severity = Severity.Error,
+                };
             }
 
-            string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
-            if (!Directory.Exists(uploadFolder))
+            var result = await driveService.DeleteFile(entity.ImageId);
+
+            if (result != string.Empty)
             {
-                Directory.CreateDirectory(uploadFolder);
+                throw new Exceptions.DefaultApplicationException($"The image wasn't deleted")
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Severity = Severity.Error,
+                };
             }
 
-            string uniqueFileName = Guid.NewGuid() + "_" + img.FileName;
-            string newImagePath = Path.Combine(uploadFolder, uniqueFileName);
-            string dbPathFile = Path.Combine(folderPath, uniqueFileName);
-            using (var fileStream = new FileStream(newImagePath, FileMode.Create))
-            {
-                await img.CopyToAsync(fileStream);
-            }
+            entity.ImageId = null;
 
-            return dbPathFile;
+            var newEntity = unitOfWork.GetRepository().Update(entity);
+            unitOfWork.SaveChanges();
+
+            return newEntity;
         }
 
-        public void DeleteImage(string imagePath)
+        public async Task<string> GetImageBytesById(int entityId)
         {
-            string deletePath = Path.Combine(_webHostEnvironment.WebRootPath, imagePath);
-            var file = new FileInfo(deletePath);
-            if (file.Exists)
+            var entity = unitOfWork.GetRepository().GetById(entityId);
+
+            if (entity == null)
             {
-                file.Delete();
+                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Severity = Severity.Error,
+                };
             }
+
+            byte[] buffer = await driveService.GetFileBytesById(entity.ImageId);
+
+            return Convert.ToBase64String(buffer);
+        }
+
+        public async Task<TEntity> UploadImage(int entityId, IFormFile entityFile)
+        {
+            if (entityFile == null)
+            {
+                throw new Exceptions.DefaultApplicationException("Received file is null")
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Severity = Severity.Warning,
+                };
+            }
+
+            var entity = unitOfWork.GetRepository().GetById(entityId);
+
+            if (entity == null)
+            {
+                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Severity = Severity.Error,
+                };
+            }
+
+            var newFile = await driveService.UploadFile(
+                 entityFile.OpenReadStream(),
+                 strategy.GetFolderId(),
+                 strategy.GetFileName(entity),
+                 "image/png");
+
+            if (newFile == null)
+            {
+                throw new Exceptions.DefaultApplicationException("This image wasn't uploaded")
+                {
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Severity = Severity.Error,
+                };
+            }
+
+            entity.ImageId = newFile.Id;
+
+            var newEntity = unitOfWork.GetRepository().Update(entity);
+
+            unitOfWork.SaveChanges();
+            return newEntity;
         }
     }
 }
