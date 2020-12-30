@@ -2,7 +2,7 @@
 
 # SoftServe Car
 
-Platform for sharing rides between company employees
+Platform for sharing rides between company employees.
 
 
 [![Build Status](https://img.shields.io/travis/ita-social-projects/SoftServeCar-Back-End/master?style=flat-square)](https://travis-ci.org/github/ita-social-projects/SoftServeCar-Back-End)
