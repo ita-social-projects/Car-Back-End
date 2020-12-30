@@ -58,4 +58,4 @@ jobs:
         sonarOrganization: ita-social-projects
         dotnetBuildArguments: ./CarBackEnd 
         dotnetTestArguments: ./CarBackEnd/Car.Tests /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-        sonarBeginArguments:: begin /o:testcar /k:SplinterRAT_Car-Back-End /d:sonar.cs.opencover.reportsPaths="src/ApplicationTest/coverage.opencover.xml" /d:sonar.host.url=https://sonarcloud.io 
+        sonarBeginArguments:: begin /o:Car-Back-End /k:ita-social-projects_Car-Back-End /d:sonar.cs.opencover.reportsPaths="src/ApplicationTest/coverage.opencover.xml" /d:sonar.host.url=https://sonarcloud.io 
