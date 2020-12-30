@@ -51,11 +51,11 @@ jobs:
       uses: highbyte/sonarscan-dotnet@1.0.2
       with:
         # The key of the SonarQube project
-        sonarProjectKey: SplinterRAT_Car-Back-End
+        sonarProjectKey: ita-social-projects_Car-Back-End
         # The name of the SonarQube project
         sonarProjectName:  Car-Back-End
         # The name of the SonarQube organization in SonarCloud. For hosted SonarQube, skip this setting.
-        sonarOrganization: testcar
+        sonarOrganization: ita-social-projects
         dotnetBuildArguments: ./CarBackEnd 
         dotnetTestArguments: ./CarBackEnd/Car.Tests /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         sonarBeginArguments:: begin /o:testcar /k:SplinterRAT_Car-Back-End /d:sonar.cs.opencover.reportsPaths="src/ApplicationTest/coverage.opencover.xml" /d:sonar.host.url=https://sonarcloud.io 
