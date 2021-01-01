@@ -25,7 +25,7 @@ namespace Car.DAL.Infrastructure
         /// Gets repository for TEntity
         /// </summary>
         /// <returns>instance of repository</returns>
-        public Repository<TEntity> GetRepository()
+        public IRepository<TEntity> GetRepository()
         {
             return new Repository<TEntity>(context);
         }

@@ -53,7 +53,7 @@ namespace CarBackEnd.Controllers
         [HttpPut("{userId}/avatar")]
         public async Task<IActionResult> UploadUserAvatar(int userId, [FromForm] FormImage userFile)
         {
-           return Ok(await imageService.UploadImage(userId, userFile.image));
+            return Ok(await imageService.UploadImage(userId, userFile.image));
         }
 
         /// <summary>
