@@ -60,7 +60,7 @@ namespace CarBackEnd.Controllers
         /// </summary>
         /// <param name="carId">The car identifier.</param>
         /// <returns>Base64 array of car photo</returns>
-        [HttpGet("photo/{carId}")]
+        [HttpGet("{carId}/photo")]
         public async Task<IActionResult> GetCarFileById(int carId)
         {
             return Ok(await imageService.GetImageBytesById(carId));
