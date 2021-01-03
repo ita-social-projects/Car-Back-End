@@ -26,6 +26,10 @@ namespace Car.DAL.Context
 
         DbSet<Schedule> Schedule { get; set; }
 
+        DbSet<Brand> Brands { get; set; }
+
+        DbSet<Model> Models { get; set; }
+
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {
@@ -43,6 +47,10 @@ namespace Car.DAL.Context
             modelBuilder.ApplyConfiguration(new UserPreferencesConfiguration());
             modelBuilder.ApplyConfiguration(new StopConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
+            modelBuilder.ApplyConfiguration(new BrandConfiguration());
+            modelBuilder.ApplyConfiguration(new ModelConfiguration());
+
+            modelBuilder.Seed();
         }
     }
 }

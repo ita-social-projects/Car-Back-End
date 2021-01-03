@@ -4,6 +4,12 @@
         <name>CarBackEnd</name>
     </assembly>
     <members>
+        <member name="M:CarBackEnd.Controllers.BrandController.GetBrands">
+            <summary>
+            Gets the brands.
+            </summary>
+            <returns>The brands</returns>
+        </member>
         <member name="M:CarBackEnd.Controllers.CarController.GetCarById(System.Int32)">
             <summary>
             Gets the car by identifier.
@@ -40,6 +46,12 @@
             </summary>
             <param name="userModel">User model params</param>
             <returns>token for a client app and user Id</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.ModelController.GetModels">
+            <summary>
+            Get the models
+            </summary>
+            <returns>The models</returns>
         </member>
         <member name="M:CarBackEnd.Controllers.UserController.GetUserById(System.Int32)">
             <summary>

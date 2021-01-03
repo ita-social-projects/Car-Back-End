@@ -20,11 +20,17 @@ namespace CarBackEnd.ServiceExtension
             services.AddScoped<IImageService<User, File>, ImageService<User>>();
             services.AddScoped<IImageService<Car.DAL.Entities.Car, File>, ImageService<Car.DAL.Entities.Car>>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IModelService, ModelService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IUnitOfWork<User>, UnitOfWork<User>>();
             services.AddScoped<IRepository<Car.DAL.Entities.Car>, Repository<Car.DAL.Entities.Car>>();
             services.AddScoped<IUnitOfWork<Car.DAL.Entities.Car>, UnitOfWork<Car.DAL.Entities.Car>>();
+            services.AddScoped<IRepository<Brand>, Repository<Brand>>();
+            services.AddScoped<IUnitOfWork<Brand>, UnitOfWork<Brand>>();
+            services.AddScoped<IRepository<Car.DAL.Entities.Model>, Repository<Car.DAL.Entities.Model>>();
+            services.AddScoped<IUnitOfWork<Car.DAL.Entities.Model>, UnitOfWork<Car.DAL.Entities.Model>>();
 
             services.AddScoped<IEntityTypeStrategy<User>, UserEntityStrategy>();
             services.AddScoped<IEntityTypeStrategy<Car.DAL.Entities.Car>, CarEntityStrategy>();

@@ -1,6 +1,7 @@
 ﻿using Car.BLL.Services.Implementation;
 using Car.BLL.Services.Interfaces;
 using Car.DAL.Interfaces;
+using Car.DAL.Entities;
 using Moq;
 using Xunit;
 
@@ -25,8 +26,8 @@ namespace Car.Tests.Services
             return new DAL.Entities.Car()
             {
                 Id = 2,
-                Brand = "BMW",
-                Model = "A5",
+                Brand = new Brand() { Id = 3, Name = "BMW" },
+                Model = new Model() { Id = 3, Name = "M5" },
                 Color = "Red",
                 PlateNumber = "AA-2222-BB",
             };
