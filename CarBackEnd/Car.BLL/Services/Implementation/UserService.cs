@@ -19,5 +19,17 @@ namespace Car.BLL.Services.Implementation
         {
             return unitOfWork.GetRepository().GetById(userId);
         }
+
+        public User GetUserWithAvatarById(int userId)
+        {
+            var user = unitOfWork.GetRepository().GetById(userId);
+            return new User()
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Position = user.Position,
+            };
+        }
     }
 }

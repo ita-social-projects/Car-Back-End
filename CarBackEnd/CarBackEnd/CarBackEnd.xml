@@ -48,6 +48,13 @@
             <param name="userId">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
+        <member name="M:CarBackEnd.Controllers.UserController.GetUserWithAvatarById(System.Int32)">
+            <summary>
+            Gets the user with avatar by identifier.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <returns>The user dto with avatar</returns>
+        </member>
         <member name="M:CarBackEnd.Controllers.UserController.UploadUserAvatar(System.Int32,Car.BLL.Dto.FormImage)">
             <summary>
             Uploads the user avatar.

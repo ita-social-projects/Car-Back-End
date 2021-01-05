@@ -34,6 +34,17 @@ namespace CarBackEnd.Controllers
         }
 
         /// <summary>
+        /// Gets the user with avatar by identifier.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>The user dto with avatar</returns>
+        [HttpGet("withAvatar/{userId}")]
+        public IActionResult GetUserWithAvatarById(int userId)
+        {
+            return Ok(userService.GetUserWithAvatarById(userId));
+        }
+
+        /// <summary>
         /// Uploads the user avatar.
         /// </summary>
         /// <param name="userId">The user identifier.</param>
@@ -42,7 +53,7 @@ namespace CarBackEnd.Controllers
         [HttpPut("{userId}/avatar")]
         public async Task<IActionResult> UploadUserAvatar(int userId, [FromForm] FormImage userFile)
         {
-           return Ok(await imageService.UploadImage(userId, userFile.image));
+            return Ok(await imageService.UploadImage(userId, userFile.image));
         }
 
         /// <summary>
@@ -61,7 +72,7 @@ namespace CarBackEnd.Controllers
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <returns>Base64 array of user avatar</returns>
-        [HttpGet("avatar/{userId}")]
+        [HttpGet("{userId}/avatar")]
         public async Task<IActionResult> GetUserFileById(int userId)
         {
             return Ok(await imageService.GetImageBytesById(userId));
