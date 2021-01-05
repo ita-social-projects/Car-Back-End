@@ -1,6 +1,7 @@
 ﻿using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Car.DAL.Interfaces;
+using System.Linq;
 
 namespace Car.BLL.Services.Implementation
 {

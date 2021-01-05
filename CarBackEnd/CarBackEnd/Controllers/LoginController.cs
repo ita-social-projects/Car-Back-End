@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using Car.DAL.Entities;
 using Car.BLL.Services.Interfaces;
+using Car.BLL.Dto;
 
 namespace CarBackEnd.Controllers
 {
@@ -33,13 +34,24 @@ namespace CarBackEnd.Controllers
         /// <returns>token for a client app and user Id</returns>
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] UserModel userModel)
+        public IActionResult Login([FromBody] UserDTO userModel)
         {
             var user = EnsureUser(userModel);
 
             var tokenString = GenerateJSONWebToken(user);
 
-            return Ok(new { token = tokenString, userId = user.Id });
+            UserDTO userDTO = new UserDTO
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                Id = user.Id,
+                Location = user.Location,
+                Position = user.Position,
+                Email = user.Email,
+                Token = tokenString,
+            };
+
+            return Ok(userDTO);
         }
 
         private string GenerateJSONWebToken(User user)
@@ -65,16 +77,24 @@ namespace CarBackEnd.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private User EnsureUser(UserModel login)
+        private User EnsureUser(UserDTO login)
         {
-            var defaultUser = _loginService.GetUser(login.EmailAddress);
+            var defaultUser = _loginService.GetUser(login.Email);
             if (defaultUser == null)
             {
                 defaultUser = new User()
                 {
                     Name = login.Name,
                     Surname = login.Surname,
-                    Email = login.EmailAddress,
+                    Email = login.Email,
+                    Position = login.Position,
+                    Location = login.Location,
+                    UserPreferences = new UserPreferences()
+                    {
+                        DoAllowEating = false,
+                        DoAllowSmoking = false,
+                        Comments = string.Empty,
+                    },
                 };
 
                 _loginService.SaveUser(defaultUser);
