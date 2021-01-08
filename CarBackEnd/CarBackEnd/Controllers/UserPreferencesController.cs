@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CarBackEnd.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserPreferencesController : ControllerBase

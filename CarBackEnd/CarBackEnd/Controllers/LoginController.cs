@@ -1,5 +1,4 @@
-﻿using CarBackEnd.Model;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -27,11 +26,11 @@ namespace CarBackEnd.Controllers
         }
 
         /// <summary>
-        /// ensures the user and returns a token for client app,
+        /// ensures the user and returns a UserDTO for client app,
         /// if user doesn't exist in DB it creates a user and saves them to DB
         /// </summary>
         /// <param name="userModel">User model params</param>
-        /// <returns>token for a client app and user Id</returns>
+        /// <returns>UserDTO for a client app</returns>
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login([FromBody] UserDTO userModel)
