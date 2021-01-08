@@ -6,26 +6,6 @@ namespace Car.DAL.Context
 {
     public class CarContext : DbContext
     {
-        DbSet<User> User { get; set; }
-
-        DbSet<Journey> Journeys { get; set; }
-
-        DbSet<UserJourney> UserJourney { get; set; }
-
-        DbSet<Address> Addresses { get; set; }
-
-        DbSet<Entities.Car> Cars { get; set; }
-
-        DbSet<Message> Messages { get; set; }
-
-        DbSet<Notification> Notifications { get; set; }
-
-        DbSet<UserPreferences> UserPreferences { get; set; }
-
-        DbSet<Stop> Stops { get; set; }
-
-        DbSet<Schedule> Schedule { get; set; }
-
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {

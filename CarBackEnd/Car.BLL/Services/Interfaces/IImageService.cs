@@ -5,9 +5,9 @@ namespace Car.BLL.Services.Interfaces
 {
     public interface IImageService<TEntity, TFile>
     {
-        Task<TEntity> UploadImage(int entityiD, IFormFile entityFile);
+        Task<TEntity> UploadImage(int entityId, IFormFile entityFile);
 
-        Task<TEntity> DeleteImage(int entityiD);
+        Task<TEntity> DeleteImage(int entityId);
 
         Task<string> GetImageBytesById(int entityId);
     }
