@@ -20,12 +20,12 @@ namespace CarBackEnd.ServiceExtension
             services.AddScoped<IImageService<User, File>, ImageService<User>>();
             services.AddScoped<IImageService<Car.DAL.Entities.Car, File>, ImageService<Car.DAL.Entities.Car>>();
             services.AddScoped<ILoginService, LoginService>();
-
+            services.AddScoped<IPreferencesService, PreferencesService>();
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IUnitOfWork<User>, UnitOfWork<User>>();
             services.AddScoped<IRepository<Car.DAL.Entities.Car>, Repository<Car.DAL.Entities.Car>>();
             services.AddScoped<IUnitOfWork<Car.DAL.Entities.Car>, UnitOfWork<Car.DAL.Entities.Car>>();
-
+            services.AddScoped<IUnitOfWork<UserPreferences>, UnitOfWork<UserPreferences>>();
             services.AddScoped<IEntityTypeStrategy<User>, UserEntityStrategy>();
             services.AddScoped<IEntityTypeStrategy<Car.DAL.Entities.Car>, CarEntityStrategy>();
         }

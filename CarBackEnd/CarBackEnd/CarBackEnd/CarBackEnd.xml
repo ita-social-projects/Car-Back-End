@@ -33,7 +33,7 @@
             <param name="carId">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
-        <member name="M:CarBackEnd.Controllers.LoginController.Login(CarBackEnd.Model.UserModel)">
+        <member name="M:CarBackEnd.Controllers.LoginController.Login(Car.BLL.Dto.UserDTO)">
             <summary>
             ensures the user and returns a token for client app,
             if user doesn't exist in DB it creates a user and saves them to DB
@@ -76,6 +76,20 @@
             </summary>
             <param name="userId">The user identifier.</param>
             <returns>Base64 array of user avatar</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.UserPreferencesController.GetPreferences(System.Int32)">
+            <summary>
+            returns the preferences for user
+            </summary>
+            <param name ="userId"> userId</param>
+            <returns>user preferences</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.UserPreferencesController.UpdatePreferences(Car.DAL.Entities.UserPreferences)">
+            <summary>
+            updates preferences
+            </summary>
+            <param name="preferences">preferences to be updated</param>
+            <returns>updated preference</returns>
         </member>
     </members>
 </doc>
