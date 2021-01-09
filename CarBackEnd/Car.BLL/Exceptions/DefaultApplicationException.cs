@@ -4,6 +4,7 @@ using Car.BLL.Dto;
 
 namespace Car.BLL.Exceptions
 {
+    [Serializable]
     public class DefaultApplicationException : Exception
     {
         public int StatusCode { get; set; }

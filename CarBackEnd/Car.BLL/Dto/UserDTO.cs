@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Car.BLL.Dto
 {
-    public class UserDTO
+    public class UserDto
     {
         public int Id { get; set; }
 
