@@ -7,7 +7,7 @@ namespace Car.BLL.Services.Implementation.Strategy
 {
     public class UserEntityStrategy : IEntityTypeStrategy<User>
     {
-        IConfiguration configuration;
+        readonly IConfiguration configuration;
 
         public UserEntityStrategy(IConfiguration configuration)
         {
@@ -19,13 +19,13 @@ namespace Car.BLL.Services.Implementation.Strategy
             return configuration["CredentialsFile:AvatarDriveCredential"];
         }
 
-        public string GetFileName(User user)
+        public string GetFileName(User entity)
         {
             var fileName = new StringBuilder();
 
-            fileName.Append(user.Id).Append("_")
-           .Append(user.Name).Append("_")
-           .Append(user.Surname).Append(".jpg");
+            fileName.Append(entity.Id).Append("_")
+           .Append(entity.Name).Append("_")
+           .Append(entity.Surname).Append(".jpg");
 
             return fileName.ToString();
         }

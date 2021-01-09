@@ -33,13 +33,13 @@ namespace CarBackEnd.Controllers
         /// <returns>UserDTO for a client app</returns>
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] UserDTO userModel)
+        public IActionResult Login([FromBody] UserDto userModel)
         {
             var user = EnsureUser(userModel);
 
             var tokenString = GenerateJSONWebToken(user);
 
-            UserDTO userDTO = new UserDTO
+            UserDto userDTO = new UserDto
             {
                 Name = user.Name,
                 Surname = user.Surname,
@@ -76,7 +76,7 @@ namespace CarBackEnd.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private User EnsureUser(UserDTO login)
+        private User EnsureUser(UserDto login)
         {
             var defaultUser = _loginService.GetUser(login.Email);
             if (defaultUser == null)
