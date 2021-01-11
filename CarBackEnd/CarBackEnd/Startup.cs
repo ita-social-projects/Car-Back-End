@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using CarBackEnd.Hubs;
 using CarBackEnd.ServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -43,7 +44,8 @@ namespace CarBackEnd
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext(Configuration);
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddServices();
             services.AddCorsSettings();
 
@@ -57,6 +59,7 @@ namespace CarBackEnd
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            services.AddSignalR();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(options =>
@@ -100,6 +103,7 @@ namespace CarBackEnd
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
 
             app.UseSwagger();

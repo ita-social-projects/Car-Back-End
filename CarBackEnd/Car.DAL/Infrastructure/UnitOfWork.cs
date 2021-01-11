@@ -25,15 +25,20 @@ namespace Car.DAL.Infrastructure
         /// Gets repository for TEntity
         /// </summary>
         /// <returns>instance of repository</returns>
-        public Repository<TEntity> GetRepository()
+        public Repository<TEntity> GetRepository<TEntity>() where TEntity : class, IEntity
         {
             return new Repository<TEntity>(context);
         }
 
-        /// <summary>
-        /// Saves changes in DB
-        /// </summary>
-        public void SaveChanges()
+		public Repository<TEntity> GetRepository()
+		{
+			return new Repository<TEntity>(context);
+		}
+
+		/// <summary>
+		/// Saves changes in DB
+		/// </summary>
+		public void SaveChanges()
         {
             context.SaveChanges();
         }

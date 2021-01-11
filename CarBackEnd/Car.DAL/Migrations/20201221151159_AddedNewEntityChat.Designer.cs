@@ -4,14 +4,16 @@ using Car.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.DAL.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20201221151159_AddedNewEntityChat")]
+    partial class AddedNewEntityChat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,15 +84,7 @@ namespace Car.DAL.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("ChatName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NameOfUserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("NameOfUserId");
 
                     b.ToTable("Chats");
                 });
@@ -333,15 +327,6 @@ namespace Car.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("Car.DAL.Entities.Chat", b =>
-                {
-                    b.HasOne("Car.DAL.Entities.User", "NameOfUser")
-                        .WithMany()
-                        .HasForeignKey("NameOfUserId");
-
-                    b.Navigation("NameOfUser");
                 });
 
             modelBuilder.Entity("Car.DAL.Entities.Journey", b =>

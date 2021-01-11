@@ -1,4 +1,5 @@
 ﻿using Car.DAL.Entities;
+using System.Collections.Generic;
 
 namespace Car.BLL.Services.Interfaces
 {

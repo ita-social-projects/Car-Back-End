@@ -26,6 +26,10 @@ namespace Car.DAL.Context
 
         DbSet<Schedule> Schedule { get; set; }
 
+        DbSet<Chat> Chats { get; set; }
+
+        DbSet<UserChat> UserChat { get; set; }
+
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {
@@ -43,6 +47,8 @@ namespace Car.DAL.Context
             modelBuilder.ApplyConfiguration(new UserPreferencesConfiguration());
             modelBuilder.ApplyConfiguration(new StopConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
+            modelBuilder.ApplyConfiguration(new ChatConfiguration());
+            modelBuilder.ApplyConfiguration(new UserChatConfiguration());
         }
     }
 }

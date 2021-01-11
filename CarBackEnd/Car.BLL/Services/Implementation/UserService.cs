@@ -1,6 +1,8 @@
 ﻿using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Car.DAL.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Car.BLL.Services.Implementation
 {
@@ -18,5 +20,6 @@ namespace Car.BLL.Services.Implementation
         {
             return unitOfWork.GetRepository().GetById(userId);
         }
+
     }
 }

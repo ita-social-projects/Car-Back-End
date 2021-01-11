@@ -33,6 +33,13 @@
             <param name="carId">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
+        <member name="M:CarBackEnd.Controllers.UserChatsController.GetUserChats(System.Int32)">
+            <summary>
+            Get the user chats by User Id
+            </summary>
+            <param name="userId">User indetifier</param>
+            <returns>Chats of User by Id</returns>
+        </member>
         <member name="M:CarBackEnd.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
             Gets the user by identifier.
