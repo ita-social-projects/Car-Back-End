@@ -9,10 +9,6 @@ namespace Car.DAL.EntityConfigurations
         public void Configure(EntityTypeBuilder<UserPreferences> builder)
         {
             builder.HasKey(preferences => preferences.Id);
-
-            builder.HasOne(preferences => preferences.Owner)
-                .WithOne(user => user.UserPreferences)
-                .HasForeignKey<UserPreferences>(userPreferences => userPreferences.UserId);
         }
     }
 }

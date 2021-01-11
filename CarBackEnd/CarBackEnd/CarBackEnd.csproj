@@ -35,16 +35,4 @@
     <ProjectReference Include="..\Car.DAL\Car.DAL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="wwwroot\Credentials\credential-car-drive.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\Credentials\credential-avatar-drive.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\Credentials\credential-test-drive.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>

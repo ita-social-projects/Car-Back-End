@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Car.DAL.Entities
 {
-    public class User : IEntity, IEntityWithImage
+    public class User : IEntityWithImage
     {
         public int Id { get; set; }
 

@@ -63,19 +63,5 @@
             <param name="userFile">The user file.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:CarBackEnd.Controllers.UserController.DeleteUserAvatar(System.Int32)">
-            <summary>
-            Deletes the user avatar.
-            </summary>
-            <param name="userId">The user identifier.</param>
-            <returns>The user entity</returns>
-        </member>
-        <member name="M:CarBackEnd.Controllers.UserController.GetUserFileById(System.Int32)">
-            <summary>
-            Gets the user file by identifier.
-            </summary>
-            <param name="userId">The user identifier.</param>
-            <returns>Base64 array of user avatar</returns>
-        </member>
     </members>
 </doc>
