@@ -347,3 +347,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb 
+/CarBackEnd/Car.DAL/Migrations/20210105225422_Initial.cs
+/CarBackEnd/Car.DAL/Migrations/20210105225422_Initial.Designer.cs
