@@ -46,7 +46,7 @@ namespace Car.Tests.Services
         }
 
         [Fact]
-        public async Task UploadImage()
+        public async Task TestUploadImage()
         {
             var user = GetTestUser();
 
@@ -55,7 +55,7 @@ namespace Car.Tests.Services
         }
 
         [Fact]
-        public async Task UploadImage_WhenFileIsNull()
+        public async Task TestUploadImage_WhenFileIsNull()
         {
             var user = GetTestUser();
 
@@ -64,7 +64,7 @@ namespace Car.Tests.Services
         }
 
         [Fact]
-        public async Task UploadImage_WhenEntityIsNull()
+        public async Task TestUploadImage_WhenEntityIsNull()
         {
             var user = GetTestUser();
 
