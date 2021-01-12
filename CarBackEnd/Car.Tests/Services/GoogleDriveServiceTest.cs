@@ -13,10 +13,7 @@ namespace Car.Tests.Services
     {
         private Mock<GoogleDriveService> _googleDriveService;
 
-        public GoogleDriveServiceTest()
-        {
-            _googleDriveService = new Mock<GoogleDriveService>();
-        }
+        public GoogleDriveServiceTest() => _googleDriveService = new Mock<GoogleDriveService>();
 
         [Fact]
         public void TestDeleteFile()
