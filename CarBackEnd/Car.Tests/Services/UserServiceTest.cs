@@ -1,9 +1,12 @@
-﻿using Car.BLL.Services.Implementation;
+﻿using System;
+using Car.BLL.Exceptions;
+using Car.BLL.Services.Implementation;
 using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Car.DAL.Interfaces;
 using Moq;
 using Xunit;
+using FluentAssertions;
 
 namespace Car.Tests.Services
 {
@@ -44,21 +47,48 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.Equal(user, _userService.GetUserById(user.Id));
+            _userService.GetUserById(user.Id).Should().BeEquivalentTo(user);
         }
 
         [Fact]
         public void TestGetUserById_WhenUserNotExist()
         {
+            _unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(_repository.Object);
+
+            Action action = () => _userService.GetUserById(4);
+            action.Should().Throw<DefaultApplicationException>();
+        }
+
+        [Fact]
+        public void TestGetUserWithAvatarById_WhenUserExists()
+        {
             var user = GetTestUser();
 
             _repository.Setup(repository => repository.GetById(user.Id))
-               .Returns(user);
+                .Returns(user);
 
             _unitOfWork.Setup(repository => repository.GetRepository())
-               .Returns(_repository.Object);
+                .Returns(_repository.Object);
 
-            Assert.Null(_userService.GetUserById(4));
+            _userService.GetUserWithAvatarById(user.Id).Should().BeEquivalentTo(
+                new User
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Position = user.Position,
+                });
+        }
+
+        [Fact]
+        public void TestGetUserWithAvatarById_WhenUserNotExist()
+        {
+            _unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(_repository.Object);
+
+            Action action = () => _userService.GetUserWithAvatarById(4);
+            action.Should().Throw<DefaultApplicationException>();
         }
     }
 }
