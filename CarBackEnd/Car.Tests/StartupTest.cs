@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Car.Tests
 {
-    public class TestStartup
+    public class StartupTest
     {
         private Startup _startup;
         private IServiceCollection _serviceCollection;
