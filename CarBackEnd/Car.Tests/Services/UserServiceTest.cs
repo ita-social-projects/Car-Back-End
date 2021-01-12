@@ -53,6 +53,11 @@ namespace Car.Tests.Services
         [Fact]
         public void TestGetUserById_WhenUserNotExist()
         {
+            var user = GetTestUser();
+
+            _repository.Setup(repository => repository.GetById(user.Id))
+                .Returns(user);
+
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
@@ -84,6 +89,11 @@ namespace Car.Tests.Services
         [Fact]
         public void TestGetUserWithAvatarById_WhenUserNotExist()
         {
+            var user = GetTestUser();
+
+            _repository.Setup(repository => repository.GetById(user.Id))
+                .Returns(user);
+
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
