@@ -33,6 +33,13 @@
             <param name="carId">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
+        <member name="M:CarBackEnd.Controllers.JourneyController.GetJourneyById(System.Int32)">
+            <summary>
+            Gets journey by identifier.
+            </summary>
+            <param name="journeyId">The journey identifier.</param>
+            <returns>The journey entity.</returns>
+        </member>
         <member name="M:CarBackEnd.Controllers.LoginController.Login(CarBackEnd.Model.UserModel)">
             <summary>
             ensures the user and returns a token for client app,
