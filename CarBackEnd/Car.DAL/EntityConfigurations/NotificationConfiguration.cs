@@ -13,8 +13,6 @@ namespace Car.DAL.EntityConfigurations
             builder.HasOne(notification => notification.User)
                .WithMany(user => user.UserNotifications)
                .HasForeignKey(notification => notification.UserId);
-
-            builder.Property(notification => notification.Description).IsRequired();
         }
     }
 }
