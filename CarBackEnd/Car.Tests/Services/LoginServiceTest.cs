@@ -2,6 +2,7 @@
 using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Car.DAL.Interfaces;
+using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -27,7 +28,7 @@ namespace Car.Tests.Services
             {
                 Id = 44,
                 Name = "Peter",
-                Surname ="Pen",
+                Surname = "Pen",
                 Email = "pen@gmail.com",
                 Position = "Developer",
             };
@@ -44,7 +45,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.NotEqual(user, _loginService.GetUser(user.Email));
+            _loginService.GetUser(user.Email).Should().NotBeSameAs(user);
         }
 
         [Fact]
@@ -57,7 +58,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.Equal(user, _loginService.SaveUser(user));
+            _loginService.SaveUser(user).Should().BeSameAs(user);
         }
 
         [Fact]
@@ -70,7 +71,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.NotNull(_loginService.SaveUser(user));
+            _loginService.SaveUser(user).Should().NotBeNull();
         }
     }
 }
