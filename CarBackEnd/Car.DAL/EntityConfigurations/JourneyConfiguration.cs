@@ -15,8 +15,8 @@ namespace Car.DAL.EntityConfigurations
                 .HasForeignKey<Journey>(journey => journey.ScheduleId);
 
             builder.HasOne(journey => journey.Driver)
-                .WithOne(user => user.DriverJourney)
-                .HasForeignKey<Journey>(journey => journey.DriverId);
+                .WithMany(user => user.DriverJourney)
+                .HasForeignKey(journey => journey.DriverId);
         }
     }
 }
