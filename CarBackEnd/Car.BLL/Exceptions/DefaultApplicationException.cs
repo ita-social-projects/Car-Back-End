@@ -14,7 +14,7 @@ namespace Car.BLL.Exceptions
         {
         }
 
-        public DefaultApplicationException(string message) 
+        public DefaultApplicationException(string message)
             : base(message)
         {
         }
