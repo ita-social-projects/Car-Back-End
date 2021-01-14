@@ -11,13 +11,13 @@ namespace Car.BLL.Exceptions
 
         public Severity Severity { get; set; }
 
-        public DefaultApplicationException()
-            : base()
+        public DefaultApplicationException(string message)
+            : base(message)
         {
         }
 
-        protected DefaultApplicationException(string message)
-            : base(message)
+        protected DefaultApplicationException()
+            : base()
         {
         }
 
