@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Car.BLL.Dto;
 
 namespace Car.BLL.Exceptions
