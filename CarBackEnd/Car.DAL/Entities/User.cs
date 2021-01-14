@@ -29,7 +29,7 @@ namespace Car.DAL.Entities
 
         public Stop UserStop { get; set; }
 
-        public Journey DriverJourney { get; set; }
+        public IEnumerable<Journey> DriverJourney { get; set; }
 
         public IEnumerable<UserJourney> UserJourneys { get; set; }
 

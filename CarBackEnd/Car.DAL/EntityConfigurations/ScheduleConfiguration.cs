@@ -9,6 +9,8 @@ namespace Car.DAL.EntityConfigurations
         public void Configure(EntityTypeBuilder<Schedule> builder)
         {
             builder.HasKey(schedule => schedule.Id);
+
+            builder.Property(schedule => schedule.Name).IsRequired();
         }
     }
 }
