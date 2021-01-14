@@ -16,8 +16,12 @@ namespace Car.BLL.Exceptions
         {
         }
 
-        private DefaultApplicationException()
-            : base()
+        public DefaultApplicationException()
+        {
+        }
+
+        protected DefaultApplicationException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
 
