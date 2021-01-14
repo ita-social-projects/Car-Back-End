@@ -17,7 +17,6 @@ namespace Car.BLL.Exceptions
         }
 
         public DefaultApplicationException()
-            : base()
         {
         }
 
