@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Car.BLL.Dto;
 
 namespace Car.BLL.Exceptions
@@ -11,12 +12,20 @@ namespace Car.BLL.Exceptions
         public Severity Severity { get; set; }
 
         public DefaultApplicationException()
+            : base()
         {
         }
 
-        public DefaultApplicationException(string message)
+        protected DefaultApplicationException(string message)
             : base(message)
         {
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue("Error", StatusCode);
         }
     }
 }
