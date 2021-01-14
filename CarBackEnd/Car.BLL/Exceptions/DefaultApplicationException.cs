@@ -5,7 +5,7 @@ using Car.BLL.Dto;
 namespace Car.BLL.Exceptions
 {
     [Serializable]
-    public class DefaultApplicationException : Exception
+    public class DefaultApplicationException : Exception, ISerializable
     {
         public int StatusCode { get; set; }
 
@@ -21,7 +21,7 @@ namespace Car.BLL.Exceptions
         {
         }
 
-        public new virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
 
