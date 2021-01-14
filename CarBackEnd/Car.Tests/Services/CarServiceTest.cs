@@ -1,6 +1,7 @@
 ﻿using Car.BLL.Services.Implementation;
 using Car.BLL.Services.Interfaces;
 using Car.DAL.Interfaces;
+using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -43,7 +44,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.Equal(car, _carService.GetCarById(car.Id));
+            _carService.GetCarById(car.Id).Should().BeEquivalentTo(car);
         }
 
         [Fact]
@@ -57,7 +58,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                .Returns(_repository.Object);
 
-            Assert.Null(_carService.GetCarById(4));
+            _carService.GetCarById(4).Should().BeNull();
         }
     }
 }
