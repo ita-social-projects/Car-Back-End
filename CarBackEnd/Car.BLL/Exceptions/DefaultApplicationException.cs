@@ -21,7 +21,7 @@ namespace Car.BLL.Exceptions
         {
         }
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        public new virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
 
