@@ -16,7 +16,7 @@ namespace Car.BLL.Exceptions
         {
         }
 
-        protected DefaultApplicationException()
+        private DefaultApplicationException()
             : base()
         {
         }
