@@ -1,4 +1,6 @@
-﻿using Car.BLL.Services.Interfaces;
+﻿using System.Net;
+using Car.BLL.Dto;
+using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Car.DAL.Interfaces;
 
@@ -16,12 +18,31 @@ namespace Car.BLL.Services.Implementation
 
         public User GetUserById(int userId)
         {
-            return unitOfWork.GetRepository().GetById(userId);
+            var user = unitOfWork.GetRepository().GetById(userId);
+            if (user == null)
+            {
+                throw new Exceptions.DefaultApplicationException($"This user id - {userId} wasn't found")
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Severity = Severity.Error,
+                };
+            }
+
+            return user;
         }
 
         public User GetUserWithAvatarById(int userId)
         {
             var user = unitOfWork.GetRepository().GetById(userId);
+            if (user == null)
+            {
+                throw new Exceptions.DefaultApplicationException($"This user id - {userId} wasn't found")
+                {
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Severity = Severity.Error,
+                };
+            }
+
             return new User()
             {
                 Id = user.Id,

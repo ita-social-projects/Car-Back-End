@@ -6,7 +6,7 @@ namespace Car.BLL.Services.Implementation.Strategy
 {
     public class CarEntityStrategy : IEntityTypeStrategy<DAL.Entities.Car>
     {
-        IConfiguration configuration;
+        readonly IConfiguration configuration;
 
         public CarEntityStrategy(IConfiguration configuration)
         {
@@ -18,13 +18,13 @@ namespace Car.BLL.Services.Implementation.Strategy
             return configuration["CredentialsFile:CarDriveCredential"];
         }
 
-        public string GetFileName(DAL.Entities.Car car)
+        public string GetFileName(DAL.Entities.Car entity)
         {
             var fileName = new StringBuilder();
 
-            fileName.Append(car.Id).Append("_")
-           .Append(car.Brand).Append("_")
-           .Append(car.Model).Append(".jpg");
+            fileName.Append(entity.Id).Append("_")
+           .Append(entity.Brand).Append("_")
+           .Append(entity.Model).Append(".jpg");
 
             return fileName.ToString();
         }

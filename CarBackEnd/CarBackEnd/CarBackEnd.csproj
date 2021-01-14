@@ -2,6 +2,7 @@
 
   <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<UserSecretsId>5df78d60-bb20-4fa2-8b44-af3d55671e8b</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,18 +34,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Car.BLL\Car.BLL.csproj" />
     <ProjectReference Include="..\Car.DAL\Car.DAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\Credentials\credential-car-drive.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\Credentials\credential-avatar-drive.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\Credentials\credential-test-drive.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

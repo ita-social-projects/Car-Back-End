@@ -14,12 +14,12 @@ namespace Car.DAL.Interfaces
 
         TEntity Add(TEntity entity);
 
-        void AddRange(IEnumerable<TEntity> entity);
+        void AddRange(IEnumerable<TEntity> entities);
 
-        bool Delete(TEntity entityToDelete);
+        bool Delete(TEntity entity);
 
-        void DeleteRange(IEnumerable<TEntity> entity);
+        void DeleteRange(IEnumerable<TEntity> entities);
 
-        TEntity Update(TEntity entityToUpdate);
+        TEntity Update(TEntity entity);
     }
 }

@@ -5,7 +5,7 @@
 Platform for sharing rides between company employees.
 
 
-![CI](https://github.com/ita-social-projects/Car-Back-End/workflows/CI/badge.svg?event=pull_request) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_Car-Back-End&metric=alert_status)](https://sonarcloud.io/dashboard?id=ita-social-projects_Car-Back-End) 
+![CI](https://github.com/ita-social-projects/Car-Back-End/workflows/CI/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_Car-Back-End&metric=alert_status)](https://sonarcloud.io/dashboard?id=ita-social-projects_Car-Back-End) 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_Car-Back-End&metric=coverage)](https://sonarcloud.io/dashboard?id=ita-social-projects_Car-Back-End)   [![Github Issues](https://img.shields.io/github/issues/ita-social-projects/SoftServeCar-Back-End?style=flat-square)](https://github.com/ita-social-projects/SoftServeCar-Back-End/issues)
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/SoftServeCar-Back-End?style=flat-square)](https://github.com/ita-social-projects/SoftServeCar-Back-End/pulls)
   [![License](http://img.shields.io/:license-mit-ff69b4.svg?style=flat-square)](http://badges.mit-license.org)

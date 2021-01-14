@@ -1,5 +1,4 @@
-﻿using CarBackEnd.Model;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using Car.DAL.Entities;
 using Car.BLL.Services.Interfaces;
+using Car.BLL.Dto;
 
 namespace CarBackEnd.Controllers
 {
@@ -26,20 +26,31 @@ namespace CarBackEnd.Controllers
         }
 
         /// <summary>
-        /// ensures the user and returns a token for client app,
+        /// ensures the user and returns a UserDTO for client app,
         /// if user doesn't exist in DB it creates a user and saves them to DB
         /// </summary>
         /// <param name="userModel">User model params</param>
-        /// <returns>token for a client app and user Id</returns>
+        /// <returns>UserDTO for a client app</returns>
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] UserModel userModel)
+        public IActionResult Login([FromBody] UserDto userModel)
         {
             var user = EnsureUser(userModel);
 
             var tokenString = GenerateJSONWebToken(user);
 
-            return Ok(new { token = tokenString, userId = user.Id });
+            UserDto userDTO = new UserDto
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                Id = user.Id,
+                Location = user.Location,
+                Position = user.Position,
+                Email = user.Email,
+                Token = tokenString,
+            };
+
+            return Ok(userDTO);
         }
 
         private string GenerateJSONWebToken(User user)
@@ -65,16 +76,24 @@ namespace CarBackEnd.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private User EnsureUser(UserModel login)
+        private User EnsureUser(UserDto login)
         {
-            var defaultUser = _loginService.GetUser(login.EmailAddress);
+            var defaultUser = _loginService.GetUser(login.Email);
             if (defaultUser == null)
             {
                 defaultUser = new User()
                 {
                     Name = login.Name,
                     Surname = login.Surname,
-                    Email = login.EmailAddress,
+                    Email = login.Email,
+                    Position = login.Position,
+                    Location = login.Location,
+                    UserPreferences = new UserPreferences()
+                    {
+                        DoAllowEating = false,
+                        DoAllowSmoking = false,
+                        Comments = string.Empty,
+                    },
                 };
 
                 _loginService.SaveUser(defaultUser);
