@@ -7,6 +7,7 @@ using CarBackEnd.Controllers;
 using FluentAssertions.Execution;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Car.BLL.Dto;
 
 namespace Car.Tests.Controllers
 {
@@ -38,7 +39,7 @@ namespace Car.Tests.Controllers
         [Fact]
         public void TestGetUserById_WithRightId_ReturnsOkObjectResult()
         {
-            User user = new User();
+            var user = GetTestUser();
             _userService.Setup(u => u.GetUserById(user.Id)).Returns(user);
 
             var result = _userController.GetUserById(user.Id);
@@ -51,6 +52,22 @@ namespace Car.Tests.Controllers
                 ((result as OkObjectResult).Value as User).Surname.Should().Be(user.Surname);
                 ((result as OkObjectResult).Value as User).Email.Should().Be(user.Email);
                 ((result as OkObjectResult).Value as User).Position.Should().Be(user.Position);
+            }
+        }
+
+        [Fact]
+        public void TestGetUserById_WhenUserNotExist_ReturnsOkObjectResult()
+        {
+            var user = GetTestUser();
+
+            _userService.Setup(u => u.GetUserById(user.Id)).Returns((User)null);
+
+            var result = _userController.GetUserById(user.Id);
+
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult).Value.Should().BeNull();
             }
         }
     }
