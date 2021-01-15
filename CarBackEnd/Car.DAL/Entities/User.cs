@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Car.DAL.Entities
 {
-    public class User : IEntity, IEntityWithImage
+    public class User : IEntityWithImage
     {
         public int Id { get; set; }
 
@@ -21,8 +21,6 @@ namespace Car.DAL.Entities
 
         public string ImageId { get; set; }
 
-        //public string AzureId { get; set; }
-
         public IEnumerable<Car> UserCars { get; set; }
 
         public UserPreferences UserPreferences { get; set; }
@@ -31,7 +29,7 @@ namespace Car.DAL.Entities
 
         public Stop UserStop { get; set; }
 
-        public Journey DriverJourney { get; set; }
+        public IEnumerable<Journey> DriverJourney { get; set; }
 
         public IEnumerable<UserJourney> UserJourneys { get; set; }
 

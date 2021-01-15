@@ -1,5 +1,4 @@
-﻿using CarBackEnd.Model;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using Car.DAL.Entities;
 using Car.BLL.Services.Interfaces;
+using Car.BLL.Dto;
 
 namespace CarBackEnd.Controllers
 {
@@ -25,34 +25,44 @@ namespace CarBackEnd.Controllers
             _loginService = loginService;
         }
 
+        /// <summary>
+        /// ensures the user and returns a UserDTO for client app,
+        /// if user doesn't exist in DB it creates a user and saves them to DB
+        /// </summary>
+        /// <param name="userModel">User model params</param>
+        /// <returns>UserDTO for a client app</returns>
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] UserModel login)
+        public IActionResult Login([FromBody] UserDto userModel)
         {
-            IActionResult response = Unauthorized();
-            var user = AuthenticateUser(login);
-
-            if (user == null)
-            {
-                return response;
-            }
+            var user = EnsureUser(userModel);
 
             var tokenString = GenerateJSONWebToken(user);
-            response = Ok(new { token = tokenString, userId =user.Id });
 
-            return response;
+            UserDto userDTO = new UserDto
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                Id = user.Id,
+                Location = user.Location,
+                Position = user.Position,
+                Email = user.Email,
+                Token = tokenString,
+            };
+
+            return Ok(userDTO);
         }
 
-        private string GenerateJSONWebToken(User userInfo)
+        private string GenerateJSONWebToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Name),
-                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
-                new Claim(JwtRegisteredClaimNames.NameId, userInfo.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Name),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
@@ -60,22 +70,30 @@ namespace CarBackEnd.Controllers
                 _config["Jwt:Issuer"],
                 _config["Jwt:Issuer"],
                 claims,
-                expires: DateTime.Now.AddMinutes(2),
+                expires: DateTime.Now.AddHours(24),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private User AuthenticateUser(UserModel login, User defaultUser = null)
+        private User EnsureUser(UserDto login)
         {
-            defaultUser = _loginService.GetUser(login.EmailAddress);
+            var defaultUser = _loginService.GetUser(login.Email);
             if (defaultUser == null)
             {
                 defaultUser = new User()
                 {
                     Name = login.Name,
                     Surname = login.Surname,
-                    Email = login.EmailAddress,
+                    Email = login.Email,
+                    Position = login.Position,
+                    Location = login.Location,
+                    UserPreferences = new UserPreferences()
+                    {
+                        DoAllowEating = false,
+                        DoAllowSmoking = false,
+                        Comments = string.Empty,
+                    },
                 };
 
                 _loginService.SaveUser(defaultUser);

@@ -1,7 +1,7 @@
 # ASP.NET CORE
 
 trigger:
-- develop
+- master
 
 pool:
   vmImage: 'ubuntu-latest'

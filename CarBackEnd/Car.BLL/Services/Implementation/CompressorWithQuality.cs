@@ -15,7 +15,7 @@ namespace Car.BLL.Services.Implementation
         /// <returns>Stream of compressed file</returns>
         public Stream CompressFile(Stream fileStream, int imageQuality)
         {
-            var image = Image.FromStream(fileStream);
+            using var image = Image.FromStream(fileStream);
 
             ImageCodecInfo jpegCodec = null;
 

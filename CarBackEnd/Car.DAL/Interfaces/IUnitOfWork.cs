@@ -10,7 +10,7 @@ namespace Car.DAL.Interfaces
     {
         DbContext db { get; }
 
-        Repository<TEntity> GetRepository();
+        IRepository<TEntity> GetRepository();
 
         Repository<TEntity> GetRepository<TEntity>() where TEntity : class, IEntity;
 

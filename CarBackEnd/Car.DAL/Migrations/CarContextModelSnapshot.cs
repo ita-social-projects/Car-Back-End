@@ -125,9 +125,7 @@ namespace Car.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DriverId")
-                        .IsUnique()
-                        .HasFilter("[DriverId] IS NOT NULL");
+                    b.HasIndex("DriverId");
 
                     b.HasIndex("ScheduleId")
                         .IsUnique()
@@ -175,6 +173,7 @@ namespace Car.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsRead")
@@ -198,6 +197,7 @@ namespace Car.DAL.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -242,7 +242,7 @@ namespace Car.DAL.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("HireDate")
                         .HasColumnType("datetime2");
@@ -263,6 +263,10 @@ namespace Car.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.ToTable("User");
                 });
@@ -347,8 +351,8 @@ namespace Car.DAL.Migrations
             modelBuilder.Entity("Car.DAL.Entities.Journey", b =>
                 {
                     b.HasOne("Car.DAL.Entities.User", "Driver")
-                        .WithOne("DriverJourney")
-                        .HasForeignKey("Car.DAL.Entities.Journey", "DriverId");
+                        .WithMany("DriverJourney")
+                        .HasForeignKey("DriverId");
 
                     b.HasOne("Car.DAL.Entities.Schedule", "Schedule")
                         .WithOne("Journey")
@@ -436,7 +440,7 @@ namespace Car.DAL.Migrations
             modelBuilder.Entity("Car.DAL.Entities.UserJourney", b =>
                 {
                     b.HasOne("Car.DAL.Entities.Journey", "Journey")
-                        .WithMany("Participents")
+                        .WithMany("Participants")
                         .HasForeignKey("JourneyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -475,7 +479,7 @@ namespace Car.DAL.Migrations
 
             modelBuilder.Entity("Car.DAL.Entities.Journey", b =>
                 {
-                    b.Navigation("Participents");
+                    b.Navigation("Participants");
 
                     b.Navigation("UserStops");
                 });

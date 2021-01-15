@@ -9,7 +9,7 @@ namespace Car.DAL.Infrastructure
     public sealed class UnitOfWork<TEntity> : IUnitOfWork<TEntity>
         where TEntity : class, IEntity
     {
-        private CarContext context;
+        private readonly CarContext context;
 
         public UnitOfWork(CarContext _context)
         {
@@ -30,15 +30,15 @@ namespace Car.DAL.Infrastructure
             return new Repository<TEntity>(context);
         }
 
-		public Repository<TEntity> GetRepository()
-		{
-			return new Repository<TEntity>(context);
-		}
+        public IRepository<TEntity> GetRepository()
+        {
+            return new Repository<TEntity>(context);
+        }
 
-		/// <summary>
-		/// Saves changes in DB
-		/// </summary>
-		public void SaveChanges()
+        /// <summary>
+        /// Saves changes in DB
+        /// </summary>
+        public void SaveChanges()
         {
             context.SaveChanges();
         }
@@ -53,12 +53,9 @@ namespace Car.DAL.Infrastructure
 
         private void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!disposed && disposing)
             {
-                if (disposing)
-                {
-                    db.Dispose();
-                }
+                db.Dispose();
             }
 
             disposed = true;

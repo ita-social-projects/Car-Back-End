@@ -13,7 +13,7 @@ namespace Car.DAL.Infrastructure
         where TEntity : class, IEntity
     {
         private readonly CarContext context;
-        private DbSet<TEntity> dbEntities;
+        private readonly DbSet<TEntity> dbEntities;
 
         public Repository(CarContext _context)
         {
