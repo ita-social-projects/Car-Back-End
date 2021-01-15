@@ -53,6 +53,5 @@ namespace Car.BLL.Services.Implementation
                 Position = user.Position,
             };
         }
-
     }
 }

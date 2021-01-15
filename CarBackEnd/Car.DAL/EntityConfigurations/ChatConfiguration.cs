@@ -12,7 +12,6 @@ namespace Car.DAL.EntityConfigurations
         public void Configure(EntityTypeBuilder<Chat> builder)
         {
             builder.HasKey(chat => chat.Id);
-
         }
     }
 }
