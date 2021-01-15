@@ -26,11 +26,11 @@ namespace Car.Tests.Services
         {
             return new UserPreferences()
             {
-                Id = 44,
-                Comments = "What a lovely day!",
-                DoAllowEating = false,
-                DoAllowSmoking = true,
-                UserId = 13,
+                Id = It.IsAny<int>(),
+                Comments = It.IsAny<string>(),
+                DoAllowEating = It.IsAny<bool>(),
+                DoAllowSmoking = It.IsAny<bool>(),
+                UserId = It.IsAny<int>(),
             };
         }
 
