@@ -1,8 +1,6 @@
-﻿using System.IO;
-using Moq;
+﻿using Moq;
 using Xunit;
 using Car.BLL.Services.Interfaces;
-using Car.DAL.Entities;
 using File = Google.Apis.Drive.v3.Data.File;
 using CarBackEnd.Controllers;
 using FluentAssertions.Execution;
@@ -10,8 +8,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Car.BLL.Dto;
-using Microsoft.AspNetCore.Http;
-using Car = Car.DAL.Entities.Car;
 
 namespace Car.Tests.Controllers
 {
@@ -20,21 +16,20 @@ namespace Car.Tests.Controllers
         private Mock<ICarService> _carService;
         private Mock<IImageService<DAL.Entities.Car, File>> _imageService;
         private CarController _carController;
+        private DAL.Entities.Car GetTestCar()
+        {
+            return new DAL.Entities.Car()
+            {
+                Id = It.IsAny<int>(),
+                Model = It.IsAny<string>(),
+            };
+        }
 
         public CarControllerTest()
         {
             _carService = new Mock<ICarService>();
             _imageService = new Mock<IImageService<DAL.Entities.Car, File>>();
             _carController = new CarController(_carService.Object, _imageService.Object);
-        }
-
-        private DAL.Entities.Car GetTestCar()
-        {
-            return new DAL.Entities.Car()
-            {
-                Id = It.IsAny<int>(),
-                Model = It.IsAny<string>()
-            };
         }
 
         [Fact]
@@ -77,7 +72,7 @@ namespace Car.Tests.Controllers
         [Fact]
         public async Task UploadCarPhoto_WithExistsCar_ReturnsCarObject()
         {
-            // Arrange 
+            // Arrange
             var car = GetTestCar();
             var formFile = new FormImage();
             _imageService.Setup(s => s.UploadImage(It.IsAny<int>(), formFile.image)).Returns(Task.FromResult(new DAL.Entities.Car()));
@@ -97,7 +92,7 @@ namespace Car.Tests.Controllers
         [Fact]
         public async Task UploadCarPhoto_WithExistsCar_ReturnsNull()
         {
-            // Arrange 
+            // Arrange
             var car = GetTestCar();
             var formFile = new FormImage();
             _imageService.Setup(s => s.UploadImage(car.Id, formFile.image)).Returns(Task.FromResult((DAL.Entities.Car)null));
@@ -116,7 +111,7 @@ namespace Car.Tests.Controllers
         [Fact]
         public async Task DeleteCarPhoto_WithExistsCar_ReturnsDeletedCarObject()
         {
-            // Arrange 
+            // Arrange
             var car = GetTestCar();
             _imageService.Setup(s => s.DeleteImage(It.IsAny<int>())).Returns(Task.FromResult(new DAL.Entities.Car()));
 
@@ -135,7 +130,7 @@ namespace Car.Tests.Controllers
         [Fact]
         public async Task DeleteCarPhoto_WithExistsCar_ReturnsNull()
         {
-            // Arrange 
+            // Arrange
             var car = GetTestCar();
             _imageService.Setup(s => s.DeleteImage(It.IsAny<int>())).Returns(Task.FromResult((DAL.Entities.Car)null));
 
@@ -153,7 +148,7 @@ namespace Car.Tests.Controllers
         [Fact]
         public async Task GetCarFileById_WithExistsCar_ReturnsStringType()
         {
-            // Arrange 
+            // Arrange
             var car = GetTestCar();
             _imageService.Setup(s => s.GetImageBytesById(It.IsAny<int>())).Returns(Task.FromResult(string.Empty));
 
@@ -171,7 +166,7 @@ namespace Car.Tests.Controllers
         [Fact]
         public async Task GetCarFileById_WithExistsCar_ReturnNull()
         {
-            // Arrange 
+            // Arrange
             var car = GetTestCar();
             _imageService.Setup(s => s.GetImageBytesById(It.IsAny<int>())).Returns(Task.FromResult((string)null));
 
