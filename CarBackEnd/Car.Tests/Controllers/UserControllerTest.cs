@@ -8,11 +8,6 @@ using FluentAssertions.Execution;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using System;
-using System.Diagnostics;
-using Car.BLL.Exceptions;
-using Microsoft.AspNetCore.Http;
-using System.IO;
 using Car.BLL.Dto;
 
 namespace Car.Tests.Controllers
@@ -110,10 +105,13 @@ namespace Car.Tests.Controllers
             var result = await _userController.UploadUserAvatar(user.Id, formImage);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult).Value.Should().BeOfType<User>();
-            ((result as OkObjectResult).Value as User).Id.Should().Be(user.Id);
-            ((result as OkObjectResult).Value as User).Name.Should().Be(user.Name);
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult).Value.Should().BeOfType<User>();
+                ((result as OkObjectResult).Value as User).Id.Should().Be(user.Id);
+                ((result as OkObjectResult).Value as User).Name.Should().Be(user.Name);
+            }
         }
 
         [Fact]
@@ -127,13 +125,16 @@ namespace Car.Tests.Controllers
             _imageService.Setup(p => p.UploadImage(user.Id, formImage.image)).Returns(Task.FromResult<User>((User)null));
 
             // Assert
-            var result = await _userController.UploadUserAvatar(user.Id, formImage);
-            result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult).Value.Should().BeNull();
+            using (new AssertionScope())
+            {
+                var result = await _userController.UploadUserAvatar(user.Id, formImage);
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult).Value.Should().BeNull();
+            }
         }
 
         [Fact]
-        public async Task DeleteUserAvatar_WhenUserExist_DeletedUser()
+        public async Task DeleteUserAvatar_WhenUserExist_ReturnsDeletedUser()
         {
             // Arrange
             var user = GetTestUser();
@@ -143,14 +144,17 @@ namespace Car.Tests.Controllers
             var result = await _userController.DeleteUserAvatar(user.Id);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult).Value.Should().BeOfType<User>();
-            ((result as OkObjectResult).Value as User).Id.Should().Be(user.Id);
-            ((result as OkObjectResult).Value as User).Name.Should().Be(user.Name);
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult).Value.Should().BeOfType<User>();
+                ((result as OkObjectResult).Value as User).Id.Should().Be(user.Id);
+                ((result as OkObjectResult).Value as User).Name.Should().Be(user.Name);
+            }
         }
 
         [Fact]
-        public async Task DeleteUserAvatar_WhenUserNotExist_ReturnedNull()
+        public async Task DeleteUserAvatar_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
             var user = GetTestUser();
@@ -160,12 +164,15 @@ namespace Car.Tests.Controllers
             var result = await _userController.DeleteUserAvatar(user.Id);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult).Value.Should().BeNull();
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult).Value.Should().BeNull();
+            }
         }
 
         [Fact]
-        public async Task GetUserFileById_WhenUserExist_ReturnedStringType()
+        public async Task GetUserFileById_WhenUserExist_ReturnsStringType()
         {
             // Arrange
             var user = GetTestUser();
@@ -175,12 +182,15 @@ namespace Car.Tests.Controllers
             var result = await _userController.GetUserFileById(user.Id);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult).Value.Should().BeOfType<string>();
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult).Value.Should().BeOfType<string>();
+            }
         }
 
         [Fact]
-        public async Task GetUserFileById_WhenUserNotExist_ReturnedNull()
+        public async Task GetUserFileById_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
             var user = GetTestUser();
@@ -190,8 +200,11 @@ namespace Car.Tests.Controllers
             var result = await _userController.GetUserFileById(user.Id);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult).Value.Should().BeNull();
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult).Value.Should().BeNull();
+            }
         }
     }
 }
