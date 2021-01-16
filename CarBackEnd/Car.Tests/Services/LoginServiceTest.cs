@@ -25,11 +25,11 @@ namespace Car.Tests.Services
         public User GetTestUser() =>
             new User()
             {
-                Id = 44,
-                Name = "Peter",
-                Surname = "Pen",
-                Email = "pen@gmail.com",
-                Position = "Developer",
+                Id = It.IsAny<int>(),
+                Name = It.IsAny<string>(),
+                Surname = It.IsAny<string>(),
+                Email = It.IsAny<string>(),
+                Position = It.IsAny<string>(),
             };
 
         [Fact]

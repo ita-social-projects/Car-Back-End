@@ -21,17 +21,15 @@ namespace Car.Tests.Services
             _carService = new CarService(_unitOfWork.Object);
         }
 
-        public DAL.Entities.Car GetTestCar()
-        {
-            return new DAL.Entities.Car()
+        public DAL.Entities.Car GetTestCar() =>
+            new DAL.Entities.Car()
             {
-                Id = 2,
-                Brand = "BMW",
-                Model = "A5",
-                Color = "Red",
-                PlateNumber = "AA-2222-BB",
+                Id = It.IsAny<int>(),
+                Brand = It.IsAny<string>(),
+                Model = It.IsAny<string>(),
+                Color = It.IsAny<string>(),
+                PlateNumber = It.IsAny<string>(),
             };
-        }
 
         [Fact]
         public void TestGetCarById_WhenCarExists()
@@ -58,7 +56,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                .Returns(_repository.Object);
 
-            _carService.GetCarById(4).Should().BeNull();
+            _carService.GetCarById(It.IsNotIn(car.Id)).Should().BeNull();
         }
     }
 }

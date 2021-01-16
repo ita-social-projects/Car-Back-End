@@ -35,15 +35,15 @@ namespace Car.Tests.Services
         public User GetTestUser() =>
             new User()
             {
-                Id = 2,
-                Name = "Tom",
-                Surname = "King",
-                Email = "Tom@gmail.com",
-                Position = "Developer",
+                Id = It.IsAny<int>(),
+                Name = It.IsAny<string>(),
+                Surname = It.IsAny<string>(),
+                Email = It.IsAny<string>(),
+                Position = It.IsAny<string>(),
             };
 
         [Fact]
-        public Task TestUploadImage()
+        public void TestUploadImage()
         {
             var user = GetTestUser();
 
@@ -55,27 +55,35 @@ namespace Car.Tests.Services
                     It.IsAny<string>(),
                     It.IsAny<string>()));
 
-            return action.Should().NotThrowAsync<DefaultApplicationException>();
+            action.Should().NotThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public Task TestUploadImage_WhenFileIsNull()
+        public void TestUploadImage_WhenFileIsNull()
         {
             var user = GetTestUser();
 
             Func<Task> action = () => _imageService.UploadImage(user.Id, null);
-            return action.Should().ThrowAsync<DefaultApplicationException>();
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public Task TestUploadImage_WhenEntityIsNull()
+        public void TestUploadImage_WhenEntityIsNull()
         {
-            Func<Task> action = () => _imageService.UploadImage(4, null);
-            return action.Should().ThrowAsync<DefaultApplicationException>();
+            var user = GetTestUser();
+
+            _repository.Setup(repository => repository.GetById(user.Id))
+                .Returns(user);
+
+            _unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(_repository.Object);
+
+            Func<Task> action = () => _imageService.UploadImage(It.IsNotIn(user.Id), null);
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public Task TestDeleteImage_WhenImageWasNotDeleted()
+        public void TestDeleteImage_WhenImageWasNotDeleted()
         {
             var user = GetTestUser();
 
@@ -86,11 +94,11 @@ namespace Car.Tests.Services
                 .Returns(_repository.Object);
 
             Func<Task> action = () => _imageService.DeleteImage(user.Id);
-            return action.Should().ThrowAsync<DefaultApplicationException>();
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public Task TestDeleteImage_WhenUserNotExist()
+        public void TestDeleteImage_WhenUserNotExist()
         {
             var user = GetTestUser();
 
@@ -100,12 +108,12 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Func<Task> action = () => _imageService.DeleteImage(4);
-            return action.Should().ThrowAsync<DefaultApplicationException>();
+            Func<Task> action = () => _imageService.DeleteImage(It.IsNotIn(user.Id));
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public Task TestGetImageBytesById_WhenUserNotExist()
+        public void TestGetImageBytesById_WhenUserNotExist()
         {
             var user = GetTestUser();
 
@@ -116,11 +124,11 @@ namespace Car.Tests.Services
                 .Returns(_repository.Object);
 
             Func<Task> action = () => _imageService.GetImageBytesById(4);
-            return action.Should().ThrowAsync<DefaultApplicationException>();
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public Task TestGetImageBytesById()
+        public void TestGetImageBytesById()
         {
             var user = GetTestUser();
 
@@ -131,7 +139,8 @@ namespace Car.Tests.Services
                 .Returns(_repository.Object);
 
             Func<Task> action = () => _imageService.GetImageBytesById(user.Id);
-            return action.Should().NotThrowAsync();
+
+            action.Should().NotThrowAsync();
         }
     }
 }
