@@ -56,7 +56,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                .Returns(_repository.Object);
 
-            _carService.GetCarById(It.IsNotIn(car.Id)).Should().BeNull();
+            _carService.GetCarById(car.Id).Should().BeOfType<DAL.Entities.Car>();
         }
     }
 }
