@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Car.BLL.Dto;
 using Car.BLL.Exceptions;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace Car.Tests.Exceptions
 {
     public class DefaultApplicationExceptionTest
     {
-        DefaultApplicationException _defaultApplicationException = new DefaultApplicationException();
+        private readonly DefaultApplicationException _defaultApplicationException = new DefaultApplicationException();
 
         [Fact]
         public void TestParameterLessConstructor()

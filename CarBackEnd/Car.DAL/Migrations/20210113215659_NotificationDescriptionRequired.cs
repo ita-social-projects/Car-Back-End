@@ -11,7 +11,7 @@ namespace Car.DAL.Migrations
                 table: "Notifications",
                 type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
                 oldNullable: true);
