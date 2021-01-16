@@ -9,9 +9,9 @@ namespace Car.Tests.Services
 {
     public class CarServiceTest
     {
-        private ICarService _carService;
-        private Mock<IRepository<DAL.Entities.Car>> _repository;
-        private Mock<IUnitOfWork<DAL.Entities.Car>> _unitOfWork;
+        private readonly ICarService _carService;
+        private readonly Mock<IRepository<DAL.Entities.Car>> _repository;
+        private readonly Mock<IUnitOfWork<DAL.Entities.Car>> _unitOfWork;
 
         public CarServiceTest()
         {

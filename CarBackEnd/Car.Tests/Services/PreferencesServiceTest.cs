@@ -10,9 +10,9 @@ namespace Car.Tests.Services
 {
     public class PreferencesServiceTest
     {
-        private IPreferencesService _preferencesService;
-        private Mock<IRepository<UserPreferences>> _repository;
-        private Mock<IUnitOfWork<UserPreferences>> _unitOfWork;
+        private readonly IPreferencesService _preferencesService;
+        private readonly Mock<IRepository<UserPreferences>> _repository;
+        private readonly Mock<IUnitOfWork<UserPreferences>> _unitOfWork;
 
         public PreferencesServiceTest()
         {
@@ -22,9 +22,8 @@ namespace Car.Tests.Services
             _preferencesService = new PreferencesService(_unitOfWork.Object);
         }
 
-        public UserPreferences GetTestPreferences()
-        {
-            return new UserPreferences()
+        public UserPreferences GetTestPreferences() =>
+            new UserPreferences()
             {
                 Id = It.IsAny<int>(),
                 Comments = It.IsAny<string>(),
@@ -32,7 +31,6 @@ namespace Car.Tests.Services
                 DoAllowSmoking = It.IsAny<bool>(),
                 UserId = It.IsAny<int>(),
             };
-        }
 
         [Fact]
         public void TestGetPreferences_WhenPreferenceExists()

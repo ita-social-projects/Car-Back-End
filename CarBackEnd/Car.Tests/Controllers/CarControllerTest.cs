@@ -1,29 +1,28 @@
 ﻿using Moq;
 using Xunit;
 using Car.BLL.Services.Interfaces;
-using File = Google.Apis.Drive.v3.Data.File;
 using CarBackEnd.Controllers;
 using FluentAssertions.Execution;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Car.BLL.Dto;
+using Google.Apis.Drive.v3.Data;
 
 namespace Car.Tests.Controllers
 {
     public class CarControllerTest
     {
-        private Mock<ICarService> _carService;
-        private Mock<IImageService<DAL.Entities.Car, File>> _imageService;
-        private CarController _carController;
-        private DAL.Entities.Car GetTestCar()
-        {
-            return new DAL.Entities.Car()
+        private readonly Mock<ICarService> _carService;
+        private readonly Mock<IImageService<DAL.Entities.Car, File>> _imageService;
+        private readonly CarController _carController;
+
+        private static DAL.Entities.Car GetTestCar() =>
+            new DAL.Entities.Car()
             {
                 Id = It.IsAny<int>(),
                 Model = It.IsAny<string>(),
             };
-        }
 
         public CarControllerTest()
         {
@@ -46,8 +45,8 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<DAL.Entities.Car>();
-                ((result as OkObjectResult).Value as DAL.Entities.Car).Model.Should().Be(car.Model);
+                (result as OkObjectResult)?.Value.Should().BeOfType<DAL.Entities.Car>();
+                ((result as OkObjectResult)?.Value as DAL.Entities.Car)?.Model.Should().Be(car.Model);
             }
         }
 
@@ -65,7 +64,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeNull();
+                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
 
@@ -84,8 +83,8 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<DAL.Entities.Car>();
-                ((result as OkObjectResult).Value as DAL.Entities.Car).Model.Should().Be(car.Model);
+                (result as OkObjectResult)?.Value.Should().BeOfType<DAL.Entities.Car>();
+                ((result as OkObjectResult)?.Value as DAL.Entities.Car)?.Model.Should().Be(car.Model);
             }
         }
 
@@ -104,7 +103,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeNull();
+                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
 
@@ -122,8 +121,8 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<DAL.Entities.Car>();
-                ((result as OkObjectResult).Value as DAL.Entities.Car).Model.Should().Be(car.Model);
+                (result as OkObjectResult)?.Value.Should().BeOfType<DAL.Entities.Car>();
+                ((result as OkObjectResult)?.Value as DAL.Entities.Car)?.Model.Should().Be(car.Model);
             }
         }
 
@@ -141,7 +140,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeNull();
+                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
 
@@ -159,7 +158,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<string>();
+                (result as OkObjectResult)?.Value.Should().BeOfType<string>();
             }
         }
 
@@ -177,7 +176,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeNull();
+                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
     }

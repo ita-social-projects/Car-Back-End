@@ -10,9 +10,9 @@ namespace Car.Tests.Services
 {
     public class LoginServiceTest
     {
-        private ILoginService _loginService;
-        private Mock<IRepository<User>> _repository;
-        private Mock<IUnitOfWork<User>> _unitOfWork;
+        private readonly ILoginService _loginService;
+        private readonly Mock<IRepository<User>> _repository;
+        private readonly Mock<IUnitOfWork<User>> _unitOfWork;
 
         public LoginServiceTest()
         {
@@ -22,9 +22,8 @@ namespace Car.Tests.Services
             _loginService = new LoginService(_unitOfWork.Object);
         }
 
-        public User GetTestUser()
-        {
-            return new User()
+        public User GetTestUser() =>
+            new User()
             {
                 Id = 44,
                 Name = "Peter",
@@ -32,7 +31,6 @@ namespace Car.Tests.Services
                 Email = "pen@gmail.com",
                 Position = "Developer",
             };
-        }
 
         [Fact]
         public void TestGetUser_WhenUserExists()

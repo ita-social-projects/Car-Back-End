@@ -1,23 +1,22 @@
 ﻿using Moq;
 using Xunit;
 using Car.BLL.Services.Interfaces;
-using Car.DAL.Entities;
-using File = Google.Apis.Drive.v3.Data.File;
 using CarBackEnd.Controllers;
 using FluentAssertions.Execution;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Car.BLL.Dto;
+using Google.Apis.Drive.v3.Data;
+using User = Car.DAL.Entities.User;
 
 namespace Car.Tests.Controllers
 {
     public class UserControllerTest
     {
-        private Mock<IUserService> _userService;
-        private Mock<IImageService<User, File>> _imageService;
-        private UserController _userController;
-
+        private readonly Mock<IUserService> _userService;
+        private readonly Mock<IImageService<User, File>> _imageService;
+        private readonly UserController _userController;
 
         public UserControllerTest()
         {
@@ -26,14 +25,12 @@ namespace Car.Tests.Controllers
             _userController = new UserController(_userService.Object, _imageService.Object);
         }
 
-        public User GetTestUser()
-        {
-            return new User()
+        public User GetTestUser() =>
+            new User()
             {
                 Id = It.IsAny<int>(),
                 Name = It.IsAny<string>(),
             };
-        }
 
         [Fact]
         public void TestGetUserById_WithRightId_ReturnsOkObjectResult()
@@ -49,9 +46,9 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<User>();
-                ((result as OkObjectResult).Value as User).Id.Should().Be(user.Id);
-                ((result as OkObjectResult).Value as User).Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -69,7 +66,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeNull();
+                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
 
@@ -87,9 +84,9 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<User>();
-                ((result as OkObjectResult).Value as User).Id.Should().Be(user.Id);
-                ((result as OkObjectResult).Value as User).Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -108,9 +105,9 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<User>();
-                ((result as OkObjectResult).Value as User).Id.Should().Be(user.Id);
-                ((result as OkObjectResult).Value as User).Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -122,14 +119,16 @@ namespace Car.Tests.Controllers
             var formImage = new FormImage();
 
             // Act
-            _imageService.Setup(p => p.UploadImage(user.Id, formImage.image)).Returns(Task.FromResult<User>((User)null));
+            _imageService
+                .Setup(p => p.UploadImage(user.Id, formImage.image))
+                .Returns(Task.FromResult<User>(null));
 
             // Assert
             using (new AssertionScope())
             {
                 var result = await _userController.UploadUserAvatar(user.Id, formImage);
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeNull();
+                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
 
@@ -147,9 +146,9 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<User>();
-                ((result as OkObjectResult).Value as User).Id.Should().Be(user.Id);
-                ((result as OkObjectResult).Value as User).Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -158,7 +157,7 @@ namespace Car.Tests.Controllers
         {
             // Arrange
             var user = GetTestUser();
-            _imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult<User>((User)null));
+            _imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult<User>(null));
 
             // Act
             var result = await _userController.DeleteUserAvatar(user.Id);
@@ -167,7 +166,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeNull();
+                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
 
@@ -185,7 +184,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeOfType<string>();
+                (result as OkObjectResult)?.Value.Should().BeOfType<string>();
             }
         }
 
@@ -203,7 +202,7 @@ namespace Car.Tests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult).Value.Should().BeNull();
+                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
     }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Car.BLL.Services.Interfaces;
+﻿using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using CarBackEnd.Controllers;
 using FluentAssertions;
@@ -13,17 +10,15 @@ namespace Car.Tests.Controllers
 {
     public class UserPreferencesControllerTest
     {
-        private Mock<IPreferencesService> _preferencesService;
-        private UserPreferencesController _userPreferencesController;
+        private readonly Mock<IPreferencesService> _preferencesService;
+        private readonly UserPreferencesController _userPreferencesController;
 
-        public User GetTestUser()
-        {
-            return new User()
+        public User GetTestUser() =>
+            new User()
             {
                 Id = It.IsAny<int>(),
                 Name = It.IsAny<string>(),
             };
-        }
 
         public UserPreferencesControllerTest()
         {
@@ -43,7 +38,7 @@ namespace Car.Tests.Controllers
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult).Value.Should().BeOfType<UserPreferences>();
+            (result as OkObjectResult)?.Value.Should().BeOfType<UserPreferences>();
         }
 
         [Fact]
@@ -58,8 +53,7 @@ namespace Car.Tests.Controllers
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult).Value.Should().BeNull();
+            (result as OkObjectResult)?.Value.Should().BeNull();
         }
-
     }
 }

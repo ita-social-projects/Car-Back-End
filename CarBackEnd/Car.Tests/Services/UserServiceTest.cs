@@ -12,9 +12,9 @@ namespace Car.Tests.Services
 {
     public class UserServiceTest
     {
-        private IUserService _userService;
-        private Mock<IRepository<User>> _repository;
-        private Mock<IUnitOfWork<User>> _unitOfWork;
+        private readonly IUserService _userService;
+        private readonly Mock<IRepository<User>> _repository;
+        private readonly Mock<IUnitOfWork<User>> _unitOfWork;
 
         public UserServiceTest()
         {
@@ -24,9 +24,8 @@ namespace Car.Tests.Services
             _userService = new UserService(_unitOfWork.Object);
         }
 
-        public User GetTestUser()
-        {
-            return new User()
+        public User GetTestUser() =>
+            new User()
             {
                 Id = 2,
                 Name = "Tom",
@@ -34,7 +33,6 @@ namespace Car.Tests.Services
                 Email = "Tom@gmail.com",
                 Position = "Developer",
             };
-        }
 
         [Fact]
         public void TestGetUserById_WhenUserExists()
