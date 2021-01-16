@@ -46,12 +46,12 @@ namespace Car.Tests.Services
         }
 
         [Fact]
-        public void TestGetUserById_WhenUserNotExist()
+        public void TestGetCarById_WhenCarNotExists()
         {
             var car = GetTestCar();
 
-            _repository.Setup(repository => repository.GetById(car.Id))
-               .Returns(car);
+            _repository.Setup(repository => repository.GetById(It.IsNotIn(car.Id)))
+               .Returns((DAL.Entities.Car)null);
 
             _unitOfWork.Setup(repository => repository.GetRepository())
                .Returns(_repository.Object);
