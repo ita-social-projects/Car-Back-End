@@ -55,5 +55,37 @@ namespace Car.Tests.Controllers
             result.Should().BeOfType<OkObjectResult>();
             (result as OkObjectResult)?.Value.Should().BeNull();
         }
+
+        [Fact]
+        public void UpdatePreferences_WhenUserPreferencesExists_ReturnsUpdatedUserPreferences()
+        {
+            var userPreferences = new UserPreferences();
+
+            // Arrange
+            _preferencesService.Setup(u => u.UpdatePreferences(userPreferences)).Returns(userPreferences);
+
+            // Act
+            var result = _userPreferencesController.UpdatePreferences(userPreferences);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().BeOfType<UserPreferences>();
+        }
+
+        [Fact]
+        public void UpdatePreferences_WhenUserPreferencesNotExists_ReturnsNull()
+        {
+            var userPreferences = new UserPreferences();
+
+            // Arrange
+            _preferencesService.Setup(u => u.UpdatePreferences(userPreferences)).Returns((UserPreferences)null);
+
+            // Act
+            var result = _userPreferencesController.UpdatePreferences(userPreferences);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().BeNull();
+        }
     }
 }
