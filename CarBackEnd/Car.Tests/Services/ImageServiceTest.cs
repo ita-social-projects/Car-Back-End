@@ -16,64 +16,74 @@ namespace Car.Tests.Services
 {
     public class ImageServiceTest
     {
-        private Mock<IDriveService<File>> _driveService;
-        private IImageService<User, File> _imageService;
-        private Mock<IRepository<User>> _repository;
-        private Mock<IUnitOfWork<User>> _unitOfWork;
-        private Mock<IEntityTypeStrategy<User>> _strategy;
+        private readonly IImageService<User, File> _imageService;
+        private readonly Mock<IRepository<User>> _repository;
+        private readonly Mock<IUnitOfWork<User>> _unitOfWork;
 
         public ImageServiceTest()
         {
-            _driveService = new Mock<IDriveService<File>>();
+            var driveService = new Mock<IDriveService<File>>();
+            var strategy = new Mock<IEntityTypeStrategy<User>>();
+
             _repository = new Mock<IRepository<User>>();
             _unitOfWork = new Mock<IUnitOfWork<User>>();
-            _strategy = new Mock<IEntityTypeStrategy<User>>();
 
             _imageService = new ImageService<User>(
-                _driveService.Object, _unitOfWork.Object, _strategy.Object);
+                driveService.Object, _unitOfWork.Object, strategy.Object);
         }
 
-        public User GetTestUser()
-        {
-            return new User()
+        public User GetTestUser() =>
+            new User()
             {
-                Id = 2,
-                Name = "Tom",
-                Surname = "King",
-                Email = "Tom@gmail.com",
-                Position = "Developer",
+                Id = It.IsAny<int>(),
+                Name = It.IsAny<string>(),
+                Surname = It.IsAny<string>(),
+                Email = It.IsAny<string>(),
+                Position = It.IsAny<string>(),
             };
-        }
 
         [Fact]
-        public async Task TestUploadImage()
+        public void TestUploadImage()
         {
             var user = GetTestUser();
 
-            Func<Task> action = () => _imageService.UploadImage(user.Id, new FormFile(Stream.Null, 1, 1, "1", "1"));
-            await action.Should().NotThrowAsync<DefaultApplicationException>();
+            Func<Task> action = () => _imageService
+                .UploadImage(user.Id, new FormFile(
+                    Stream.Null,
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()));
+
+            action.Should().NotThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public async Task TestUploadImage_WhenFileIsNull()
+        public void TestUploadImage_WhenFileIsNull()
         {
             var user = GetTestUser();
 
             Func<Task> action = () => _imageService.UploadImage(user.Id, null);
-            await action.Should().ThrowAsync<DefaultApplicationException>();
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public async Task TestUploadImage_WhenEntityIsNull()
+        public void TestUploadImage_WhenEntityIsNull()
         {
             var user = GetTestUser();
 
-            Func<Task> action = () => _imageService.UploadImage(4, null);
-            await action.Should().ThrowAsync<DefaultApplicationException>();
+            _repository.Setup(repository => repository.GetById(user.Id))
+                .Returns(user);
+
+            _unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(_repository.Object);
+
+            Func<Task> action = () => _imageService.UploadImage(It.IsNotIn(user.Id), null);
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public async Task TestDeleteImage_WhenImageWasNotDeleted()
+        public void TestDeleteImage_WhenImageWasNotDeleted()
         {
             var user = GetTestUser();
 
@@ -84,11 +94,11 @@ namespace Car.Tests.Services
                 .Returns(_repository.Object);
 
             Func<Task> action = () => _imageService.DeleteImage(user.Id);
-            await action.Should().ThrowAsync<DefaultApplicationException>();
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public async Task TestDeleteImage_WhenUserNotExist()
+        public void TestDeleteImage_WhenUserNotExist()
         {
             var user = GetTestUser();
 
@@ -98,12 +108,12 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Func<Task> action = () => _imageService.DeleteImage(4);
-            await action.Should().ThrowAsync<DefaultApplicationException>();
+            Func<Task> action = () => _imageService.DeleteImage(It.IsNotIn(user.Id));
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public async Task TestGetImageBytesById_WhenUserNotExist()
+        public void TestGetImageBytesById_WhenUserNotExist()
         {
             var user = GetTestUser();
 
@@ -114,11 +124,11 @@ namespace Car.Tests.Services
                 .Returns(_repository.Object);
 
             Func<Task> action = () => _imageService.GetImageBytesById(4);
-            await action.Should().ThrowAsync<DefaultApplicationException>();
+            action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
         [Fact]
-        public async Task TestGetImageBytesById()
+        public void TestGetImageBytesById()
         {
             var user = GetTestUser();
 
@@ -129,7 +139,8 @@ namespace Car.Tests.Services
                 .Returns(_repository.Object);
 
             Func<Task> action = () => _imageService.GetImageBytesById(user.Id);
-            await action.Should().NotThrowAsync();
+
+            action.Should().NotThrowAsync();
         }
     }
 }

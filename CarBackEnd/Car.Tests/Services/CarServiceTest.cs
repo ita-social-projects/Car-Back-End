@@ -1,6 +1,7 @@
 ﻿using Car.BLL.Services.Implementation;
 using Car.BLL.Services.Interfaces;
 using Car.DAL.Interfaces;
+using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -8,9 +9,9 @@ namespace Car.Tests.Services
 {
     public class CarServiceTest
     {
-        private ICarService _carService;
-        private Mock<IRepository<DAL.Entities.Car>> _repository;
-        private Mock<IUnitOfWork<DAL.Entities.Car>> _unitOfWork;
+        private readonly ICarService _carService;
+        private readonly Mock<IRepository<DAL.Entities.Car>> _repository;
+        private readonly Mock<IUnitOfWork<DAL.Entities.Car>> _unitOfWork;
 
         public CarServiceTest()
         {
@@ -20,17 +21,15 @@ namespace Car.Tests.Services
             _carService = new CarService(_unitOfWork.Object);
         }
 
-        public DAL.Entities.Car GetTestCar()
-        {
-            return new DAL.Entities.Car()
+        public DAL.Entities.Car GetTestCar() =>
+            new DAL.Entities.Car()
             {
-                Id = 2,
-                Brand = "BMW",
-                Model = "A5",
-                Color = "Red",
-                PlateNumber = "AA-2222-BB",
+                Id = It.IsAny<int>(),
+                Brand = It.IsAny<string>(),
+                Model = It.IsAny<string>(),
+                Color = It.IsAny<string>(),
+                PlateNumber = It.IsAny<string>(),
             };
-        }
 
         [Fact]
         public void TestGetCarById_WhenCarExists()
@@ -43,21 +42,21 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.Equal(car, _carService.GetCarById(car.Id));
+            _carService.GetCarById(car.Id).Should().BeEquivalentTo(car);
         }
 
         [Fact]
-        public void TestGetUserById_WhenUserNotExist()
+        public void TestGetCarById_WhenCarNotExists()
         {
             var car = GetTestCar();
 
-            _repository.Setup(repository => repository.GetById(car.Id))
-               .Returns(car);
+            _repository.Setup(repository => repository.GetById(It.IsNotIn(car.Id)))
+               .Returns((DAL.Entities.Car)null);
 
             _unitOfWork.Setup(repository => repository.GetRepository())
                .Returns(_repository.Object);
 
-            Assert.Null(_carService.GetCarById(4));
+            _carService.GetCarById(car.Id).Should().BeOfType<DAL.Entities.Car>();
         }
     }
 }
