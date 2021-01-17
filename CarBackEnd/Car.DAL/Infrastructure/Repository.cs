@@ -15,10 +15,10 @@ namespace Car.DAL.Infrastructure
         private readonly CarContext context;
         private readonly DbSet<TEntity> dbEntities;
 
-        public Repository(CarContext _context)
+        public Repository(CarContext context)
         {
-            context = _context;
-            dbEntities = context.Set<TEntity>();
+            this.context = context;
+            dbEntities = this.context.Set<TEntity>();
         }
 
         /// <summary>

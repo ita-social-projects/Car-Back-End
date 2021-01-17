@@ -11,15 +11,15 @@ namespace Car.DAL.Infrastructure
     {
         private readonly CarContext context;
 
-        public UnitOfWork(CarContext _context)
+        public UnitOfWork(CarContext context)
         {
-            context = _context;
+            this.context = context;
         }
 
         /// <summary>
-        /// Gets DBcontext, is used for disposing
+        /// Gets DBContext, is used for disposing
         /// </summary>
-        public DbContext db { get => context; }
+        public DbContext db => context;
 
         /// <summary>
         /// Gets repository for TEntity
