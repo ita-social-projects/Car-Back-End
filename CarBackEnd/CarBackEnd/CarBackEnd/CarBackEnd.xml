@@ -10,6 +10,20 @@
             </summary>
             <returns>The brands</returns>
         </member>
+        <member name="M:CarBackEnd.Controllers.CarController.GetAllByUserId(System.Int32)">
+            <summary>
+            Gets all the cars by user id
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <returns>All user's cars</returns>
+        </member>
+        <member name="M:CarBackEnd.Controllers.CarController.AddCar(Car.BLL.Dto.CarDTO)">
+            <summary>
+            Adds the car.
+            </summary>
+            <param name="car">The car.</param>
+            <returns>New car</returns>
+        </member>
         <member name="M:CarBackEnd.Controllers.CarController.GetCarById(System.Int32)">
             <summary>
             Gets the car by identifier.

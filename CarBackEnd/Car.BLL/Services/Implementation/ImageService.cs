@@ -73,6 +73,11 @@ namespace Car.BLL.Services.Implementation
                 };
             }
 
+            if (entity.ImageId == null)
+            {
+                return null;
+            }
+
             byte[] buffer = await driveService.GetFileBytesById(entity.ImageId);
 
             return Convert.ToBase64String(buffer);

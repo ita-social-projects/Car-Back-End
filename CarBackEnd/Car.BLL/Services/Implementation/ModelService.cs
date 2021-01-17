@@ -27,5 +27,12 @@ namespace Car.BLL.Services.Implementation
                     BrandName = model.Brand.Name,
                 });
         }
+
+        public IEnumerable<Model> GetModelsByBrandId(int brandId)
+        {
+            return unitOfWork.GetRepository()
+                .Query()
+                .Where(model => model.BrandId == brandId);
+        }
     }
 }

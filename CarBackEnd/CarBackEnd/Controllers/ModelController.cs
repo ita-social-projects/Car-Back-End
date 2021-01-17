@@ -23,5 +23,16 @@ namespace CarBackEnd.Controllers
         {
             return Ok(modelService.GetModels());
         }
+
+        /// <summary>
+        /// Gets all models.
+        /// </summary>
+        /// <param name="brandId">The brand identifier.</param>
+        /// <returns>All the models</returns>
+        [HttpGet("brand/{brandId}")]
+        public IActionResult GetAll(int brandId)
+        {
+            return Ok(modelService.GetModelsByBrandId(brandId));
+        }
     }
 }
