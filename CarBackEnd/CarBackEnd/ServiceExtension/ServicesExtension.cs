@@ -1,6 +1,6 @@
 ﻿using Car.BLL.Services.Implementation;
-using Car.BLL.Services.Interfaces;
 using Car.BLL.Services.Implementation.Strategy;
+using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Car.DAL.Infrastructure;
 using Car.DAL.Interfaces;

@@ -1,8 +1,8 @@
-﻿using Car.DAL.Context;
-using Car.DAL.Interfaces;
+﻿using System;
+using Car.DAL.Context;
 using Car.DAL.Entities;
+using Car.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Car.DAL.Infrastructure
 {

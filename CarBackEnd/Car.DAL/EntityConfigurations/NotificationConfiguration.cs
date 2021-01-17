@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class NotificationConfiguration : IEntityTypeConfiguration<Notification>
+    internal class NotificationConfiguration : IEntityTypeConfiguration<Notification>
     {
         public void Configure(EntityTypeBuilder<Notification> builder)
         {

@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Car.DAL.Context;
 using Microsoft.EntityFrameworkCore;
-using Car.DAL.Context;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CarBackEnd.ServiceExtension
 {

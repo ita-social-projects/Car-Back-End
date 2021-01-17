@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class JourneyConfiguration : IEntityTypeConfiguration<Journey>
+    internal class JourneyConfiguration : IEntityTypeConfiguration<Journey>
     {
         public void Configure(EntityTypeBuilder<Journey> builder)
         {

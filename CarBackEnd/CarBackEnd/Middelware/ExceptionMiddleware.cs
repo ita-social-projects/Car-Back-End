@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Car.BLL.Exceptions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace CarBackEnd.Middelware
 {

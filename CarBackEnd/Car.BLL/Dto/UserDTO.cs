@@ -1,7 +1,4 @@
-﻿using Car.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Car.BLL.Dto
 {

@@ -7,7 +7,7 @@ namespace Car.BLL.Services.Implementation.Strategy
 {
     public class UserEntityStrategy : IEntityTypeStrategy<User>
     {
-        readonly IConfiguration configuration;
+        private readonly IConfiguration configuration;
 
         public UserEntityStrategy(IConfiguration configuration)
         {

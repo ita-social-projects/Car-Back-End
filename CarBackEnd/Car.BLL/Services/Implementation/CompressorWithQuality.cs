@@ -1,7 +1,7 @@
-﻿using Car.BLL.Services.Interfaces;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using Car.BLL.Services.Interfaces;
 
 namespace Car.BLL.Services.Implementation
 {

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Car.BLL.Services.Interfaces;
+﻿using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarBackEnd.Controllers
 {
@@ -10,11 +10,11 @@ namespace CarBackEnd.Controllers
     [ApiController]
     public class UserPreferencesController : ControllerBase
     {
-        private readonly IPreferencesService _preferencesService;
+        private readonly IPreferencesService preferencesService;
 
         public UserPreferencesController(IPreferencesService preferencesService)
         {
-            _preferencesService = preferencesService;
+            this.preferencesService = preferencesService;
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace CarBackEnd.Controllers
         [HttpGet("{userId}")]
         public IActionResult GetPreferences(int userId)
         {
-            return Ok(_preferencesService.GetPreferences(userId));
+            return Ok(preferencesService.GetPreferences(userId));
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace CarBackEnd.Controllers
         [HttpPut]
         public IActionResult UpdatePreferences([FromBody] UserPreferences preferences)
         {
-            return Ok(_preferencesService.UpdatePreferences(preferences));
+            return Ok(preferencesService.UpdatePreferences(preferences));
         }
     }
 }

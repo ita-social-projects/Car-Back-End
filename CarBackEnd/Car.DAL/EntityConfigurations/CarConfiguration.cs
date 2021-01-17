@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class CarConfiguration : IEntityTypeConfiguration<Entities.Car>
+    internal class CarConfiguration : IEntityTypeConfiguration<Entities.Car>
     {
         public void Configure(EntityTypeBuilder<Entities.Car> builder)
         {

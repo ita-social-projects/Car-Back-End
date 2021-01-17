@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class MessageConfiguration : IEntityTypeConfiguration<Message>
+    internal class MessageConfiguration : IEntityTypeConfiguration<Message>
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {

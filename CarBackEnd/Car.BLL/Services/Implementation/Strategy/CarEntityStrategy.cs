@@ -6,7 +6,7 @@ namespace Car.BLL.Services.Implementation.Strategy
 {
     public class CarEntityStrategy : IEntityTypeStrategy<DAL.Entities.Car>
     {
-        readonly IConfiguration configuration;
+        private readonly IConfiguration configuration;
 
         public CarEntityStrategy(IConfiguration configuration)
         {

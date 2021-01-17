@@ -1,11 +1,11 @@
-﻿using Car.DAL.Context;
-using Car.DAL.Entities;
-using Car.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Car.DAL.Context;
+using Car.DAL.Entities;
+using Car.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.DAL.Infrastructure
 {
@@ -34,7 +34,7 @@ namespace Car.DAL.Infrastructure
         /// <summary>
         /// Adds range of entities into DBContext
         /// </summary>
-        /// <param name="entities">IEnumarable of entities to add</param>
+        /// <param name="entities">IEnumerable of entities to add</param>
         public void AddRange(IEnumerable<TEntity> entities)
         {
             dbEntities.AddRange(entities);
@@ -53,7 +53,7 @@ namespace Car.DAL.Infrastructure
         /// <summary>
         /// Removes range of entities from DBContext
         /// </summary>
-        /// <param name="entities">IEnumarable of entities</param>
+        /// <param name="entities">IEnumerable of entities</param>
         public void DeleteRange(IEnumerable<TEntity> entities)
         {
             dbEntities.RemoveRange(entities);

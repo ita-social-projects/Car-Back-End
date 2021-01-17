@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Car.DAL.EntityConfigurations
 {
-    class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
+    internal class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
     {
         public void Configure(EntityTypeBuilder<Schedule> builder)
         {

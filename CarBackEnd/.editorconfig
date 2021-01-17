@@ -16,10 +16,10 @@ dotnet_diagnostic.SA1633.severity = none
 dotnet_diagnostic.SA1101.severity = none
 
 # SA1210: Using directives should be ordered alphabetically by namespace
-dotnet_diagnostic.SA1210.severity = none
+dotnet_diagnostic.SA1210.severity = error
 
 # SA1208: System using directives should be placed before other using directives
-dotnet_diagnostic.SA1208.severity = none
+dotnet_diagnostic.SA1208.severity = error
 
 # SA1601: Partial elements should be documented
 dotnet_diagnostic.SA1601.severity = none
@@ -34,10 +34,10 @@ dotnet_diagnostic.SA1307.severity = none
 dotnet_diagnostic.SA1629.severity = none
 
 # SA1400: Access modifier should be declared
-dotnet_diagnostic.SA1400.severity = none
+dotnet_diagnostic.SA1400.severity = error
 
 # SA1309: Field names should not begin with underscore
-dotnet_diagnostic.SA1309.severity = none
+dotnet_diagnostic.SA1309.severity = error
 
 # SA1300: Element should begin with upper-case letter
 dotnet_diagnostic.SA1300.severity = none
@@ -47,3 +47,57 @@ dotnet_diagnostic.SA1201.severity = none
 
 # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS1591.severity = none
+
+# SA1000: Keywords should be spaced correctly
+dotnet_diagnostic.SA1000.severity = error
+
+# SA1001: Commas should be spaced correctly
+dotnet_diagnostic.SA1001.severity = error
+
+# SA1002: Semicolons should be spaced correctly
+dotnet_diagnostic.SA1002.severity = error
+
+# SA1008: Opening parenthesis should be spaced correctly
+dotnet_diagnostic.SA1008.severity = error
+
+# SA1009: Closing parenthesis should be spaced correctly
+dotnet_diagnostic.SA1009.severity = error
+
+# SA1010: Opening square brackets should be spaced correctly
+dotnet_diagnostic.SA1010.severity = error
+
+# SA1011: Closing square brackets should be spaced correctly
+dotnet_diagnostic.SA1011.severity = error
+
+# SA1012: Opening braces should be spaced correctly
+dotnet_diagnostic.SA1012.severity = error
+
+# SA1013: Closing braces should be spaced correctly
+dotnet_diagnostic.SA1013.severity = error
+
+# SA1014: Opening generic brackets should be spaced correctly
+dotnet_diagnostic.SA1014.severity = error
+
+# SA1015: Closing generic brackets should be spaced correctly
+dotnet_diagnostic.SA1015.severity = error
+
+# SA1016: Opening attribute brackets should be spaced correctly
+dotnet_diagnostic.SA1016.severity = error
+
+# SA1017: Closing attribute brackets should be spaced correctly
+dotnet_diagnostic.SA1017.severity = error
+
+# SA1018: Nullable type symbols should be spaced correctly
+dotnet_diagnostic.SA1018.severity = error
+
+# SA1019: Member access symbols should be spaced correctly
+dotnet_diagnostic.SA1019.severity = error
+
+# SA1020: Increment decrement symbols should be spaced correctly
+dotnet_diagnostic.SA1020.severity = error
+
+# SA1021: Negative signs should be spaced correctly
+dotnet_diagnostic.SA1021.severity = error
+
+# SA1022: Positive signs should be spaced correctly
+dotnet_diagnostic.SA1022.severity = error

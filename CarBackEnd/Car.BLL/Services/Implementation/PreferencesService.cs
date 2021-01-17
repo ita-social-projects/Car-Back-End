@@ -1,28 +1,28 @@
-﻿using Car.DAL.Interfaces;
+﻿using System.Linq;
 using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
-using System.Linq;
+using Car.DAL.Interfaces;
 
 namespace Car.BLL.Services.Implementation
 {
     public class PreferencesService : IPreferencesService
     {
-        private readonly IUnitOfWork<UserPreferences> _unitOfWork;
+        private readonly IUnitOfWork<UserPreferences> unitOfWork;
 
         public PreferencesService(IUnitOfWork<UserPreferences> unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            this.unitOfWork = unitOfWork;
         }
 
         public UserPreferences GetPreferences(int userId)
         {
-            return _unitOfWork.GetRepository().Query().Where(p => p.UserId == userId).FirstOrDefault();
+            return unitOfWork.GetRepository().Query().Where(p => p.UserId == userId).FirstOrDefault();
         }
 
         public UserPreferences UpdatePreferences(UserPreferences preferences)
         {
-            _unitOfWork.GetRepository().Update(preferences);
-            _unitOfWork.SaveChanges();
+            unitOfWork.GetRepository().Update(preferences);
+            unitOfWork.SaveChanges();
             return preferences;
         }
     }

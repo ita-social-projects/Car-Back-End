@@ -1,28 +1,28 @@
-﻿using Car.DAL.Interfaces;
+﻿using System.Linq;
 using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
-using System.Linq;
+using Car.DAL.Interfaces;
 
 namespace Car.BLL.Services.Implementation
 {
     public class LoginService : ILoginService
     {
-        private readonly IUnitOfWork<User> _unitOfWork;
+        private readonly IUnitOfWork<User> unitOfWork;
 
         public LoginService(IUnitOfWork<User> unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            this.unitOfWork = unitOfWork;
         }
 
         public User GetUser(string email)
         {
-            return _unitOfWork.GetRepository().Query().Where(p => p.Email == email).FirstOrDefault();
+            return unitOfWork.GetRepository().Query().Where(p => p.Email == email).FirstOrDefault();
         }
 
         public User SaveUser(User user)
         {
-            _unitOfWork.GetRepository().Add(user);
-            _unitOfWork.SaveChanges();
+            unitOfWork.GetRepository().Add(user);
+            unitOfWork.SaveChanges();
             return user;
         }
     }
