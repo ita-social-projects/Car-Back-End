@@ -48,7 +48,7 @@ jobs:
         dotnet-version: 5.0.102
      #SonarScan
     - name: SonarScanner for .NET Core with pull request decoration support
-      uses: highbyte/sonarscan-dotnet@1.0.2
+      uses: highbyte/sonarscan-dotnet@2.0
       with:
         # The key of the SonarQube project
         sonarProjectKey: ita-social-projects_Car-Back-End
