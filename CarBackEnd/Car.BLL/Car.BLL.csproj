@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="MapperProfile\" />
+    <Compile Remove="MapperProfile\**" />
+    <EmbeddedResource Remove="MapperProfile\**" />
+    <None Remove="MapperProfile\**" />
   </ItemGroup>
 
   <ItemGroup>
