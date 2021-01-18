@@ -2,6 +2,7 @@
 using Car.BLL.Services.Interfaces;
 using Car.DAL.Entities;
 using Car.DAL.Interfaces;
+using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -9,9 +10,9 @@ namespace Car.Tests.Services
 {
     public class PreferencesServiceTest
     {
-        private IPreferencesService _preferencesService;
-        private Mock<IRepository<UserPreferences>> _repository;
-        private Mock<IUnitOfWork<UserPreferences>> _unitOfWork;
+        private readonly IPreferencesService _preferencesService;
+        private readonly Mock<IRepository<UserPreferences>> _repository;
+        private readonly Mock<IUnitOfWork<UserPreferences>> _unitOfWork;
 
         public PreferencesServiceTest()
         {
@@ -21,17 +22,15 @@ namespace Car.Tests.Services
             _preferencesService = new PreferencesService(_unitOfWork.Object);
         }
 
-        public UserPreferences GetTestPreferences()
-        {
-            return new UserPreferences()
+        public UserPreferences GetTestPreferences() =>
+            new UserPreferences()
             {
-                Id = 44,
-                Comments = "What a lovely day!",
-                DoAllowEating = false,
-                DoAllowSmoking = true,
-                UserId = 13,
+                Id = It.IsAny<int>(),
+                Comments = It.IsAny<string>(),
+                DoAllowEating = It.IsAny<bool>(),
+                DoAllowSmoking = It.IsAny<bool>(),
+                UserId = It.IsAny<int>(),
             };
-        }
 
         [Fact]
         public void TestGetPreferences_WhenPreferenceExists()
@@ -44,7 +43,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.NotEqual(preferences, _preferencesService.GetPreferences(preferences.UserId));
+            _preferencesService.GetPreferences(preferences.UserId).Should().NotBeEquivalentTo(preferences);
         }
 
         [Fact]
@@ -57,7 +56,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.Equal(preferences, _preferencesService.UpdatePreferences(preferences));
+            _preferencesService.UpdatePreferences(preferences).Should().BeEquivalentTo(preferences);
         }
 
         [Fact]
@@ -70,7 +69,7 @@ namespace Car.Tests.Services
             _unitOfWork.Setup(repository => repository.GetRepository())
                 .Returns(_repository.Object);
 
-            Assert.NotNull(_preferencesService.UpdatePreferences(preferences));
+            _preferencesService.UpdatePreferences(preferences).Should().NotBeNull();
         }
     }
 }
