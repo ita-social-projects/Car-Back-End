@@ -1,0 +1,41 @@
+name: CD
+on:
+  push:
+    branches: [ develop ]
+env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      AZURE_WEBAPP_NAME: Car-Project    
+      AZURE_WEBAPP_PACKAGE_PATH: '.' 
+      
+jobs:
+
+    delivery_to_azure:
+
+      runs-on: windows-latest
+
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v1
+          with:
+            dotnet-version: 5.0.102
+        - name: Restore dependencies
+          run: nuget restore 
+          working-directory: CarBackEnd
+        - name: Build
+          run: dotnet build -c Release
+          working-directory: CarBackEnd/CarBackEnd
+
+        - name: dotnet publish
+          run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}' --no-restore --no-build
+
+          working-directory: CarBackEnd/CarBackEnd  
+        - name: 'Run Azure webapp deploy action using publish profile credentials'
+          uses: azure/webapps-deploy@v2
+          with: 
+             app-name: ${{ env.AZURE_WEBAPP_NAME }} 
+             publish-profile: ${{ secrets.PUBLISH_PROFILE  }} 
+             package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
