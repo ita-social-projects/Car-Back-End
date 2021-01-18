@@ -16,7 +16,7 @@ env:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -28,13 +28,13 @@ jobs:
         dotnet-version: 5.0.102
     - name: Restore dependencies
       run: dotnet restore --interactive
-      working-directory: CarBackEnd
+      working-directory: Car.BackEnd
     - name: Build
       run: dotnet build --configuration Release
-      working-directory: CarBackEnd/CarBackEnd
+      working-directory: Car.BackEnd/Car
     - name: Test
       run: dotnet test --verbosity normal 
-      working-directory: CarBackEnd/Car.Tests
+      working-directory: Car.BackEnd/Car.UnitTests
   sonarscan:
     needs: [build]
     runs-on: ubuntu-latest
@@ -57,5 +57,5 @@ jobs:
         # The name of the SonarQube organization in SonarCloud. For hosted SonarQube, skip this setting.
         sonarOrganization: ita-social-projects
         sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="/github/workspace/CarBackEnd/Car.Tests/coverage.opencover.xml" /d:sonar.coverage.exclusions=**/Car.DAL/**,**/Car.BLL/Dto/**,**/Startup.cs,**/Program.cs /d:sonar.exclusions=**/Car.DAL/Migrations/**
-        dotnetBuildArguments: ./CarBackEnd/CarBackEnd.sln -c Debug
-        dotnetTestArguments: ./CarBackEnd/Car.Tests/Car.Tests.csproj --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover 
+        dotnetBuildArguments: ./Car.BackEnd/Car.Backend.sln -c Debug
+        dotnetTestArguments: ./Car.BackEnd/Car.UnitTests/Car.UnitTests.csproj --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover 
