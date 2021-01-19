@@ -9,25 +9,25 @@ namespace Car.Data.Infrastructure
     public sealed class UnitOfWork<TEntity> : IUnitOfWork<TEntity>
         where TEntity : class, IEntity
     {
-        private readonly CarContext _context;
+        private readonly CarContext context;
 
-        public UnitOfWork(CarContext context) => this._context = context;
+        public UnitOfWork(CarContext context) => this.context = context;
 
         /// <summary>
         /// Gets DBContext, is used for disposing
         /// </summary>
-        public DbContext db => _context;
+        public DbContext db => context;
 
         /// <summary>
         /// Gets repository for TEntity
         /// </summary>
         /// <returns>instance of repository</returns>
-        public IRepository<TEntity> GetRepository() => new Repository<TEntity>(_context);
+        public IRepository<TEntity> GetRepository() => new Repository<TEntity>(context);
 
         /// <summary>
         /// Saves changes in DB
         /// </summary>
-        public void SaveChanges() => _context.SaveChanges();
+        public void SaveChanges() => context.SaveChanges();
 
         private bool disposed = false;
 
