@@ -8,7 +8,7 @@ namespace Car.UnitTests.Exceptions
 {
     public class DefaultApplicationExceptionTest
     {
-        private readonly DefaultApplicationException _defaultApplicationException = new DefaultApplicationException();
+        private readonly DefaultApplicationException defaultApplicationException = new DefaultApplicationException();
 
         [Fact]
         public void TestParameterLessConstructor()
@@ -29,17 +29,17 @@ namespace Car.UnitTests.Exceptions
         [Fact]
         public void StatusCodeTest()
         {
-            _defaultApplicationException.StatusCode = 200;
+            defaultApplicationException.StatusCode = 200;
 
-            _defaultApplicationException.StatusCode.Should().Be(200);
+            defaultApplicationException.StatusCode.Should().Be(200);
         }
 
         [Fact]
         public void SeverityTest()
         {
-            _defaultApplicationException.Severity = Severity.Warning;
+            defaultApplicationException.Severity = Severity.Warning;
 
-            _defaultApplicationException.Severity.Should().Be(Severity.Warning);
+            defaultApplicationException.Severity.Should().Be(Severity.Warning);
         }
     }
 }

@@ -2,26 +2,26 @@
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Xunit;
-using FluentAssertions;
-using FluentAssertions.Execution;
 
 namespace Car.UnitTests.Controllers
 {
     public class LoginControllerTest
     {
-        private readonly Mock<ILoginService> _loginService;
-        private readonly Mock<IConfiguration> _config;
-        private readonly LoginController _loginController;
+        private readonly Mock<ILoginService> loginService;
+        private readonly Mock<IConfiguration> config;
+        private readonly LoginController loginController;
 
         public LoginControllerTest()
         {
-            _loginService = new Mock<ILoginService>();
-            _config = new Mock<IConfiguration>();
-            _loginController = new LoginController(_config.Object, _loginService.Object);
+            loginService = new Mock<ILoginService>();
+            config = new Mock<IConfiguration>();
+            loginController = new LoginController(config.Object, loginService.Object);
         }
 
         public User GetTestUser() =>
@@ -52,12 +52,12 @@ namespace Car.UnitTests.Controllers
             const string jwtToken = "0K0j0MNJPx_9YzZXgOWz_m3k..5aI64JYq";
             const string jwtIssuer = "af2f0a21-6563-45ed-9727-6e7994722893";
 
-            _loginService.Setup(service => service.GetUser(user.Email))
+            loginService.Setup(service => service.GetUser(user.Email))
                 .Returns(user);
-            _config.Setup(config => config["Jwt:Key"]).Returns(jwtToken);
-            _config.Setup(config => config["Jwt:Issuer"]).Returns(jwtIssuer);
+            config.Setup(config => config["Jwt:Key"]).Returns(jwtToken);
+            config.Setup(config => config["Jwt:Issuer"]).Returns(jwtIssuer);
 
-            var result = _loginController.Login(userDto);
+            var result = loginController.Login(userDto);
 
             using (new AssertionScope())
             {
@@ -80,12 +80,12 @@ namespace Car.UnitTests.Controllers
             const string jwtToken = "0K0j0MNJPx_9YzZXgOWz_m3k..5aI64JYq";
             const string jwtIssuer = "af2f0a21-6563-45ed-9727-6e7994722893";
 
-            _loginService.Setup(service => service.GetUser(user.Email))
+            loginService.Setup(service => service.GetUser(user.Email))
                 .Returns((User)null);
-            _config.Setup(config => config["Jwt:Key"]).Returns(jwtToken);
-            _config.Setup(config => config["Jwt:Issuer"]).Returns(jwtIssuer);
+            config.Setup(config => config["Jwt:Key"]).Returns(jwtToken);
+            config.Setup(config => config["Jwt:Issuer"]).Returns(jwtIssuer);
 
-            var result = _loginController.Login(userDto);
+            var result = loginController.Login(userDto);
 
             using (new AssertionScope())
             {

@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Car.Controllers
 {
@@ -16,13 +16,14 @@ namespace Car.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly ILoginService _loginService;
-        private readonly IConfiguration _config;
+        private readonly ILoginService loginService;
+
+        private readonly IConfiguration config;
 
         public LoginController(IConfiguration config, ILoginService loginService)
         {
-            _config = config;
-            _loginService = loginService;
+            this.config = config;
+            this.loginService = loginService;
         }
 
         /// <summary>
@@ -36,7 +37,6 @@ namespace Car.Controllers
         public IActionResult Login([FromBody] UserDto userModel)
         {
             var user = EnsureUser(userModel);
-
             var tokenString = GenerateJSONWebToken(user);
 
             UserDto userDTO = new UserDto
@@ -55,7 +55,7 @@ namespace Car.Controllers
 
         private string GenerateJSONWebToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -67,8 +67,8 @@ namespace Car.Controllers
             };
 
             var token = new JwtSecurityToken(
-                _config["Jwt:Issuer"],
-                _config["Jwt:Issuer"],
+                config["Jwt:Issuer"],
+                config["Jwt:Issuer"],
                 claims,
                 expires: DateTime.Now.AddHours(24),
                 signingCredentials: credentials);
@@ -78,7 +78,7 @@ namespace Car.Controllers
 
         private User EnsureUser(UserDto login)
         {
-            var defaultUser = _loginService.GetUser(login.Email);
+            var defaultUser = loginService.GetUser(login.Email);
             if (defaultUser == null)
             {
                 defaultUser = new User()
@@ -96,7 +96,7 @@ namespace Car.Controllers
                     },
                 };
 
-                _loginService.SaveUser(defaultUser);
+                loginService.SaveUser(defaultUser);
             }
 
             return defaultUser;

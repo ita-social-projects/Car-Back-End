@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using Car.Data.Context;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Data.Infrastructure
 {
@@ -11,10 +11,10 @@ namespace Car.Data.Infrastructure
     {
         private readonly CarContext context;
 
-        public UnitOfWork(CarContext _context) => context = _context;
+        public UnitOfWork(CarContext context) => this.context = context;
 
         /// <summary>
-        /// Gets DBcontext, is used for disposing
+        /// Gets DBContext, is used for disposing
         /// </summary>
         public DbContext db => context;
 
