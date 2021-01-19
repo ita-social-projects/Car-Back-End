@@ -1,33 +1,33 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using Car.Data.Context;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Data.Infrastructure
 {
     public sealed class UnitOfWork<TEntity> : IUnitOfWork<TEntity>
         where TEntity : class, IEntity
     {
-        private readonly CarContext context;
+        private readonly CarContext _context;
 
-        public UnitOfWork(CarContext _context) => context = _context;
+        public UnitOfWork(CarContext context) => this._context = context;
 
         /// <summary>
         /// Gets DBContext, is used for disposing
         /// </summary>
-        public DbContext db => context;
+        public DbContext db => _context;
 
         /// <summary>
         /// Gets repository for TEntity
         /// </summary>
         /// <returns>instance of repository</returns>
-        public IRepository<TEntity> GetRepository() => new Repository<TEntity>(context);
+        public IRepository<TEntity> GetRepository() => new Repository<TEntity>(_context);
 
         /// <summary>
         /// Saves changes in DB
         /// </summary>
-        public void SaveChanges() => context.SaveChanges();
+        public void SaveChanges() => _context.SaveChanges();
 
         private bool disposed = false;
 

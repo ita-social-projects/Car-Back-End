@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Car.Data.Context;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Data.Infrastructure
 {

@@ -5,6 +5,10 @@ using System.Text;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Car.Controllers
 {
