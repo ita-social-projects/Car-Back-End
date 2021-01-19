@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>D:\Other\Work\CarProject\BackEnd\Car.Backend\Car\Car.xml</DocumentationFile>
+    <DocumentationFile>Car.xml</DocumentationFile>
     <OutputPath></OutputPath>
   </PropertyGroup>
 
