@@ -12,7 +12,8 @@ namespace Car.DAL.Interfaces
 
         IRepository<TEntity> GetRepository();
 
-        Repository<TEntity> GetRepository<TEntity>() where TEntity : class, IEntity;
+        Repository<TEntity> GetRepository<TEntity>()
+            where TEntity : class, IEntity;
 
         void SaveChanges();
     }
