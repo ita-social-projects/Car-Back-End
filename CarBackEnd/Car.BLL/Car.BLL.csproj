@@ -38,4 +38,8 @@
     <ProjectReference Include="..\Car.DAL\Car.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Update="D:\Internship\project\back-end\CarBackEnd\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
 </Project>

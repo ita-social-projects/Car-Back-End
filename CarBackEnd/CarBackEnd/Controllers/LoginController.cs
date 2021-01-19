@@ -17,6 +17,7 @@ namespace CarBackEnd.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILoginService loginService;
+
         private readonly IConfiguration config;
 
         public LoginController(IConfiguration config, ILoginService loginService)
@@ -36,7 +37,6 @@ namespace CarBackEnd.Controllers
         public IActionResult Login([FromBody] UserDto userModel)
         {
             var user = EnsureUser(userModel);
-
             var tokenString = GenerateJSONWebToken(user);
 
             UserDto userDTO = new UserDto
