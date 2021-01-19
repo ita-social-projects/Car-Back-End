@@ -28,7 +28,7 @@ namespace Car
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
-            _logger = logger;
+            this.logger = logger;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -36,7 +36,7 @@ namespace Car
 
         private IWebHostEnvironment Environment { get; }
 
-        private readonly ILogger _logger;
+        private readonly ILogger logger;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -79,12 +79,12 @@ namespace Car
         {
             if (env.IsDevelopment())
             {
-                _logger.LogInformation("Configuring for Development environment");
+                logger.LogInformation("Configuring for Development environment");
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                _logger.LogInformation("Configuring for Production environment");
+                logger.LogInformation("Configuring for Production environment");
             }
 
             app.UseMiddelwareHendler();

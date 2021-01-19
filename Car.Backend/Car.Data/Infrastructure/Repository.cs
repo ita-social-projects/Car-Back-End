@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Car.Data.Context;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Data.Infrastructure
 {
@@ -15,10 +15,10 @@ namespace Car.Data.Infrastructure
         private readonly CarContext context;
         private readonly DbSet<TEntity> dbEntities;
 
-        public Repository(CarContext _context)
+        public Repository(CarContext context)
         {
-            context = _context;
-            dbEntities = context.Set<TEntity>();
+            this.context = context;
+            dbEntities = this.context.Set<TEntity>();
         }
 
         /// <summary>

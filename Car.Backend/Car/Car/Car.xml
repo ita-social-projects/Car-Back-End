@@ -11,7 +11,7 @@
             <param name="carId">The car identifier.</param>
             <returns>The car entity</returns>
         </member>
-        <member name="M:Car.Controllers.CarController.UploadCarPhoto(System.Int32,Car.BLL.Dto.FormImage)">
+        <member name="M:Car.Controllers.CarController.UploadCarPhoto(System.Int32,Car.Domain.Dto.FormImage)">
             <summary>
             Uploads the car photo.
             </summary>
@@ -33,7 +33,7 @@
             <param name="carId">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
-        <member name="M:Car.Controllers.LoginController.Login(Car.BLL.Dto.UserDto)">
+        <member name="M:Car.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>
             ensures the user and returns a UserDTO for client app,
             if user doesn't exist in DB it creates a user and saves them to DB
@@ -55,7 +55,7 @@
             <param name="userId">The user identifier.</param>
             <returns>The user dto with avatar</returns>
         </member>
-        <member name="M:Car.Controllers.UserController.UploadUserAvatar(System.Int32,Car.BLL.Dto.FormImage)">
+        <member name="M:Car.Controllers.UserController.UploadUserAvatar(System.Int32,Car.Domain.Dto.FormImage)">
             <summary>
             Uploads the user avatar.
             </summary>
@@ -84,7 +84,7 @@
             <param name ="userId"> userId</param>
             <returns>user preferences</returns>
         </member>
-        <member name="M:Car.Controllers.UserPreferencesController.UpdatePreferences(Car.DAL.Entities.UserPreferences)">
+        <member name="M:Car.Controllers.UserPreferencesController.UpdatePreferences(Car.Data.Entities.UserPreferences)">
             <summary>
             updates preferences
             </summary>

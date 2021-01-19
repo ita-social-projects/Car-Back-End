@@ -9,16 +9,16 @@ namespace Car.UnitTests.Services
 {
     public class CarServiceTest
     {
-        private readonly ICarService _carService;
-        private readonly Mock<IRepository<Data.Entities.Car>> _repository;
-        private readonly Mock<IUnitOfWork<Data.Entities.Car>> _unitOfWork;
+        private readonly ICarService carService;
+        private readonly Mock<IRepository<Data.Entities.Car>> repository;
+        private readonly Mock<IUnitOfWork<Data.Entities.Car>> unitOfWork;
 
         public CarServiceTest()
         {
-            _repository = new Mock<IRepository<Data.Entities.Car>>();
-            _unitOfWork = new Mock<IUnitOfWork<Data.Entities.Car>>();
+            repository = new Mock<IRepository<Data.Entities.Car>>();
+            unitOfWork = new Mock<IUnitOfWork<Data.Entities.Car>>();
 
-            _carService = new CarService(_unitOfWork.Object);
+            carService = new CarService(unitOfWork.Object);
         }
 
         public Data.Entities.Car GetTestCar() =>
@@ -36,13 +36,13 @@ namespace Car.UnitTests.Services
         {
             var car = GetTestCar();
 
-            _repository.Setup(repository => repository.GetById(car.Id))
+            repository.Setup(repository => repository.GetById(car.Id))
                 .Returns(car);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            _carService.GetCarById(car.Id).Should().BeEquivalentTo(car);
+            carService.GetCarById(car.Id).Should().BeEquivalentTo(car);
         }
 
         [Fact]
@@ -50,13 +50,13 @@ namespace Car.UnitTests.Services
         {
             var car = GetTestCar();
 
-            _repository.Setup(repository => repository.GetById(It.IsNotIn(car.Id)))
+            repository.Setup(repository => repository.GetById(It.IsNotIn(car.Id)))
                .Returns(car);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-               .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+               .Returns(repository.Object);
 
-            _carService.GetCarById(It.IsNotIn(car.Id)).Should().BeNull();
+            carService.GetCarById(It.IsNotIn(car.Id)).Should().BeNull();
         }
     }
 }

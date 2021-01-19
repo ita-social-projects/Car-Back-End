@@ -9,11 +9,11 @@ namespace Car.UnitTests
 {
     public class ExceptionMiddlewareTest
     {
-        private readonly Mock<ExceptionMiddleware> _exceptionMiddleware;
+        private readonly Mock<ExceptionMiddleware> exceptionMiddleware;
 
         public ExceptionMiddlewareTest()
         {
-            _exceptionMiddleware = new Mock<ExceptionMiddleware>();
+            exceptionMiddleware = new Mock<ExceptionMiddleware>();
         }
 
         [Fact]

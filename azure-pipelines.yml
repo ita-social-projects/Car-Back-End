@@ -19,13 +19,13 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: 'CarBackEnd/Car.Tests/Car.Tests.csproj'
+    projects: 'Car.BackEnd/Car.UnitTests/Car.UnitTests.csproj'
     publishTestResults: false
     
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: 'CarBackEnd/CarBackEnd/CarBackEnd.csproj'
+    projects: 'Car.BackEnd/Car/Car.csproj'
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -37,6 +37,6 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'CarBackEnd'
+    artifactName: 'Car.BackEnd'
 
 
