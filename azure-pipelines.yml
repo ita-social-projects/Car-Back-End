@@ -19,13 +19,13 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: 'Car.BackEnd/Car.UnitTests/Car.UnitTests.csproj'
+    projects: 'Car.Backend/Car.UnitTests/Car.UnitTests.csproj'
     publishTestResults: false
     
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: 'Car.BackEnd/Car/Car.csproj'
+    projects: 'Car.Backend/Car/Car.csproj'
 
 - task: DotNetCoreCLI@2
   inputs:

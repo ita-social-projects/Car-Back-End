@@ -17,6 +17,8 @@ namespace Car.Data.EntityConfigurations
             builder.HasOne(journey => journey.Driver)
                 .WithMany(user => user.DriverJourney)
                 .HasForeignKey(journey => journey.DriverId);
+
+            builder.Property(journey => journey.Comments).HasMaxLength(100);
         }
     }
 }
