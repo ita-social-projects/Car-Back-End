@@ -19,6 +19,8 @@ namespace Car.Data.EntityConfigurations
                 .WithMany(user => user.ReceivedMessages)
                 .HasForeignKey(message => message.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(message => message.Text).HasMaxLength(400).IsRequired();
         }
     }
 }

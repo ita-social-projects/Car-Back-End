@@ -12,7 +12,7 @@ namespace Car.ServiceExtension
             var connectionString = configuration.GetConnectionString("CarConnection");
 
             services.AddDbContext<CarContext>(options =>
-                  options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Car.DAL")));
+                  options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Car.Data")));
         }
     }
 }

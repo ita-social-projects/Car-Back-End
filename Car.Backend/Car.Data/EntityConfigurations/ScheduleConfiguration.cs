@@ -11,6 +11,7 @@ namespace Car.Data.EntityConfigurations
             builder.HasKey(schedule => schedule.Id);
 
             builder.Property(schedule => schedule.Name).IsRequired();
+            builder.Property(schedule => schedule.Name).HasMaxLength(50).IsRequired();
         }
     }
 }
