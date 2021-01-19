@@ -1,5 +1,4 @@
 ﻿using Car.Data.Entities;
-using Microsoft.AspNetCore.Mvc;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +10,7 @@ namespace Car.Controllers
     [ApiController]
     public class UserPreferencesController : ControllerBase
     {
-        private readonly IPreferencesService preferencesService;
+        private readonly IPreferencesService _preferencesService;
 
         public UserPreferencesController(IPreferencesService preferencesService) =>
             _preferencesService = preferencesService;

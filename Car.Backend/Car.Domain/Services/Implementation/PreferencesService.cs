@@ -7,7 +7,7 @@ namespace Car.Domain.Services.Implementation
 {
     public class PreferencesService : IPreferencesService
     {
-        private readonly IUnitOfWork<UserPreferences> unitOfWork;
+        private readonly IUnitOfWork<UserPreferences> _unitOfWork;
 
         public PreferencesService(IUnitOfWork<UserPreferences> unitOfWork) => _unitOfWork = unitOfWork;
 
@@ -16,8 +16,8 @@ namespace Car.Domain.Services.Implementation
 
         public UserPreferences UpdatePreferences(UserPreferences preferences)
         {
-            unitOfWork.GetRepository().Update(preferences);
-            unitOfWork.SaveChanges();
+            _unitOfWork.GetRepository().Update(preferences);
+            _unitOfWork.SaveChanges();
             return preferences;
         }
     }
