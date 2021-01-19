@@ -4,24 +4,24 @@ using Car.Data.Interfaces;
 using Car.Domain.Exceptions;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using FluentAssertions;
 using Moq;
 using Xunit;
-using FluentAssertions;
 
 namespace Car.UnitTests.Services
 {
     public class UserServiceTest
     {
-        private readonly IUserService _userService;
-        private readonly Mock<IRepository<User>> _repository;
-        private readonly Mock<IUnitOfWork<User>> _unitOfWork;
+        private readonly IUserService userService;
+        private readonly Mock<IRepository<User>> repository;
+        private readonly Mock<IUnitOfWork<User>> unitOfWork;
 
         public UserServiceTest()
         {
-            _repository = new Mock<IRepository<User>>();
-            _unitOfWork = new Mock<IUnitOfWork<User>>();
+            repository = new Mock<IRepository<User>>();
+            unitOfWork = new Mock<IUnitOfWork<User>>();
 
-            _userService = new UserService(_unitOfWork.Object);
+            userService = new UserService(unitOfWork.Object);
         }
 
         public User GetTestUser() =>
@@ -39,13 +39,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            _userService.GetUserById(user.Id).Should().BeEquivalentTo(user);
+            userService.GetUserById(user.Id).Should().BeEquivalentTo(user);
         }
 
         [Fact]
@@ -53,13 +53,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            Action action = () => _userService.GetUserById(4);
+            Action action = () => userService.GetUserById(4);
             action.Should().Throw<DefaultApplicationException>();
         }
 
@@ -68,13 +68,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            _userService.GetUserWithAvatarById(user.Id).Should().BeEquivalentTo(
+            userService.GetUserWithAvatarById(user.Id).Should().BeEquivalentTo(
                 new User
                 {
                     Id = user.Id,
@@ -89,13 +89,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            Action action = () => _userService.GetUserWithAvatarById(4);
+            Action action = () => userService.GetUserWithAvatarById(4);
             action.Should().Throw<DefaultApplicationException>();
         }
     }

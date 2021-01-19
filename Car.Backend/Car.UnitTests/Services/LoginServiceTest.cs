@@ -10,16 +10,16 @@ namespace Car.UnitTests.Services
 {
     public class LoginServiceTest
     {
-        private readonly ILoginService _loginService;
-        private readonly Mock<IRepository<User>> _repository;
-        private readonly Mock<IUnitOfWork<User>> _unitOfWork;
+        private readonly ILoginService loginService;
+        private readonly Mock<IRepository<User>> repository;
+        private readonly Mock<IUnitOfWork<User>> unitOfWork;
 
         public LoginServiceTest()
         {
-            _repository = new Mock<IRepository<User>>();
-            _unitOfWork = new Mock<IUnitOfWork<User>>();
+            repository = new Mock<IRepository<User>>();
+            unitOfWork = new Mock<IUnitOfWork<User>>();
 
-            _loginService = new LoginService(_unitOfWork.Object);
+            loginService = new LoginService(unitOfWork.Object);
         }
 
         public User GetTestUser() =>
@@ -37,39 +37,39 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            _loginService.GetUser(user.Email).Should().NotBeSameAs(user);
+            loginService.GetUser(user.Email).Should().NotBeSameAs(user);
         }
 
         [Fact]
         public void TestUpdateUser()
         {
             var user = GetTestUser();
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            _loginService.SaveUser(user).Should().BeSameAs(user);
+            loginService.SaveUser(user).Should().BeSameAs(user);
         }
 
         [Fact]
         public void TestUpdateUser_WhenNotExist()
         {
             var user = GetTestUser();
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            _loginService.SaveUser(user).Should().NotBeNull();
+            loginService.SaveUser(user).Should().NotBeNull();
         }
     }
 }

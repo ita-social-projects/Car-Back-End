@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Moq;
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
@@ -9,6 +8,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Moq;
 using Xunit;
 using File = Google.Apis.Drive.v3.Data.File;
 
@@ -16,20 +16,20 @@ namespace Car.UnitTests.Services
 {
     public class ImageServiceTest
     {
-        private readonly IImageService<User, File> _imageService;
-        private readonly Mock<IRepository<User>> _repository;
-        private readonly Mock<IUnitOfWork<User>> _unitOfWork;
+        private readonly IImageService<User, File> imageService;
+        private readonly Mock<IRepository<User>> repository;
+        private readonly Mock<IUnitOfWork<User>> unitOfWork;
 
         public ImageServiceTest()
         {
             var driveService = new Mock<IDriveService<File>>();
             var strategy = new Mock<IEntityTypeStrategy<User>>();
 
-            _repository = new Mock<IRepository<User>>();
-            _unitOfWork = new Mock<IUnitOfWork<User>>();
+            repository = new Mock<IRepository<User>>();
+            unitOfWork = new Mock<IUnitOfWork<User>>();
 
-            _imageService = new ImageService<User>(
-                driveService.Object, _unitOfWork.Object, strategy.Object);
+            imageService = new ImageService<User>(
+                driveService.Object, unitOfWork.Object, strategy.Object);
         }
 
         public User GetTestUser() =>
@@ -47,7 +47,7 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            Func<Task> action = () => _imageService
+            Func<Task> action = () => imageService
                 .UploadImage(user.Id, new FormFile(
                     Stream.Null,
                     It.IsAny<int>(),
@@ -63,7 +63,7 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            Func<Task> action = () => _imageService.UploadImage(user.Id, null);
+            Func<Task> action = () => imageService.UploadImage(user.Id, null);
             action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
@@ -72,13 +72,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            Func<Task> action = () => _imageService.UploadImage(It.IsNotIn(user.Id), null);
+            Func<Task> action = () => imageService.UploadImage(It.IsNotIn(user.Id), null);
             action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
@@ -87,13 +87,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            Func<Task> action = () => _imageService.DeleteImage(user.Id);
+            Func<Task> action = () => imageService.DeleteImage(user.Id);
             action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
@@ -102,13 +102,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            Func<Task> action = () => _imageService.DeleteImage(It.IsNotIn(user.Id));
+            Func<Task> action = () => imageService.DeleteImage(It.IsNotIn(user.Id));
             action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
@@ -117,13 +117,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            Func<Task> action = () => _imageService.GetImageBytesById(4);
+            Func<Task> action = () => imageService.GetImageBytesById(4);
             action.Should().ThrowAsync<DefaultApplicationException>();
         }
 
@@ -132,13 +132,13 @@ namespace Car.UnitTests.Services
         {
             var user = GetTestUser();
 
-            _repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(repository => repository.GetById(user.Id))
                 .Returns(user);
 
-            _unitOfWork.Setup(repository => repository.GetRepository())
-                .Returns(_repository.Object);
+            unitOfWork.Setup(repository => repository.GetRepository())
+                .Returns(repository.Object);
 
-            Func<Task> action = () => _imageService.GetImageBytesById(user.Id);
+            Func<Task> action = () => imageService.GetImageBytesById(user.Id);
 
             action.Should().NotThrowAsync();
         }
