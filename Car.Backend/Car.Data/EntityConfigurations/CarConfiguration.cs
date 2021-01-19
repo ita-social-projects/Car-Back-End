@@ -12,6 +12,9 @@ namespace Car.Data.EntityConfigurations
             builder.HasOne(car => car.Owner)
                 .WithMany(user => user.UserCars)
                 .HasForeignKey(car => car.UserId);
+
+            builder.Property(car => car.Color).HasMaxLength(25).IsRequired();
+            builder.Property(car => car.PlateNumber).HasMaxLength(10).IsRequired();
         }
     }
 }
