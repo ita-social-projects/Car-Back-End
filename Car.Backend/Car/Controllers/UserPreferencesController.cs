@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Car.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/user-preferences")]
     [ApiController]
     public class UserPreferencesController : ControllerBase
     {
@@ -18,10 +18,10 @@ namespace Car.Controllers
         /// <summary>
         /// returns the preferences for user
         /// </summary>
-        /// <param name ="userId"> userId</param>
+        /// <param name ="id"> userId</param>
         /// <returns>user preferences</returns>
-        [HttpGet("{userId}")]
-        public IActionResult GetPreferences(int userId) => Ok(preferencesService.GetPreferences(userId));
+        [HttpGet("{id}")]
+        public IActionResult GetPreferences(int id) => Ok(preferencesService.GetPreferences(id));
 
         /// <summary>
         /// updates preferences

@@ -6,7 +6,7 @@ using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cars")]
     [ApiController]
     public class CarController : ControllerBase
     {
@@ -24,38 +24,38 @@ namespace Car.Controllers
         /// <summary>
         /// Gets the car by identifier.
         /// </summary>
-        /// <param name="carId">The car identifier.</param>
+        /// <param name="id">The car identifier.</param>
         /// <returns>The car entity</returns>
-        [HttpGet("{carId}")]
-        public IActionResult GetCarById(int carId)
+        [HttpGet("{id}")]
+        public IActionResult GetCarById(int id)
         {
-            return Ok(carService.GetCarById(carId));
+            return Ok(carService.GetCarById(id));
         }
 
         /// <summary>
         /// Uploads the car photo.
         /// </summary>
-        /// <param name="carId">The car identifier.</param>
+        /// <param name="id">The car identifier.</param>
         /// <param name="carFile">The car file.</param>
         /// <returns>The car entity</returns>
-        [HttpPut("{carId}/photo")]
-        public async Task<IActionResult> UploadCarPhoto(int carId, [FromForm] FormImage carFile) =>
-            Ok(await imageService.UploadImage(carId, carFile.Image));
+        [HttpPut("{id}/photo")]
+        public async Task<IActionResult> UploadCarPhoto(int id, [FromForm] FormImage carFile) =>
+            Ok(await imageService.UploadImage(id, carFile.Image));
 
         /// <summary>
         /// Deletes the car photo.
         /// </summary>
-        /// <param name="carId">The car identifier.</param>
+        /// <param name="id">The car identifier.</param>
         /// <returns>The car entity</returns>
-        [HttpDelete("{carId}/photo")]
-        public async Task<IActionResult> DeleteCarPhoto(int carId) => Ok(await imageService.DeleteImage(carId));
+        [HttpDelete("{id}/photo")]
+        public async Task<IActionResult> DeleteCarPhoto(int id) => Ok(await imageService.DeleteImage(id));
 
         /// <summary>
         /// Gets the car file by identifier.
         /// </summary>
-        /// <param name="carId">The car identifier.</param>
+        /// <param name="id">The car identifier.</param>
         /// <returns>Base64 array of car photo</returns>
-        [HttpGet("{carId}/photo")]
-        public async Task<IActionResult> GetCarFileById(int carId) => Ok(await imageService.GetImageBytesById(carId));
+        [HttpGet("{id}/photo")]
+        public async Task<IActionResult> GetCarFileById(int id) => Ok(await imageService.GetImageBytesById(id));
     }
 }
