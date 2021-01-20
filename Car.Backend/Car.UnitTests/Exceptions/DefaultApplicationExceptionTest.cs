@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Runtime.Serialization;
 using Car.Domain.Dto;
 using Car.Domain.Exceptions;
