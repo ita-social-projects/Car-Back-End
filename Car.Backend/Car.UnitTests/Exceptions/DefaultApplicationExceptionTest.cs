@@ -10,7 +10,6 @@ namespace Car.UnitTests.Exceptions
 {
     public class DefaultApplicationExceptionTest : DefaultApplicationException
     {
-        private static readonly StreamingContext StreamingContext = default(StreamingContext);
         private static readonly SerializationInfo SerializationInfo =
             new SerializationInfo(Type.GetType(It.IsAny<string>())!, new FormatterConverter());
 
@@ -22,7 +21,7 @@ namespace Car.UnitTests.Exceptions
         }
 
         private DefaultApplicationExceptionTest(bool isProtected)
-            : base(SerializationInfo, StreamingContext)
+            : base(SerializationInfo, default)
         {
         }
 
@@ -51,7 +50,15 @@ namespace Car.UnitTests.Exceptions
         }
 
         [Fact]
-        public void StatusCodeTest()
+        public void TestGetObjectData()
+        {
+            Action action = () => defaultApplicationException.GetObjectData(SerializationInfo, default);
+
+            action.Should().BeOfType<Action>();
+        }
+
+        [Fact]
+        public void TestStatusCode()
         {
             defaultApplicationException.StatusCode = 200;
 
@@ -59,7 +66,7 @@ namespace Car.UnitTests.Exceptions
         }
 
         [Fact]
-        public void SeverityTest()
+        public void TestSeverity()
         {
             defaultApplicationException.Severity = Severity.Warning;
 
