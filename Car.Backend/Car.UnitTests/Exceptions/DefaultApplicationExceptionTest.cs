@@ -15,11 +15,16 @@ namespace Car.UnitTests.Exceptions
             new SerializationInfo(Type.GetType(It.IsAny<string>())!, new FormatterConverter());
 
         private readonly DefaultApplicationException defaultApplicationException = new DefaultApplicationException();
-        private readonly string message;
+        private readonly string message = It.IsAny<int>().ToString();
 
         public DefaultApplicationExceptionTest()
-        : base(SerializationInfo, StreamingContext) =>
-            message = It.IsAny<string>();
+        {
+        }
+
+        private DefaultApplicationExceptionTest(bool isProtected)
+            : base(SerializationInfo, StreamingContext)
+        {
+        }
 
         [Fact]
         public void TestParameterLessConstructor()
@@ -42,7 +47,7 @@ namespace Car.UnitTests.Exceptions
         {
             Action action = () => throw new DefaultApplicationExceptionTest();
 
-            action.Should().Throw<DefaultApplicationException>().WithMessage(message);
+            action.Should().Throw<DefaultApplicationException>();
         }
 
         [Fact]
