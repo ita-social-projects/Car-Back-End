@@ -67,6 +67,13 @@
             </summary>
             <returns>The models</returns>
         </member>
+        <member name="M:CarBackEnd.Controllers.ModelController.GetAll(System.Int32)">
+            <summary>
+            Gets all models.
+            </summary>
+            <param name="brandId">The brand identifier.</param>
+            <returns>All the models</returns>
+        </member>
         <member name="M:CarBackEnd.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
             Gets the user by identifier.
