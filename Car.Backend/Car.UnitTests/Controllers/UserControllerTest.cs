@@ -15,18 +15,18 @@ namespace Car.UnitTests.Controllers
     public class UserControllerTest
     {
         private readonly Mock<IUserService> userService;
-        private readonly Mock<IImageService<Data.Entities.User, File>> imageService;
+        private readonly Mock<IImageService<User, File>> imageService;
         private readonly UserController userController;
 
         public UserControllerTest()
         {
             userService = new Mock<IUserService>();
-            imageService = new Mock<IImageService<Data.Entities.User, File>>();
+            imageService = new Mock<IImageService<User, File>>();
             userController = new UserController(userService.Object, imageService.Object);
         }
 
-        public Data.Entities.User GetTestUser() =>
-            new Data.Entities.User()
+        public User GetTestUser() =>
+            new User()
             {
                 Id = It.IsAny<int>(),
                 Name = It.IsAny<string>(),
@@ -46,9 +46,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.User>();
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = GetTestUser();
-            userService.Setup(u => u.GetUserById(user.Id)).Returns((Data.Entities.User)null);
+            userService.Setup(u => u.GetUserById(user.Id)).Returns((User)null);
 
             // Act
             var result = userController.GetUserById(user.Id);
@@ -84,9 +84,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.User>();
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -96,7 +96,7 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var user = GetTestUser();
             var formImage = new FormImage();
-            imageService.Setup(p => p.UploadImage(user.Id, formImage.Image)).Returns(Task.FromResult(new Data.Entities.User()));
+            imageService.Setup(p => p.UploadImage(user.Id, formImage.Image)).Returns(Task.FromResult(new User()));
 
             // Act
             var result = await userController.UploadUserAvatar(user.Id, formImage);
@@ -105,9 +105,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.User>();
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -121,7 +121,7 @@ namespace Car.UnitTests.Controllers
             // Act
             imageService
                 .Setup(p => p.UploadImage(user.Id, formImage.Image))
-                .Returns(Task.FromResult<Data.Entities.User>(null));
+                .Returns(Task.FromResult<User>(null));
 
             // Assert
             using (new AssertionScope())
@@ -137,7 +137,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = GetTestUser();
-            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult(new Data.Entities.User()));
+            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult(new User()));
 
             // Act
             var result = await userController.DeleteUserAvatar(user.Id);
@@ -146,9 +146,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.User>();
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -157,7 +157,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = GetTestUser();
-            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult<Data.Entities.User>(null));
+            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult<User>(null));
 
             // Act
             var result = await userController.DeleteUserAvatar(user.Id);
