@@ -8,14 +8,14 @@
             <summary>
             Gets the car by identifier.
             </summary>
-            <param name="carId">The car identifier.</param>
+            <param name="id">The car identifier.</param>
             <returns>The car entity</returns>
         </member>
         <member name="M:Car.Controllers.CarController.UploadCarPhoto(System.Int32,Car.Domain.Dto.FormImage)">
             <summary>
             Uploads the car photo.
             </summary>
-            <param name="carId">The car identifier.</param>
+            <param name="id">The car identifier.</param>
             <param name="carFile">The car file.</param>
             <returns>The car entity</returns>
         </member>
@@ -23,14 +23,14 @@
             <summary>
             Deletes the car photo.
             </summary>
-            <param name="carId">The car identifier.</param>
+            <param name="id">The car identifier.</param>
             <returns>The car entity</returns>
         </member>
         <member name="M:Car.Controllers.CarController.GetCarFileById(System.Int32)">
             <summary>
             Gets the car file by identifier.
             </summary>
-            <param name="carId">The car identifier.</param>
+            <param name="id">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
         <member name="M:Car.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
@@ -45,21 +45,21 @@
             <summary>
             Gets the user by identifier.
             </summary>
-            <param name="userId">The user identifier.</param>
+            <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
         <member name="M:Car.Controllers.UserController.GetUserWithAvatarById(System.Int32)">
             <summary>
             Gets the user with avatar by identifier.
             </summary>
-            <param name="userId">The user identifier.</param>
+            <param name="id">The user identifier.</param>
             <returns>The user dto with avatar</returns>
         </member>
         <member name="M:Car.Controllers.UserController.UploadUserAvatar(System.Int32,Car.Domain.Dto.FormImage)">
             <summary>
             Uploads the user avatar.
             </summary>
-            <param name="userId">The user identifier.</param>
+            <param name="id">The user identifier.</param>
             <param name="userFile">The user file.</param>
             <returns>The user entity</returns>
         </member>
@@ -67,21 +67,21 @@
             <summary>
             Deletes the user avatar.
             </summary>
-            <param name="userId">The user identifier.</param>
+            <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
         <member name="M:Car.Controllers.UserController.GetUserFileById(System.Int32)">
             <summary>
             Gets the user file by identifier.
             </summary>
-            <param name="userId">The user identifier.</param>
+            <param name="id">The user identifier.</param>
             <returns>Base64 array of user avatar</returns>
         </member>
         <member name="M:Car.Controllers.UserPreferencesController.GetPreferences(System.Int32)">
             <summary>
             returns the preferences for user
             </summary>
-            <param name ="userId"> userId</param>
+            <param name ="id"> userId</param>
             <returns>user preferences</returns>
         </member>
         <member name="M:Car.Controllers.UserPreferencesController.UpdatePreferences(Car.Data.Entities.UserPreferences)">

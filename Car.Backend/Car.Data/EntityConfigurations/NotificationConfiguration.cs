@@ -15,6 +15,7 @@ namespace Car.Data.EntityConfigurations
                .HasForeignKey(notification => notification.UserId);
 
             builder.Property(notification => notification.Description).IsRequired();
+            builder.Property(notification => notification.Description).HasMaxLength(400).IsRequired();
         }
     }
 }
