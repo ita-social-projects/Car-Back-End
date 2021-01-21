@@ -4,13 +4,13 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
-CarBackEnd/CarBackEnd/appsettings.json
-CarBackEnd/CarBackEnd/appsettings.Development.json
-CarBackEnd/CarBackEnd/appsettings.Production.json
-CarBackEnd/CarBackEnd/wwwroot/Credentials/
-CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-avatar-drive.json
-CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-car-drive.json
-CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-test-drive.json
+Car.BackEnd/Car/appsettings.json
+Car.BackEnd/Car/appsettings.Development.json
+Car.BackEnd/Car/appsettings.Production.json
+Car.BackEnd/Car/wwwroot/Credentials/
+Car.BackEnd/Car/wwwroot/Credentials/credential-avatar-drive.json
+Car.BackEnd/Car/wwwroot/Credentials/credential-car-drive.json
+Car.BackEnd/Car/wwwroot/Credentials/credential-test-drive.json
 *.rsuser
 *.suo
 *.user

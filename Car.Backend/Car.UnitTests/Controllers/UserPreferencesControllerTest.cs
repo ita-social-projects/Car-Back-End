@@ -10,8 +10,8 @@ namespace Car.UnitTests.Controllers
 {
     public class UserPreferencesControllerTest
     {
-        private readonly Mock<IPreferencesService> _preferencesService;
-        private readonly UserPreferencesController _userPreferencesController;
+        private readonly Mock<IPreferencesService> preferencesService;
+        private readonly UserPreferencesController userPreferencesController;
 
         public User GetTestUser() =>
             new User()
@@ -22,8 +22,8 @@ namespace Car.UnitTests.Controllers
 
         public UserPreferencesControllerTest()
         {
-            _preferencesService = new Mock<IPreferencesService>();
-            _userPreferencesController = new UserPreferencesController(_preferencesService.Object);
+            preferencesService = new Mock<IPreferencesService>();
+            userPreferencesController = new UserPreferencesController(preferencesService.Object);
         }
 
         [Fact]
@@ -31,10 +31,10 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = GetTestUser();
-            _preferencesService.Setup(x => x.GetPreferences(It.IsAny<int>())).Returns(new UserPreferences());
+            preferencesService.Setup(x => x.GetPreferences(It.IsAny<int>())).Returns(new UserPreferences());
 
             // Act
-            var result = _userPreferencesController.GetPreferences(user.Id);
+            var result = userPreferencesController.GetPreferences(user.Id);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -46,10 +46,10 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = GetTestUser();
-            _preferencesService.Setup(x => x.GetPreferences(It.IsAny<int>())).Returns((UserPreferences)null);
+            preferencesService.Setup(x => x.GetPreferences(It.IsAny<int>())).Returns((UserPreferences)null);
 
             // Act
-            var result = _userPreferencesController.GetPreferences(user.Id);
+            var result = userPreferencesController.GetPreferences(user.Id);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -62,10 +62,10 @@ namespace Car.UnitTests.Controllers
             var userPreferences = new UserPreferences();
 
             // Arrange
-            _preferencesService.Setup(u => u.UpdatePreferences(userPreferences)).Returns(userPreferences);
+            preferencesService.Setup(u => u.UpdatePreferences(userPreferences)).Returns(userPreferences);
 
             // Act
-            var result = _userPreferencesController.UpdatePreferences(userPreferences);
+            var result = userPreferencesController.UpdatePreferences(userPreferences);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -78,10 +78,10 @@ namespace Car.UnitTests.Controllers
             var userPreferences = new UserPreferences();
 
             // Arrange
-            _preferencesService.Setup(u => u.UpdatePreferences(userPreferences)).Returns((UserPreferences)null);
+            preferencesService.Setup(u => u.UpdatePreferences(userPreferences)).Returns((UserPreferences)null);
 
             // Act
-            var result = _userPreferencesController.UpdatePreferences(userPreferences);
+            var result = userPreferencesController.UpdatePreferences(userPreferences);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();

@@ -8,10 +8,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 
     <DocumentationFile>..\Car\Car\Car.xml</DocumentationFile>
+    <DocumentationFile>Car.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>Car.xml</DocumentationFile>
     <OutputPath></OutputPath>
 
   </PropertyGroup>

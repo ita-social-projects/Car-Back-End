@@ -6,29 +6,25 @@ namespace Car.Data.Context
 {
     public class CarContext : DbContext
     {
-        DbSet<User> User { get; set; }
+        public DbSet<User> User { get; set; }
 
-        DbSet<Journey> Journeys { get; set; }
+        public DbSet<Journey> Journeys { get; set; }
 
-        DbSet<UserJourney> UserJourney { get; set; }
+        public DbSet<UserJourney> UserJourney { get; set; }
 
-        DbSet<Address> Addresses { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
-        DbSet<Entities.Car> Cars { get; set; }
+        public DbSet<Entities.Car> Cars { get; set; }
 
-        DbSet<Message> Messages { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
-        DbSet<Notification> Notifications { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
-        DbSet<UserPreferences> UserPreferences { get; set; }
+        public DbSet<UserPreferences> UserPreferences { get; set; }
 
-        DbSet<Stop> Stops { get; set; }
+        public DbSet<Stop> Stops { get; set; }
 
-        DbSet<Schedule> Schedule { get; set; }
-
-        DbSet<Chat> Chats { get; set; }
-
-        DbSet<UserChat> UserChat { get; set; }
+        public DbSet<Schedule> Schedule { get; set; }
 
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)

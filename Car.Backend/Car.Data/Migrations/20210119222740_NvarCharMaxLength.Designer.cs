@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210119222740_NvarCharMaxLength")]
+    partial class NvarCharMaxLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,31 +85,7 @@ namespace Car.Data.Migrations
                     b.ToTable("Cars");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("Car.DAL.Entities.Chat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("ChatName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NameOfUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NameOfUserId");
-
-                    b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("Car.DAL.Entities.Journey", b =>
-=======
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
->>>>>>> f479f8a034549558b15e401d7835a952638782bf
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -295,26 +273,7 @@ namespace Car.Data.Migrations
                     b.ToTable("User");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("Car.DAL.Entities.UserChat", b =>
-                {
-                    b.Property<int>("ChatId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ChatId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserChat");
-                });
-
-            modelBuilder.Entity("Car.DAL.Entities.UserJourney", b =>
-=======
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
->>>>>>> f479f8a034549558b15e401d7835a952638782bf
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -368,20 +327,7 @@ namespace Car.Data.Migrations
                     b.Navigation("Owner");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("Car.DAL.Entities.Chat", b =>
-                {
-                    b.HasOne("Car.DAL.Entities.User", "NameOfUser")
-                        .WithMany()
-                        .HasForeignKey("NameOfUserId");
-
-                    b.Navigation("NameOfUser");
-                });
-
-            modelBuilder.Entity("Car.DAL.Entities.Journey", b =>
-=======
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
->>>>>>> f479f8a034549558b15e401d7835a952638782bf
                 {
                     b.HasOne("Car.Data.Entities.User", "Driver")
                         .WithMany("DriverJourney")
@@ -451,30 +397,7 @@ namespace Car.Data.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("Car.DAL.Entities.UserChat", b =>
-                {
-                    b.HasOne("Car.DAL.Entities.Chat", "Chat")
-                        .WithMany("Users")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Car.DAL.Entities.User", "User")
-                        .WithMany("Chats")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Chat");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Car.DAL.Entities.UserJourney", b =>
-=======
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
->>>>>>> f479f8a034549558b15e401d7835a952638782bf
                 {
                     b.HasOne("Car.Data.Entities.Journey", "Journey")
                         .WithMany("Participants")
@@ -507,16 +430,7 @@ namespace Car.Data.Migrations
                     b.Navigation("Stop");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("Car.DAL.Entities.Chat", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Car.DAL.Entities.Journey", b =>
-=======
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
->>>>>>> f479f8a034549558b15e401d7835a952638782bf
                 {
                     b.Navigation("Participants");
 
@@ -530,8 +444,6 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.User", b =>
                 {
-                    b.Navigation("Chats");
-
                     b.Navigation("DriverJourney");
 
                     b.Navigation("ReceivedMessages");

@@ -1,7 +1,7 @@
 ﻿using Car.Data.Entities;
-using Microsoft.AspNetCore.Mvc;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Car.Controllers
 {
@@ -10,10 +10,10 @@ namespace Car.Controllers
     [ApiController]
     public class UserPreferencesController : ControllerBase
     {
-        private readonly IPreferencesService _preferencesService;
+        private readonly IPreferencesService preferencesService;
 
         public UserPreferencesController(IPreferencesService preferencesService) =>
-            _preferencesService = preferencesService;
+            this.preferencesService = preferencesService;
 
         /// <summary>
         /// returns the preferences for user
@@ -21,7 +21,7 @@ namespace Car.Controllers
         /// <param name ="userId"> userId</param>
         /// <returns>user preferences</returns>
         [HttpGet("{userId}")]
-        public IActionResult GetPreferences(int userId) => Ok(_preferencesService.GetPreferences(userId));
+        public IActionResult GetPreferences(int userId) => Ok(preferencesService.GetPreferences(userId));
 
         /// <summary>
         /// updates preferences
@@ -30,6 +30,6 @@ namespace Car.Controllers
         /// <returns>updated preference</returns>
         [HttpPut]
         public IActionResult UpdatePreferences([FromBody] UserPreferences preferences) =>
-            Ok(_preferencesService.UpdatePreferences(preferences));
+            Ok(preferencesService.UpdatePreferences(preferences));
     }
 }
