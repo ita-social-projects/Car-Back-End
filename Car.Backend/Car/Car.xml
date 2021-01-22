@@ -41,6 +41,13 @@
             <param name="userModel">User model params</param>
             <returns>UserDTO for a client app</returns>
         </member>
+        <member name="M:Car.Controllers.UserChatsController.GetUserChats(System.Int32)">
+            <summary>
+            Get the user chats by User Id
+            </summary>
+            <param name="userId">User indetifier</param>
+            <returns>Chats of User by Id</returns>
+        </member>
         <member name="M:Car.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
             Gets the user by identifier.

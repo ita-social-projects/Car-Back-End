@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Car.Hubs;
 using Car.ServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -49,6 +50,8 @@ namespace Car
 
             services.AddLogging();
             services.AddApplicationInsightsTelemetry();
+
+            services.AddSignalR();
 
             services.AddSwaggerGen(c =>
             {
@@ -100,6 +103,7 @@ namespace Car
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
 
             app.UseSwagger();
