@@ -44,5 +44,20 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<OkObjectResult>();
             (result as OkObjectResult)?.Value.Should().BeOfType<List<Chat>>();
         }
+
+        [Fact]
+        public void GetUserChats_WhenUserNotExists_ReturnsNull()
+        {
+            // Arrange
+            var user = this.GetTestUser();
+            this.userChatsManager.Setup(x => x.GetUsersChats(It.IsAny<int>())).Returns((List<Chat>)null);
+
+            // Act
+            var result = this.userChatsController.GetUserChats(user.Id);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().BeNull();
+        }
     }
 }
