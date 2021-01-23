@@ -4,6 +4,8 @@ using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Implementation.Strategy;
 using Car.Domain.Services.Interfaces;
+using CarBackEnd.Configurations;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using File = Google.Apis.Drive.v3.Data.File;
 
@@ -28,6 +30,13 @@ namespace Car.ServiceExtension
             services.AddScoped<IUnitOfWork<UserPreferences>, UnitOfWork<UserPreferences>>();
             services.AddScoped<IEntityTypeStrategy<User>, UserEntityStrategy>();
             services.AddScoped<IEntityTypeStrategy<Data.Entities.Car>, CarEntityStrategy>();
+        }
+
+        public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<Jwt>(configuration.GetSection("Jwt"));
+            services.Configure<CredentialsFile>(configuration.GetSection("CredentialsFile"));
+            services.Configure<GoogleFolders>(configuration.GetSection("GoogleFolders"));
         }
     }
 }

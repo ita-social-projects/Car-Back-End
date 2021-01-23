@@ -46,7 +46,7 @@ namespace Car
             services.AddControllers();
             services.AddServices();
             services.AddCorsSettings();
-
+            services.InitializeConfigurations(Configuration);
             services.AddLogging();
             services.AddApplicationInsightsTelemetry();
 
