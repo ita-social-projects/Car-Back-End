@@ -222,6 +222,9 @@ namespace Car.Data.Migrations
                     b.Property<bool>("IsFree")
                         .HasColumnType("bit");
 
+                    b.Property<TimeSpan>("JourneyDuration")
+                        .HasColumnType("time");
+
                     b.Property<int>("RouteDistance")
                         .HasColumnType("int");
 
