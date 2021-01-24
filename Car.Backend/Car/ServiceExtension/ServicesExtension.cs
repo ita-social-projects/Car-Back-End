@@ -28,6 +28,9 @@ namespace Car.ServiceExtension
             services.AddScoped<IUnitOfWork<UserPreferences>, UnitOfWork<UserPreferences>>();
             services.AddScoped<IEntityTypeStrategy<User>, UserEntityStrategy>();
             services.AddScoped<IEntityTypeStrategy<Data.Entities.Car>, CarEntityStrategy>();
+            services.AddScoped<IJourneyService, JourneyService>();
+            services.AddScoped<IRepository<Journey>, Repository<Journey>>();
+            services.AddScoped<IUnitOfWork<Journey>, UnitOfWork<Journey>>();
         }
     }
 }
