@@ -17,15 +17,15 @@ namespace Car.Domain.Services.Implementation
             this.unitOfWork = unitOfWork;
         }
 
-        public CarEntity AddCar(CarDto carDTO)
+        public CarEntity AddCar(CarDto carDto)
         {
             var newCar = new CarEntity
             {
-                BrandId = carDTO.BrandId,
-                ModelId = carDTO.ModelId,
-                Color = carDTO.Color.ToString(),
-                PlateNumber = carDTO.PlateNumber,
-                UserId = carDTO.UserId,
+                BrandId = carDto.BrandId,
+                ModelId = carDto.ModelId,
+                Color = carDto.Color.ToString(),
+                PlateNumber = carDto.PlateNumber,
+                UserId = carDto.UserId,
             };
 
             var car = unitOfWork.GetRepository().Add(newCar);
