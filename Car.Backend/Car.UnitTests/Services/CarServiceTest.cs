@@ -25,8 +25,8 @@ namespace Car.UnitTests.Services
             new Data.Entities.Car()
             {
                 Id = It.IsAny<int>(),
-                Brand = It.IsAny<string>(),
-                Model = It.IsAny<string>(),
+                BrandId = It.IsAny<int>(),
+                ModelId = It.IsAny<int>(),
                 Color = It.IsAny<string>(),
                 PlateNumber = It.IsAny<string>(),
             };

@@ -21,7 +21,7 @@ namespace Car.UnitTests.Controllers
             new Data.Entities.Car()
             {
                 Id = It.IsAny<int>(),
-                Model = It.IsAny<string>(),
+                ModelId = It.IsAny<int>(),
             };
 
         public CarControllerTest()
