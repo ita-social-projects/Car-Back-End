@@ -53,7 +53,7 @@ namespace Car.Controllers
         /// <param name="car">The car.</param>
         /// <returns>New car</returns>
         [HttpPost]
-        public IActionResult AddCar([FromBody] CarDTO car)
+        public IActionResult AddCar([FromBody] CarDto car)
         {
             return Ok(carService.AddCar(car));
         }

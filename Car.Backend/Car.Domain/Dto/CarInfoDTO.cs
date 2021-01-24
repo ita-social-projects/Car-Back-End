@@ -1,6 +1,6 @@
 ﻿namespace Car.Domain.Dto
 {
-    public class CarInfoDTO
+    public class CarInfoDto
     {
         public int Id { get; set; }
 

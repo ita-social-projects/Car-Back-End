@@ -17,7 +17,7 @@ namespace Car.Domain.Services.Implementation
             this.unitOfWork = unitOfWork;
         }
 
-        public CarEntity AddCar(CarDTO carDTO)
+        public CarEntity AddCar(CarDto carDTO)
         {
             var newCar = new CarEntity
             {
@@ -39,12 +39,12 @@ namespace Car.Domain.Services.Implementation
             return unitOfWork.GetRepository().GetById(carId);
         }
 
-        public IEnumerable<CarInfoDTO> GetAllByUserId(int userId)
+        public IEnumerable<CarInfoDto> GetAllByUserId(int userId)
         {
             return unitOfWork.GetRepository()
                 .Query()
                 .Where(car => car.UserId == userId)
-                .Select(car => new CarInfoDTO
+                .Select(car => new CarInfoDto
                 {
                     Id = car.Id,
                     BrandName = car.Brand.Name,
