@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210119222740_NvarCharMaxLength")]
+    partial class NvarCharMaxLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,9 +107,6 @@ namespace Car.Data.Migrations
 
                     b.Property<bool>("IsFree")
                         .HasColumnType("bit");
-
-                    b.Property<TimeSpan>("JourneyDuration")
-                        .HasColumnType("time");
 
                     b.Property<int>("RouteDistance")
                         .HasColumnType("int");

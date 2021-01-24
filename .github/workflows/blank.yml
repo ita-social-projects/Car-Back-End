@@ -28,13 +28,13 @@ jobs:
         dotnet-version: 5.0.102
     - name: Restore dependencies
       run: dotnet restore --interactive
-      working-directory: Car.BackEnd
+      working-directory: Car.Backend
     - name: Build
       run: dotnet build --configuration Release
-      working-directory: Car.BackEnd/Car
+      working-directory: Car.Backend/Car
     - name: Test
       run: dotnet test --verbosity normal 
-      working-directory: Car.BackEnd/Car.UnitTests
+      working-directory: Car.Backend/Car.UnitTests
   sonarscan:
     needs: [build]
     runs-on: ubuntu-latest
@@ -56,6 +56,6 @@ jobs:
         sonarProjectName:  Car-Back-End
         # The name of the SonarQube organization in SonarCloud. For hosted SonarQube, skip this setting.
         sonarOrganization: ita-social-projects
-        sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="/github/workspace/Car.BackEnd/Car.UnitTests/coverage.opencover.xml" /d:sonar.coverage.exclusions=**/Car.Data/**,**/Car.Domain/Dto/**,**/Startup.cs,**/Program.cs /d:sonar.exclusions=**/Car.Data/Migrations/**
-        dotnetBuildArguments: ./Car.BackEnd/Car.Backend.sln -c Debug
-        dotnetTestArguments: ./Car.BackEnd/Car.UnitTests/Car.UnitTests.csproj --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover 
+        sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="/github/workspace/Car.Backend/Car.UnitTests/coverage.opencover.xml" /d:sonar.coverage.exclusions=**/Car.Data/**,**/Car.Domain/Dto/**,**/Startup.cs,**/Program.cs /d:sonar.exclusions=**/Car.Data/Migrations/**
+        dotnetBuildArguments: ./Car.Backend/Car.Backend.sln -c Debug
+        dotnetTestArguments: ./Car.Backend/Car.UnitTests/Car.UnitTests.csproj --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover 
