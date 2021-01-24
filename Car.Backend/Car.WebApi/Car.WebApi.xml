@@ -4,6 +4,26 @@
         <name>Car.WebApi</name>
     </assembly>
     <members>
+        <member name="M:Car.WebApi.Controllers.BrandController.GetBrands">
+            <summary>
+            Gets the brands.
+            </summary>
+            <returns>The brands</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.CarController.GetAllByUserId(System.Int32)">
+            <summary>
+            Gets all the cars by user id
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <returns>All user's cars</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Dto.CarDto)">
+            <summary>
+            Adds the car.
+            </summary>
+            <param name="car">The car.</param>
+            <returns>New car</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.CarController.GetCarById(System.Int32)">
             <summary>
             Gets the car by identifier.
@@ -33,6 +53,34 @@
             <param name="carId">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetCurent(System.Int32)">
+            <summary>
+            Looks for information about current journey where current user is participent or driver
+            </summary>
+            <param name="userId">id of current user</param>
+            <returns>status of request with appropriate data</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
+            <summary>
+            Looks for information about past journeys where current user is participent or driver
+            </summary>
+            <param name="userId">id of current user</param>
+            <returns>status of request with appropriate data</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetUpcoming(System.Int32)">
+            <summary>
+            Looks for information about all upcoming journeys where current user is participent or driver
+            </summary>
+            <param name="userId">id of current user</param>
+            <returns>status of request with appropriate data</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetScheduled(System.Int32)">
+            <summary>
+            Looks for information about all scheduled journeys where current user is participent or driver
+            </summary>
+            <param name="userId">id of current user</param>
+            <returns>status of request with appropriate data</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>
             ensures the user and returns a UserDTO for client app,
@@ -40,6 +88,13 @@
             </summary>
             <param name="userModel">User model params</param>
             <returns>UserDTO for a client app</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ModelController.GetAll(System.Int32)">
+            <summary>
+            Gets all models.
+            </summary>
+            <param name="brandId">The brand identifier.</param>
+            <returns>All the models</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
