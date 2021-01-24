@@ -11,6 +11,8 @@ namespace Car.Data.Entities
 
         public DateTime DepartureTime { get; set; }
 
+        public TimeSpan JourneyDuration { get; set; }
+
         public int CountOfSeats { get; set; }
 
         public string Comments { get; set; }

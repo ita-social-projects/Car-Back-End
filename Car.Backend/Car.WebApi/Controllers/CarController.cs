@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +21,41 @@ namespace Car.WebApi.Controllers
         {
             this.carService = carService;
             this.imageService = imageService;
+        }
+
+        /// <summary>
+        /// Gets all the cars by user id
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>All user's cars</returns>
+        [HttpGet("byUser/{userId}")]
+        public async Task<IActionResult> GetAllByUserId(int userId)
+        {
+            var cars = carService.GetAllByUserId(userId).ToList();
+
+            var listOperation = new List<Task<string>>();
+
+            cars.ForEach(car => listOperation.Add(imageService.GetImageBytesById(car.Id)));
+
+            await Task.WhenAll(listOperation);
+
+            for (int i = 0; i < cars.Count; i++)
+            {
+                cars[i].ByteOfImage = listOperation[i].Result;
+            }
+
+            return Ok(cars);
+        }
+
+        /// <summary>
+        /// Adds the car.
+        /// </summary>
+        /// <param name="car">The car.</param>
+        /// <returns>New car</returns>
+        [HttpPost]
+        public IActionResult AddCar([FromBody] CarDto car)
+        {
+            return Ok(carService.AddCar(car));
         }
 
         /// <summary>
