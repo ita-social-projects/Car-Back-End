@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Car.ServiceExtension;
+using Car.WebApi.ServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace Car
+namespace Car.WebApi
 {
     public class Startup
     {
@@ -43,7 +43,8 @@ namespace Car
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext(Configuration);
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddServices();
             services.AddCorsSettings();
 
