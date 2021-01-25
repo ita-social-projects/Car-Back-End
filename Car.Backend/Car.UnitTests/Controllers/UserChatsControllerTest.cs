@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Car.Controllers;
-using Car.Data.Entities;
-using Car.Domain.Services.Implementation;
-using Car.Domain.Services.Interfaces;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Xunit;
-
-namespace Car.UnitTests.Controllers
+﻿namespace Car.UnitTests.Controllers
 {
+    using System.Collections.Generic;
+    using Car.Controllers;
+    using Car.Data.Entities;
+    using Car.Domain.Services.Interfaces;
+    using FluentAssertions;
+    using Microsoft.AspNetCore.Mvc;
+    using Moq;
+    using Xunit;
+
     public class UserChatsControllerTest
     {
         private readonly Mock<IUserChatsManager> userChatsManager;
