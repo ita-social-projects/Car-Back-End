@@ -4,26 +4,6 @@
         <name>Car</name>
     </assembly>
     <members>
-        <member name="M:Car.Controllers.BrandController.GetBrands">
-            <summary>
-            Gets the brands.
-            </summary>
-            <returns>The brands</returns>
-        </member>
-        <member name="M:Car.Controllers.CarController.GetAllByUserId(System.Int32)">
-            <summary>
-            Gets all the cars by user id
-            </summary>
-            <param name="userId">The user identifier.</param>
-            <returns>All user's cars</returns>
-        </member>
-        <member name="M:Car.Controllers.CarController.AddCar(Car.Domain.Dto.CarDto)">
-            <summary>
-            Adds the car.
-            </summary>
-            <param name="car">The car.</param>
-            <returns>New car</returns>
-        </member>
         <member name="M:Car.Controllers.CarController.GetCarById(System.Int32)">
             <summary>
             Gets the car by identifier.
@@ -88,20 +68,6 @@
             </summary>
             <param name="userModel">User model params</param>
             <returns>UserDTO for a client app</returns>
-        </member>
-        <member name="M:Car.Controllers.ModelController.GetAll(System.Int32)">
-            <summary>
-            Gets all models.
-            </summary>
-            <param name="brandId">The brand identifier.</param>
-            <returns>All the models</returns>
-        </member>
-        <member name="M:Car.Controllers.UserChatsController.GetUserChats(System.Int32)">
-            <summary>
-            Get the user chats by User Id
-            </summary>
-            <param name="userId">User indetifier</param>
-            <returns>Chats of User by Id</returns>
         </member>
         <member name="M:Car.Controllers.UserController.GetUserById(System.Int32)">
             <summary>

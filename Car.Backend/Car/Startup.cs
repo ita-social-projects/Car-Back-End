@@ -44,7 +44,8 @@ namespace Car
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext(Configuration);
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddServices();
             services.AddCorsSettings();
 
