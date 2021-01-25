@@ -31,7 +31,7 @@ jobs:
       working-directory: Car.Backend
     - name: Build
       run: dotnet build --configuration Release
-      working-directory: Car.Backend/Car
+      working-directory: Car.Backend/Car.WebApi
     - name: Test
       run: dotnet test --verbosity normal 
       working-directory: Car.Backend/Car.UnitTests

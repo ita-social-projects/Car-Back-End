@@ -1,6 +1,6 @@
-﻿using Car.Controllers;
-using Car.Data.Entities;
+﻿using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

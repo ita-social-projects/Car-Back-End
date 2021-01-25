@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Car.Middelware
+namespace Car.WebApi.Middelware
 {
     public class ExceptionMiddleware
     {

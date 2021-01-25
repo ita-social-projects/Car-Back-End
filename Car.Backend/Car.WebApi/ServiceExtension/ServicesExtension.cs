@@ -7,7 +7,7 @@ using Car.Domain.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using File = Google.Apis.Drive.v3.Data.File;
 
-namespace Car.ServiceExtension
+namespace Car.WebApi.ServiceExtension
 {
     public static class ServicesExtension
     {
