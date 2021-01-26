@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user-chats")]
     [ApiController]
     public class UserChatsController : ControllerBase
     {
@@ -22,12 +22,12 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Get the user chats by User Id
         /// </summary>
-        /// <param name="userId">User indetifier</param>
+        /// <param name="id">User indetifier</param>
         /// <returns>Chats of User by Id</returns>
-        [HttpGet("{userId}")]
-        public IActionResult GetUserChats(int userId)
+        [HttpGet("{id}")]
+        public IActionResult GetUserChats(int id)
         {
-            return Ok(userManager.GetUsersChats(userId));
+            return Ok(userManager.GetUsersChats(id));
         }
     }
 }
