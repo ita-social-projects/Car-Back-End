@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using File = Google.Apis.Drive.v3.Data.File;
 
-namespace Car.ServiceExtension
+namespace Car.WebApi.ServiceExtension
 {
     public static class ServicesExtension
     {
@@ -23,14 +23,28 @@ namespace Car.ServiceExtension
             services.AddScoped<IImageService<User, File>, ImageService<User>>();
             services.AddScoped<IImageService<Data.Entities.Car, File>, ImageService<Data.Entities.Car>>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IModelService, ModelService>();
             services.AddScoped<IPreferencesService, PreferencesService>();
+
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IUnitOfWork<User>, UnitOfWork<User>>();
             services.AddScoped<IRepository<Data.Entities.Car>, Repository<Data.Entities.Car>>();
             services.AddScoped<IUnitOfWork<Data.Entities.Car>, UnitOfWork<Data.Entities.Car>>();
+            services.AddScoped<IRepository<UserPreferences>, Repository<UserPreferences>>();
             services.AddScoped<IUnitOfWork<UserPreferences>, UnitOfWork<UserPreferences>>();
+            services.AddScoped<IRepository<Brand>, Repository<Brand>>();
+            services.AddScoped<IUnitOfWork<Brand>, UnitOfWork<Brand>>();
+            services.AddScoped<IRepository<Model>, Repository<Model>>();
+            services.AddScoped<IUnitOfWork<Model>, UnitOfWork<Model>>();
             services.AddScoped<IEntityTypeStrategy<User>, UserEntityStrategy>();
             services.AddScoped<IEntityTypeStrategy<Data.Entities.Car>, CarEntityStrategy>();
+            services.AddScoped<IUnitOfWork<UserChat>, UnitOfWork<UserChat>>();
+            services.AddScoped<IUserChatsManager, UserChatsManager>();
+            services.AddScoped<IUnitOfWork<Chat>, UnitOfWork<Chat>>();
+            services.AddScoped<IJourneyService, JourneyService>();
+            services.AddScoped<IRepository<Journey>, Repository<Journey>>();
+            services.AddScoped<IUnitOfWork<Journey>, UnitOfWork<Journey>>();
         }
 
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)

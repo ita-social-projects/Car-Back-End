@@ -1,7 +1,7 @@
-﻿using Car.Middelware;
+﻿using Car.WebApi.Middelware;
 using Microsoft.AspNetCore.Builder;
 
-namespace Car.ServiceExtension
+namespace Car.WebApi.ServiceExtension
 {
     public static class MiddelwareHendlerExtensions
     {

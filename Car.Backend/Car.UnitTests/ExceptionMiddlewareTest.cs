@@ -1,6 +1,6 @@
 ﻿using Car.Domain.Dto;
 using Car.Domain.Exceptions;
-using Car.Middelware;
+using Car.WebApi.Middelware;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;

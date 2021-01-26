@@ -3,7 +3,7 @@ using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Car.Controllers
+namespace Car.WebApi.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

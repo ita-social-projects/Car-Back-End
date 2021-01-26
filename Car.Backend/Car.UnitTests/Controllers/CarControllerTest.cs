@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Car.Controllers;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Google.Apis.Drive.v3.Data;
@@ -21,7 +21,7 @@ namespace Car.UnitTests.Controllers
             new Data.Entities.Car()
             {
                 Id = It.IsAny<int>(),
-                Model = It.IsAny<string>(),
+                ModelId = It.IsAny<int>(),
             };
 
         public CarControllerTest()

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Car.Controllers
+namespace Car.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
