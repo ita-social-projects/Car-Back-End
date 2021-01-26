@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/journeys")]
     [ApiController]
     public class JourneyController : ControllerBase
     {
@@ -14,33 +14,33 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Looks for information about current journey where current user is participent or driver
         /// </summary>
-        /// <param name="userId">id of current user</param>
+        /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
-        [HttpGet("current/{userId}")]
-        public IActionResult GetCurent(int userId) => Ok(journeyService.GetCurrentJourney(userId));
+        [HttpGet("current/{id}")]
+        public IActionResult GetCurent(int id) => Ok(journeyService.GetCurrentJourney(id));
 
         /// <summary>
         /// Looks for information about past journeys where current user is participent or driver
         /// </summary>
-        /// <param name="userId">id of current user</param>
+        /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
-        [HttpGet("past/{userId}")]
-        public IActionResult GetPast(int userId) => Ok(journeyService.GetPastJourneys(userId));
+        [HttpGet("past/{id}")]
+        public IActionResult GetPast(int id) => Ok(journeyService.GetPastJourneys(id));
 
         /// <summary>
         /// Looks for information about all upcoming journeys where current user is participent or driver
         /// </summary>
-        /// <param name="userId">id of current user</param>
+        /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
-        [HttpGet("upcoming/{userId}")]
-        public IActionResult GetUpcoming(int userId) => Ok(journeyService.GetUpcomingJourneys(userId));
+        [HttpGet("upcoming/{id}")]
+        public IActionResult GetUpcoming(int id) => Ok(journeyService.GetUpcomingJourneys(id));
 
         /// <summary>
         /// Looks for information about all scheduled journeys where current user is participent or driver
         /// </summary>
-        /// <param name="userId">id of current user</param>
+        /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
-        [HttpGet("scheduled/{userId}")]
-        public IActionResult GetScheduled(int userId) => Ok(journeyService.GetScheduledJourneys(userId));
+        [HttpGet("scheduled/{id}")]
+        public IActionResult GetScheduled(int id) => Ok(journeyService.GetScheduledJourneys(id));
     }
 }

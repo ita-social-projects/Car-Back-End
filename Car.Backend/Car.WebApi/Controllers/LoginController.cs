@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Car.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/login")]
     [ApiController]
     public class LoginController : ControllerBase
     {

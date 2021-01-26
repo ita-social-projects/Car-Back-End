@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/models")]
     [ApiController]
     public class ModelController : ControllerBase
     {
@@ -17,12 +17,12 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Gets all models.
         /// </summary>
-        /// <param name="brandId">The brand identifier.</param>
+        /// <param name="id">The brand identifier.</param>
         /// <returns>All the models</returns>
-        [HttpGet("brand/{brandId}")]
-        public IActionResult GetAll(int brandId)
+        [HttpGet("by-brand/{id}")]
+        public IActionResult GetAll(int id)
         {
-            return Ok(modelService.GetModelsByBrandId(brandId));
+            return Ok(modelService.GetModelsByBrandId(id));
         }
     }
 }
