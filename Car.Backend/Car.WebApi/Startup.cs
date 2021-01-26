@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Car.WebApi.Hubs;
+using Car.WebApi.JwtConfiguration;
 using Car.WebApi.ServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -61,7 +62,7 @@ namespace Car.WebApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-
+            var jwtOptions = Configuration.GetSection(nameof(Jwt)).Get<Jwt>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(options =>
            {
@@ -71,9 +72,9 @@ namespace Car.WebApi
                    ValidateAudience = true,
                    ValidateLifetime = true,
                    ValidateIssuerSigningKey = true,
-                   ValidIssuer = Configuration["Jwt:Issuer"],
-                   ValidAudience = Configuration["Jwt:Issuer"],
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                   ValidIssuer = jwtOptions.Issuer,
+                   ValidAudience = jwtOptions.Issuer,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
                };
            });
         }

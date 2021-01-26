@@ -1,9 +1,9 @@
-﻿using Car.Configurations;
-using Car.Controllers;
-using Car.Data.Entities;
+﻿using Car.Data.Entities;
 using Car.Domain.Configurations;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.Controllers;
+using Car.WebApi.JwtConfiguration;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +37,7 @@ namespace Car.UnitTests.Controllers
             };
 
         public UserDto GetUserDto() =>
-            new UserDto()
+            new()
             {
                 Id = 44,
                 Name = "Peter",
