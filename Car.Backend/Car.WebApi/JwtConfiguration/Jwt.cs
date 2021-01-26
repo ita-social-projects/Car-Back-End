@@ -1,6 +1,6 @@
 using System;
 
-namespace Car.Configurations
+namespace Car.WebApi.JwtConfiguration
 {
     public class Jwt
     {
