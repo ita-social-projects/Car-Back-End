@@ -199,6 +199,21 @@ namespace Car.Data.Migrations
                     b.ToTable("Cars");
                 });
 
+            modelBuilder.Entity("Car.Data.Entities.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ChatName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Chats");
+                });
+
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
                 {
                     b.Property<int>("Id")
@@ -1636,6 +1651,21 @@ namespace Car.Data.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Car.Data.Entities.UserChat", b =>
+                {
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ChatId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserChats");
+                });
+
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
                 {
                     b.Property<int>("UserId")
@@ -1787,6 +1817,25 @@ namespace Car.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Car.Data.Entities.UserChat", b =>
+                {
+                    b.HasOne("Car.Data.Entities.Chat", "Chat")
+                        .WithMany("Users")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Car.Data.Entities.User", "User")
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
                 {
                     b.HasOne("Car.Data.Entities.Journey", "Journey")
@@ -1820,49 +1869,56 @@ namespace Car.Data.Migrations
                     b.Navigation("Stop");
                 });
 
-            modelBuilder.Entity("Car.Data.Entities.Brand", b =>
+            modelBuilder.Entity("Car.Data.Entities.Chat", b =>
                 {
-                    b.Navigation("Car");
+                    b.Navigation("Users");
 
-                    b.Navigation("Models");
-                });
+                    modelBuilder.Entity("Car.Data.Entities.Brand", b =>
+                        {
+                            b.Navigation("Car");
 
-            modelBuilder.Entity("Car.Data.Entities.Journey", b =>
-                {
-                    b.Navigation("Participants");
+                            b.Navigation("Models");
+                        });
 
-                    b.Navigation("UserStops");
-                });
+                    modelBuilder.Entity("Car.Data.Entities.Journey", b =>
+                        {
+                            b.Navigation("Participants");
 
-            modelBuilder.Entity("Car.Data.Entities.Model", b =>
-                {
-                    b.Navigation("Car");
-                });
+                            b.Navigation("UserStops");
+                        });
 
-            modelBuilder.Entity("Car.Data.Entities.Schedule", b =>
-                {
-                    b.Navigation("Journey");
-                });
+                    modelBuilder.Entity("Car.Data.Entities.Model", b =>
+                        {
+                            b.Navigation("Car");
+                        });
 
-            modelBuilder.Entity("Car.Data.Entities.User", b =>
-                {
-                    b.Navigation("DriverJourney");
+                    modelBuilder.Entity("Car.Data.Entities.Schedule", b =>
+                        {
+                            b.Navigation("Journey");
+                        });
 
-                    b.Navigation("ReceivedMessages");
+                    modelBuilder.Entity("Car.Data.Entities.User", b =>
+                        {
+                            b.Navigation("Chats");
 
-                    b.Navigation("SentMessages");
+                            b.Navigation("DriverJourney");
 
-                    b.Navigation("UserCars");
+                            b.Navigation("ReceivedMessages");
 
-                    b.Navigation("UserJourneys");
+                            b.Navigation("SentMessages");
 
-                    b.Navigation("UserNotifications");
+                            b.Navigation("UserCars");
 
-                    b.Navigation("UserPreferences");
+                            b.Navigation("UserJourneys");
 
-                    b.Navigation("UserStop");
-                });
+                            b.Navigation("UserNotifications");
+
+                            b.Navigation("UserPreferences");
+
+                            b.Navigation("UserStop");
+                        });
 #pragma warning restore 612, 618
+                });
         }
     }
 }
