@@ -41,9 +41,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Car\Car.csproj" />
+    <ProjectReference Include="..\Car.WebApi\Car.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

@@ -27,12 +27,12 @@ jobs:
           working-directory: Car.Backend
         - name: Build
           run: dotnet build -c Release
-          working-directory: Car.Backend/Car
+          working-directory: Car.Backend/Car.WebApi
 
         - name: dotnet publish
           run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}' --no-restore --no-build
 
-          working-directory: Car.Backend/Car
+          working-directory: Car.Backend/Car.WebApi
         - name: 'Run Azure webapp deploy action using publish profile credentials'
           uses: azure/webapps-deploy@v2
           with: 

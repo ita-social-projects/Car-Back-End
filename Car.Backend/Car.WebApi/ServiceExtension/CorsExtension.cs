@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Car.ServiceExtension
+namespace Car.WebApi.ServiceExtension
 {
     public static class CorsExtension
     {

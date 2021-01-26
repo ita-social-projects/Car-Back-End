@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>Car.xml</DocumentationFile>
+    <DocumentationFile>Car.WebApi.xml</DocumentationFile>
     <OutputPath></OutputPath>
   </PropertyGroup>
 

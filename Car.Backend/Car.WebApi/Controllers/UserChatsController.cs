@@ -6,7 +6,7 @@ using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Car.Controllers
+namespace Car.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
