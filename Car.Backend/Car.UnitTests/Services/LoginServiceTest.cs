@@ -23,7 +23,7 @@ namespace Car.UnitTests.Services
         }
 
         public User GetTestUser() =>
-            new User()
+            new()
             {
                 Id = It.IsAny<int>(),
                 Name = It.IsAny<string>(),

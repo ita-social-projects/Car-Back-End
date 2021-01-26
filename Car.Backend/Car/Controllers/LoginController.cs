@@ -2,13 +2,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Car.Configurations;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
-using CarBackEnd.Configurations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -20,9 +19,9 @@ namespace Car.Controllers
     {
         private readonly ILoginService loginService;
         //private readonly IConfiguration _config;
-        private readonly IOptions<IJwt> jwtOptions;
+        private readonly IOptions<Jwt> jwtOptions;
 
-        public LoginController(ILoginService loginService, IOptions<IJwt> jwtOptions)
+        public LoginController(ILoginService loginService, IOptions<Jwt> jwtOptions)
         {
             this.loginService = loginService;
             this.jwtOptions = jwtOptions;

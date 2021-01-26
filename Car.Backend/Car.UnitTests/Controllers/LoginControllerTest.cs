@@ -1,12 +1,12 @@
-﻿using Car.Controllers;
+﻿using Car.Configurations;
+using Car.Controllers;
 using Car.Data.Entities;
+using Car.Domain.Configurations;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
-using CarBackEnd.Configurations;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
@@ -16,13 +16,13 @@ namespace Car.UnitTests.Controllers
     public class LoginControllerTest
     {
         private readonly Mock<ILoginService> loginService;
-        private readonly Mock<IOptions<IJwt>> options;
+        private readonly Mock<IOptions<Jwt>> options;
         private readonly LoginController loginController;
 
         public LoginControllerTest()
         {
             loginService = new Mock<ILoginService>();
-            options = new Mock<IOptions<IJwt>>();
+            options = new Mock<IOptions<Jwt>>();
             loginController = new LoginController(loginService.Object, options.Object);
         }
 
@@ -71,7 +71,8 @@ namespace Car.UnitTests.Controllers
                 ((result as OkObjectResult)?.Value as UserDto)?.Surname.Should().Be(user.Surname);
                 ((result as OkObjectResult)?.Value as UserDto)?.Email.Should().Be(user.Email);
                 ((result as OkObjectResult)?.Value as UserDto)?.Position.Should().Be(user.Position);
-                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And.NotBeNullOrEmpty();
+                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And
+                    .NotBeNullOrEmpty();
             }
         }
 
@@ -99,7 +100,8 @@ namespace Car.UnitTests.Controllers
                 ((result as OkObjectResult)?.Value as UserDto)?.Surname.Should().Be(user.Surname);
                 ((result as OkObjectResult)?.Value as UserDto)?.Email.Should().Be(user.Email);
                 ((result as OkObjectResult)?.Value as UserDto)?.Position.Should().Be(user.Position);
-                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And.NotBeNullOrEmpty();
+                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And
+                    .NotBeNullOrEmpty();
             }
         }
     }
