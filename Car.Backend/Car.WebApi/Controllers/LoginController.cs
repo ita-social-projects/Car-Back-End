@@ -19,7 +19,6 @@ namespace Car.WebApi.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILoginService loginService;
-        //private readonly IConfiguration _config;
         private readonly IOptions<Jwt> jwtOptions;
 
         public LoginController(ILoginService loginService, IOptions<Jwt> jwtOptions)
