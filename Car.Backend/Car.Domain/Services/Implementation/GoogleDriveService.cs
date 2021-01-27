@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Car.Domain.Configurations;
 using Car.Domain.Services.Interfaces;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.Domain.Services.Implementation
@@ -15,16 +16,16 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly ICompressor compressor;
         private readonly IWebHostEnvironment webHostEnvironment;
-        private readonly IConfiguration configuration;
+        private readonly IOptions<GoogleApplicationName> googleApplicationNameOptions;
 
         private DriveService service;
 
         public GoogleDriveService(
-            IConfiguration configuration,
+            IOptions<GoogleApplicationName> googleApplicationNameOptions,
             IWebHostEnvironment webHostEnvironment,
             ICompressor compressor)
         {
-            this.configuration = configuration;
+            this.googleApplicationNameOptions = googleApplicationNameOptions;
             this.webHostEnvironment = webHostEnvironment;
             this.compressor = compressor;
         }
@@ -65,7 +66,7 @@ namespace Car.Domain.Services.Implementation
         /// <returns>base64 array of file</returns>
         public async Task<byte[]> GetFileBytesById(string fileId)
         {
-            using var stream = new MemoryStream();
+            await using var stream = new MemoryStream();
             await service.Files.Get(fileId).DownloadAsync(stream);
             return stream.GetBuffer();
         }
@@ -88,7 +89,7 @@ namespace Car.Domain.Services.Implementation
             service = new DriveService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = configuration["GoogleApplicationName"],
+                ApplicationName = googleApplicationNameOptions.Value.AppName,
             });
         }
 
@@ -110,10 +111,10 @@ namespace Car.Domain.Services.Implementation
 
             FilesResource.CreateMediaUpload request;
 
-            using (fileStream)
+            await using (fileStream)
             {
-                using var compresedFile = compressor.CompressFile(fileStream, quality);
-                request = service.Files.Create(fileMetadata, compresedFile, contentType);
+                await using var compressedFile = compressor.CompressFile(fileStream, quality);
+                request = service.Files.Create(fileMetadata, compressedFile, contentType);
                 request.Fields = "id, name, webViewLink, size";
                 await request.UploadAsync();
             }

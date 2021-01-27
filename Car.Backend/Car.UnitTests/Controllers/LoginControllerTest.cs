@@ -1,11 +1,13 @@
 ﻿using Car.Data.Entities;
+using Car.Domain.Configurations;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
+using Car.WebApi.JwtConfiguration;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -14,18 +16,18 @@ namespace Car.UnitTests.Controllers
     public class LoginControllerTest
     {
         private readonly Mock<ILoginService> loginService;
-        private readonly Mock<IConfiguration> config;
+        private readonly Mock<IOptions<Jwt>> options;
         private readonly LoginController loginController;
 
         public LoginControllerTest()
         {
             loginService = new Mock<ILoginService>();
-            config = new Mock<IConfiguration>();
-            loginController = new LoginController(config.Object, loginService.Object);
+            options = new Mock<IOptions<Jwt>>();
+            loginController = new LoginController(loginService.Object, options.Object);
         }
 
         public User GetTestUser() =>
-            new User()
+            new()
             {
                 Id = 44,
                 Name = "Peter",
@@ -35,7 +37,7 @@ namespace Car.UnitTests.Controllers
             };
 
         public UserDto GetUserDto() =>
-            new UserDto()
+            new()
             {
                 Id = 44,
                 Name = "Peter",
@@ -54,8 +56,9 @@ namespace Car.UnitTests.Controllers
 
             loginService.Setup(service => service.GetUser(user.Email))
                 .Returns(user);
-            config.Setup(config => config["Jwt:Key"]).Returns(jwtToken);
-            config.Setup(config => config["Jwt:Issuer"]).Returns(jwtIssuer);
+            options.Setup(option => option.Value.Key)
+                .Returns(jwtToken);
+            options.Setup(option => option.Value.Issuer).Returns(jwtIssuer);
 
             var result = loginController.Login(userDto);
 
@@ -68,7 +71,8 @@ namespace Car.UnitTests.Controllers
                 ((result as OkObjectResult)?.Value as UserDto)?.Surname.Should().Be(user.Surname);
                 ((result as OkObjectResult)?.Value as UserDto)?.Email.Should().Be(user.Email);
                 ((result as OkObjectResult)?.Value as UserDto)?.Position.Should().Be(user.Position);
-                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And.NotBeNullOrEmpty();
+                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And
+                    .NotBeNullOrEmpty();
             }
         }
 
@@ -82,8 +86,8 @@ namespace Car.UnitTests.Controllers
 
             loginService.Setup(service => service.GetUser(user.Email))
                 .Returns((User)null);
-            config.Setup(config => config["Jwt:Key"]).Returns(jwtToken);
-            config.Setup(config => config["Jwt:Issuer"]).Returns(jwtIssuer);
+            options.Setup(option => option.Value.Key).Returns(jwtToken);
+            options.Setup(option => option.Value.Issuer).Returns(jwtIssuer);
 
             var result = loginController.Login(userDto);
 
@@ -96,7 +100,8 @@ namespace Car.UnitTests.Controllers
                 ((result as OkObjectResult)?.Value as UserDto)?.Surname.Should().Be(user.Surname);
                 ((result as OkObjectResult)?.Value as UserDto)?.Email.Should().Be(user.Email);
                 ((result as OkObjectResult)?.Value as UserDto)?.Position.Should().Be(user.Position);
-                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And.NotBeNullOrEmpty();
+                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And
+                    .NotBeNullOrEmpty();
             }
         }
     }

@@ -30,6 +30,10 @@ namespace Car.Data.Context
 
         public DbSet<Model> Models { get; set; }
 
+        public DbSet<Chat> Chats { get; set; }
+
+        public DbSet<UserChat> UserChats { get; set; }
+
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {
@@ -47,6 +51,8 @@ namespace Car.Data.Context
             modelBuilder.ApplyConfiguration(new UserPreferencesConfiguration());
             modelBuilder.ApplyConfiguration(new StopConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
+            modelBuilder.ApplyConfiguration(new ChatConfiguration());
+            modelBuilder.ApplyConfiguration(new UserChatConfiguration());
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
             modelBuilder.ApplyConfiguration(new ModelConfiguration());
 
