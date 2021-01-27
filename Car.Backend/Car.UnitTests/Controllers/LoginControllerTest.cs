@@ -1,4 +1,5 @@
 ﻿using Car.Data.Entities;
+using Car.Domain.Configurations;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
@@ -67,11 +68,6 @@ namespace Car.UnitTests.Controllers
                 (result as OkObjectResult)?.Value.Should().BeOfType<UserDto>();
                 ((result as OkObjectResult)?.Value as UserDto)?.Id.Should().Be(user.Id);
                 ((result as OkObjectResult)?.Value as UserDto)?.Name.Should().Be(user.Name);
-                ((result as OkObjectResult)?.Value as UserDto)?.Surname.Should().Be(user.Surname);
-                ((result as OkObjectResult)?.Value as UserDto)?.Email.Should().Be(user.Email);
-                ((result as OkObjectResult)?.Value as UserDto)?.Position.Should().Be(user.Position);
-                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And
-                    .NotBeNullOrEmpty();
             }
         }
 
@@ -96,11 +92,6 @@ namespace Car.UnitTests.Controllers
                 (result as OkObjectResult)?.Value.Should().BeOfType<UserDto>();
                 ((result as OkObjectResult)?.Value as UserDto)?.Id.Should().Be(0);
                 ((result as OkObjectResult)?.Value as UserDto)?.Name.Should().Be(user.Name);
-                ((result as OkObjectResult)?.Value as UserDto)?.Surname.Should().Be(user.Surname);
-                ((result as OkObjectResult)?.Value as UserDto)?.Email.Should().Be(user.Email);
-                ((result as OkObjectResult)?.Value as UserDto)?.Position.Should().Be(user.Position);
-                ((result as OkObjectResult)?.Value as UserDto)?.Token.Should().BeOfType<string>().And
-                    .NotBeNullOrEmpty();
             }
         }
     }

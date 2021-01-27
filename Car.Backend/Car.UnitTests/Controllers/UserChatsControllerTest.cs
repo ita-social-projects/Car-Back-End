@@ -1,4 +1,6 @@
-﻿namespace Car.UnitTests.Controllers
+﻿using AutoFixture;
+
+namespace Car.UnitTests.Controllers
 {
     using System.Collections.Generic;
     using Car.Data.Entities;
@@ -13,25 +15,24 @@
     {
         private readonly Mock<IUserChatsManager> userChatsManager;
         private readonly UserChatsController userChatsController;
+        private readonly Fixture fixture;
 
         public UserChatsControllerTest()
         {
             this.userChatsManager = new Mock<IUserChatsManager>();
             this.userChatsController = new UserChatsController(this.userChatsManager.Object);
-        }
 
-        public User GetTestUser() =>
-            new User
-            {
-                Id = It.IsAny<int>(),
-                Name = It.IsAny<string>(),
-            };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void GetUserChats_WhenUserExists_ReturnsChatObject()
         {
             // Arrange
-            var user = this.GetTestUser();
+            var user = this.fixture.Create<User>();
             this.userChatsManager.Setup(x => x.GetUsersChats(It.IsAny<int>())).Returns(new List<Chat>());
 
             // Act
@@ -46,7 +47,7 @@
         public void GetUserChats_WhenUserNotExists_ReturnsNull()
         {
             // Arrange
-            var user = this.GetTestUser();
+            var user = this.fixture.Create<User>();
             this.userChatsManager.Setup(x => x.GetUsersChats(It.IsAny<int>())).Returns((List<Chat>)null);
 
             // Act

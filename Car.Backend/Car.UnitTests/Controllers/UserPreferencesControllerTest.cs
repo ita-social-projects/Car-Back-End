@@ -1,4 +1,5 @@
-﻿using Car.Data.Entities;
+﻿using AutoFixture;
+using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
 using FluentAssertions;
@@ -12,25 +13,24 @@ namespace Car.UnitTests.Controllers
     {
         private readonly Mock<IPreferencesService> preferencesService;
         private readonly UserPreferencesController userPreferencesController;
-
-        public User GetTestUser() =>
-            new User()
-            {
-                Id = It.IsAny<int>(),
-                Name = It.IsAny<string>(),
-            };
+        private readonly Fixture fixture;
 
         public UserPreferencesControllerTest()
         {
             preferencesService = new Mock<IPreferencesService>();
             userPreferencesController = new UserPreferencesController(preferencesService.Object);
+
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public void GetPreferences_WhenUserExists_ReturnsUserObject()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             preferencesService.Setup(x => x.GetPreferences(It.IsAny<int>())).Returns(new UserPreferences());
 
             // Act
@@ -45,7 +45,7 @@ namespace Car.UnitTests.Controllers
         public void GetPreferences_WhenUserNotExists_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             preferencesService.Setup(x => x.GetPreferences(It.IsAny<int>())).Returns((UserPreferences)null);
 
             // Act

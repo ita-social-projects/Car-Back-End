@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AutoFixture;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
@@ -17,26 +18,25 @@ namespace Car.UnitTests.Controllers
         private readonly Mock<IUserService> userService;
         private readonly Mock<IImageService<User, File>> imageService;
         private readonly UserController userController;
+        private readonly Fixture fixture;
 
         public UserControllerTest()
         {
             userService = new Mock<IUserService>();
             imageService = new Mock<IImageService<User, File>>();
             userController = new UserController(userService.Object, imageService.Object);
-        }
 
-        public User GetTestUser() =>
-            new User()
-            {
-                Id = It.IsAny<int>(),
-                Name = It.IsAny<string>(),
-            };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetUserById_WithRightId_ReturnsOkObjectResult()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             userService.Setup(u => u.GetUserById(user.Id)).Returns(user);
 
             // Act
@@ -56,7 +56,7 @@ namespace Car.UnitTests.Controllers
         public void TestGetUserById_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             userService.Setup(u => u.GetUserById(user.Id)).Returns((User)null);
 
             // Act
@@ -74,7 +74,7 @@ namespace Car.UnitTests.Controllers
         public void TestGetUserWithAvatarById_WithRightId_ReturnsOkObjectResult()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             userService.Setup(u => u.GetUserWithAvatarById(user.Id)).Returns(user);
 
             // Act
@@ -94,9 +94,9 @@ namespace Car.UnitTests.Controllers
         public async Task UploadUserAvatar_WhenUserExist_ReturnsOkObjectResult()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             var formImage = new FormImage();
-            imageService.Setup(p => p.UploadImage(user.Id, formImage.Image)).Returns(Task.FromResult(new User()));
+            imageService.Setup(p => p.UploadImage(user.Id, formImage.Image)).Returns(Task.FromResult(user));
 
             // Act
             var result = await userController.UploadUserAvatar(user.Id, formImage);
@@ -115,7 +115,7 @@ namespace Car.UnitTests.Controllers
         public async Task UploadUserAvatar_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             var formImage = new FormImage();
 
             // Act
@@ -136,8 +136,8 @@ namespace Car.UnitTests.Controllers
         public async Task DeleteUserAvatar_WhenUserExist_ReturnsDeletedUser()
         {
             // Arrange
-            var user = GetTestUser();
-            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult(new User()));
+            var user = fixture.Create<User>();
+            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult(user));
 
             // Act
             var result = await userController.DeleteUserAvatar(user.Id);
@@ -156,7 +156,7 @@ namespace Car.UnitTests.Controllers
         public async Task DeleteUserAvatar_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult<User>(null));
 
             // Act
@@ -174,7 +174,7 @@ namespace Car.UnitTests.Controllers
         public async Task GetUserFileById_WhenUserExist_ReturnsStringType()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             imageService.Setup(x => x.GetImageBytesById(user.Id)).Returns(Task.FromResult(string.Empty));
 
             // Act
@@ -192,7 +192,7 @@ namespace Car.UnitTests.Controllers
         public async Task GetUserFileById_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             imageService.Setup(x => x.GetImageBytesById(user.Id)).Returns(Task.FromResult<string>(null));
 
             // Act
