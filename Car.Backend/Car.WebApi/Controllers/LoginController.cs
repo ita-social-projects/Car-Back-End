@@ -5,9 +5,11 @@ using System.Text;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.JwtConfiguration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Car.WebApi.Controllers
@@ -17,13 +19,12 @@ namespace Car.WebApi.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILoginService loginService;
+        private readonly IOptions<Jwt> jwtOptions;
 
-        private readonly IConfiguration config;
-
-        public LoginController(IConfiguration config, ILoginService loginService)
+        public LoginController(ILoginService loginService, IOptions<Jwt> jwtOptions)
         {
-            this.config = config;
             this.loginService = loginService;
+            this.jwtOptions = jwtOptions;
         }
 
         /// <summary>
@@ -37,6 +38,7 @@ namespace Car.WebApi.Controllers
         public IActionResult Login([FromBody] UserDto userModel)
         {
             var user = EnsureUser(userModel);
+
             var tokenString = GenerateJSONWebToken(user);
 
             UserDto userDTO = new UserDto
@@ -55,7 +57,7 @@ namespace Car.WebApi.Controllers
 
         private string GenerateJSONWebToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -67,8 +69,8 @@ namespace Car.WebApi.Controllers
             };
 
             var token = new JwtSecurityToken(
-                config["Jwt:Issuer"],
-                config["Jwt:Issuer"],
+                jwtOptions.Value.Issuer,
+                jwtOptions.Value.Issuer,
                 claims,
                 expires: DateTime.Now.AddHours(24),
                 signingCredentials: credentials);
