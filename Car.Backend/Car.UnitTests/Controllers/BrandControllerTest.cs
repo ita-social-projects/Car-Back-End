@@ -21,23 +21,24 @@ namespace Car.UnitTests.Controllers
             brandController = new BrandController(brandService.Object);
         }
 
-        public IEnumerable<Brand> GetTestBrands() => new Brand[]
-        {
-           new Brand()
-           {
-               Id = It.IsAny<int>(),
-               Name = It.IsAny<string>(),
-               Models = It.IsAny<IEnumerable<Model>>(),
-               Car = It.IsAny<Data.Entities.Car>(),
-           },
-           new Brand()
-           {
-               Id = It.IsAny<int>(),
-               Name = It.IsAny<string>(),
-               Models = It.IsAny<IEnumerable<Model>>(),
-               Car = It.IsAny<Data.Entities.Car>(),
-           },
-        };
+        public IEnumerable<Brand> GetTestBrands() =>
+            new[]
+            {
+                new Brand()
+                {
+                    Id = It.IsAny<int>(),
+                    Name = It.IsAny<string>(),
+                    Models = It.IsAny<IEnumerable<Model>>(),
+                    Car = It.IsAny<Data.Entities.Car>(),
+                },
+                new Brand()
+                {
+                    Id = It.IsAny<int>(),
+                    Name = It.IsAny<string>(),
+                    Models = It.IsAny<IEnumerable<Model>>(),
+                    Car = It.IsAny<Data.Entities.Car>(),
+                },
+            };
 
         [Fact]
         public void TestGetBrands()

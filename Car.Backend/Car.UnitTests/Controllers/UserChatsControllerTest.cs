@@ -20,10 +20,12 @@
             this.userChatsController = new UserChatsController(this.userChatsManager.Object);
         }
 
-        public User GetTestUser()
-        {
-            return new User { Id = It.IsAny<int>(), Name = It.IsAny<string>() };
-        }
+        public User GetTestUser() =>
+            new User
+            {
+                Id = It.IsAny<int>(),
+                Name = It.IsAny<string>(),
+            };
 
         [Fact]
         public void GetUserChats_WhenUserExists_ReturnsChatObject()

@@ -1,5 +1,4 @@
 ﻿using Car.Data.Entities;
-using Car.Domain.Configurations;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
@@ -27,7 +26,7 @@ namespace Car.UnitTests.Controllers
         }
 
         public User GetTestUser() =>
-            new()
+            new User
             {
                 Id = 44,
                 Name = "Peter",
@@ -37,7 +36,7 @@ namespace Car.UnitTests.Controllers
             };
 
         public UserDto GetUserDto() =>
-            new()
+            new UserDto
             {
                 Id = 44,
                 Name = "Peter",
