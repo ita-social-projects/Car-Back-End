@@ -36,49 +36,49 @@ namespace Car.UnitTests.FluentValidationTests
             validator.ShouldNotHaveValidationErrorFor(car => car.Id, value);
         }
 
-        [Xunit.Theory]
-        [InlineData("")]
-        [InlineData("a")]
-        public void Should_have_error_when_Brand_is_not_valid(string value)
-        {
-            validator.ShouldHaveValidationErrorFor(car => car.Brand, value);
-        }
+        //[Xunit.Theory]
+        //[InlineData("")]
+        //[InlineData("a")]
+        //public void Should_have_error_when_Brand_is_not_valid(string value)
+        //{
+        //    validator.ShouldHaveValidationErrorFor(car => car.Brand, value);
+        //}
 
-        [Fact]
-        public void Should_have_error_when_Brand_is_longer_than_101()
-        {
-            string longBrand = new string('*', 101);
-            validator.ShouldHaveValidationErrorFor(car => car.Brand, longBrand);
-        }
+        //[Fact]
+        //public void Should_have_error_when_Brand_is_longer_than_25()
+        //{
+        //    string longBrand = new string('*', 26);
+        //    validator.ShouldHaveValidationErrorFor(car => car.Brand, longBrand);
+        //}
 
-        [Xunit.Theory]
-        [InlineData("BrandName")]
-        public void Should_not_have_error_when_Brand_is_specified(string value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(car => car.Brand, value);
-        }
+        //[Xunit.Theory]
+        //[InlineData("BrandName")]
+        //public void Should_not_have_error_when_Brand_is_specified(string value)
+        //{
+        //    validator.ShouldNotHaveValidationErrorFor(car => car.Brand, value);
+        //}
 
-        [Xunit.Theory]
-        [InlineData("")]
-        [InlineData("a")]
-        public void Should_have_error_when_Model_is_not_valid(string value)
-        {
-            validator.ShouldHaveValidationErrorFor(car => car.Model, value);
-        }
+        //[Xunit.Theory]
+        //[InlineData("")]
+        //[InlineData("a")]
+        //public void Should_have_error_when_Model_is_not_valid(string value)
+        //{
+        //    validator.ShouldHaveValidationErrorFor(car => car.Model, value);
+        //}
 
-        [Fact]
-        public void Should_have_error_when_Model_is_longer_than_101()
-        {
-            string longModel = new string('*', 101);
-            validator.ShouldHaveValidationErrorFor(car => car.Model, longModel);
-        }
+        //[Fact]
+        //public void Should_have_error_when_Model_is_longer_than_25()
+        //{
+        //    string longModel = new string('*', 26);
+        //    validator.ShouldHaveValidationErrorFor(car => car.Model, longModel);
+        //}
 
-        [Xunit.Theory]
-        [InlineData("ModelName")]
-        public void Should_not_have_error_when_Model_is_specified(string value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(car => car.Model, value);
-        }
+        //[Xunit.Theory]
+        //[InlineData("ModelName")]
+        //public void Should_not_have_error_when_Model_is_specified(string value)
+        //{
+        //    validator.ShouldNotHaveValidationErrorFor(car => car.Model, value);
+        //}
 
         [Xunit.Theory]
         [InlineData("")]
