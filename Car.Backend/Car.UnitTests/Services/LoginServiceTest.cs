@@ -1,4 +1,5 @@
-﻿using Car.Data.Entities;
+﻿using AutoFixture;
+using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -13,6 +14,7 @@ namespace Car.UnitTests.Services
         private readonly ILoginService loginService;
         private readonly Mock<IRepository<User>> repository;
         private readonly Mock<IUnitOfWork<User>> unitOfWork;
+        private readonly Fixture fixture;
 
         public LoginServiceTest()
         {
@@ -20,27 +22,22 @@ namespace Car.UnitTests.Services
             unitOfWork = new Mock<IUnitOfWork<User>>();
 
             loginService = new LoginService(unitOfWork.Object);
-        }
 
-        public User GetTestUser() =>
-            new()
-            {
-                Id = It.IsAny<int>(),
-                Name = It.IsAny<string>(),
-                Surname = It.IsAny<string>(),
-                Email = It.IsAny<string>(),
-                Position = It.IsAny<string>(),
-            };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetUser_WhenUserExists()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             loginService.GetUser(user.Email).Should().NotBeSameAs(user);
@@ -49,11 +46,11 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestUpdateUser()
         {
-            var user = GetTestUser();
-            repository.Setup(repository => repository.GetById(user.Id))
+            var user = fixture.Create<User>();
+            repository.Setup(r => r.GetById(user.Id))
                .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             loginService.SaveUser(user).Should().BeSameAs(user);
@@ -62,11 +59,11 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestUpdateUser_WhenNotExist()
         {
-            var user = GetTestUser();
-            repository.Setup(repository => repository.GetById(user.Id))
+            var user = fixture.Create<User>();
+            repository.Setup(r => r.GetById(user.Id))
                .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             loginService.SaveUser(user).Should().NotBeNull();

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
@@ -15,6 +16,7 @@ namespace Car.UnitTests.Services
         private readonly IModelService modelService;
         private readonly Mock<IRepository<Model>> repository;
         private readonly Mock<IUnitOfWork<Model>> unitOfWork;
+        private readonly Fixture fixture;
 
         public ModelServiceTest()
         {
@@ -22,42 +24,27 @@ namespace Car.UnitTests.Services
             unitOfWork = new Mock<IUnitOfWork<Model>>();
 
             modelService = new ModelService(unitOfWork.Object);
-        }
 
-        public IEnumerable<Model> GetTestModels() => new Model[]
-        {
-           new Model()
-           {
-               Id = It.IsAny<int>(),
-               Name = It.IsAny<string>(),
-               BrandId = It.IsAny<int>(),
-               Brand = It.IsAny<Brand>(),
-               Car = It.IsAny<Data.Entities.Car>(),
-           },
-           new Model()
-           {
-               Id = It.IsAny<int>(),
-               Name = It.IsAny<string>(),
-               BrandId = It.IsAny<int>(),
-               Brand = It.IsAny<Brand>(),
-               Car = It.IsAny<Data.Entities.Car>(),
-           },
-        };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetModelsByBrandId()
         {
-            var models = GetTestModels();
+            var models = fixture.Create<Model[]>();
 
-            repository.Setup(repository => repository.Query())
+            repository.Setup(r => r.Query())
                 .Returns(models.AsQueryable());
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
-            modelService.GetModelsByBrandId(It.IsAny<int>())
+            modelService.GetModelsByBrandId(models.FirstOrDefault().BrandId)
                 .Should()
-                .BeEquivalentTo(models);
+                .BeEquivalentTo(models.Where(m => m.BrandId == models.FirstOrDefault().BrandId));
         }
     }
 }

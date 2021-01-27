@@ -1,4 +1,5 @@
-﻿using Car.Data.Interfaces;
+﻿using AutoFixture;
+using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
@@ -12,6 +13,7 @@ namespace Car.UnitTests.Services
         private readonly ICarService carService;
         private readonly Mock<IRepository<Data.Entities.Car>> repository;
         private readonly Mock<IUnitOfWork<Data.Entities.Car>> unitOfWork;
+        private readonly Fixture fixture;
 
         public CarServiceTest()
         {
@@ -19,27 +21,22 @@ namespace Car.UnitTests.Services
             unitOfWork = new Mock<IUnitOfWork<Data.Entities.Car>>();
 
             carService = new CarService(unitOfWork.Object);
-        }
 
-        public Data.Entities.Car GetTestCar() =>
-            new Data.Entities.Car()
-            {
-                Id = It.IsAny<int>(),
-                BrandId = It.IsAny<int>(),
-                ModelId = It.IsAny<int>(),
-                Color = It.IsAny<string>(),
-                PlateNumber = It.IsAny<string>(),
-            };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetCarById_WhenCarExists()
         {
-            var car = GetTestCar();
+            var car = fixture.Create<Data.Entities.Car>();
 
-            repository.Setup(repository => repository.GetById(car.Id))
+            repository.Setup(r => r.GetById(car.Id))
                 .Returns(car);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             carService.GetCarById(car.Id).Should().BeEquivalentTo(car);
@@ -48,12 +45,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestGetCarById_WhenCarNotExists()
         {
-            var car = GetTestCar();
+            var car = fixture.Create<Data.Entities.Car>();
 
-            repository.Setup(repository => repository.GetById(It.IsNotIn(car.Id)))
-               .Returns(car);
+            repository.Setup(r => r.GetById(It.IsNotIn(car.Id)))
+               .Returns((Data.Entities.Car)null);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                .Returns(repository.Object);
 
             carService.GetCarById(It.IsNotIn(car.Id)).Should().BeNull();

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
@@ -15,6 +15,7 @@ namespace Car.UnitTests.Services
         private readonly IBrandService brandService;
         private readonly Mock<IRepository<Brand>> repository;
         private readonly Mock<IUnitOfWork<Brand>> unitOfWork;
+        private readonly Fixture fixture;
 
         public BrandServiceTest()
         {
@@ -22,28 +23,22 @@ namespace Car.UnitTests.Services
             unitOfWork = new Mock<IUnitOfWork<Brand>>();
 
             brandService = new BrandService(unitOfWork.Object);
-        }
 
-        public IEnumerable<Brand> GetTestBrands() => new Brand[]
-        {
-           new Brand()
-           {
-               Id = It.IsAny<int>(),
-               Name = It.IsAny<string>(),
-               Models = It.IsAny<IEnumerable<Model>>(),
-               Car = It.IsAny<Data.Entities.Car>(),
-           },
-        };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetAllBrands()
         {
-            var brands = GetTestBrands();
+            var brands = fixture.Create<Brand[]>();
 
-            repository.Setup(repository => repository.Query())
+            repository.Setup(r => r.Query())
                 .Returns(brands.AsQueryable());
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             brandService.GetAllBrands().Should().BeEquivalentTo(brands);
