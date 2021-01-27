@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoFixture;
+﻿using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;

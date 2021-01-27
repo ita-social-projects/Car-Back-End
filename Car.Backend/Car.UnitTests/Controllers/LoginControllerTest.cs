@@ -1,5 +1,4 @@
 ﻿using Car.Data.Entities;
-using Car.Domain.Configurations;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
