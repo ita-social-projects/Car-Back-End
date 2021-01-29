@@ -42,13 +42,11 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.102
      #SonarScan
     - name: SonarScanner for .NET Core with pull request decoration support
-      uses: highbyte/sonarscan-dotnet@2.0
+      #uses: highbyte/sonarscan-dotnet@2.0
+      #uncoment the line above and comment the line below when NuGet will fix their issues   
+      uses: SplinterRAT/sonarscan-dotnet@v2.0.0.1
       with:
         # The key of the SonarQube project
         sonarProjectKey: ita-social-projects_Car-Back-End
