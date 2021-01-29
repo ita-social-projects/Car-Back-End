@@ -1,4 +1,5 @@
-﻿using Car.Data.Entities;
+﻿using AutoFixture;
+using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -13,6 +14,7 @@ namespace Car.UnitTests.Services
         private readonly IPreferencesService preferencesService;
         private readonly Mock<IRepository<UserPreferences>> repository;
         private readonly Mock<IUnitOfWork<UserPreferences>> unitOfWork;
+        private readonly Fixture fixture;
 
         public PreferencesServiceTest()
         {
@@ -20,27 +22,22 @@ namespace Car.UnitTests.Services
             unitOfWork = new Mock<IUnitOfWork<UserPreferences>>();
 
             preferencesService = new PreferencesService(unitOfWork.Object);
-        }
 
-        public UserPreferences GetTestPreferences() =>
-            new UserPreferences()
-            {
-                Id = It.IsAny<int>(),
-                Comments = It.IsAny<string>(),
-                DoAllowEating = It.IsAny<bool>(),
-                DoAllowSmoking = It.IsAny<bool>(),
-                UserId = It.IsAny<int>(),
-            };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetPreferences_WhenPreferenceExists()
         {
-            var preferences = GetTestPreferences();
+            var preferences = fixture.Create<UserPreferences>();
 
-            repository.Setup(repository => repository.GetById(preferences.Id))
+            repository.Setup(r => r.GetById(preferences.Id))
                 .Returns(preferences);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             preferencesService.GetPreferences(preferences.UserId).Should().NotBeEquivalentTo(preferences);
@@ -49,11 +46,11 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestUpdatePreferences()
         {
-            var preferences = GetTestPreferences();
-            repository.Setup(repository => repository.GetById(preferences.Id))
+            var preferences = fixture.Create<UserPreferences>();
+            repository.Setup(r => r.GetById(preferences.Id))
                .Returns(preferences);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             preferencesService.UpdatePreferences(preferences).Should().BeEquivalentTo(preferences);
@@ -62,11 +59,11 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestUpdatePreferences_WhenNotExist()
         {
-            var preferences = GetTestPreferences();
-            repository.Setup(repository => repository.GetById(preferences.Id))
+            var preferences = fixture.Create<UserPreferences>();
+            repository.Setup(r => r.GetById(preferences.Id))
                .Returns(preferences);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             preferencesService.UpdatePreferences(preferences).Should().NotBeNull();

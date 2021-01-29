@@ -1,7 +1,15 @@
-﻿namespace Car.Domain.Services.Interfaces
+﻿using System.Collections.Generic;
+using Car.Domain.Dto;
+using CarEntity = Car.Data.Entities.Car;
+
+namespace Car.Domain.Services.Interfaces
 {
     public interface ICarService
     {
-        Data.Entities.Car GetCarById(int carId);
+        CarEntity GetCarById(int carId);
+
+        CarEntity AddCar(CarDto carDto);
+
+        IEnumerable<CarInfoDto> GetAllByUserId(int userId);
     }
 }
