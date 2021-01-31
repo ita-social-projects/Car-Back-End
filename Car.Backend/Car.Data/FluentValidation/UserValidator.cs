@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentValidation;
 
 namespace Car.Data.FluentValidation
@@ -17,7 +13,7 @@ namespace Car.Data.FluentValidation
             RuleFor(user => user.Position).NotNull().Length(1, 100);
             RuleFor(user => user.Location).NotNull().Length(1, 100);
             RuleFor(user => user.HireDate).NotNull().LessThanOrEqualTo(DateTime.Now);
-            RuleFor(user => user.Email).NotNull().Length(2, 450);
+            RuleFor(user => user.Email).NotNull().Length(2, 100);
         }
     }
 }

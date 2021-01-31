@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Car.Data.FluentValidation
 {
@@ -11,7 +6,7 @@ namespace Car.Data.FluentValidation
     {
         public AddressValidator()
         {
-            RuleFor(addres => addres.Id).GreaterThan(0);
+            RuleFor(address => address.Id).GreaterThan(0);
             RuleFor(address => address.Street).NotNull().Length(2, 50);
             RuleFor(address => address.City).NotNull().Length(2, 50);
             RuleFor(address => address.Latitude).NotNull();
