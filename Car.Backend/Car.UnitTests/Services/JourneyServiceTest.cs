@@ -37,10 +37,10 @@ namespace Car.UnitTests.Services
             {
                 Id = It.IsAny<int>(),
                 DepartureTime = DateTime.Now,
-                Driver = fixture.Create<User>(),
-                DriverId = 0,
+                Organizer = fixture.Create<User>(),
+                OrganizerId = 0,
                 JourneyDuration = new TimeSpan(0, 15, 0),
-                Participants = fixture.Create<List<UserJourney>>(),
+                Participants = fixture.Create<List<User>>(),
                 Schedule = fixture.Create<Schedule>(),
             };
 
@@ -53,7 +53,7 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query(
                     journeyStops => journeyStops.UserStops,
-                    driver => driver.Driver))
+                    driver => driver.Organizer))
                 .Returns(journeys);
 
             unitOfWork.Setup(r => r.GetRepository())
@@ -73,7 +73,7 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query(
                     journeyStops => journeyStops.UserStops,
-                    driver => driver.Driver))
+                    driver => driver.Organizer))
                 .Returns(journeys);
 
             unitOfWork.Setup(r => r.GetRepository())
@@ -93,7 +93,7 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query(
                     journeyStops => journeyStops.UserStops,
-                    driver => driver.Driver))
+                    driver => driver.Organizer))
                 .Returns(journeys);
 
             unitOfWork.Setup(r => r.GetRepository())
@@ -112,7 +112,7 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query(
                     journeyStops => journeyStops.UserStops,
-                    driver => driver.Driver))
+                    driver => driver.Organizer))
                 .Returns(journeys);
 
             unitOfWork.Setup(r => r.GetRepository())

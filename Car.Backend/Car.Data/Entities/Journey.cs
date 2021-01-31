@@ -25,7 +25,7 @@ namespace Car.Data.Entities
 
         public IEnumerable<User> Participants { get; set; } = new List<User>();
 
-        public IEnumerable<UserJourney> JourneyUsers { get; set; } = new List<UserJourney>();
+        public IEnumerable<UserJourney> UserJourneys { get; set; } = new List<UserJourney>();
 
         public IEnumerable<Stop> UserStops { get; set; } = new List<Stop>();
 

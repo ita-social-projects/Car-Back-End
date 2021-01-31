@@ -53,30 +53,30 @@
             <param name="id">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetCurent(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetCurrent(System.Int32)">
             <summary>
-            Looks for information about current journey where current user is participent or driver
+            Looks for information about current journey where current user is participant or driver
             </summary>
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
             <summary>
-            Looks for information about past journeys where current user is participent or driver
+            Looks for information about past journeys where current user is participant or driver
             </summary>
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetUpcoming(System.Int32)">
             <summary>
-            Looks for information about all upcoming journeys where current user is participent or driver
+            Looks for information about all upcoming journeys where current user is participant or driver
             </summary>
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetScheduled(System.Int32)">
             <summary>
-            Looks for information about all scheduled journeys where current user is participent or driver
+            Looks for information about all scheduled journeys where current user is participant or driver
             </summary>
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
@@ -100,7 +100,7 @@
             <summary>
             Get the user chats by User Id
             </summary>
-            <param name="id">User indetifier</param>
+            <param name="id">User identifier</param>
             <returns>Chats of User by Id</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
