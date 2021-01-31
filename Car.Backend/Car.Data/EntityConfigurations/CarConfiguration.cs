@@ -13,17 +13,11 @@ namespace Car.Data.EntityConfigurations
                 .WithMany(user => user.UserCars)
                 .HasForeignKey(car => car.UserId);
 
-            builder.HasOne(car => car.Brand)
-                .WithOne(brand => brand.Car)
-                .HasForeignKey<Entities.Car>(car => car.BrandId)
-                .OnDelete(DeleteBehavior.NoAction);
-
             builder.HasOne(car => car.Model)
                 .WithOne(brand => brand.Car)
                 .HasForeignKey<Entities.Car>(car => car.ModelId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasIndex(car => car.BrandId).IsUnique(false);
             builder.HasIndex(car => car.ModelId).IsUnique(false);
 
             builder.Property(car => car.Color).HasMaxLength(25).IsRequired();
