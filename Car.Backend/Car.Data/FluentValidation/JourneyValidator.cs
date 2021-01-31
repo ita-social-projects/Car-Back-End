@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentValidation;
 
 namespace Car.Data.FluentValidation
@@ -17,10 +13,11 @@ namespace Car.Data.FluentValidation
             RuleFor(journey => journey.CountOfSeats).NotNull().GreaterThan(0).LessThan(10);
             RuleFor(journey => journey.Comments).Length(0, 100);
             RuleFor(journey => journey.IsFree).NotNull();
-            RuleForEach(journey => journey.Participants).SetValidator(new UserJourneyValidator());
+            RuleForEach(journey => journey.Participants).SetValidator(new UserValidator());
+            RuleForEach(journey => journey.JourneyUsers).SetValidator(new UserJourneyValidator());
             RuleForEach(journey => journey.UserStops).SetValidator(new StopValidator());
             RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator());
-            RuleFor(journey => journey.Driver).NotNull().SetValidator(new UserValidator());
+            RuleFor(journey => journey.Organizer).NotNull().SetValidator(new UserValidator());
         }
     }
 }
