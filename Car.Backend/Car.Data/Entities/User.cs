@@ -27,9 +27,11 @@ namespace Car.Data.Entities
 
         public IEnumerable<Notification> UserNotifications { get; set; }
 
-        public Stop UserStop { get; set; }
+        public IEnumerable<Stop> UserStops { get; set; }
 
-        public IEnumerable<Journey> DriverJourney { get; set; }
+        public IEnumerable<Journey> OrganizerJourneys { get; set; }
+
+        public IEnumerable<Journey> ParticipantJourneys { get; set; }
 
         public IEnumerable<UserJourney> UserJourneys { get; set; }
 
