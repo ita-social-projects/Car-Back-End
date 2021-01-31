@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Car.Domain.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
@@ -22,7 +17,7 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Get the user chats by User Id
         /// </summary>
-        /// <param name="id">User indetifier</param>
+        /// <param name="id">User identifier</param>
         /// <returns>Chats of User by Id</returns>
         [HttpGet("{id}")]
         public IActionResult GetUserChats(int id)
