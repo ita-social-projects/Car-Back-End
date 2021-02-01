@@ -21,11 +21,10 @@ namespace Car.Domain.Services.Implementation
         {
             var newCar = new CarEntity
             {
-                BrandId = carDto.BrandId,
                 ModelId = carDto.ModelId,
                 Color = carDto.Color.ToString(),
                 PlateNumber = carDto.PlateNumber,
-                UserId = carDto.UserId,
+                OwnerId = carDto.UserId,
             };
 
             var car = unitOfWork.GetRepository().Add(newCar);
@@ -43,11 +42,11 @@ namespace Car.Domain.Services.Implementation
         {
             return unitOfWork.GetRepository()
                 .Query()
-                .Where(car => car.UserId == userId)
+                .Where(car => car.OwnerId == userId)
                 .Select(car => new CarInfoDto
                 {
                     Id = car.Id,
-                    BrandName = car.Brand.Name,
+                    BrandName = car.Model.Brand.Name,
                     ModelName = car.Model.Name,
                     Color = car.Color,
                     PlateNumber = car.PlateNumber,

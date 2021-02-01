@@ -18,7 +18,7 @@ namespace Car.WebApi.Controllers
         /// Get the user chats by User Id
         /// </summary>
         /// <param name="id">User identifier</param>
-        /// <returns>Chats of User by Id</returns>
+        /// <returns>UserChats of User by Id</returns>
         [HttpGet("{id}")]
         public IActionResult GetUserChats(int id)
         {

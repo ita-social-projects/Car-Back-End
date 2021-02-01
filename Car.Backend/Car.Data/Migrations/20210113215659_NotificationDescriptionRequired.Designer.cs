@@ -67,12 +67,12 @@ namespace Car.Data.Migrations
                     b.Property<string>("PlateNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Cars");
                 });
@@ -161,12 +161,12 @@ namespace Car.Data.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int?>("OwnerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Notifications");
                 });
@@ -199,7 +199,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("JourneyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -209,7 +209,7 @@ namespace Car.Data.Migrations
 
                     b.HasIndex("JourneyId");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("OwnerId")
                         .IsUnique();
 
                     b.ToTable("Stops");
@@ -254,13 +254,13 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.DAL.Entities.UserJourney", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
                     b.Property<int>("JourneyId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "JourneyId");
+                    b.HasKey("OwnerId", "JourneyId");
 
                     b.HasIndex("JourneyId");
 
@@ -283,12 +283,12 @@ namespace Car.Data.Migrations
                     b.Property<bool>("DoAllowSmoking")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("OwnerId")
                         .IsUnique();
 
                     b.ToTable("UserPreferences");
@@ -297,8 +297,8 @@ namespace Car.Data.Migrations
             modelBuilder.Entity("Car.DAL.Entities.Car", b =>
                 {
                     b.HasOne("Car.DAL.Entities.User", "Owner")
-                        .WithMany("UserCars")
-                        .HasForeignKey("UserId")
+                        .WithMany("Cars")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -342,8 +342,8 @@ namespace Car.Data.Migrations
             modelBuilder.Entity("Car.DAL.Entities.Notification", b =>
                 {
                     b.HasOne("Car.DAL.Entities.User", "User")
-                        .WithMany("UserNotifications")
-                        .HasForeignKey("UserId");
+                        .WithMany("Notifications")
+                        .HasForeignKey("OwnerId");
 
                     b.Navigation("User");
                 });
@@ -357,14 +357,14 @@ namespace Car.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Car.DAL.Entities.Journey", "Journey")
-                        .WithMany("UserStops")
+                        .WithMany("Stops")
                         .HasForeignKey("JourneyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Car.DAL.Entities.User", "User")
                         .WithOne("UserStop")
-                        .HasForeignKey("Car.DAL.Entities.Stop", "UserId")
+                        .HasForeignKey("Car.DAL.Entities.Stop", "OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -385,7 +385,7 @@ namespace Car.Data.Migrations
 
                     b.HasOne("Car.DAL.Entities.User", "User")
                         .WithMany("UserJourneys")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -398,7 +398,7 @@ namespace Car.Data.Migrations
                 {
                     b.HasOne("Car.DAL.Entities.User", "Owner")
                         .WithOne("UserPreferences")
-                        .HasForeignKey("Car.DAL.Entities.UserPreferences", "UserId")
+                        .HasForeignKey("Car.DAL.Entities.UserPreferences", "OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -414,7 +414,7 @@ namespace Car.Data.Migrations
                 {
                     b.Navigation("Participants");
 
-                    b.Navigation("UserStops");
+                    b.Navigation("Stops");
                 });
 
             modelBuilder.Entity("Car.DAL.Entities.Schedule", b =>
@@ -430,11 +430,11 @@ namespace Car.Data.Migrations
 
                     b.Navigation("SentMessages");
 
-                    b.Navigation("UserCars");
+                    b.Navigation("Cars");
 
                     b.Navigation("UserJourneys");
 
-                    b.Navigation("UserNotifications");
+                    b.Navigation("Notifications");
 
                     b.Navigation("UserPreferences");
 

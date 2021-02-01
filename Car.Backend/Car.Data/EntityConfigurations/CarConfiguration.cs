@@ -10,13 +10,12 @@ namespace Car.Data.EntityConfigurations
             builder.HasKey(car => car.Id);
 
             builder.HasOne(car => car.Owner)
-                .WithMany(user => user.UserCars)
-                .HasForeignKey(car => car.UserId);
+                .WithMany(user => user.Cars)
+                .HasForeignKey(car => car.OwnerId);
 
             builder.HasOne(car => car.Model)
-                .WithOne(brand => brand.Car)
-                .HasForeignKey<Entities.Car>(car => car.ModelId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithMany(brand => brand.Cars)
+                .HasForeignKey(car => car.ModelId);
 
             builder.HasIndex(car => car.ModelId).IsUnique(false);
 

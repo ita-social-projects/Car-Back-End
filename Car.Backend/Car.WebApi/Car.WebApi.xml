@@ -101,7 +101,7 @@
             Get the user chats by User Id
             </summary>
             <param name="id">User identifier</param>
-            <returns>Chats of User by Id</returns>
+            <returns>UserChats of User by Id</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>

@@ -52,7 +52,7 @@ namespace Car.UnitTests.Services
             var journeys = new List<Journey> { currentJourney }.AsQueryable();
 
             repository.Setup(r => r.Query(
-                    journeyStops => journeyStops.UserStops,
+                    journeyStops => journeyStops.Stops,
                     driver => driver.Organizer))
                 .Returns(journeys);
 
@@ -72,7 +72,7 @@ namespace Car.UnitTests.Services
             var journeys = new List<Journey> { pastJourney }.AsQueryable();
 
             repository.Setup(r => r.Query(
-                    journeyStops => journeyStops.UserStops,
+                    journeyStops => journeyStops.Stops,
                     driver => driver.Organizer))
                 .Returns(journeys);
 
@@ -92,7 +92,7 @@ namespace Car.UnitTests.Services
             var journeys = new List<Journey> { upcomingJourney }.AsQueryable();
 
             repository.Setup(r => r.Query(
-                    journeyStops => journeyStops.UserStops,
+                    journeyStops => journeyStops.Stops,
                     driver => driver.Organizer))
                 .Returns(journeys);
 
@@ -111,7 +111,7 @@ namespace Car.UnitTests.Services
             var journeys = new List<Journey> { scheduledJourney }.AsQueryable();
 
             repository.Setup(r => r.Query(
-                    journeyStops => journeyStops.UserStops,
+                    journeyStops => journeyStops.Stops,
                     driver => driver.Organizer))
                 .Returns(journeys);
 

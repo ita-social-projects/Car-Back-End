@@ -21,13 +21,13 @@ namespace Car.Data.Entities
 
         public string ImageId { get; set; }
 
-        public IEnumerable<Car> UserCars { get; set; }
+        public IEnumerable<Car> Cars { get; set; }
 
         public UserPreferences UserPreferences { get; set; }
 
-        public IEnumerable<Notification> UserNotifications { get; set; }
+        public IEnumerable<Notification> Notifications { get; set; }
 
-        public IEnumerable<Stop> UserStops { get; set; }
+        public IEnumerable<Stop> Stops { get; set; }
 
         public IEnumerable<Journey> OrganizerJourneys { get; set; }
 
@@ -39,6 +39,8 @@ namespace Car.Data.Entities
 
         public virtual IEnumerable<Message> ReceivedMessages { get; set; }
 
-        public IEnumerable<UserChat> Chats { get; set; }
+        public IEnumerable<UserChat> UserChats { get; set; }
+
+        public IEnumerable<Chat> Chats { get; set; }
     }
 }

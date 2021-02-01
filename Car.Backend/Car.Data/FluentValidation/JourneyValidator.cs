@@ -15,7 +15,7 @@ namespace Car.Data.FluentValidation
             RuleFor(journey => journey.IsFree).NotNull();
             RuleForEach(journey => journey.Participants).SetValidator(new UserValidator());
             RuleForEach(journey => journey.UserJourneys).SetValidator(new UserJourneyValidator());
-            RuleForEach(journey => journey.UserStops).SetValidator(new StopValidator());
+            RuleForEach(journey => journey.Stops).SetValidator(new StopValidator());
             RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator());
             RuleFor(journey => journey.Organizer).NotNull().SetValidator(new UserValidator());
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Car.Data.Entities
 {
@@ -10,8 +6,10 @@ namespace Car.Data.Entities
     {
         public int Id { get; set; }
 
-        public string ChatName { get; set; }
+        public string Name { get; set; }
 
-        public IEnumerable<UserChat> Users { get; set; }
+        public IEnumerable<UserChat> UserChats { get; set; }
+
+        public IEnumerable<User> Members { get; set; }
     }
 }

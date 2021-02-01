@@ -27,7 +27,7 @@ namespace Car.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Stops_UserId",
                 table: "Stops",
-                column: "UserId");
+                column: "OwnerId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Journeys_User_OrganizerId",
@@ -61,7 +61,7 @@ namespace Car.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Stops_UserId",
                 table: "Stops",
-                column: "UserId",
+                column: "OwnerId",
                 unique: true);
 
             migrationBuilder.AddForeignKey(

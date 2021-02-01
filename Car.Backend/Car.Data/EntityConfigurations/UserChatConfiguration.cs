@@ -13,14 +13,6 @@ namespace Car.Data.EntityConfigurations
                 chatUser.ChatId,
                 chatUser.UserId,
             });
-
-            builder.HasOne(chatUser => chatUser.User)
-                .WithMany(user => user.Chats)
-                .HasForeignKey(chatUser => chatUser.UserId);
-
-            builder.HasOne(chatUser => chatUser.Chat)
-                .WithMany(chat => chat.Users)
-                .HasForeignKey(chatUser => chatUser.ChatId);
         }
     }
 }

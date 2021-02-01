@@ -21,8 +21,12 @@ namespace Car.Data.EntityConfigurations
             builder.HasMany(journey => journey.Participants)
                 .WithMany(journey => journey.ParticipantJourneys)
                 .UsingEntity<UserJourney>(
-                    userJourney => userJourney.HasOne(uj => uj.User).WithMany(uj => uj.UserJourneys).HasForeignKey(uj => uj.UserId),
-                    userJourney => userJourney.HasOne(uj => uj.Journey).WithMany(j => j.UserJourneys).HasForeignKey(uj => uj.JourneyId));
+                    userJourney => userJourney.HasOne(uj => uj.User)
+                        .WithMany(uj => uj.UserJourneys)
+                        .HasForeignKey(uj => uj.UserId),
+                    userJourney => userJourney.HasOne(uj => uj.Journey)
+                        .WithMany(j => j.UserJourneys)
+                        .HasForeignKey(uj => uj.JourneyId));
 
             builder.Property(journey => journey.Comments).HasMaxLength(100);
         }

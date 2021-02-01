@@ -7,7 +7,7 @@ namespace Car.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Chats",
+                name: "UserChats",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -32,7 +32,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_UserChats_Chats_ChatId",
                         column: x => x.ChatId,
-                        principalTable: "Chats",
+                        principalTable: "UserChats",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -46,7 +46,7 @@ namespace Car.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_UserChats_UserId",
                 table: "UserChats",
-                column: "UserId");
+                column: "OwnerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -55,7 +55,7 @@ namespace Car.Data.Migrations
                 name: "UserChats");
 
             migrationBuilder.DropTable(
-                name: "Chats");
+                name: "UserChats");
         }
     }
 }

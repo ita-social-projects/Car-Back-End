@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Car.Data.Entities
 {
@@ -10,8 +9,5 @@ namespace Car.Data.Entities
         public string Name { get; set; }
 
         public IEnumerable<Model> Models { get; set; }
-
-        [JsonIgnore]
-        public Car Car { get; set; }
     }
 }

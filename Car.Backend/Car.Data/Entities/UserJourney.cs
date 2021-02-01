@@ -9,5 +9,7 @@
         public int JourneyId { get; set; }
 
         public Journey Journey { get; set; }
+
+        public bool HasLuggage { get; set; }
     }
 }

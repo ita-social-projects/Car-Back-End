@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Car.Data.Entities
+﻿namespace Car.Data.Entities
 {
     public class UserChat : IEntity
     {

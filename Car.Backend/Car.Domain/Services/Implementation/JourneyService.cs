@@ -21,7 +21,7 @@ namespace Car.Domain.Services.Implementation
             var currentJourney = unitOfWork
                 .GetRepository()
                 .Query(
-                    journeyStops => journeyStops.UserStops,
+                    journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .FirstOrDefault(journey => (journey.Participants.Any(user => user.Id == userId)
                                             || journey.OrganizerId == userId)
@@ -36,7 +36,7 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = unitOfWork.GetRepository()
                 .Query(
-                    journeyStops => journeyStops.UserStops,
+                    journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
                                   || journey.OrganizerId == userId)
@@ -51,7 +51,7 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = unitOfWork.GetRepository()
                 .Query(
-                    journeyStops => journeyStops.UserStops,
+                    journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
                                   || journey.OrganizerId == userId)
@@ -64,7 +64,7 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = unitOfWork.GetRepository()
                 .Query(
-                    journeyStops => journeyStops.UserStops,
+                    journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
                                   || journey.OrganizerId == userId)
