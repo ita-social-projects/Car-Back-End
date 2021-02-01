@@ -78,7 +78,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Should_have_error_when_UserId_is_not_valid(int value)
         {
-            validator.ShouldHaveValidationErrorFor(car => car.UserId, value);
+            validator.ShouldHaveValidationErrorFor(car => car.OwnerId, value);
         }
 
         [Xunit.Theory]
@@ -86,7 +86,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Should_not_have_error_when_UserId_is_specified(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(car => car.UserId, value);
+            validator.ShouldNotHaveValidationErrorFor(car => car.OwnerId, value);
         }
     }
 }

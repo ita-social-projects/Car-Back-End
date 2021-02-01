@@ -11,7 +11,7 @@ namespace Car.Data.EntityConfigurations
             builder.HasKey(notification => notification.Id);
 
             builder.HasOne(notification => notification.User)
-               .WithMany(user => user.UserNotifications)
+               .WithMany(user => user.Notifications)
                .HasForeignKey(notification => notification.UserId);
 
             builder.Property(notification => notification.Description).IsRequired();

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Car.Data.Entities
 {
@@ -13,6 +14,6 @@ namespace Car.Data.Entities
         public Brand Brand { get; set; }
 
         [JsonIgnore]
-        public Car Car { get; set; }
+        public IEnumerable<Car> Cars { get; set; } = new List<Car>();
     }
 }

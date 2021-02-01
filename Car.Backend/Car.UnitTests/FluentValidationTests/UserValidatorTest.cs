@@ -121,7 +121,7 @@ namespace Car.UnitTests.FluentValidationTests
         }
 
         [Xunit.Theory]
-        [InlineData("abc")]
+        [InlineData("abc@gmail.com")]
         public void Should_not_have_error_when_Email_is_specified(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(user => user.Email, value);

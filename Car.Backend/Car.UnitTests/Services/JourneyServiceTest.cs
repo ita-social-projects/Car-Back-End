@@ -37,10 +37,10 @@ namespace Car.UnitTests.Services
             {
                 Id = It.IsAny<int>(),
                 DepartureTime = DateTime.Now,
-                Driver = fixture.Create<User>(),
-                DriverId = 0,
+                Organizer = fixture.Create<User>(),
+                OrganizerId = 0,
                 JourneyDuration = new TimeSpan(0, 15, 0),
-                Participants = fixture.Create<List<UserJourney>>(),
+                Participants = fixture.Create<List<User>>(),
                 Schedule = fixture.Create<Schedule>(),
             };
 
@@ -52,8 +52,8 @@ namespace Car.UnitTests.Services
             var journeys = new List<Journey> { currentJourney }.AsQueryable();
 
             repository.Setup(r => r.Query(
-                    journeyStops => journeyStops.UserStops,
-                    driver => driver.Driver))
+                    journeyStops => journeyStops.Stops,
+                    driver => driver.Organizer))
                 .Returns(journeys);
 
             unitOfWork.Setup(r => r.GetRepository())
@@ -72,8 +72,8 @@ namespace Car.UnitTests.Services
             var journeys = new List<Journey> { pastJourney }.AsQueryable();
 
             repository.Setup(r => r.Query(
-                    journeyStops => journeyStops.UserStops,
-                    driver => driver.Driver))
+                    journeyStops => journeyStops.Stops,
+                    driver => driver.Organizer))
                 .Returns(journeys);
 
             unitOfWork.Setup(r => r.GetRepository())
@@ -92,8 +92,8 @@ namespace Car.UnitTests.Services
             var journeys = new List<Journey> { upcomingJourney }.AsQueryable();
 
             repository.Setup(r => r.Query(
-                    journeyStops => journeyStops.UserStops,
-                    driver => driver.Driver))
+                    journeyStops => journeyStops.Stops,
+                    driver => driver.Organizer))
                 .Returns(journeys);
 
             unitOfWork.Setup(r => r.GetRepository())
@@ -111,8 +111,8 @@ namespace Car.UnitTests.Services
             var journeys = new List<Journey> { scheduledJourney }.AsQueryable();
 
             repository.Setup(r => r.Query(
-                    journeyStops => journeyStops.UserStops,
-                    driver => driver.Driver))
+                    journeyStops => journeyStops.Stops,
+                    driver => driver.Organizer))
                 .Returns(journeys);
 
             unitOfWork.Setup(r => r.GetRepository())

@@ -37,7 +37,7 @@ namespace Car.UnitTests.Controllers
             journeyService.Setup(j => j.GetCurrentJourney(It.IsAny<int>()))
                 .Returns(journey);
 
-            var result = journeyController.GetCurent(user.Id);
+            var result = journeyController.GetCurrent(user.Id);
 
             using (new AssertionScope())
             {
@@ -54,7 +54,7 @@ namespace Car.UnitTests.Controllers
             journeyService.Setup(j => j.GetCurrentJourney(It.IsAny<int>()))
                 .Returns((Journey)null);
 
-            var result = journeyController.GetCurent(user.Id);
+            var result = journeyController.GetCurrent(user.Id);
 
             using (new AssertionScope())
             {

@@ -13,14 +13,6 @@ namespace Car.Data.EntityConfigurations
                 userJourney.UserId,
                 userJourney.JourneyId,
             });
-
-            builder.HasOne(userJourney => userJourney.User)
-                .WithMany(user => user.UserJourneys)
-                .HasForeignKey(userJourney => userJourney.UserId);
-
-            builder.HasOne(userJourney => userJourney.Journey)
-                .WithMany(journey => journey.Participants)
-                .HasForeignKey(userJourney => userJourney.JourneyId);
         }
     }
 }

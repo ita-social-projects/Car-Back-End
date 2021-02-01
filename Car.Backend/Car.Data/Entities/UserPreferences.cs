@@ -11,5 +11,7 @@
         public bool DoAllowEating { get; set; }
 
         public string Comments { get; set; }
+
+        public User User { get; set; }
     }
 }

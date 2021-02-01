@@ -6,6 +6,11 @@ namespace Car.Data.EntityConfigurations
 {
     public class StopConfiguration : IEntityTypeConfiguration<Stop>
     {
-        public void Configure(EntityTypeBuilder<Stop> builder) => builder.HasKey(stop => stop.Id);
+        public void Configure(EntityTypeBuilder<Stop> builder)
+        {
+            builder.HasKey(stop => stop.Id);
+
+            builder.HasOne(stop => stop.Address).WithOne(address => address.Stop);
+        }
     }
 }

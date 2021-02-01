@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    [Migration("20210119205511_AddJourneyDurationMigration")]
-    partial class AddJourneyDurationMigration
+    [Migration("20210122125638_CreatedUserChatsEntity")]
+    partial class CreatedUserChatsEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,7 +29,9 @@ namespace Car.Data.Migrations
                     .UseIdentityColumn();
 
                 b.Property<string>("City")
-                    .HasColumnType("nvarchar(max)");
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
                 b.Property<double>("Latitude")
                     .HasColumnType("float");
@@ -38,7 +40,9 @@ namespace Car.Data.Migrations
                     .HasColumnType("float");
 
                 b.Property<string>("Street")
-                    .HasColumnType("nvarchar(max)");
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
                 b.HasKey("Id");
 
@@ -56,7 +60,9 @@ namespace Car.Data.Migrations
                     .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Color")
-                    .HasColumnType("nvarchar(max)");
+                    .IsRequired()
+                    .HasMaxLength(25)
+                    .HasColumnType("nvarchar(25)");
 
                 b.Property<string>("ImageId")
                     .HasColumnType("nvarchar(max)");
@@ -65,7 +71,9 @@ namespace Car.Data.Migrations
                     .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("PlateNumber")
-                    .HasColumnType("nvarchar(max)");
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnType("nvarchar(10)");
 
                 b.Property<int>("UserId")
                     .HasColumnType("int");
@@ -77,6 +85,21 @@ namespace Car.Data.Migrations
                 b.ToTable("Cars");
             });
 
+            modelBuilder.Entity("Car.Data.Entities.Chat", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
+
+                b.Property<string>("ChatName")
+                    .HasColumnType("nvarchar(max)");
+
+                b.HasKey("Id");
+
+                b.ToTable("Chats");
+            });
+
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
             {
                 b.Property<int>("Id")
@@ -85,7 +108,8 @@ namespace Car.Data.Migrations
                     .UseIdentityColumn();
 
                 b.Property<string>("Comments")
-                    .HasColumnType("nvarchar(max)");
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
                 b.Property<int>("CountOfSeats")
                     .HasColumnType("int");
@@ -98,9 +122,6 @@ namespace Car.Data.Migrations
 
                 b.Property<bool>("IsFree")
                     .HasColumnType("bit");
-
-                b.Property<TimeSpan>("JourneyDuration")
-                    .HasColumnType("time");
 
                 b.Property<int>("RouteDistance")
                     .HasColumnType("int");
@@ -136,7 +157,9 @@ namespace Car.Data.Migrations
                     .HasColumnType("int");
 
                 b.Property<string>("Text")
-                    .HasColumnType("nvarchar(max)");
+                    .IsRequired()
+                    .HasMaxLength(400)
+                    .HasColumnType("nvarchar(400)");
 
                 b.HasKey("Id");
 
@@ -159,7 +182,8 @@ namespace Car.Data.Migrations
 
                 b.Property<string>("Description")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasMaxLength(400)
+                    .HasColumnType("nvarchar(400)");
 
                 b.Property<bool>("IsRead")
                     .HasColumnType("bit");
@@ -183,7 +207,8 @@ namespace Car.Data.Migrations
 
                 b.Property<string>("Name")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
                 b.HasKey("Id");
 
@@ -227,6 +252,8 @@ namespace Car.Data.Migrations
                     .UseIdentityColumn();
 
                 b.Property<string>("Email")
+                    .IsRequired()
+                    .HasMaxLength(450)
                     .HasColumnType("nvarchar(450)");
 
                 b.Property<DateTime>("HireDate")
@@ -236,24 +263,44 @@ namespace Car.Data.Migrations
                     .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Location")
-                    .HasColumnType("nvarchar(max)");
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
                 b.Property<string>("Name")
-                    .HasColumnType("nvarchar(max)");
+                    .IsRequired()
+                    .HasMaxLength(64)
+                    .HasColumnType("nvarchar(64)");
 
                 b.Property<string>("Position")
-                    .HasColumnType("nvarchar(max)");
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
                 b.Property<string>("Surname")
-                    .HasColumnType("nvarchar(max)");
+                    .IsRequired()
+                    .HasMaxLength(64)
+                    .HasColumnType("nvarchar(64)");
 
                 b.HasKey("Id");
 
                 b.HasIndex("Email")
-                    .IsUnique()
-                    .HasFilter("[Email] IS NOT NULL");
+                    .IsUnique();
 
                 b.ToTable("User");
+            });
+
+            modelBuilder.Entity("Car.Data.Entities.UserChat", b =>
+            {
+                b.Property<int>("ChatId")
+                    .HasColumnType("int");
+
+                b.Property<int>("UserId")
+                    .HasColumnType("int");
+
+                b.HasKey("ChatId", "UserId");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("UserChats");
             });
 
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
@@ -279,7 +326,8 @@ namespace Car.Data.Migrations
                     .UseIdentityColumn();
 
                 b.Property<string>("Comments")
-                    .HasColumnType("nvarchar(max)");
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
                 b.Property<bool>("DoAllowEating")
                     .HasColumnType("bit");
@@ -379,6 +427,25 @@ namespace Car.Data.Migrations
                 b.Navigation("User");
             });
 
+            modelBuilder.Entity("Car.Data.Entities.UserChat", b =>
+            {
+                b.HasOne("Car.Data.Entities.Chat", "Chat")
+                    .WithMany("Users")
+                    .HasForeignKey("ChatId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("Car.Data.Entities.User", "User")
+                    .WithMany("Chats")
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Chat");
+
+                b.Navigation("User");
+            });
+
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
             {
                 b.HasOne("Car.Data.Entities.Journey", "Journey")
@@ -412,6 +479,11 @@ namespace Car.Data.Migrations
                 b.Navigation("Stop");
             });
 
+            modelBuilder.Entity("Car.Data.Entities.Chat", b =>
+            {
+                b.Navigation("Users");
+            });
+
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
             {
                 b.Navigation("Participants");
@@ -426,6 +498,8 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.User", b =>
             {
+                b.Navigation("Chats");
+
                 b.Navigation("DriverJourney");
 
                 b.Navigation("ReceivedMessages");
