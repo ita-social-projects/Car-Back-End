@@ -14,6 +14,6 @@ namespace Car.Data.Entities
         public Brand Brand { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<Car> Cars { get; set; }
+        public IEnumerable<Car> Cars { get; set; } = new List<Car>();
     }
 }

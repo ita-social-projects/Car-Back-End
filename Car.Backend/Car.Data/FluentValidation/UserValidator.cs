@@ -13,7 +13,7 @@ namespace Car.Data.FluentValidation
             RuleFor(user => user.Position).NotNull().Length(1, 100);
             RuleFor(user => user.Location).NotNull().Length(1, 100);
             RuleFor(user => user.HireDate).NotNull().LessThanOrEqualTo(DateTime.Now);
-            RuleFor(user => user.Email).NotNull().Length(2, 100);
+            RuleFor(user => user.Email).NotNull().Length(2, 100).EmailAddress();
         }
     }
 }

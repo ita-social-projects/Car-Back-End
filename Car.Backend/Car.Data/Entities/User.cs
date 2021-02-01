@@ -21,26 +21,26 @@ namespace Car.Data.Entities
 
         public string ImageId { get; set; }
 
-        public IEnumerable<Car> Cars { get; set; }
+        public IEnumerable<Car> Cars { get; set; } = new List<Car>();
 
         public UserPreferences UserPreferences { get; set; }
 
-        public IEnumerable<Notification> Notifications { get; set; }
+        public IEnumerable<Notification> Notifications { get; set; } = new List<Notification>();
 
-        public IEnumerable<Stop> Stops { get; set; }
+        public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
 
-        public IEnumerable<Journey> OrganizerJourneys { get; set; }
+        public IEnumerable<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
 
-        public IEnumerable<Journey> ParticipantJourneys { get; set; }
+        public IEnumerable<Journey> ParticipantJourneys { get; set; } = new List<Journey>();
 
-        public IEnumerable<UserJourney> UserJourneys { get; set; }
+        public IEnumerable<UserJourney> UserJourneys { get; set; } = new List<UserJourney>();
 
-        public virtual IEnumerable<Message> SentMessages { get; set; }
+        public virtual IEnumerable<Message> SentMessages { get; set; } = new List<Message>();
 
-        public virtual IEnumerable<Message> ReceivedMessages { get; set; }
+        public virtual IEnumerable<Message> ReceivedMessages { get; set; } = new List<Message>();
 
-        public IEnumerable<UserChat> UserChats { get; set; }
+        public IEnumerable<UserChat> UserChats { get; set; } = new List<UserChat>();
 
-        public IEnumerable<Chat> Chats { get; set; }
+        public IEnumerable<Chat> Chats { get; set; } = new List<Chat>();
     }
 }

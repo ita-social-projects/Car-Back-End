@@ -242,7 +242,7 @@ namespace Car.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_UserId",
                 table: "Cars",
-                column: "OwnerId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Journeys_DriverId",
@@ -271,7 +271,7 @@ namespace Car.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
                 table: "Notifications",
-                column: "OwnerId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stops_AddressId",
@@ -287,7 +287,7 @@ namespace Car.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Stops_UserId",
                 table: "Stops",
-                column: "OwnerId",
+                column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -298,7 +298,7 @@ namespace Car.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_UserPreferences_UserId",
                 table: "UserPreferences",
-                column: "OwnerId",
+                column: "UserId",
                 unique: true);
         }
 

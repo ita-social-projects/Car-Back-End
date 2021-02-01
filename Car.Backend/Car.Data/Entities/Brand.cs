@@ -8,6 +8,6 @@ namespace Car.Data.Entities
 
         public string Name { get; set; }
 
-        public IEnumerable<Model> Models { get; set; }
+        public IEnumerable<Model> Models { get; set; } = new List<Model>();
     }
 }
