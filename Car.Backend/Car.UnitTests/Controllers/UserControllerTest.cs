@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AutoFixture;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
@@ -15,28 +16,27 @@ namespace Car.UnitTests.Controllers
     public class UserControllerTest
     {
         private readonly Mock<IUserService> userService;
-        private readonly Mock<IImageService<Data.Entities.User, File>> imageService;
+        private readonly Mock<IImageService<User, File>> imageService;
         private readonly UserController userController;
+        private readonly Fixture fixture;
 
         public UserControllerTest()
         {
             userService = new Mock<IUserService>();
-            imageService = new Mock<IImageService<Data.Entities.User, File>>();
+            imageService = new Mock<IImageService<User, File>>();
             userController = new UserController(userService.Object, imageService.Object);
-        }
 
-        public Data.Entities.User GetTestUser() =>
-            new Data.Entities.User()
-            {
-                Id = It.IsAny<int>(),
-                Name = It.IsAny<string>(),
-            };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetUserById_WithRightId_ReturnsOkObjectResult()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             userService.Setup(u => u.GetUserById(user.Id)).Returns(user);
 
             // Act
@@ -46,9 +46,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.User>();
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -56,8 +56,8 @@ namespace Car.UnitTests.Controllers
         public void TestGetUserById_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
-            userService.Setup(u => u.GetUserById(user.Id)).Returns((Data.Entities.User)null);
+            var user = fixture.Create<User>();
+            userService.Setup(u => u.GetUserById(user.Id)).Returns((User)null);
 
             // Act
             var result = userController.GetUserById(user.Id);
@@ -74,7 +74,7 @@ namespace Car.UnitTests.Controllers
         public void TestGetUserWithAvatarById_WithRightId_ReturnsOkObjectResult()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             userService.Setup(u => u.GetUserWithAvatarById(user.Id)).Returns(user);
 
             // Act
@@ -84,9 +84,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.User>();
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -94,9 +94,9 @@ namespace Car.UnitTests.Controllers
         public async Task UploadUserAvatar_WhenUserExist_ReturnsOkObjectResult()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             var formImage = new FormImage();
-            imageService.Setup(p => p.UploadImage(user.Id, formImage.Image)).Returns(Task.FromResult(new Data.Entities.User()));
+            imageService.Setup(p => p.UploadImage(user.Id, formImage.Image)).Returns(Task.FromResult(user));
 
             // Act
             var result = await userController.UploadUserAvatar(user.Id, formImage);
@@ -105,9 +105,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.User>();
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -115,13 +115,13 @@ namespace Car.UnitTests.Controllers
         public async Task UploadUserAvatar_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             var formImage = new FormImage();
 
             // Act
             imageService
                 .Setup(p => p.UploadImage(user.Id, formImage.Image))
-                .Returns(Task.FromResult<Data.Entities.User>(null));
+                .Returns(Task.FromResult<User>(null));
 
             // Assert
             using (new AssertionScope())
@@ -136,8 +136,8 @@ namespace Car.UnitTests.Controllers
         public async Task DeleteUserAvatar_WhenUserExist_ReturnsDeletedUser()
         {
             // Arrange
-            var user = GetTestUser();
-            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult(new Data.Entities.User()));
+            var user = fixture.Create<User>();
+            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult(user));
 
             // Act
             var result = await userController.DeleteUserAvatar(user.Id);
@@ -146,9 +146,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.User>();
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as Data.Entities.User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
+                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
             }
         }
 
@@ -156,8 +156,8 @@ namespace Car.UnitTests.Controllers
         public async Task DeleteUserAvatar_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
-            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult<Data.Entities.User>(null));
+            var user = fixture.Create<User>();
+            imageService.Setup(u => u.DeleteImage(user.Id)).Returns(Task.FromResult<User>(null));
 
             // Act
             var result = await userController.DeleteUserAvatar(user.Id);
@@ -174,7 +174,7 @@ namespace Car.UnitTests.Controllers
         public async Task GetUserFileById_WhenUserExist_ReturnsStringType()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             imageService.Setup(x => x.GetImageBytesById(user.Id)).Returns(Task.FromResult(string.Empty));
 
             // Act
@@ -192,7 +192,7 @@ namespace Car.UnitTests.Controllers
         public async Task GetUserFileById_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
             imageService.Setup(x => x.GetImageBytesById(user.Id)).Returns(Task.FromResult<string>(null));
 
             // Act

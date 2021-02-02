@@ -347,3 +347,8 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb 
+/CarBackEnd/CarBackEnd/appsettings.Development.json
+/CarBackEnd/CarBackEnd/appsettings.Production.json
+/CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-avatar-drive.json
+/CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-car-drive.json
+/CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-test-drive.json

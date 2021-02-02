@@ -19,16 +19,18 @@ namespace Car.Data.Entities
 
         public bool IsFree { get; set; }
 
-        public int? DriverId { get; set; }
+        public int? OrganizerId { get; set; }
 
         public int? ScheduleId { get; set; }
 
-        public IEnumerable<UserJourney> Participants { get; set; }
+        public IEnumerable<User> Participants { get; set; } = new List<User>();
 
-        public IEnumerable<Stop> UserStops { get; set; }
+        public IEnumerable<UserJourney> UserJourneys { get; set; } = new List<UserJourney>();
+
+        public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
 
         public Schedule Schedule { get; set; }
 
-        public User Driver { get; set; }
+        public User Organizer { get; set; }
     }
 }

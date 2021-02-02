@@ -22,444 +22,444 @@ namespace Car.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("Car.Data.Entities.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("City")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
+                b.Property<double>("Latitude")
+                    .HasColumnType("float");
 
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
+                b.Property<double>("Longitude")
+                    .HasColumnType("float");
 
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("Street")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Addresses");
-                });
+                b.ToTable("Addresses");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Car", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<string>("Brand")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Brand")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
+                b.Property<string>("Color")
+                    .IsRequired()
+                    .HasMaxLength(25)
+                    .HasColumnType("nvarchar(25)");
 
-                    b.Property<string>("ImageId")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ImageId")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Model")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Model")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PlateNumber")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                b.Property<string>("PlateNumber")
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                b.Property<int>("UserId")
+                    .HasColumnType("int");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                b.HasIndex("UserId");
 
-                    b.ToTable("Cars");
-                });
+                b.ToTable("Cars");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<string>("Comments")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("Comments")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("CountOfSeats")
-                        .HasColumnType("int");
+                b.Property<int>("CountOfSeats")
+                    .HasColumnType("int");
 
-                    b.Property<DateTime>("DepartureTime")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("DepartureTime")
+                    .HasColumnType("datetime2");
 
-                    b.Property<int?>("DriverId")
-                        .HasColumnType("int");
+                b.Property<int?>("DriverId")
+                    .HasColumnType("int");
 
-                    b.Property<bool>("IsFree")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsFree")
+                    .HasColumnType("bit");
 
-                    b.Property<int>("RouteDistance")
-                        .HasColumnType("int");
+                b.Property<int>("RouteDistance")
+                    .HasColumnType("int");
 
-                    b.Property<int?>("ScheduleId")
-                        .HasColumnType("int");
+                b.Property<int?>("ScheduleId")
+                    .HasColumnType("int");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("DriverId");
+                b.HasIndex("DriverId");
 
-                    b.HasIndex("ScheduleId")
-                        .IsUnique()
-                        .HasFilter("[ScheduleId] IS NOT NULL");
+                b.HasIndex("ScheduleId")
+                    .IsUnique()
+                    .HasFilter("[ScheduleId] IS NOT NULL");
 
-                    b.ToTable("Journeys");
-                });
+                b.ToTable("Journeys");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("CreateAt")
+                    .HasColumnType("datetime2");
 
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
+                b.Property<int>("ReceiverId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
+                b.Property<int>("SenderId")
+                    .HasColumnType("int");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
+                b.Property<string>("Text")
+                    .IsRequired()
+                    .HasMaxLength(400)
+                    .HasColumnType("nvarchar(400)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
+                b.HasIndex("ReceiverId");
 
-                    b.HasIndex("SenderId");
+                b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
-                });
+                b.ToTable("Messages");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("CreateAt")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasMaxLength(400)
+                    .HasColumnType("nvarchar(400)");
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsRead")
+                    .HasColumnType("bit");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
+                b.Property<int?>("UserId")
+                    .HasColumnType("int");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
-                });
+                b.ToTable("Notifications");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Schedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Schedule");
-                });
+                b.ToTable("Schedule");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Stop", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
+                b.Property<int>("AddressId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("JourneyId")
-                        .HasColumnType("int");
+                b.Property<int>("JourneyId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                b.Property<int>("UserId")
+                    .HasColumnType("int");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                b.HasIndex("AddressId")
+                    .IsUnique();
 
-                    b.HasIndex("JourneyId");
+                b.HasIndex("JourneyId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                b.HasIndex("UserId")
+                    .IsUnique();
 
-                    b.ToTable("Stops");
-                });
+                b.ToTable("Stops");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasMaxLength(450)
+                    .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("HireDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("HireDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("ImageId")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ImageId")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Location")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("Location")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(64)
+                    .HasColumnType("nvarchar(64)");
 
-                    b.Property<string>("Position")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("Position")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                b.Property<string>("Surname")
+                    .IsRequired()
+                    .HasMaxLength(64)
+                    .HasColumnType("nvarchar(64)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                b.HasIndex("Email")
+                    .IsUnique();
 
-                    b.ToTable("User");
-                });
+                b.ToTable("User");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+            {
+                b.Property<int>("UserId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("JourneyId")
-                        .HasColumnType("int");
+                b.Property<int>("JourneyId")
+                    .HasColumnType("int");
 
-                    b.HasKey("UserId", "JourneyId");
+                b.HasKey("UserId", "JourneyId");
 
-                    b.HasIndex("JourneyId");
+                b.HasIndex("JourneyId");
 
-                    b.ToTable("UserJourney");
-                });
+                b.ToTable("UserJourney");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.UserPreferences", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<string>("Comments")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("Comments")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("DoAllowEating")
-                        .HasColumnType("bit");
+                b.Property<bool>("DoAllowEating")
+                    .HasColumnType("bit");
 
-                    b.Property<bool>("DoAllowSmoking")
-                        .HasColumnType("bit");
+                b.Property<bool>("DoAllowSmoking")
+                    .HasColumnType("bit");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                b.Property<int>("UserId")
+                    .HasColumnType("int");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                b.HasIndex("UserId")
+                    .IsUnique();
 
-                    b.ToTable("UserPreferences");
-                });
+                b.ToTable("UserPreferences");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Car", b =>
-                {
-                    b.HasOne("Car.Data.Entities.User", "Owner")
-                        .WithMany("UserCars")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Car.Data.Entities.User", "Owner")
+                    .WithMany("UserCars")
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Owner");
-                });
+                b.Navigation("Owner");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
-                {
-                    b.HasOne("Car.Data.Entities.User", "Driver")
-                        .WithMany("DriverJourney")
-                        .HasForeignKey("DriverId");
+            {
+                b.HasOne("Car.Data.Entities.User", "Driver")
+                    .WithMany("DriverJourney")
+                    .HasForeignKey("DriverId");
 
-                    b.HasOne("Car.Data.Entities.Schedule", "Schedule")
-                        .WithOne("Journey")
-                        .HasForeignKey("Car.Data.Entities.Journey", "ScheduleId");
+                b.HasOne("Car.Data.Entities.Schedule", "Schedule")
+                    .WithOne("Journey")
+                    .HasForeignKey("Car.Data.Entities.Journey", "ScheduleId");
 
-                    b.Navigation("Driver");
+                b.Navigation("Driver");
 
-                    b.Navigation("Schedule");
-                });
+                b.Navigation("Schedule");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Message", b =>
-                {
-                    b.HasOne("Car.Data.Entities.User", "Receiver")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+            {
+                b.HasOne("Car.Data.Entities.User", "Receiver")
+                    .WithMany("ReceivedMessages")
+                    .HasForeignKey("ReceiverId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.User", "Sender")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                b.HasOne("Car.Data.Entities.User", "Sender")
+                    .WithMany("SentMessages")
+                    .HasForeignKey("SenderId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
 
-                    b.Navigation("Receiver");
+                b.Navigation("Receiver");
 
-                    b.Navigation("Sender");
-                });
+                b.Navigation("Sender");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Notification", b =>
-                {
-                    b.HasOne("Car.Data.Entities.User", "User")
-                        .WithMany("UserNotifications")
-                        .HasForeignKey("UserId");
+            {
+                b.HasOne("Car.Data.Entities.User", "User")
+                    .WithMany("UserNotifications")
+                    .HasForeignKey("UserId");
 
-                    b.Navigation("User");
-                });
+                b.Navigation("User");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Stop", b =>
-                {
-                    b.HasOne("Car.Data.Entities.Address", "Address")
-                        .WithOne("Stop")
-                        .HasForeignKey("Car.Data.Entities.Stop", "AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Car.Data.Entities.Address", "Address")
+                    .WithOne("Stop")
+                    .HasForeignKey("Car.Data.Entities.Stop", "AddressId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.Journey", "Journey")
-                        .WithMany("UserStops")
-                        .HasForeignKey("JourneyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("Car.Data.Entities.Journey", "Journey")
+                    .WithMany("UserStops")
+                    .HasForeignKey("JourneyId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.User", "User")
-                        .WithOne("UserStop")
-                        .HasForeignKey("Car.Data.Entities.Stop", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("Car.Data.Entities.User", "User")
+                    .WithOne("UserStop")
+                    .HasForeignKey("Car.Data.Entities.Stop", "UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Address");
+                b.Navigation("Address");
 
-                    b.Navigation("Journey");
+                b.Navigation("Journey");
 
-                    b.Navigation("User");
-                });
+                b.Navigation("User");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
-                {
-                    b.HasOne("Car.Data.Entities.Journey", "Journey")
-                        .WithMany("Participants")
-                        .HasForeignKey("JourneyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Car.Data.Entities.Journey", "Journey")
+                    .WithMany("Participants")
+                    .HasForeignKey("JourneyId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.User", "User")
-                        .WithMany("UserJourneys")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("Car.Data.Entities.User", "User")
+                    .WithMany("UserJourneys")
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Journey");
+                b.Navigation("Journey");
 
-                    b.Navigation("User");
-                });
+                b.Navigation("User");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.UserPreferences", b =>
-                {
-                    b.HasOne("Car.Data.Entities.User", null)
-                        .WithOne("UserPreferences")
-                        .HasForeignKey("Car.Data.Entities.UserPreferences", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("Car.Data.Entities.User", null)
+                    .WithOne("UserPreferences")
+                    .HasForeignKey("Car.Data.Entities.UserPreferences", "UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Address", b =>
-                {
-                    b.Navigation("Stop");
-                });
+            {
+                b.Navigation("Stop");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
-                {
-                    b.Navigation("Participants");
+            {
+                b.Navigation("Participants");
 
-                    b.Navigation("UserStops");
-                });
+                b.Navigation("UserStops");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.Schedule", b =>
-                {
-                    b.Navigation("Journey");
-                });
+            {
+                b.Navigation("Journey");
+            });
 
             modelBuilder.Entity("Car.Data.Entities.User", b =>
-                {
-                    b.Navigation("DriverJourney");
+            {
+                b.Navigation("DriverJourney");
 
-                    b.Navigation("ReceivedMessages");
+                b.Navigation("ReceivedMessages");
 
-                    b.Navigation("SentMessages");
+                b.Navigation("SentMessages");
 
-                    b.Navigation("UserCars");
+                b.Navigation("UserCars");
 
-                    b.Navigation("UserJourneys");
+                b.Navigation("UserJourneys");
 
-                    b.Navigation("UserNotifications");
+                b.Navigation("UserNotifications");
 
-                    b.Navigation("UserPreferences");
+                b.Navigation("UserPreferences");
 
-                    b.Navigation("UserStop");
-                });
+                b.Navigation("UserStop");
+            });
 #pragma warning restore 612, 618
         }
     }

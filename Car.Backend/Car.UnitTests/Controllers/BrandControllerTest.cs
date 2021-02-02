@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
@@ -14,35 +14,23 @@ namespace Car.UnitTests.Controllers
     {
         private readonly Mock<IBrandService> brandService;
         private readonly BrandController brandController;
+        private readonly Fixture fixture;
 
         public BrandControllerTest()
         {
             brandService = new Mock<IBrandService>();
             brandController = new BrandController(brandService.Object);
-        }
 
-        public IEnumerable<Brand> GetTestBrands() => new Brand[]
-        {
-           new Brand()
-           {
-               Id = It.IsAny<int>(),
-               Name = It.IsAny<string>(),
-               Models = It.IsAny<IEnumerable<Model>>(),
-               Car = It.IsAny<Data.Entities.Car>(),
-           },
-           new Brand()
-           {
-               Id = It.IsAny<int>(),
-               Name = It.IsAny<string>(),
-               Models = It.IsAny<IEnumerable<Model>>(),
-               Car = It.IsAny<Data.Entities.Car>(),
-           },
-        };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetBrands()
         {
-            var brands = GetTestBrands();
+            var brands = fixture.Create<Brand[]>();
 
             brandService.Setup(service => service.GetAllBrands()).Returns(brands);
 

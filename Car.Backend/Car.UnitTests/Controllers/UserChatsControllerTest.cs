@@ -1,35 +1,37 @@
-﻿namespace Car.UnitTests.Controllers
-{
-    using System.Collections.Generic;
-    using Car.Data.Entities;
-    using Car.Domain.Services.Interfaces;
-    using Car.WebApi.Controllers;
-    using FluentAssertions;
-    using Microsoft.AspNetCore.Mvc;
-    using Moq;
-    using Xunit;
+﻿using System.Collections.Generic;
+using AutoFixture;
+using Car.Data.Entities;
+using Car.Domain.Services.Interfaces;
+using Car.WebApi.Controllers;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Xunit;
 
+namespace Car.UnitTests.Controllers
+{
     public class UserChatsControllerTest
     {
         private readonly Mock<IUserChatsManager> userChatsManager;
-        private readonly ChatController userChatsController;
+        private readonly UserChatsController userChatsController;
 
         public UserChatsControllerTest()
         {
             this.userChatsManager = new Mock<IUserChatsManager>();
-            this.userChatsController = new ChatController(this.userChatsManager.Object);
+            this.userChatsController = new UserChatsController(this.userChatsManager.Object);
         }
 
-        public User GetTestUser()
-        {
-            return new User { Id = It.IsAny<int>(), Name = It.IsAny<string>() };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public void GetUserChats_WhenUserExists_ReturnsChatObject()
         {
             // Arrange
-            var user = this.GetTestUser();
+            var user = this.fixture.Create<User>();
             this.userChatsManager.Setup(x => x.GetUsersChats(It.IsAny<int>())).Returns(new List<Chat>());
 
             // Act
@@ -44,7 +46,7 @@
         public void GetUserChats_WhenUserNotExists_ReturnsNull()
         {
             // Arrange
-            var user = this.GetTestUser();
+            var user = this.fixture.Create<User>();
             this.userChatsManager.Setup(x => x.GetUsersChats(It.IsAny<int>())).Returns((List<Chat>)null);
 
             // Act

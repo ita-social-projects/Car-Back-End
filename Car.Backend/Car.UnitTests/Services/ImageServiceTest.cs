@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Exceptions;
@@ -19,6 +20,7 @@ namespace Car.UnitTests.Services
         private readonly IImageService<User, File> imageService;
         private readonly Mock<IRepository<User>> repository;
         private readonly Mock<IUnitOfWork<User>> unitOfWork;
+        private readonly Fixture fixture;
 
         public ImageServiceTest()
         {
@@ -30,30 +32,20 @@ namespace Car.UnitTests.Services
 
             imageService = new ImageService<User>(
                 driveService.Object, unitOfWork.Object, strategy.Object);
-        }
 
-        public User GetTestUser() =>
-            new User()
-            {
-                Id = It.IsAny<int>(),
-                Name = It.IsAny<string>(),
-                Surname = It.IsAny<string>(),
-                Email = It.IsAny<string>(),
-                Position = It.IsAny<string>(),
-            };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestUploadImage()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
             Func<Task> action = () => imageService
-                .UploadImage(user.Id, new FormFile(
-                    Stream.Null,
-                    It.IsAny<int>(),
-                    It.IsAny<int>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>()));
+                .UploadImage(user.Id, fixture.Create<FormFile>());
 
             action.Should().NotThrowAsync<DefaultApplicationException>();
         }
@@ -61,7 +53,7 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestUploadImage_WhenFileIsNull()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
             Func<Task> action = () => imageService.UploadImage(user.Id, null);
             action.Should().ThrowAsync<DefaultApplicationException>();
@@ -70,12 +62,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestUploadImage_WhenEntityIsNull()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             Func<Task> action = () => imageService.UploadImage(It.IsNotIn(user.Id), null);
@@ -85,12 +77,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestDeleteImage_WhenImageWasNotDeleted()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             Func<Task> action = () => imageService.DeleteImage(user.Id);
@@ -100,12 +92,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestDeleteImage_WhenUserNotExist()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             Func<Task> action = () => imageService.DeleteImage(It.IsNotIn(user.Id));
@@ -115,12 +107,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestGetImageBytesById_WhenUserNotExist()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             Func<Task> action = () => imageService.GetImageBytesById(4);
@@ -130,12 +122,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestGetImageBytesById()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             Func<Task> action = () => imageService.GetImageBytesById(user.Id);

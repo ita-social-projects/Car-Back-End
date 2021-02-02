@@ -84,28 +84,28 @@
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetCurent(System.Int32)">
             <summary>
-            Looks for information about current journey where current user is participent or driver
+            Looks for information about current journey where current user is participant or driver
             </summary>
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
             <summary>
-            Looks for information about past journeys where current user is participent or driver
+            Looks for information about past journeys where current user is participant or driver
             </summary>
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetUpcoming(System.Int32)">
             <summary>
-            Looks for information about all upcoming journeys where current user is participent or driver
+            Looks for information about all upcoming journeys where current user is participant or driver
             </summary>
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetScheduled(System.Int32)">
             <summary>
-            Looks for information about all scheduled journeys where current user is participent or driver
+            Looks for information about all scheduled journeys where current user is participant or driver
             </summary>
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
@@ -124,6 +124,13 @@
             </summary>
             <param name="id">The brand identifier.</param>
             <returns>All the models</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.UserChatsController.GetUserChats(System.Int32)">
+            <summary>
+            Get the user chats by User Id
+            </summary>
+            <param name="id">User identifier</param>
+            <returns>UserChats of User by Id</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>

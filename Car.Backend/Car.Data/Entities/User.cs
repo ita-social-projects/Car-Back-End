@@ -21,19 +21,23 @@ namespace Car.Data.Entities
 
         public string ImageId { get; set; }
 
-        public IEnumerable<Car> UserCars { get; set; }
+        public IEnumerable<Car> Cars { get; set; } = new List<Car>();
 
         public UserPreferences UserPreferences { get; set; }
 
-        public IEnumerable<Notification> UserNotifications { get; set; }
+        public IEnumerable<Notification> Notifications { get; set; } = new List<Notification>();
 
-        public Stop UserStop { get; set; }
+        public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
 
-        public IEnumerable<Journey> DriverJourney { get; set; }
+        public IEnumerable<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
 
-        public IEnumerable<UserJourney> UserJourneys { get; set; }
+        public IEnumerable<Journey> ParticipantJourneys { get; set; } = new List<Journey>();
 
-        public virtual IEnumerable<Message> SentMessages { get; set; }
+        public IEnumerable<UserJourney> UserJourneys { get; set; } = new List<UserJourney>();
+
+        public virtual IEnumerable<Message> SentMessages { get; set; } = new List<Message>();
+
+        public virtual IEnumerable<Message> ReceivedMessages { get; set; } = new List<Message>();
 
         public virtual IEnumerable<Message> ReceivedMessages { get; set; }
 

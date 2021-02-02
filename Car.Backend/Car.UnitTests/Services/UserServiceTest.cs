@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Exceptions;
@@ -15,6 +16,7 @@ namespace Car.UnitTests.Services
         private readonly IUserService userService;
         private readonly Mock<IRepository<User>> repository;
         private readonly Mock<IUnitOfWork<User>> unitOfWork;
+        private readonly Fixture fixture;
 
         public UserServiceTest()
         {
@@ -22,27 +24,22 @@ namespace Car.UnitTests.Services
             unitOfWork = new Mock<IUnitOfWork<User>>();
 
             userService = new UserService(unitOfWork.Object);
-        }
 
-        public User GetTestUser() =>
-            new User()
-            {
-                Id = It.IsAny<int>(),
-                Name = It.IsAny<string>(),
-                Surname = It.IsAny<string>(),
-                Email = It.IsAny<string>(),
-                Position = It.IsAny<string>(),
-            };
+            fixture = new Fixture();
+
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
 
         [Fact]
         public void TestGetUserById_WhenUserExists()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             userService.GetUserById(user.Id).Should().BeEquivalentTo(user);
@@ -51,12 +48,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestGetUserById_WhenUserNotExist()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             Action action = () => userService.GetUserById(4);
@@ -66,12 +63,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestGetUserWithAvatarById_WhenUserExists()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             userService.GetUserWithAvatarById(user.Id).Should().BeEquivalentTo(
@@ -87,12 +84,12 @@ namespace Car.UnitTests.Services
         [Fact]
         public void TestGetUserWithAvatarById_WhenUserNotExist()
         {
-            var user = GetTestUser();
+            var user = fixture.Create<User>();
 
-            repository.Setup(repository => repository.GetById(user.Id))
+            repository.Setup(r => r.GetById(user.Id))
                 .Returns(user);
 
-            unitOfWork.Setup(repository => repository.GetRepository())
+            unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             Action action = () => userService.GetUserWithAvatarById(4);

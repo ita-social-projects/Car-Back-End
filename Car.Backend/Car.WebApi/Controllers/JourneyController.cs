@@ -12,15 +12,15 @@ namespace Car.WebApi.Controllers
         public JourneyController(IJourneyService journeyService) => this.journeyService = journeyService;
 
         /// <summary>
-        /// Looks for information about current journey where current user is participent or driver
+        /// Looks for information about current journey where current user is participant or driver
         /// </summary>
         /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
         [HttpGet("current/{id}")]
-        public IActionResult GetCurent(int id) => Ok(journeyService.GetCurrentJourney(id));
+        public IActionResult GetCurrent(int id) => Ok(journeyService.GetCurrentJourney(id));
 
         /// <summary>
-        /// Looks for information about past journeys where current user is participent or driver
+        /// Looks for information about past journeys where current user is participant or driver
         /// </summary>
         /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
@@ -28,7 +28,7 @@ namespace Car.WebApi.Controllers
         public IActionResult GetPast(int id) => Ok(journeyService.GetPastJourneys(id));
 
         /// <summary>
-        /// Looks for information about all upcoming journeys where current user is participent or driver
+        /// Looks for information about all upcoming journeys where current user is participant or driver
         /// </summary>
         /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
@@ -36,7 +36,7 @@ namespace Car.WebApi.Controllers
         public IActionResult GetUpcoming(int id) => Ok(journeyService.GetUpcomingJourneys(id));
 
         /// <summary>
-        /// Looks for information about all scheduled journeys where current user is participent or driver
+        /// Looks for information about all scheduled journeys where current user is participant or driver
         /// </summary>
         /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
