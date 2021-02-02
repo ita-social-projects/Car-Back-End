@@ -2,7 +2,6 @@
 using Car.Data.Entities;
 using Car.Domain.Configurations;
 using Car.Domain.Services.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace Car.Domain.Services.Implementation.Strategy
@@ -26,8 +25,8 @@ namespace Car.Domain.Services.Implementation.Strategy
         {
             var fileName = new StringBuilder();
 
-            fileName.Append(entity.Id).Append("_")
-                .Append(entity.Name).Append("_")
+            fileName.Append(entity.Id).Append('_')
+                .Append(entity.Name).Append('_')
                 .Append(entity.Surname).Append(".jpg");
 
             return fileName.ToString();
