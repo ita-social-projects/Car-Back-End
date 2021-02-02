@@ -53,6 +53,35 @@
             <param name="id">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
+            <summary>
+            Get the user chats by User Id
+            </summary>
+            <param name="id">User indetifier</param>
+            <returns>Chats of User by Id</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.GetChat(System.Int32)">
+            <summary>
+            Get chat by Chat Id
+            </summary>
+            <param name="id"></param>
+            <returns>Chat</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Data.Entities.Chat)">
+            <summary>
+            Add the chat
+            </summary>
+            <param name="chat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.AddUserToChat(System.Int32,System.Int32)">
+            <summary>
+            Add user to the chat
+            </summary>
+            <param name="userId"></param>
+            <param name="chatId"></param>
+            <returns></returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetCurent(System.Int32)">
             <summary>
             Looks for information about current journey where current user is participent or driver
@@ -95,13 +124,6 @@
             </summary>
             <param name="id">The brand identifier.</param>
             <returns>All the models</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.UserChatsController.GetUserChats(System.Int32)">
-            <summary>
-            Get the user chats by User Id
-            </summary>
-            <param name="id">User indetifier</param>
-            <returns>Chats of User by Id</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>

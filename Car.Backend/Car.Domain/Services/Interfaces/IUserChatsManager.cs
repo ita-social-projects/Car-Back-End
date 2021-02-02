@@ -10,5 +10,11 @@ namespace Car.Domain.Services.Interfaces
     public interface IUserChatsManager
     {
         public List<Chat> GetUsersChats(int userId);
+
+        public Chat GetChatById(int chatId);
+
+        public Chat AddChat(Chat chat);
+
+        public User AddUserToChat(int chatId, int userId);
     }
 }

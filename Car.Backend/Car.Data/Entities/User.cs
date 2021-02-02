@@ -37,6 +37,6 @@ namespace Car.Data.Entities
 
         public virtual IEnumerable<Message> ReceivedMessages { get; set; }
 
-        public IEnumerable<UserChat> Chats { get; set; }
+        public ICollection<Chat> Chats { get; set; }
     }
 }

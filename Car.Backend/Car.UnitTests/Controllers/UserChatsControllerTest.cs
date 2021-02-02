@@ -12,12 +12,12 @@
     public class UserChatsControllerTest
     {
         private readonly Mock<IUserChatsManager> userChatsManager;
-        private readonly UserChatsController userChatsController;
+        private readonly ChatController userChatsController;
 
         public UserChatsControllerTest()
         {
             this.userChatsManager = new Mock<IUserChatsManager>();
-            this.userChatsController = new UserChatsController(this.userChatsManager.Object);
+            this.userChatsController = new ChatController(this.userChatsManager.Object);
         }
 
         public User GetTestUser()

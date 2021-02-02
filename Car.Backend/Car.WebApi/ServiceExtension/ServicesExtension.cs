@@ -36,8 +36,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IUnitOfWork<Model>, UnitOfWork<Model>>();
             services.AddScoped<IEntityTypeStrategy<User>, UserEntityStrategy>();
             services.AddScoped<IEntityTypeStrategy<Data.Entities.Car>, CarEntityStrategy>();
-            services.AddScoped<IUnitOfWork<UserChat>, UnitOfWork<UserChat>>();
-            services.AddScoped<IUserChatsManager, UserChatsManager>();
+            services.AddScoped<IUserChatsManager, ChatService>();
             services.AddScoped<IUnitOfWork<Chat>, UnitOfWork<Chat>>();
             services.AddScoped<IJourneyService, JourneyService>();
             services.AddScoped<IRepository<Journey>, Repository<Journey>>();
