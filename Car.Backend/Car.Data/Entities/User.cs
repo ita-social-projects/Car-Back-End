@@ -27,7 +27,7 @@ namespace Car.Data.Entities
 
         public IEnumerable<Notification> Notifications { get; set; } = new List<Notification>();
 
-        public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
+        public IEnumerable<Address> Addresses { get; set; } = new List<Address>();
 
         public IEnumerable<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
 

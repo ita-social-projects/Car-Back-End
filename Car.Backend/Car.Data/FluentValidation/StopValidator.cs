@@ -8,7 +8,6 @@ namespace Car.Data.FluentValidation
         {
             RuleFor(stop => stop.Id).GreaterThan(0);
             RuleFor(stop => stop.JourneyId).GreaterThan(0);
-            RuleFor(stop => stop.UserId).GreaterThan(0);
             RuleFor(stop => stop.AddressId).GreaterThan(0);
             RuleFor(stop => stop.Address).SetValidator(new AddressValidator());
         }

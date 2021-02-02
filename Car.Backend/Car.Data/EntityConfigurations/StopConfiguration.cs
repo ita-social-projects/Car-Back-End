@@ -10,7 +10,10 @@ namespace Car.Data.EntityConfigurations
         {
             builder.HasKey(stop => stop.Id);
 
-            builder.HasOne(stop => stop.Address).WithOne(address => address.Stop);
+            builder.HasOne(stop => stop.Address).WithMany(address => address.Stops)
+                .HasForeignKey(stop => stop.AddressId);
+            builder.HasOne(stop => stop.Journey).WithMany(journey => journey.Stops)
+                .HasForeignKey(stop => stop.JourneyId);
         }
     }
 }
