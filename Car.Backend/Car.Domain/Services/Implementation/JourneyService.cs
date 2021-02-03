@@ -32,6 +32,14 @@ namespace Car.Domain.Services.Implementation
             return currentJourney;
         }
 
+        public Journey GetJourneyById(int journeyId)
+        {
+            var currentJourney = unitOfWork.GetRepository()
+                .Query(journey => journey.Organizer, journey => journey.Participants, journey => journey.Stops)
+                .FirstOrDefault(journey => journey.Id == journeyId);
+            return currentJourney;
+        }
+
         public List<Journey> GetPastJourneys(int userId)
         {
             var journeys = unitOfWork.GetRepository()
