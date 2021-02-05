@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210202130450_JourneyStopRelations")]
+    partial class JourneyStopRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1647,6 +1649,21 @@ namespace Car.Data.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Car.Data.Entities.UserChat", b =>
+                {
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ChatId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserChats");
+                });
+
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
                 {
                     b.Property<int>("UserId")
@@ -1691,21 +1708,6 @@ namespace Car.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("UserPreferences");
-                });
-
-            modelBuilder.Entity("ChatUser", b =>
-                {
-                    b.Property<int>("ChatsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ChatsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("ChatUser");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Address", b =>
@@ -1811,6 +1813,25 @@ namespace Car.Data.Migrations
                     b.Navigation("Journey");
                 });
 
+            modelBuilder.Entity("Car.Data.Entities.UserChat", b =>
+                {
+                    b.HasOne("Car.Data.Entities.Chat", "Chat")
+                        .WithMany("UserChats")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Car.Data.Entities.User", "User")
+                        .WithMany("UserChats")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
                 {
                     b.HasOne("Car.Data.Entities.Journey", "Journey")
@@ -1841,21 +1862,6 @@ namespace Car.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ChatUser", b =>
-                {
-                    b.HasOne("Car.Data.Entities.Chat", null)
-                        .WithMany()
-                        .HasForeignKey("ChatsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Car.Data.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Car.Data.Entities.Address", b =>
                 {
                     b.Navigation("Stops");
@@ -1864,6 +1870,11 @@ namespace Car.Data.Migrations
             modelBuilder.Entity("Car.Data.Entities.Brand", b =>
                 {
                     b.Navigation("Models");
+                });
+
+            modelBuilder.Entity("Car.Data.Entities.Chat", b =>
+                {
+                    b.Navigation("UserChats");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
@@ -1896,6 +1907,8 @@ namespace Car.Data.Migrations
                     b.Navigation("ReceivedMessages");
 
                     b.Navigation("SentMessages");
+
+                    b.Navigation("UserChats");
 
                     b.Navigation("UserJourneys");
 

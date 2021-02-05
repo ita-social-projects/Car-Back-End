@@ -12,14 +12,14 @@ namespace Car.UnitTests.Controllers
 {
     public class UserChatsControllerTest
     {
-        private readonly Mock<IUserChatsManager> userChatsManager;
-        private readonly UserChatsController userChatsController;
+        private readonly Mock<IChatService> userChatsManager;
+        private readonly ChatController userChatsController;
         private readonly Fixture fixture;
 
         public UserChatsControllerTest()
         {
-            this.userChatsManager = new Mock<IUserChatsManager>();
-            this.userChatsController = new UserChatsController(this.userChatsManager.Object);
+            this.userChatsManager = new Mock<IChatService>();
+            this.userChatsController = new ChatController(this.userChatsManager.Object);
 
             fixture = new Fixture();
 

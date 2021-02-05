@@ -1,4 +1,6 @@
-﻿namespace Car.Data.Entities
+﻿using System.Collections.Generic;
+
+namespace Car.Data.Entities
 {
     public class Address : IEntity
     {
@@ -12,6 +14,10 @@
 
         public double Longitude { get; set; }
 
-        public Stop Stop { get; set; }
+        public int UserId { get; set; }
+
+        public User User { get; set; }
+
+        public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
     }
 }

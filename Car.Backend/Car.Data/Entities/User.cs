@@ -27,7 +27,7 @@ namespace Car.Data.Entities
 
         public IEnumerable<Notification> Notifications { get; set; } = new List<Notification>();
 
-        public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
+        public IEnumerable<Address> Addresses { get; set; } = new List<Address>();
 
         public IEnumerable<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
 
@@ -39,8 +39,6 @@ namespace Car.Data.Entities
 
         public virtual IEnumerable<Message> ReceivedMessages { get; set; } = new List<Message>();
 
-        public IEnumerable<UserChat> UserChats { get; set; } = new List<UserChat>();
-
-        public IEnumerable<Chat> Chats { get; set; } = new List<Chat>();
+        public ICollection<Chat> Chats { get; set; } = new List<Chat>();
     }
 }
