@@ -132,13 +132,6 @@
             <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.GetUserWithAvatarById(System.Int32)">
-            <summary>
-            Gets the user with avatar by identifier.
-            </summary>
-            <param name="id">The user identifier.</param>
-            <returns>The user dto with avatar</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.UserController.UploadUserAvatar(System.Int32,Car.Domain.Dto.FormImage)">
             <summary>
             Uploads the user avatar.
