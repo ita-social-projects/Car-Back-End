@@ -84,7 +84,6 @@ namespace Car.Domain.Services.Implementation
                                       .AddMinutes(journey.JourneyDuration.Minutes)
                                       .AddSeconds(journey.JourneyDuration.Seconds) > DateTime.Now)
                 .ToList();
- 
             return journeys;
         }
     }
