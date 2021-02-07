@@ -19,7 +19,7 @@ namespace Car.Data.EntityConfigurations
                 .HasForeignKey(journey => journey.OrganizerId);
 
             builder.HasMany(journey => journey.Participants)
-                .WithMany(journey => journey.ParticipantJourneys)
+                .WithMany(user => user.ParticipantJourneys)
                 .UsingEntity<UserJourney>(
                     userJourney => userJourney.HasOne(uj => uj.User)
                         .WithMany(uj => uj.UserJourneys)
