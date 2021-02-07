@@ -12,5 +12,7 @@ namespace Car.Domain.Services.Interfaces
         public List<Journey> GetScheduledJourneys(int userId);
 
         public Journey GetCurrentJourney(int userId);
+
+        public Journey GetJourneyById(int journeyId);
     }
 }

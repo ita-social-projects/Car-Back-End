@@ -42,5 +42,13 @@ namespace Car.WebApi.Controllers
         /// <returns>status of request with appropriate data</returns>
         [HttpGet("scheduled/{id}")]
         public IActionResult GetScheduled(int id) => Ok(journeyService.GetScheduledJourneys(id));
+
+        /// <summary>
+        /// Gets journey by identifier.
+        /// </summary>
+        /// <param name="id">Journey identifier</param>
+        /// <returns>Journey</returns>
+        [HttpGet("{id}")]
+        public IActionResult GetJourneyById(int id) => Ok(journeyService.GetJourneyById(id));
     }
 }

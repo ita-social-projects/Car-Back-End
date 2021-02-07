@@ -110,6 +110,13 @@
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32)">
+            <summary>
+            Gets journey by identifier.
+            </summary>
+            <param name="id">Journey identifier</param>
+            <returns>Journey</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>
             ensures the user and returns a UserDTO for client app,

@@ -4,6 +4,7 @@ using System.Linq;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
 {
@@ -29,6 +30,17 @@ namespace Car.Domain.Services.Implementation
                                            && journey.DepartureTime.AddHours(journey.JourneyDuration.Hours)
                                                .AddMinutes(journey.JourneyDuration.Minutes)
                                                .AddSeconds(journey.JourneyDuration.Seconds) > DateTime.Now);
+            return currentJourney;
+        }
+
+        public Journey GetJourneyById(int journeyId)
+        {
+            var currentJourney = unitOfWork.GetRepository()
+                .Query(journey => journey.Organizer, journey => journey.Participants)
+                .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
+                .ThenInclude(stop => stop.Address)
+                .FirstOrDefault(journey => journey.Id == journeyId);
+
             return currentJourney;
         }
 

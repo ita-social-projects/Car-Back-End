@@ -31,7 +31,7 @@ namespace Car.Data.Infrastructure
         /// <summary>
         /// Adds range of entities into DBContext
         /// </summary>
-        /// <param name="entities">IEnumarable of entities to add</param>
+        /// <param name="entities">IEnumerable of entities to add</param>
         public void AddRange(IEnumerable<TEntity> entities) => dbEntities.AddRange(entities);
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Car.Data.Infrastructure
         /// <summary>
         /// Removes range of entities from DBContext
         /// </summary>
-        /// <param name="entities">IEnumarable of entities</param>
+        /// <param name="entities">IEnumerable of entities</param>
         public void DeleteRange(IEnumerable<TEntity> entities) => dbEntities.RemoveRange(entities);
 
         /// <summary>
@@ -55,12 +55,7 @@ namespace Car.Data.Infrastructure
         public IQueryable<TEntity> Query(params Expression<Func<TEntity, object>>[] includes)
         {
             var dbSet = context.Set<TEntity>();
-            IQueryable<TEntity> query = dbSet;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
+            IQueryable<TEntity> query = includes.Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(dbSet, (current, include) => current.Include(include));
 
             return query ?? dbSet;
         }
