@@ -26,26 +26,5 @@ namespace Car.Domain.Services.Implementation
 
             return user;
         }
-
-        public User GetUserWithAvatarById(int userId)
-        {
-            var user = unitOfWork.GetRepository().GetById(userId);
-            if (user == null)
-            {
-                throw new Exceptions.DefaultApplicationException($"This user id - {userId} wasn't found")
-                {
-                    StatusCode = (int)HttpStatusCode.NotFound,
-                    Severity = Severity.Error,
-                };
-            }
-
-            return new User()
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Surname = user.Surname,
-                Position = user.Position,
-            };
-        }
     }
 }

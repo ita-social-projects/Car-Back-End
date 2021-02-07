@@ -71,26 +71,6 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void TestGetUserWithAvatarById_WithRightId_ReturnsOkObjectResult()
-        {
-            // Arrange
-            var user = fixture.Create<User>();
-            userService.Setup(u => u.GetUserWithAvatarById(user.Id)).Returns(user);
-
-            // Act
-            var result = userController.GetUserWithAvatarById(user.Id);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
-                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
-            }
-        }
-
-        [Fact]
         public async Task UploadUserAvatar_WhenUserExist_ReturnsOkObjectResult()
         {
             // Arrange

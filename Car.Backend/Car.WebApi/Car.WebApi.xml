@@ -53,6 +53,35 @@
             <param name="id">The car identifier.</param>
             <returns>Base64 array of car photo</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
+            <summary>
+            Get the user chats by User Id
+            </summary>
+            <param name="id">User identifier</param>
+            <returns>Chats of User by Id</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.GetChat(System.Int32)">
+            <summary>
+            Get chat by Chat Id
+            </summary>
+            <param name="id">User identifier</param>
+            <returns>Chat</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Data.Entities.Chat)">
+            <summary>
+            Add the chat
+            </summary>
+            <param name="chat">User identifier</param>
+            <returns>New chat</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.AddUserToChat(System.Int32,System.Int32)">
+            <summary>
+            Add user to the chat
+            </summary>
+            <param name="userId">User identifier</param>
+            <param name="chatId">Chat identifier</param>
+            <returns>Added User</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetCurrent(System.Int32)">
             <summary>
             Looks for information about current journey where current user is participant or driver
@@ -103,26 +132,12 @@
             <param name="id">The brand identifier.</param>
             <returns>All the models</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserChatsController.GetUserChats(System.Int32)">
-            <summary>
-            Get the user chats by User Id
-            </summary>
-            <param name="id">User identifier</param>
-            <returns>UserChats of User by Id</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
             Gets the user by identifier.
             </summary>
             <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.UserController.GetUserWithAvatarById(System.Int32)">
-            <summary>
-            Gets the user with avatar by identifier.
-            </summary>
-            <param name="id">The user identifier.</param>
-            <returns>The user dto with avatar</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.UploadUserAvatar(System.Int32,Car.Domain.Dto.FormImage)">
             <summary>

@@ -31,14 +31,6 @@ namespace Car.WebApi.Controllers
         public IActionResult GetUserById(int id) => Ok(userService.GetUserById(id));
 
         /// <summary>
-        /// Gets the user with avatar by identifier.
-        /// </summary>
-        /// <param name="id">The user identifier.</param>
-        /// <returns>The user dto with avatar</returns>
-        [HttpGet("with-avatar/{id}")]
-        public IActionResult GetUserWithAvatarById(int id) => Ok(userService.GetUserWithAvatarById(id));
-
-        /// <summary>
         /// Uploads the user avatar.
         /// </summary>
         /// <param name="id">The user identifier.</param>

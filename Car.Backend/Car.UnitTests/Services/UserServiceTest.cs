@@ -61,27 +61,6 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void TestGetUserWithAvatarById_WhenUserExists()
-        {
-            var user = fixture.Create<User>();
-
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
-
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
-
-            userService.GetUserWithAvatarById(user.Id).Should().BeEquivalentTo(
-                new User
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Surname = user.Surname,
-                    Position = user.Position,
-                });
-        }
-
-        [Fact]
         public void TestGetUserWithAvatarById_WhenUserNotExist()
         {
             var user = fixture.Create<User>();
@@ -92,7 +71,7 @@ namespace Car.UnitTests.Services
             unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
-            Action action = () => userService.GetUserWithAvatarById(4);
+            Action action = () => userService.GetUserById(4);
             action.Should().Throw<DefaultApplicationException>();
         }
     }
