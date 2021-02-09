@@ -106,6 +106,7 @@ namespace Car.WebApi
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapHub<NotificationHub>("/notification");
             });
 
             app.UseSwagger();
