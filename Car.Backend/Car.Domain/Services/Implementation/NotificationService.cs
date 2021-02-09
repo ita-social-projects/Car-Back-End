@@ -20,14 +20,14 @@ namespace Car.Domain.Services.Implementation
             return unitOfWork.GetRepository().Query(u => u.User).Where(u => u.Id == id).FirstOrDefault();
         }
 
-        public List<Notification> GetNotifications(int receiverId)
+        public List<Notification> GetNotifications(int userId)
         {
-            return unitOfWork.GetRepository().Query(m => m.User).Where(p => p.ReceiverId == receiverId).OrderByDescending(k => k.CreateAt).ToList();
+            return unitOfWork.GetRepository().Query(m => m.User).Where(p => p.ReceiverId == userId).OrderByDescending(k => k.CreateAt).ToList();
         }
 
         public int GetUnreadNotificationsNumber(int userId)
         {
-            return unitOfWork.GetRepository().Query().Where(p => p.ReceiverId == userId && p.IsRead == false).ToList().Count();
+            return unitOfWork.GetRepository().Query().Where(p => p.ReceiverId == userId && !p.IsRead).Count();
         }
 
         public Notification UpdateNotification(Notification notification)
@@ -44,9 +44,9 @@ namespace Car.Domain.Services.Implementation
             return notification;
         }
 
-        public Notification DeleteNotification(int notificationId)
+        public Notification DeleteNotification(int id)
         {
-            var notification = unitOfWork.GetRepository().GetById(notificationId);
+            var notification = unitOfWork.GetRepository().GetById(id);
             if (notification != null)
             {
                 unitOfWork.GetRepository().Delete(notification);
