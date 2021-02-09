@@ -7,6 +7,7 @@ using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -121,6 +122,35 @@ namespace Car.UnitTests.Services
             var result = journeyService.GetScheduledJourneys(It.IsAny<int>());
 
             result.Should().BeEquivalentTo(journeys);
+        }
+
+        [Fact]
+        public void TestGetJourneyById_WhenJourneyExists()
+        {
+            var journeys = fixture.Create<Journey[]>().AsQueryable();
+            var journey = journeys.FirstOrDefault();
+
+            repository.Setup(r => r.Query(j => j.Organizer, j => j.Participants))
+                .Returns(journeys);
+            unitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+
+            var result = journeyService.GetJourneyById(journey.Id);
+
+            result.Should().BeEquivalentTo(journey);
+        }
+
+        [Fact]
+        public void TestGetJourneyById_WhenJourneyNotExist()
+        {
+            var journeys = fixture.Create<Journey[]>().AsQueryable();
+
+            repository.Setup(r => r.Query(j => j.Organizer, j => j.Participants))
+                .Returns(journeys);
+            unitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+
+            var result = journeyService.GetJourneyById(It.IsNotIn<int>(journeys.Select(j => j.Id)));
+
+            result.Should().BeNull();
         }
     }
 }
