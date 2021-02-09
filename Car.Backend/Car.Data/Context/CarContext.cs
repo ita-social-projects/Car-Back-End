@@ -51,6 +51,7 @@ namespace Car.Data.Context
             modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
             modelBuilder.ApplyConfiguration(new ModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ChatConfiguration());
 
             modelBuilder.Seed();
         }
