@@ -8,7 +8,7 @@ namespace Car.Data.Entities
 
         public string Name { get; set; }
 
-        public User Reciver { get; set; }
+        public User Receiver { get; set; }
 
         public User User { get; set; }
     }
