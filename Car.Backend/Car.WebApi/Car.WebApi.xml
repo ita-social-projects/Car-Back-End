@@ -118,13 +118,6 @@
             <param name="userId">id of the user</param>
             <param name="hasLuggage">does the user has the luggage</param>
             <returns>status of request with appropriate data</returns>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32)">
-            <summary>
-            Gets journey by identifier.
-            </summary>
-            <param name="id">Journey identifier</param>
-            <returns>Journey</returns>
-
         </member>
         <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>

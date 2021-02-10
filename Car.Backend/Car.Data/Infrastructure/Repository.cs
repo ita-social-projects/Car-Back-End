@@ -34,7 +34,7 @@ namespace Car.Data.Infrastructure
         /// </summary>
         /// <param name="entity">entity</param>
         /// <returns>added entity</returns>
-        public async Task<TEntity> AsyncAdd(TEntity entity) => (await dbEntities.AddAsync(entity)).Entity;
+        public async Task<TEntity> AddAsync(TEntity entity) => (await dbEntities.AddAsync(entity)).Entity;
 
         /// <summary>
         /// Adds range of entities into DBContext
@@ -82,10 +82,16 @@ namespace Car.Data.Infrastructure
         /// <returns>updated entity</returns>
         public TEntity Update(TEntity entity) => dbEntities.Update(entity).Entity;
 
-        public async Task<int> AsyncUpdate(TEntity entity) => await Task.Run(async () =>
+        /// <summary>
+        /// Updates entity asynchronously
+        /// </summary>
+        /// <param name="entity">entity</param>
+        /// <returns>awaitable task with updated entity</returns>
+        public async Task<TEntity> UpdateAsync(TEntity entity) => await Task.Run(async () =>
         {
             dbEntities.Update(entity);
-            return await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
+            return entity;
         });
     }
 }

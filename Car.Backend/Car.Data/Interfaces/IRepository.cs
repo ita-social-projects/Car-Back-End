@@ -16,7 +16,7 @@ namespace Car.Data.Interfaces
 
         TEntity Add(TEntity entity);
 
-        Task<TEntity> AsyncAdd(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
 
         void AddRange(IEnumerable<TEntity> entities);
 
@@ -26,6 +26,6 @@ namespace Car.Data.Interfaces
 
         TEntity Update(TEntity entity);
 
-        Task<int> AsyncUpdate(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
     }
 }
