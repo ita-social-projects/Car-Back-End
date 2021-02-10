@@ -44,4 +44,8 @@
     <ProjectReference Include="..\Car.Domain\Car.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot" />
+  </ItemGroup>
+
 </Project>
