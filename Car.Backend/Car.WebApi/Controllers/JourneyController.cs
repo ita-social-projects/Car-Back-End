@@ -1,4 +1,5 @@
 ﻿using System;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,13 +48,11 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Adds a new participant to the Journey
         /// </summary>
-        /// <param name="journeyId">id of the journey</param>
-        /// <param name="userId">id of the user</param>
-        /// <param name="hasLuggage">does the user has the luggage</param>
+        /// <param name="participantDto">Participant model</param>
         /// <returns>status of request with appropriate data</returns>
-        [HttpPost("add-participant/journey={journeyId}&userId={userId}&hasLuggage={hasLuggage}")]
-        public IActionResult AddParticipantAsync(int journeyId, int userId, bool hasLuggage = false) =>
-            Ok(journeyService.AddParticipantAsync(journeyId, userId, hasLuggage));
+        [HttpPost("participant")]
+        public IActionResult AddParticipantAsync([FromBody] ParticipantDto participantDto) =>
+            Ok(journeyService.AddParticipantAsync(participantDto));
 
         /// <summary>
         /// Gets journey by identifier.

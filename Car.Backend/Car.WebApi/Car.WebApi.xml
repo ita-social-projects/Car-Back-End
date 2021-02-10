@@ -110,14 +110,19 @@
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.PostAddParticipantAsync(System.Int32,System.Int32,System.Boolean)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddParticipantAsync(Car.Domain.Dto.ParticipantDto)">
             <summary>
             Adds a new participant to the Journey
             </summary>
-            <param name="journeyId">id of the journey</param>
-            <param name="userId">id of the user</param>
-            <param name="hasLuggage">does the user has the luggage</param>
+            <param name="participantDto">Participant model</param>
             <returns>status of request with appropriate data</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32)">
+            <summary>
+            Gets journey by identifier.
+            </summary>
+            <param name="id">Journey identifier</param>
+            <returns>Journey</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>

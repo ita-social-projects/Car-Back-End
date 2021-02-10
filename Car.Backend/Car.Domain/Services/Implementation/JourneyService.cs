@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -89,20 +90,18 @@ namespace Car.Domain.Services.Implementation
         }
 
         public async Task AddParticipantAsync(
-            int journeyId,
-            int userId,
-            bool hasLuggage = false) =>
+            ParticipantDto participantDto) =>
             await await Task.Run(() => journeyUnitOfWork.GetRepository()
                 .Query(
                     journeyParticipants => journeyParticipants.Participants,
                     journeyUserJourneys => journeyUserJourneys.UserJourneys)
-                .FirstOrDefault(journeyIdentifier => journeyIdentifier.Id == journeyId)
+                .FirstOrDefault(journeyIdentifier => journeyIdentifier.Id == participantDto.JourneyId)
                 ?.UserJourneys.Add(
                     new()
                     {
-                        JourneyId = journeyId,
-                        UserId = userId,
-                        HasLuggage = hasLuggage,
+                        JourneyId = participantDto.JourneyId,
+                        UserId = participantDto.UserId,
+                        HasLuggage = participantDto.HasLuggage,
                     }))
                 .ContinueWith(async _ => await journeyUnitOfWork.SaveChangesAsync());
     }
