@@ -118,6 +118,13 @@
             <param name="userId">id of the user</param>
             <param name="hasLuggage">does the user has the luggage</param>
             <returns>status of request with appropriate data</returns>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32)">
+            <summary>
+            Gets journey by identifier.
+            </summary>
+            <param name="id">Journey identifier</param>
+            <returns>Journey</returns>
+
         </member>
         <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>
@@ -133,6 +140,48 @@
             </summary>
             <param name="id">The brand identifier.</param>
             <returns>All the models</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotification(System.Int32)">
+            <summary>
+            gets a notification by given id
+            </summary>
+            <param name="id">notification id</param>
+            <returns>notification</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotifications(System.Int32)">
+            <summary>
+            gets all user notifications
+            </summary>
+            <param name="userId"> user Id</param>
+            <returns>list of user notifications</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetUnreadNumber(System.Int32)">
+            <summary>
+            gets user unread notifications number
+            </summary>
+            <param name="userId">user Id</param>
+            <returns>int number</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.UpdateNotification(Car.Domain.Dto.NotificationDto)">
+            <summary>
+            updates user notification
+            </summary>
+            <param name="notificationDto">notification itself to be updated</param>
+            <returns>updated notification</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotification(Car.Domain.Dto.NotificationDto)">
+            <summary>
+            adds new user notification
+            </summary>
+            <param name="notificationDto">notification to be added</param>
+            <returns>added notification</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.DeleteNotification(System.Int32)">
+            <summary>
+            deletes notification
+            </summary>
+            <param name="notificationId">notification Id</param>
+            <returns>deleted notification</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
