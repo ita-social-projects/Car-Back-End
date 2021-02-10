@@ -15,9 +15,8 @@ namespace Car.Domain.Services.Implementation
         private readonly IUnitOfWork<User> userUnitOfWork;
 
         public JourneyService(
-                IUnitOfWork<Journey> journeyUnitOfWork
-                , IUnitOfWork<User> userUnitOfWork)
-            // , IUnitOfWork<UserJourney> userJourneyUnitOfWork)
+                IUnitOfWork<Journey> journeyUnitOfWork,
+                IUnitOfWork<User> userUnitOfWork)
         {
             this.journeyUnitOfWork = journeyUnitOfWork;
             this.userUnitOfWork = userUnitOfWork;
@@ -83,9 +82,9 @@ namespace Car.Domain.Services.Implementation
         }
 
         public async Task PostApproveApplicantAsync(
-            Int32 journeyId,
-            Int32 userId,
-            Boolean hasLuggage = false) =>
+            int journeyId,
+            int userId,
+            bool hasLuggage = false) =>
             await await Task.Run(() => journeyUnitOfWork.GetRepository()
                 .Query(
                     journeyParticipants => journeyParticipants.Participants,
@@ -96,7 +95,7 @@ namespace Car.Domain.Services.Implementation
                     {
                         JourneyId = journeyId,
                         UserId = userId,
-                        HasLuggage = hasLuggage
+                        HasLuggage = hasLuggage,
                     }))
                 .ContinueWith(async _ => await journeyUnitOfWork.SaveChangesAsync());
     }

@@ -110,6 +110,15 @@
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.PostAddParticipantAsync(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Adds a new participant to the Journey
+            </summary>
+            <param name="journeyId">id of the journey</param>
+            <param name="userId">id of the user</param>
+            <param name="hasLuggage">does the user has the luggage</param>
+            <returns>status of request with appropriate data</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>
             ensures the user and returns a UserDTO for client app,

@@ -16,15 +16,16 @@ namespace Car.UnitTests.Services
     {
         private readonly IJourneyService journeyService;
         private readonly Mock<IRepository<Journey>> repository;
-        private readonly Mock<IUnitOfWork<Journey>> unitOfWork;
+        private readonly Mock<IUnitOfWork<Journey>> journeyUnitOfWork;
+        private readonly Mock<IUnitOfWork<User>> userUnitOfWork;
         private readonly Fixture fixture;
 
         public JourneyServiceTest()
         {
             repository = new Mock<IRepository<Journey>>();
-            unitOfWork = new Mock<IUnitOfWork<Journey>>();
+            (journeyUnitOfWork, userUnitOfWork) = (new Mock<IUnitOfWork<Journey>>(), new Mock<IUnitOfWork<User>>());
 
-            journeyService = new JourneyService(unitOfWork.Object);
+            journeyService = new JourneyService(journeyUnitOfWork.Object, userUnitOfWork.Object);
 
             fixture = new Fixture();
 
@@ -56,7 +57,7 @@ namespace Car.UnitTests.Services
                     driver => driver.Organizer))
                 .Returns(journeys);
 
-            unitOfWork.Setup(r => r.GetRepository())
+            journeyUnitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             var result = journeyService.GetCurrentJourney(It.IsAny<int>());
@@ -76,7 +77,7 @@ namespace Car.UnitTests.Services
                     driver => driver.Organizer))
                 .Returns(journeys);
 
-            unitOfWork.Setup(r => r.GetRepository())
+            journeyUnitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             var result = journeyService.GetPastJourneys(It.IsAny<int>());
@@ -96,7 +97,7 @@ namespace Car.UnitTests.Services
                     driver => driver.Organizer))
                 .Returns(journeys);
 
-            unitOfWork.Setup(r => r.GetRepository())
+            journeyUnitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             var result = journeyService.GetUpcomingJourneys(It.IsAny<int>());
@@ -115,7 +116,7 @@ namespace Car.UnitTests.Services
                     driver => driver.Organizer))
                 .Returns(journeys);
 
-            unitOfWork.Setup(r => r.GetRepository())
+            journeyUnitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             var result = journeyService.GetScheduledJourneys(It.IsAny<int>());

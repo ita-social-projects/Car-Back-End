@@ -44,7 +44,15 @@ namespace Car.WebApi.Controllers
         [HttpGet("scheduled/{id}")]
         public IActionResult GetScheduled(int id) => Ok(journeyService.GetScheduledJourneys(id));
 
+        /// <summary>
+        /// Adds a new participant to the Journey
+        /// </summary>
+        /// <param name="journeyId">id of the journey</param>
+        /// <param name="userId">id of the user</param>
+        /// <param name="hasLuggage">does the user has the luggage</param>
+        /// <returns>status of request with appropriate data</returns>
         [HttpPost("add-participant/journey={journeyId}&userId={userId}&hasLuggage={hasLuggage}")]
-        public IActionResult PostAddParticipantAsync(Int32 journeyId, Int32 userId, Boolean hasLuggage = false) => Ok(journeyService.PostApproveApplicantAsync(journeyId, userId, hasLuggage));
+        public IActionResult PostAddParticipantAsync(int journeyId, int userId, bool hasLuggage = false) =>
+            Ok(journeyService.PostApproveApplicantAsync(journeyId, userId, hasLuggage));
     }
 }
