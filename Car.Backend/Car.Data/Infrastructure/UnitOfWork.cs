@@ -30,7 +30,7 @@ namespace Car.Data.Infrastructure
         /// </summary>
         public void SaveChanges() => context.SaveChanges();
 
-        public Task<Int32> SaveChangesAsync() => context.SaveChangesAsync();
+        public Task<int> SaveChangesAsync() => context.SaveChangesAsync();
 
         private bool disposed = false;
 

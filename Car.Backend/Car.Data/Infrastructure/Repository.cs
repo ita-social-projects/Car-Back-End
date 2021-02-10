@@ -87,7 +87,7 @@ namespace Car.Data.Infrastructure
         /// <returns>updated entity</returns>
         public TEntity Update(TEntity entity) => dbEntities.Update(entity).Entity;
 
-        public async Task<Int32> AsyncUpdate(TEntity entity) => await Task.Run(async () =>
+        public async Task<int> AsyncUpdate(TEntity entity) => await Task.Run(async () =>
         {
             dbEntities.Update(entity);
             return await context.SaveChangesAsync();

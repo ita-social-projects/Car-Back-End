@@ -26,6 +26,6 @@ namespace Car.Data.Interfaces
 
         TEntity Update(TEntity entity);
 
-        Task<Int32> AsyncUpdate(TEntity entity);
+        Task<int> AsyncUpdate(TEntity entity);
     }
 }

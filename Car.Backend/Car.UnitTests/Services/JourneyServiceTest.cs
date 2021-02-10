@@ -17,15 +17,14 @@ namespace Car.UnitTests.Services
         private readonly IJourneyService journeyService;
         private readonly Mock<IRepository<Journey>> repository;
         private readonly Mock<IUnitOfWork<Journey>> journeyUnitOfWork;
-        private readonly Mock<IUnitOfWork<User>> userUnitOfWork;
         private readonly Fixture fixture;
 
         public JourneyServiceTest()
         {
             repository = new Mock<IRepository<Journey>>();
-            (journeyUnitOfWork, userUnitOfWork) = (new Mock<IUnitOfWork<Journey>>(), new Mock<IUnitOfWork<User>>());
+            journeyUnitOfWork = new Mock<IUnitOfWork<Journey>>();
 
-            journeyService = new JourneyService(journeyUnitOfWork.Object, userUnitOfWork.Object);
+            journeyService = new JourneyService(journeyUnitOfWork.Object);
 
             fixture = new Fixture();
 

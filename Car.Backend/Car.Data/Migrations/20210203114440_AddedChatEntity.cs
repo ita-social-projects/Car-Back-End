@@ -14,7 +14,7 @@ namespace Car.Data.Migrations
                 columns: table => new
                 {
                     ChatsId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    UsersId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -49,7 +49,7 @@ namespace Car.Data.Migrations
                 columns: table => new
                 {
                     ChatId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {

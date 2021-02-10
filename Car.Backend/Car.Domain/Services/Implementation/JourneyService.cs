@@ -12,14 +12,10 @@ namespace Car.Domain.Services.Implementation
     public class JourneyService : IJourneyService
     {
         private readonly IUnitOfWork<Journey> journeyUnitOfWork;
-        private readonly IUnitOfWork<User> userUnitOfWork;
 
-        public JourneyService(
-                IUnitOfWork<Journey> journeyUnitOfWork,
-                IUnitOfWork<User> userUnitOfWork)
+        public JourneyService(IUnitOfWork<Journey> journeyUnitOfWork)
         {
             this.journeyUnitOfWork = journeyUnitOfWork;
-            this.userUnitOfWork = userUnitOfWork;
         }
 
         public Journey GetCurrentJourney(int userId)

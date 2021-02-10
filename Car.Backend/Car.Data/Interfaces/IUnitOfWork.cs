@@ -14,6 +14,6 @@ namespace Car.Data.Interfaces
 
         void SaveChanges();
 
-        Task<Int32> SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 }

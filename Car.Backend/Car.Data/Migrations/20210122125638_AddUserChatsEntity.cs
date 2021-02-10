@@ -12,7 +12,7 @@ namespace Car.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ChatName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ChatName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -24,7 +24,7 @@ namespace Car.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ChatId = table.Column<int>(type: "int", nullable: false)
+                    ChatId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
