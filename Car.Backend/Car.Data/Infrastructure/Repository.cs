@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Car.Data.Context;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
@@ -27,6 +28,13 @@ namespace Car.Data.Infrastructure
         /// <param name="entity">entity</param>
         /// <returns>added entity</returns>
         public TEntity Add(TEntity entity) => dbEntities.Add(entity).Entity;
+
+        /// <summary>
+        /// Async add entity into DBContext
+        /// </summary>
+        /// <param name="entity">entity</param>
+        /// <returns>added entity</returns>
+        public async Task<TEntity> AsyncAdd(TEntity entity) => (await dbEntities.AddAsync(entity)).Entity;
 
         /// <summary>
         /// Adds range of entities into DBContext
@@ -78,5 +86,11 @@ namespace Car.Data.Infrastructure
         /// <param name="entity">entity</param>
         /// <returns>updated entity</returns>
         public TEntity Update(TEntity entity) => dbEntities.Update(entity).Entity;
+
+        public async Task<Int32> AsyncUpdate(TEntity entity) => await Task.Run(async () =>
+        {
+            dbEntities.Update(entity);
+            return await context.SaveChangesAsync();
+        });
     }
 }

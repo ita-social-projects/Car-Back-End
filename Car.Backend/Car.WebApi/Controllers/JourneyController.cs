@@ -1,4 +1,5 @@
-﻿using Car.Domain.Services.Interfaces;
+﻿using System;
+using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
@@ -42,5 +43,8 @@ namespace Car.WebApi.Controllers
         /// <returns>status of request with appropriate data</returns>
         [HttpGet("scheduled/{id}")]
         public IActionResult GetScheduled(int id) => Ok(journeyService.GetScheduledJourneys(id));
+
+        [HttpPost("add-participant/journey={journeyId}&userId={userId}&hasLuggage={hasLuggage}")]
+        public IActionResult PostAddParticipantAsync(Int32 journeyId, Int32 userId, Boolean hasLuggage = false) => Ok(journeyService.PostApproveApplicantAsync(journeyId, userId, hasLuggage));
     }
 }
