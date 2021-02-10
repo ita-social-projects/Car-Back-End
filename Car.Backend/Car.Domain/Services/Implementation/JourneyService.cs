@@ -36,7 +36,7 @@ namespace Car.Domain.Services.Implementation
 
         public Journey GetJourneyById(int journeyId)
         {
-            var currentJourney = unitOfWork.GetRepository()
+            var currentJourney = journeyUnitOfWork.GetRepository()
                 .Query(journey => journey.Organizer, journey => journey.Participants)
                 .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
                 .ThenInclude(stop => stop.Address)
