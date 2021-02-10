@@ -89,20 +89,19 @@ namespace Car.Domain.Services.Implementation
             return journeys;
         }
 
-        public async Task AddParticipantAsync(
-            ParticipantDto participantDto) =>
-            await await Task.Run(() => journeyUnitOfWork.GetRepository()
-                .Query(
-                    journeyParticipants => journeyParticipants.Participants,
-                    journeyUserJourneys => journeyUserJourneys.UserJourneys)
-                .FirstOrDefault(journeyIdentifier => journeyIdentifier.Id == participantDto.JourneyId)
-                ?.UserJourneys.Add(
-                    new()
-                    {
-                        JourneyId = participantDto.JourneyId,
-                        UserId = participantDto.UserId,
-                        HasLuggage = participantDto.HasLuggage,
-                    }))
-                .ContinueWith(async _ => await journeyUnitOfWork.SaveChangesAsync());
+        public async Task AddParticipantAsync(ParticipantDto participantDto)
+        {
+            (await journeyUnitOfWork.GetRepository().Query(
+                        journeyParticipants => journeyParticipants.Participants,
+                        journeyUserJourneys => journeyUserJourneys.UserJourneys)
+                    .FirstOrDefaultAsync(journeyIdentifier => journeyIdentifier.Id == participantDto.JourneyId))
+                .UserJourneys.Add(new()
+                {
+                    JourneyId = participantDto.JourneyId,
+                    UserId = participantDto.UserId,
+                    HasLuggage = participantDto.HasLuggage,
+                });
+            await journeyUnitOfWork.SaveChangesAsync();
+        }
     }
 }
