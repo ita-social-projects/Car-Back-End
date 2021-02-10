@@ -87,10 +87,9 @@ namespace Car.Data.Infrastructure
         /// </summary>
         /// <param name="entity">entity</param>
         /// <returns>awaitable task with updated entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity) => await Task.Run(async () =>
+        public async Task<TEntity> UpdateAsync(TEntity entity) => await Task.Run(() =>
         {
             dbEntities.Update(entity);
-            await context.SaveChangesAsync();
             return entity;
         });
     }
