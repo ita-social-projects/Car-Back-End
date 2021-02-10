@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210209142916_ChatEntityUpdate")]
+    partial class ChatEntityUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,7 +211,7 @@ namespace Car.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReceiverId")
+                    b.Property<int?>("ReciverId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserId")
@@ -217,7 +219,7 @@ namespace Car.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("ReciverId");
 
                     b.HasIndex("UserId");
 
@@ -1735,15 +1737,15 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Chat", b =>
                 {
-                    b.HasOne("Car.Data.Entities.User", "Receiver")
+                    b.HasOne("Car.Data.Entities.User", "Reciver")
                         .WithMany()
-                        .HasForeignKey("ReceiverId");
+                        .HasForeignKey("ReciverId");
 
                     b.HasOne("Car.Data.Entities.User", "User")
                         .WithMany("Chats")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Receiver");
+                    b.Navigation("Reciver");
 
                     b.Navigation("User");
                 });
