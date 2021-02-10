@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -45,24 +46,73 @@ namespace Car.UnitTests.Services
                 Schedule = fixture.Create<Schedule>(),
             };
 
-        [Fact]
-        public void TestGetCurrentJourney_ReturnsJourneyObject()
+        [Theory]
+        [AutoData]
+        public void TestGetCurrentJourneyForOrganizer_WhenCurrentJourneyExists_ReturnsJourneyObject([Range(1, 3)] int hours, [Range(1, 3)] double divider)
         {
-            var currentJourney = GetJourney();
-
-            var journeys = new List<Journey> { currentJourney }.AsQueryable();
+            var journeys = fixture.Create<List<Journey>>();
+            var currentJourney = fixture.Create<Journey>();
+            currentJourney.JourneyDuration = new TimeSpan(0, hours, 0, 0);
+            currentJourney.DepartureTime = DateTime.Now.Subtract(currentJourney.JourneyDuration.Divide(divider));
+            journeys.Add(currentJourney);
 
             repository.Setup(r => r.Query(
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer))
-                .Returns(journeys);
+                .Returns(journeys.AsQueryable);
 
             unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
-            var result = journeyService.GetCurrentJourney(It.IsAny<int>());
+            var result = journeyService.GetCurrentJourney(currentJourney.OrganizerId ?? 0);
 
             result.Should().BeEquivalentTo(currentJourney);
+        }
+
+        [Theory]
+        [AutoData]
+        public void TestGetCurrentJourneyForParticipant_WhenCurrentJourneyExists_ReturnsJourneyObject([Range(1, 3)] int hours, [Range(1, 3)] double divider)
+        {
+            var journeys = fixture.Create<List<Journey>>();
+            var currentJourney = fixture.Create<Journey>();
+            currentJourney.JourneyDuration = new TimeSpan(0, hours, 0, 0);
+            currentJourney.DepartureTime = DateTime.Now.Subtract(currentJourney.JourneyDuration.Divide(divider));
+            journeys.Add(currentJourney);
+
+            repository.Setup(r => r.Query(
+                    journeyStops => journeyStops.Stops,
+                    driver => driver.Organizer))
+                .Returns(journeys.AsQueryable);
+
+            unitOfWork.Setup(r => r.GetRepository())
+                .Returns(repository.Object);
+
+            var result = journeyService.GetCurrentJourney(currentJourney.Participants?.FirstOrDefault()?.Id ?? 0);
+
+            result.Should().BeEquivalentTo(currentJourney);
+        }
+
+        [Theory]
+        [AutoData]
+        public void TestGetCurrentJourney_WhenCurrentJourneyNotExist_ReturnsNull([Range(1, 3)] int hours)
+        {
+            var journeys = fixture.Create<List<Journey>>();
+            var currentJourney = fixture.Create<Journey>();
+            currentJourney.JourneyDuration = new TimeSpan(0, hours, 0, 0);
+            currentJourney.DepartureTime = DateTime.Now.Add(currentJourney.JourneyDuration);
+            journeys.Add(currentJourney);
+
+            repository.Setup(r => r.Query(
+                    journeyStops => journeyStops.Stops,
+                    driver => driver.Organizer))
+                .Returns(journeys.AsQueryable);
+
+            unitOfWork.Setup(r => r.GetRepository())
+                .Returns(repository.Object);
+
+            var result = journeyService.GetCurrentJourney(currentJourney.Participants?.FirstOrDefault()?.Id ?? 0);
+
+            result.Should().BeNull();
         }
 
         [Fact]
@@ -125,7 +175,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void TestGetJourneyById_WhenJourneyExists()
+        public void TestGetJourneyById_WhenJourneyExists_ReturnsJourneyObject()
         {
             var journeys = fixture.Create<Journey[]>().AsQueryable();
             var journey = journeys.FirstOrDefault();
@@ -134,13 +184,13 @@ namespace Car.UnitTests.Services
                 .Returns(journeys);
             unitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
-            var result = journeyService.GetJourneyById(journey.Id);
+            var result = journeyService.GetJourneyById(journey?.Id ?? 0);
 
             result.Should().BeEquivalentTo(journey);
         }
 
         [Fact]
-        public void TestGetJourneyById_WhenJourneyNotExist()
+        public void TestGetJourneyById_WhenJourneyNotExist_ReturnsNull()
         {
             var journeys = fixture.Create<Journey[]>().AsQueryable();
 
