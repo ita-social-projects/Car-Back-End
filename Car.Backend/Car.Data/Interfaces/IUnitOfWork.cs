@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Car.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,5 +13,7 @@ namespace Car.Data.Interfaces
         IRepository<TEntity> GetRepository();
 
         void SaveChanges();
+
+        Task SaveChangesAsync();
     }
 }

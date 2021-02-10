@@ -23,9 +23,9 @@ namespace Car.Data.Entities
 
         public int? ScheduleId { get; set; }
 
-        public IEnumerable<User> Participants { get; set; } = new List<User>();
+        public ICollection<User> Participants { get; set; } = new List<User>();
 
-        public IEnumerable<UserJourney> UserJourneys { get; set; } = new List<UserJourney>();
+        public ICollection<UserJourney> UserJourneys { get; set; } = new List<UserJourney>();
 
         public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
 
