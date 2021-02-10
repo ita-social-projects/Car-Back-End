@@ -91,16 +91,16 @@ namespace Car.Domain.Services.Implementation
 
         public async Task AddParticipantAsync(ParticipantDto participantDto)
         {
-            (await journeyUnitOfWork.GetRepository().Query(
+            var res = await journeyUnitOfWork.GetRepository().Query(
                         journeyParticipants => journeyParticipants.Participants,
                         journeyUserJourneys => journeyUserJourneys.UserJourneys)
-                    .FirstOrDefaultAsync(journeyIdentifier => journeyIdentifier.Id == participantDto.JourneyId))
-                .UserJourneys.Add(new()
-                {
-                    JourneyId = participantDto.JourneyId,
-                    UserId = participantDto.UserId,
-                    HasLuggage = participantDto.HasLuggage,
-                });
+                    .FirstOrDefaultAsync(journeyIdentifier => journeyIdentifier.Id == participantDto.JourneyId);
+            res.UserJourneys.Add(new UserJourney()
+            {
+                JourneyId = participantDto.JourneyId,
+                UserId = participantDto.UserId,
+                HasLuggage = participantDto.HasLuggage,
+            });
             await journeyUnitOfWork.SaveChangesAsync();
         }
     }
