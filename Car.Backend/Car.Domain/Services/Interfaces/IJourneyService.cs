@@ -15,7 +15,7 @@ namespace Car.Domain.Services.Interfaces
 
         public Journey GetCurrentJourney(int userId);
 
-        public Task PostApproveApplicantAsync(int journeyId, int userId, bool hasLuggage = false);
+        public Task AddParticipantAsync(int journeyId, int userId, bool hasLuggage = false);
 
         public Journey GetJourneyById(int journeyId);
     }

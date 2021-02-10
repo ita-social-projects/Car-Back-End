@@ -52,8 +52,8 @@ namespace Car.WebApi.Controllers
         /// <param name="hasLuggage">does the user has the luggage</param>
         /// <returns>status of request with appropriate data</returns>
         [HttpPost("add-participant/journey={journeyId}&userId={userId}&hasLuggage={hasLuggage}")]
-        public IActionResult PostAddParticipantAsync(int journeyId, int userId, bool hasLuggage = false) =>
-            Ok(journeyService.PostApproveApplicantAsync(journeyId, userId, hasLuggage));
+        public IActionResult AddParticipantAsync(int journeyId, int userId, bool hasLuggage = false) =>
+            Ok(journeyService.AddParticipantAsync(journeyId, userId, hasLuggage));
 
         /// <summary>
         /// Gets journey by identifier.

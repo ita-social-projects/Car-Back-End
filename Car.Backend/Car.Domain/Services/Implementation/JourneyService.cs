@@ -88,7 +88,7 @@ namespace Car.Domain.Services.Implementation
             return journeys;
         }
 
-        public async Task PostApproveApplicantAsync(
+        public async Task AddParticipantAsync(
             int journeyId,
             int userId,
             bool hasLuggage = false) =>
