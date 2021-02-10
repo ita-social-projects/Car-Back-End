@@ -54,5 +54,8 @@ namespace Car.WebApi.Controllers
         [HttpPost("add-participant/journey={journeyId}&userId={userId}&hasLuggage={hasLuggage}")]
         public IActionResult PostAddParticipantAsync(int journeyId, int userId, bool hasLuggage = false) =>
             Ok(journeyService.PostApproveApplicantAsync(journeyId, userId, hasLuggage));
+
+        [HttpGet("{id}")]
+        public IActionResult GetJourneyById(int id) => Ok(journeyService.GetJourneyById(id));
     }
 }
