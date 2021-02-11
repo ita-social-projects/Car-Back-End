@@ -25,7 +25,9 @@ namespace Car.Data.Entities
 
         public UserPreferences UserPreferences { get; set; }
 
-        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+        public ICollection<Notification> ReceivedNotifications { get; set; } = new List<Notification>();
+
+        public ICollection<Notification> SentNotifications { get; set; } = new List<Notification>();
 
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
 

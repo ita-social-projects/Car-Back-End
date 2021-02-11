@@ -8,6 +8,7 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.ToTable("User");
             builder.HasKey(user => user.Id);
 
             builder.HasIndex(user => user.Email).IsUnique();

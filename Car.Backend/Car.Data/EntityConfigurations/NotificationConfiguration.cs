@@ -8,11 +8,16 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
+            builder.ToTable("Notification");
             builder.HasKey(notification => notification.Id);
 
             builder.HasOne(notification => notification.Sender)
-               .WithMany(user => user.Notifications)
+               .WithMany(user => user.SentNotifications)
                .HasForeignKey(notification => notification.SenderId);
+
+            builder.HasOne(notification => notification.Receiver)
+                .WithMany(user => user.ReceivedNotifications)
+                .HasForeignKey(notification => notification.ReceiverId);
 
             builder.Property(notification => notification.Description).IsRequired();
             builder.Property(notification => notification.Description).HasMaxLength(400).IsRequired();

@@ -7,6 +7,7 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Entities.Car> builder)
         {
+            builder.ToTable("Car");
             builder.HasKey(car => car.Id);
 
             builder.HasOne(car => car.Owner)

@@ -8,6 +8,8 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Journey> builder)
         {
+            builder.ToTable("Journey");
+
             builder.HasKey(journey => journey.Id);
 
             builder.HasOne(journey => journey.Schedule)

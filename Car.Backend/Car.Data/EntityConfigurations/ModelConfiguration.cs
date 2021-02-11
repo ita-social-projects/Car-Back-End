@@ -8,6 +8,7 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Model> builder)
         {
+            builder.ToTable("Model");
             builder.HasKey(model => model.Id);
 
             builder.HasOne(model => model.Brand)

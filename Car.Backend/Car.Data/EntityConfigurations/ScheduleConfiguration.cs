@@ -8,6 +8,7 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Schedule> builder)
         {
+            builder.ToTable("Schedule");
             builder.HasKey(schedule => schedule.Id);
 
             builder.Property(schedule => schedule.Name).IsRequired();

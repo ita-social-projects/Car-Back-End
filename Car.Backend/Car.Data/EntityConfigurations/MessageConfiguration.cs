@@ -8,6 +8,7 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {
+            builder.ToTable("Message");
             builder.HasKey(message => message.Id);
 
             builder.HasOne(message => message.Sender)

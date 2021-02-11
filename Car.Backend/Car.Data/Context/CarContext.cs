@@ -16,13 +16,11 @@ namespace Car.Data.Context
 
         public DbSet<Notification> Notifications { get; set; }
 
-        public DbSet<Schedule> Schedule { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
 
         public DbSet<Stop> Stops { get; set; }
 
-        public DbSet<User> User { get; set; }
-
-        public DbSet<UserJourney> UserJourney { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<UserPreferences> UserPreferences { get; set; }
 

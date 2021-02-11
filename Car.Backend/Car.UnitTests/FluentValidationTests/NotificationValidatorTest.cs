@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -13,7 +9,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class NotificationValidatorTest
     {
-        private NotificationValidator validator;
+        private readonly NotificationValidator validator;
 
         public NotificationValidatorTest()
         {
