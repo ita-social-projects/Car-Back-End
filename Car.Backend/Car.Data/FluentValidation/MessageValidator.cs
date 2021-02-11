@@ -13,7 +13,6 @@ namespace Car.Data.FluentValidation
             RuleFor(message => message.SenderId).GreaterThan(0);
             RuleFor(message => message.ChatId).GreaterThan(0);
             RuleFor(message => message.Sender).NotNull().SetValidator(new UserValidator());
-            RuleFor(message => message.Receiver).NotNull().SetValidator(new UserValidator());
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Car.Domain.Services.Implementation
         public PreferencesService(IUnitOfWork<UserPreferences> unitOfWork) => this.unitOfWork = unitOfWork;
 
         public UserPreferences GetPreferences(int userId) =>
-            unitOfWork.GetRepository().Query().FirstOrDefault(p => p.UserId == userId);
+            unitOfWork.GetRepository().Query().FirstOrDefault(p => p.Id == userId);
 
         public UserPreferences UpdatePreferences(UserPreferences preferences)
         {
