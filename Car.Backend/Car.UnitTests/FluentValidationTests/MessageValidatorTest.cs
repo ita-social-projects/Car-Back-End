@@ -61,14 +61,14 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("2020-01-01")]
         public void Should_have_error_when_CreateAt_is_not_valid(string value)
         {
-            validator.ShouldHaveValidationErrorFor(message => message.CreateAt, DateTime.Parse(value));
+            validator.ShouldHaveValidationErrorFor(message => message.CreatedAt, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
         [InlineData("2090-06-27")]
         public void Should_not_have_error_when_CreateAt_is_specified(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(message => message.CreateAt, DateTime.Parse(value));
+            validator.ShouldNotHaveValidationErrorFor(message => message.CreatedAt, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
@@ -92,7 +92,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Should_have_error_when_ReceiverId_is_not_valid(int value)
         {
-            validator.ShouldHaveValidationErrorFor(message => message.ReceiverId, value);
+            validator.ShouldHaveValidationErrorFor(message => message.ChatId, value);
         }
 
         [Xunit.Theory]
@@ -100,7 +100,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Should_not_have_error_when_ReceiverId_is_specified(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(message => message.ReceiverId, value);
+            validator.ShouldNotHaveValidationErrorFor(message => message.ChatId, value);
         }
     }
 }

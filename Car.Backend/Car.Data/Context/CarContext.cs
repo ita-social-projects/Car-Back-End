@@ -39,7 +39,6 @@ namespace Car.Data.Context
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new JourneyConfiguration());
-            modelBuilder.ApplyConfiguration(new UserJourneyConfiguration());
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
             modelBuilder.ApplyConfiguration(new CarConfiguration());
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
