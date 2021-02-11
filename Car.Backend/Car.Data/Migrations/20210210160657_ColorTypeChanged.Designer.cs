@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    [Migration("20210209142916_ChatEntityUpdate")]
-    partial class ChatEntityUpdate
+    [Migration("20210210160657_ColorTypeChanged")]
+    partial class ColorTypeChanged
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -173,10 +173,9 @@ namespace Car.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Color")
-                        .IsRequired()
+                    b.Property<int>("Color")
                         .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
+                        .HasColumnType("int");
 
                     b.Property<string>("ImageId")
                         .HasColumnType("nvarchar(max)");
@@ -211,7 +210,7 @@ namespace Car.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReciverId")
+                    b.Property<int?>("ReceiverId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserId")
@@ -219,7 +218,7 @@ namespace Car.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReciverId");
+                    b.HasIndex("ReceiverId");
 
                     b.HasIndex("UserId");
 
@@ -1563,7 +1562,16 @@ namespace Car.Data.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("JourneyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1737,15 +1745,15 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Chat", b =>
                 {
-                    b.HasOne("Car.Data.Entities.Sender", "Reciver")
+                    b.HasOne("Car.Data.Entities.Sender", "Receiver")
                         .WithMany()
-                        .HasForeignKey("ReciverId");
+                        .HasForeignKey("ReceiverId");
 
                     b.HasOne("Car.Data.Entities.Sender", "Sender")
                         .WithMany("Chats")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Reciver");
+                    b.Navigation("Receiver");
 
                     b.Navigation("Sender");
                 });
@@ -1799,7 +1807,9 @@ namespace Car.Data.Migrations
                 {
                     b.HasOne("Car.Data.Entities.Sender", "Sender")
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Sender");
                 });

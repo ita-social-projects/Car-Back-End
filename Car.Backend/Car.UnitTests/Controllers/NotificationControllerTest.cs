@@ -50,7 +50,7 @@ namespace Car.UnitTests.Controllers
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().BeOfType<NotificationDto>();
                 ((result as OkObjectResult)?.Value as NotificationDto)?.Id.Should().Be(notification.Id);
-                ((result as OkObjectResult)?.Value as NotificationDto)?.UserId.Should().Be(notification.UserId);
+                ((result as OkObjectResult)?.Value as NotificationDto)?.UserId.Should().Be(notification.SenderId);
             }
         }
 

@@ -1,4 +1,6 @@
-﻿namespace Car.Data.Entities
+﻿using Car.Data.Enums;
+
+namespace Car.Data.Entities
 {
     public class Car : IEntityWithImage
     {
@@ -6,7 +8,7 @@
 
         public int ModelId { get; set; }
 
-        public string Color { get; set; }
+        public Color Color { get; set; }
 
         public string PlateNumber { get; set; }
 

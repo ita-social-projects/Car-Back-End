@@ -41,7 +41,7 @@ namespace Car.UnitTests.Services
                 DepartureTime = DateTime.Now,
                 Organizer = fixture.Create<User>(),
                 OrganizerId = 0,
-                JourneyDuration = new TimeSpan(0, 15, 0),
+                Duration = new TimeSpan(0, 15, 0),
                 Participants = fixture.Create<List<User>>(),
                 Schedule = fixture.Create<Schedule>(),
             };
@@ -52,8 +52,8 @@ namespace Car.UnitTests.Services
         {
             var journeys = fixture.Create<List<Journey>>();
             var currentJourney = fixture.Create<Journey>();
-            currentJourney.JourneyDuration = new TimeSpan(0, hours, 0, 0);
-            currentJourney.DepartureTime = DateTime.Now.Subtract(currentJourney.JourneyDuration.Divide(divider));
+            currentJourney.Duration = new TimeSpan(0, hours, 0, 0);
+            currentJourney.DepartureTime = DateTime.Now.Subtract(currentJourney.Duration.Divide(divider));
             journeys.Add(currentJourney);
 
             repository.Setup(r => r.Query(
@@ -64,7 +64,7 @@ namespace Car.UnitTests.Services
             unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
-            var result = journeyService.GetCurrentJourney(currentJourney.OrganizerId ?? 0);
+            var result = journeyService.GetCurrentJourney(currentJourney.OrganizerId);
 
             result.Should().BeEquivalentTo(currentJourney);
         }
@@ -75,8 +75,8 @@ namespace Car.UnitTests.Services
         {
             var journeys = fixture.Create<List<Journey>>();
             var currentJourney = fixture.Create<Journey>();
-            currentJourney.JourneyDuration = new TimeSpan(0, hours, 0, 0);
-            currentJourney.DepartureTime = DateTime.Now.Subtract(currentJourney.JourneyDuration.Divide(divider));
+            currentJourney.Duration = new TimeSpan(0, hours, 0, 0);
+            currentJourney.DepartureTime = DateTime.Now.Subtract(currentJourney.Duration.Divide(divider));
             journeys.Add(currentJourney);
 
             repository.Setup(r => r.Query(
@@ -98,8 +98,8 @@ namespace Car.UnitTests.Services
         {
             var journeys = fixture.Create<List<Journey>>();
             var currentJourney = fixture.Create<Journey>();
-            currentJourney.JourneyDuration = new TimeSpan(0, hours, 0, 0);
-            currentJourney.DepartureTime = DateTime.Now.Add(currentJourney.JourneyDuration);
+            currentJourney.Duration = new TimeSpan(0, hours, 0, 0);
+            currentJourney.DepartureTime = DateTime.Now.Add(currentJourney.Duration);
             journeys.Add(currentJourney);
 
             repository.Setup(r => r.Query(

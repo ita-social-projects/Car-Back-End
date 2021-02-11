@@ -27,9 +27,9 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefault(journey => (journey.Participants.Any(user => user.Id == userId)
                                             || journey.OrganizerId == userId)
                                            && journey.DepartureTime <= DateTime.Now
-                                           && journey.DepartureTime.AddHours(journey.JourneyDuration.Hours)
-                                               .AddMinutes(journey.JourneyDuration.Minutes)
-                                               .AddSeconds(journey.JourneyDuration.Seconds) > DateTime.Now);
+                                           && journey.DepartureTime.AddHours(journey.Duration.Hours)
+                                               .AddMinutes(journey.Duration.Minutes)
+                                               .AddSeconds(journey.Duration.Seconds) > DateTime.Now);
             return currentJourney;
         }
 
@@ -52,9 +52,9 @@ namespace Car.Domain.Services.Implementation
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
                                   || journey.OrganizerId == userId)
-                                  && journey.DepartureTime.AddHours(journey.JourneyDuration.Hours)
-                                      .AddMinutes(journey.JourneyDuration.Minutes)
-                                      .AddSeconds(journey.JourneyDuration.Seconds) < DateTime.Now)
+                                  && journey.DepartureTime.AddHours(journey.Duration.Hours)
+                                      .AddMinutes(journey.Duration.Minutes)
+                                      .AddSeconds(journey.Duration.Seconds) < DateTime.Now)
                 .ToList();
             return journeys;
         }
@@ -80,9 +80,9 @@ namespace Car.Domain.Services.Implementation
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
                                   || journey.OrganizerId == userId)
-                                  && journey.DepartureTime.AddHours(journey.JourneyDuration.Hours)
-                                      .AddMinutes(journey.JourneyDuration.Minutes)
-                                      .AddSeconds(journey.JourneyDuration.Seconds) > DateTime.Now)
+                                  && journey.DepartureTime.AddHours(journey.Duration.Hours)
+                                      .AddMinutes(journey.Duration.Minutes)
+                                      .AddSeconds(journey.Duration.Seconds) > DateTime.Now)
                 .ToList();
             return journeys;
         }

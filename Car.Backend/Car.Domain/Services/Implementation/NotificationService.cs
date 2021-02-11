@@ -17,17 +17,17 @@ namespace Car.Domain.Services.Implementation
 
         public Notification GetNotification(int id)
         {
-            return unitOfWork.GetRepository().Query(u => u.User).Where(u => u.Id == id).FirstOrDefault();
+            return unitOfWork.GetRepository().Query(u => u.Sender).FirstOrDefault(u => u.Id == id);
         }
 
         public List<Notification> GetNotifications(int userId)
         {
-            return unitOfWork.GetRepository().Query(m => m.User).Where(p => p.ReceiverId == userId).OrderByDescending(k => k.CreateAt).ToList();
+            return unitOfWork.GetRepository().Query(m => m.Sender).Where(p => p.ReceiverId == userId).OrderByDescending(k => k.CreatedAt).ToList();
         }
 
         public int GetUnreadNotificationsNumber(int userId)
         {
-            return unitOfWork.GetRepository().Query().Where(p => p.ReceiverId == userId && !p.IsRead).Count();
+            return unitOfWork.GetRepository().Query().Count(p => p.ReceiverId == userId && !p.IsRead);
         }
 
         public Notification UpdateNotification(Notification notification)

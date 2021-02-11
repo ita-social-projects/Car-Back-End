@@ -44,7 +44,7 @@ namespace Car.Data.Migrations
                 name: "FK_Addresses_User_UserId",
                 table: "Addresses",
                 column: "UserId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -87,7 +87,7 @@ namespace Car.Data.Migrations
                 name: "FK_Stops_User_UserId",
                 table: "Stops",
                 column: "UserId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }

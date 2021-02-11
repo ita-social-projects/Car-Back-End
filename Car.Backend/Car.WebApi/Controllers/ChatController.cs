@@ -16,10 +16,10 @@ namespace Car.WebApi.Controllers
         }
 
         /// <summary>
-        /// Get the user chats by User Id
+        /// Get the user chats by Sender Id
         /// </summary>
-        /// <param name="id">User identifier</param>
-        /// <returns>Chats of User by Id</returns>
+        /// <param name="id">Sender identifier</param>
+        /// <returns>Chats of Sender by Id</returns>
         [HttpGet("{id}")]
         public IActionResult GetUserChats(int id)
         {
@@ -29,7 +29,7 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Get chat by Chat Id
         /// </summary>
-        /// <param name="id">User identifier</param>
+        /// <param name="id">Sender identifier</param>
         /// <returns>Chat</returns>
         [HttpGet("chat/{id}")]
         public IActionResult GetChat(int id)
@@ -40,7 +40,7 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Add the chat
         /// </summary>
-        /// <param name="chat">User identifier</param>
+        /// <param name="chat">Sender identifier</param>
         /// <returns>New chat</returns>
         [HttpPost]
         public IActionResult AddChat([FromBody] Chat chat)
@@ -51,9 +51,9 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Add user to the chat
         /// </summary>
-        /// <param name="userId">User identifier</param>
+        /// <param name="userId">Sender identifier</param>
         /// <param name="chatId">Chat identifier</param>
-        /// <returns>Added User</returns>
+        /// <returns>Added Sender</returns>
         [HttpPut]
         public IActionResult AddUserToChat(int userId, int chatId)
         {

@@ -9,7 +9,7 @@ namespace Car.Data.EntityConfigurations
         {
             builder.HasKey(chat => chat.Id);
 
-            builder.HasOne(u => u.User).WithMany(c => c.Chats);
+            builder.Property(chat => chat.Name).HasMaxLength(100);
         }
     }
 }

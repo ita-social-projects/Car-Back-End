@@ -6,7 +6,7 @@ namespace Car.Data.Entities
     {
         public int Id { get; set; }
 
-        public int UserId { get; set; }
+        public int SenderId { get; set; }
 
         public int ReceiverId { get; set; }
 
@@ -14,12 +14,14 @@ namespace Car.Data.Entities
 
         public bool IsRead { get; set; }
 
-        public DateTime CreateAt { get; set; }
-
-        public User User { get; set; }
-
         public int JourneyId { get; set; }
 
-        public int NotificationTypeId { get; set; }
+        public NotificationType Type { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public User Sender { get; set; }
+
+        public User Receiver { get; set; }
     }
 }

@@ -68,7 +68,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(100)",
                 maxLength: 100,
                 nullable: false,
@@ -93,7 +93,7 @@ namespace Car.Data.Migrations
                 name: "FK_Cars_User_OwnerId",
                 table: "Cars",
                 column: "OwnerId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
@@ -101,7 +101,7 @@ namespace Car.Data.Migrations
                 name: "FK_Journeys_User_OrganizerId",
                 table: "Journeys",
                 column: "OrganizerId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -155,7 +155,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(450)",
                 maxLength: 450,
                 nullable: false,
@@ -199,7 +199,7 @@ namespace Car.Data.Migrations
                 name: "FK_Cars_User_UserId",
                 table: "Cars",
                 column: "UserId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
@@ -207,7 +207,7 @@ namespace Car.Data.Migrations
                 name: "FK_Journeys_User_DriverId",
                 table: "Journeys",
                 column: "DriverId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }

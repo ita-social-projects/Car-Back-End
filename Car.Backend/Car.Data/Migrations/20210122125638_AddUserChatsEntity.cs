@@ -38,7 +38,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_UserChats_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });

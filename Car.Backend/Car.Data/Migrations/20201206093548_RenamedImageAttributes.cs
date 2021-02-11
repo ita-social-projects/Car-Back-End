@@ -8,7 +8,7 @@ namespace Car.Data.Migrations
         {
             migrationBuilder.RenameColumn(
                 name: "ImageAvatar",
-                table: "User",
+                table: "Sender",
                 newName: "ImageId");
 
             migrationBuilder.RenameColumn(
@@ -21,7 +21,7 @@ namespace Car.Data.Migrations
         {
             migrationBuilder.RenameColumn(
                 name: "ImageId",
-                table: "User",
+                table: "Sender",
                 newName: "ImageAvatar");
 
             migrationBuilder.RenameColumn(

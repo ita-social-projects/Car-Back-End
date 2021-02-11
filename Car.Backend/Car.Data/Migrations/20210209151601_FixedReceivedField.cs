@@ -24,7 +24,7 @@ namespace Car.Data.Migrations
                 name: "FK_Chats_User_ReceiverId",
                 table: "Chats",
                 column: "ReceiverId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -49,7 +49,7 @@ namespace Car.Data.Migrations
                 name: "FK_Chats_User_ReciverId",
                 table: "Chats",
                 column: "ReciverId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }

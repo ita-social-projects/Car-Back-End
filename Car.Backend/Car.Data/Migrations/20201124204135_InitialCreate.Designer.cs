@@ -216,7 +216,7 @@ namespace Car.Data.Migrations
                 b.ToTable("Stops");
             });
 
-            modelBuilder.Entity("Car.DAL.Entities.User", b =>
+            modelBuilder.Entity("Car.DAL.Entities.Sender", b =>
             {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd()
@@ -246,7 +246,7 @@ namespace Car.Data.Migrations
 
                 b.HasKey("Id");
 
-                b.ToTable("User");
+                b.ToTable("Sender");
             });
 
             modelBuilder.Entity("Car.DAL.Entities.UserJourney", b =>
@@ -293,7 +293,7 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.DAL.Entities.Car", b =>
             {
-                b.HasOne("Car.DAL.Entities.User", "Owner")
+                b.HasOne("Car.DAL.Entities.Sender", "Owner")
                     .WithMany("UserCars")
                     .HasForeignKey("UserId")
                     .OnDelete(DeleteBehavior.Cascade)
@@ -304,7 +304,7 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.DAL.Entities.Journey", b =>
             {
-                b.HasOne("Car.DAL.Entities.User", "Driver")
+                b.HasOne("Car.DAL.Entities.Sender", "Driver")
                     .WithOne("DriverJourney")
                     .HasForeignKey("Car.DAL.Entities.Journey", "DriverId");
 
@@ -319,13 +319,13 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.DAL.Entities.Message", b =>
             {
-                b.HasOne("Car.DAL.Entities.User", "Receiver")
+                b.HasOne("Car.DAL.Entities.Sender", "Receiver")
                     .WithMany("ReceivedMessages")
                     .HasForeignKey("ReceiverId")
                     .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
-                b.HasOne("Car.DAL.Entities.User", "Sender")
+                b.HasOne("Car.DAL.Entities.Sender", "Sender")
                     .WithMany("SentMessages")
                     .HasForeignKey("SenderId")
                     .OnDelete(DeleteBehavior.Restrict)
@@ -338,11 +338,11 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.DAL.Entities.Notification", b =>
             {
-                b.HasOne("Car.DAL.Entities.User", "User")
+                b.HasOne("Car.DAL.Entities.Sender", "Sender")
                     .WithMany("UserNotifications")
                     .HasForeignKey("UserId");
 
-                b.Navigation("User");
+                b.Navigation("Sender");
             });
 
             modelBuilder.Entity("Car.DAL.Entities.Stop", b =>
@@ -359,7 +359,7 @@ namespace Car.Data.Migrations
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
 
-                b.HasOne("Car.DAL.Entities.User", "User")
+                b.HasOne("Car.DAL.Entities.Sender", "Sender")
                     .WithOne("UserStop")
                     .HasForeignKey("Car.DAL.Entities.Stop", "UserId")
                     .OnDelete(DeleteBehavior.Cascade)
@@ -369,7 +369,7 @@ namespace Car.Data.Migrations
 
                 b.Navigation("Journey");
 
-                b.Navigation("User");
+                b.Navigation("Sender");
             });
 
             modelBuilder.Entity("Car.DAL.Entities.UserJourney", b =>
@@ -380,7 +380,7 @@ namespace Car.Data.Migrations
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
 
-                b.HasOne("Car.DAL.Entities.User", "User")
+                b.HasOne("Car.DAL.Entities.Sender", "Sender")
                     .WithMany("UserJourneys")
                     .HasForeignKey("UserId")
                     .OnDelete(DeleteBehavior.Cascade)
@@ -388,12 +388,12 @@ namespace Car.Data.Migrations
 
                 b.Navigation("Journey");
 
-                b.Navigation("User");
+                b.Navigation("Sender");
             });
 
             modelBuilder.Entity("Car.DAL.Entities.UserPreferences", b =>
             {
-                b.HasOne("Car.DAL.Entities.User", "Owner")
+                b.HasOne("Car.DAL.Entities.Sender", "Owner")
                     .WithOne("UserPreferences")
                     .HasForeignKey("Car.DAL.Entities.UserPreferences", "UserId")
                     .OnDelete(DeleteBehavior.Cascade)
@@ -419,7 +419,7 @@ namespace Car.Data.Migrations
                 b.Navigation("Journey");
             });
 
-            modelBuilder.Entity("Car.DAL.Entities.User", b =>
+            modelBuilder.Entity("Car.DAL.Entities.Sender", b =>
             {
                 b.Navigation("DriverJourney");
 

@@ -8,7 +8,7 @@ namespace Car.Data.Migrations
         {
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(450)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -17,7 +17,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Email",
-                table: "User",
+                table: "Sender",
                 column: "Email",
                 unique: true,
                 filter: "[Email] IS NOT NULL");
@@ -27,11 +27,11 @@ namespace Car.Data.Migrations
         {
             migrationBuilder.DropIndex(
                 name: "IX_User_Email",
-                table: "User");
+                table: "Sender");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),

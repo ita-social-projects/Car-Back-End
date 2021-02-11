@@ -171,10 +171,9 @@ namespace Car.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Color")
-                        .IsRequired()
+                    b.Property<int>("Color")
                         .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
+                        .HasColumnType("int");
 
                     b.Property<string>("ImageId")
                         .HasColumnType("nvarchar(max)");
@@ -1561,7 +1560,16 @@ namespace Car.Data.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("JourneyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1613,7 +1621,7 @@ namespace Car.Data.Migrations
                     b.ToTable("Stops");
                 });
 
-            modelBuilder.Entity("Car.Data.Entities.User", b =>
+            modelBuilder.Entity("Car.Data.Entities.Sender", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1654,7 +1662,7 @@ namespace Car.Data.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("Sender");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.UserJourney", b =>
@@ -1705,13 +1713,13 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Address", b =>
                 {
-                    b.HasOne("Car.Data.Entities.User", "User")
+                    b.HasOne("Car.Data.Entities.Sender", "Sender")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Car", b =>
@@ -1722,7 +1730,7 @@ namespace Car.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.User", "Owner")
+                    b.HasOne("Car.Data.Entities.Sender", "Owner")
                         .WithMany("Cars")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1735,22 +1743,22 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Chat", b =>
                 {
-                    b.HasOne("Car.Data.Entities.User", "Receiver")
+                    b.HasOne("Car.Data.Entities.Sender", "Receiver")
                         .WithMany()
                         .HasForeignKey("ReceiverId");
 
-                    b.HasOne("Car.Data.Entities.User", "User")
+                    b.HasOne("Car.Data.Entities.Sender", "Sender")
                         .WithMany("Chats")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Receiver");
 
-                    b.Navigation("User");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
                 {
-                    b.HasOne("Car.Data.Entities.User", "Organizer")
+                    b.HasOne("Car.Data.Entities.Sender", "Organizer")
                         .WithMany("OrganizerJourneys")
                         .HasForeignKey("OrganizerId");
 
@@ -1765,13 +1773,13 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Message", b =>
                 {
-                    b.HasOne("Car.Data.Entities.User", "Receiver")
+                    b.HasOne("Car.Data.Entities.Sender", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.User", "Sender")
+                    b.HasOne("Car.Data.Entities.Sender", "Sender")
                         .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1795,11 +1803,13 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Notification", b =>
                 {
-                    b.HasOne("Car.Data.Entities.User", "User")
+                    b.HasOne("Car.Data.Entities.Sender", "Sender")
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Stop", b =>
@@ -1829,7 +1839,7 @@ namespace Car.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.User", "User")
+                    b.HasOne("Car.Data.Entities.Sender", "Sender")
                         .WithMany("UserJourneys")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1837,18 +1847,18 @@ namespace Car.Data.Migrations
 
                     b.Navigation("Journey");
 
-                    b.Navigation("User");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.UserPreferences", b =>
                 {
-                    b.HasOne("Car.Data.Entities.User", "User")
+                    b.HasOne("Car.Data.Entities.Sender", "Sender")
                         .WithOne("UserPreferences")
                         .HasForeignKey("Car.Data.Entities.UserPreferences", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Address", b =>
@@ -1878,7 +1888,7 @@ namespace Car.Data.Migrations
                     b.Navigation("Journey");
                 });
 
-            modelBuilder.Entity("Car.Data.Entities.User", b =>
+            modelBuilder.Entity("Car.Data.Entities.Sender", b =>
                 {
                     b.Navigation("Addresses");
 

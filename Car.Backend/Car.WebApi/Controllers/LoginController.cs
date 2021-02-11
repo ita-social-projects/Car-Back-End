@@ -30,7 +30,7 @@ namespace Car.WebApi.Controllers
         /// ensures the user and returns a UserDTO for client app,
         /// if user doesn't exist in DB it creates a user and saves them to DB
         /// </summary>
-        /// <param name="userModel">User model params</param>
+        /// <param name="userModel">Sender model params</param>
         /// <returns>UserDTO for a client app</returns>
         [AllowAnonymous]
         [HttpPost]

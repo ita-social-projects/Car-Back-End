@@ -35,7 +35,7 @@ namespace Car.Data.Migrations
                 name: "FK_Chats_User_ReciverId",
                 table: "Chats",
                 column: "ReciverId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
@@ -43,7 +43,7 @@ namespace Car.Data.Migrations
                 name: "FK_Chats_User_UserId",
                 table: "Chats",
                 column: "UserId",
-                principalTable: "User",
+                principalTable: "Sender",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -93,7 +93,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_ChatUser_User_UsersId",
                         column: x => x.UsersId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });

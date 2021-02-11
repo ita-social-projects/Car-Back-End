@@ -37,7 +37,7 @@ namespace Car.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Sender",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -74,7 +74,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Cars_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -105,7 +105,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Journeys_User_DriverId",
                         column: x => x.DriverId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -127,13 +127,13 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Messages_User_ReceiverId",
                         column: x => x.ReceiverId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Messages_User_SenderId",
                         column: x => x.SenderId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -155,7 +155,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Notifications_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -177,7 +177,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_UserPreferences_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -210,7 +210,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Stops_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -234,7 +234,7 @@ namespace Car.Data.Migrations
                     table.ForeignKey(
                         name: "FK_UserJourney_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Sender",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -332,7 +332,7 @@ namespace Car.Data.Migrations
                 name: "Schedule");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Sender");
         }
     }
 }

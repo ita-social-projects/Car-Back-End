@@ -6,13 +6,11 @@ using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Hubs;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Car.WebApi.Controllers
 {
-    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NotificationController : ControllerBase
@@ -44,15 +42,15 @@ namespace Car.WebApi.Controllers
             NotificationDto notificationDto = new NotificationDto
             {
                 Id = notification.Id,
-                UserId = notification.UserId,
-                UserName = notification.User.Name + " " + notification.User.Surname,
-                Position = notification.User.Position,
+                UserId = notification.SenderId,
+                UserName = notification.Sender.Name + " " + notification.Sender.Surname,
+                Position = notification.Sender.Position,
                 Description = notification.Description,
                 IsRead = notification.IsRead,
-                CreateAt = GetTimeDifference(notification.CreateAt),
+                CreateAt = GetTimeDifference(notification.CreatedAt),
                 JourneyId = notification.JourneyId,
                 ReceiverId = notification.ReceiverId,
-                NotificationType = (NotificationType)notification.NotificationTypeId,
+                NotificationType = (NotificationType)notification.Type,
             };
             return Ok(notificationDto);
         }
@@ -77,16 +75,16 @@ namespace Car.WebApi.Controllers
                 NotificationDto notificationDto = new NotificationDto
                 {
                     Id = item.Id,
-                    UserId = item.UserId,
-                    UserName = item.User.Name + " " + item.User.Surname,
-                    Position = item.User.Position,
+                    UserId = item.SenderId,
+                    UserName = item.Sender.Name + " " + item.Sender.Surname,
+                    Position = item.Sender.Position,
                     Description = item.Description,
                     IsRead = item.IsRead,
-                    CreateAt = GetTimeDifference(item.CreateAt),
+                    CreateAt = GetTimeDifference(item.CreatedAt),
                     JourneyId = item.JourneyId,
                     ReceiverId = item.ReceiverId,
-                    UserColor = GetUserColor(item.User.Name + " " + item.User.Surname),
-                    NotificationType = (NotificationType)item.NotificationTypeId,
+                    UserColor = GetUserColor(item.Sender.Name + " " + item.Sender.Surname),
+                    NotificationType = (NotificationType)item.Type,
                 };
                 notificationDtos.Add(notificationDto);
             }
@@ -135,21 +133,21 @@ namespace Car.WebApi.Controllers
 
             Notification notification = new Notification
             {
-                UserId = notificationDto.UserId,
+                SenderId = notificationDto.UserId,
                 Description = notificationDto.Description,
-                CreateAt = DateTime.Now,
+                CreatedAt = DateTime.Now,
                 IsRead = notificationDto.IsRead,
                 JourneyId = notificationDto.JourneyId,
                 ReceiverId = notificationDto.ReceiverId,
-                NotificationTypeId = (int)notificationDto.NotificationType,
+                Type = notificationDto.NotificationType,
             };
 
             Notification notificationSaved = notificationService.AddNotification(notification);
             NotificationDto notification_Dto = new NotificationDto
             {
                 Id = notificationSaved.Id,
-                UserId = notificationSaved.UserId,
-                CreateAt = GetTimeDifference(notificationSaved.CreateAt),
+                UserId = notificationSaved.SenderId,
+                CreateAt = GetTimeDifference(notificationSaved.CreatedAt),
                 Description = notificationSaved.Description,
                 IsRead = notificationSaved.IsRead,
                 JourneyId = notificationDto.JourneyId,
@@ -192,22 +190,23 @@ namespace Car.WebApi.Controllers
 
                 return differ.Minutes + " m";
             }
-            else if (differ.TotalHours < 24)
+
+            if (differ.TotalHours < 24)
             {
                 return differ.Hours + " h";
             }
-            else if (differ.TotalDays < 30)
+
+            if (differ.TotalDays < 30)
             {
                 return differ.Days + " d";
             }
-            else if (differ.TotalDays < 365)
+
+            if (differ.TotalDays < 365)
             {
                 return (int)(differ.TotalDays / 30) + " m";
             }
-            else
-            {
-                return creationTime.ToShortDateString();
-            }
+
+            return creationTime.ToShortDateString();
         }
     }
 }

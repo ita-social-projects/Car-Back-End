@@ -8,7 +8,7 @@ namespace Car.Data.Migrations
         {
             migrationBuilder.DropIndex(
                 name: "IX_User_Email",
-                table: "User");
+                table: "Sender");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Comments",
@@ -22,7 +22,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Surname",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(64)",
                 maxLength: 64,
                 nullable: false,
@@ -33,7 +33,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Position",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(100)",
                 maxLength: 100,
                 nullable: true,
@@ -43,7 +43,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(64)",
                 maxLength: 64,
                 nullable: false,
@@ -54,7 +54,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Location",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(100)",
                 maxLength: 100,
                 nullable: true,
@@ -64,7 +64,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(450)",
                 maxLength: 450,
                 nullable: false,
@@ -158,7 +158,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Email",
-                table: "User",
+                table: "Sender",
                 column: "Email",
                 unique: true);
         }
@@ -167,7 +167,7 @@ namespace Car.Data.Migrations
         {
             migrationBuilder.DropIndex(
                 name: "IX_User_Email",
-                table: "User");
+                table: "Sender");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Comments",
@@ -181,7 +181,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Surname",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -190,7 +190,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Position",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -200,7 +200,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -209,7 +209,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Location",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -219,7 +219,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
-                table: "User",
+                table: "Sender",
                 type: "nvarchar(450)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -301,7 +301,7 @@ namespace Car.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Email",
-                table: "User",
+                table: "Sender",
                 column: "Email",
                 unique: true,
                 filter: "[Email] IS NOT NULL");

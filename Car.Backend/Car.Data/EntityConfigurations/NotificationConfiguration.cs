@@ -10,9 +10,9 @@ namespace Car.Data.EntityConfigurations
         {
             builder.HasKey(notification => notification.Id);
 
-            builder.HasOne(notification => notification.User)
+            builder.HasOne(notification => notification.Sender)
                .WithMany(user => user.Notifications)
-               .HasForeignKey(notification => notification.UserId);
+               .HasForeignKey(notification => notification.SenderId);
 
             builder.Property(notification => notification.Description).IsRequired();
             builder.Property(notification => notification.Description).HasMaxLength(400).IsRequired();

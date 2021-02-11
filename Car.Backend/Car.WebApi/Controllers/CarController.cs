@@ -41,7 +41,7 @@ namespace Car.WebApi.Controllers
 
             for (int i = 0; i < cars.Count; i++)
             {
-                cars[i].ByteOfImage = listOperation[i].Result;
+                cars[i].ImageId = listOperation[i].Result;
             }
 
             return Ok(cars);
