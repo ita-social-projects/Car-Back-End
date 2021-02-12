@@ -61,7 +61,7 @@ namespace Car.UnitTests.Services
                     driver => driver.Organizer))
                 .Returns(journeys.AsQueryable);
 
-            unitOfWork.Setup(r => r.GetRepository())
+            journeyUnitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             var result = journeyService.GetCurrentJourney(currentJourney.OrganizerId);
@@ -107,7 +107,7 @@ namespace Car.UnitTests.Services
                     driver => driver.Organizer))
                 .Returns(journeys.AsQueryable);
 
-            unitOfWork.Setup(r => r.GetRepository())
+            journeyUnitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             var result = journeyService.GetCurrentJourney(currentJourney.Participants?.FirstOrDefault()?.Id ?? 0);
@@ -183,7 +183,7 @@ namespace Car.UnitTests.Services
             // todo
             repository.Setup(r => r.Query(j => j.Organizer, j => j.Participants))
                 .Returns(journeys);
-            unitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             var result = journeyService.GetJourneyById(journey?.Id ?? 0);
 
@@ -197,7 +197,7 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query(j => j.Organizer, j => j.Participants))
                 .Returns(journeys);
-            unitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             var result = journeyService.GetJourneyById(It.IsNotIn<int>(journeys.Select(j => j.Id)));
 

@@ -1,4 +1,6 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -32,11 +34,13 @@ namespace Car.UnitTests.Services
         public void TestGetCarById_WhenCarExists()
         {
             var car = fixture.Create<Data.Entities.Car>();
+            var cars = fixture.Create<List<Data.Entities.Car>>();
+            cars.Add(car);
 
-            repository.Setup(r => r.GetById(car.Id))
-                .Returns(car);
+            repository.Setup(r => r.Query())
+                .Returns(cars.AsQueryable());
 
-            unitOfWork.Setup(r => r.GetRepository())
+            unitOfWork.Setup(u => u.GetRepository())
                 .Returns(repository.Object);
 
             carService.GetCarById(car.Id).Should().BeEquivalentTo(car);
