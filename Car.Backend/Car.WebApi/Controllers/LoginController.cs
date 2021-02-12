@@ -49,6 +49,7 @@ namespace Car.WebApi.Controllers
                 Position = user.Position,
                 Email = user.Email,
                 Token = tokenString,
+                HireDate = user.HireDate,
             };
 
             return Ok(userDTO);
