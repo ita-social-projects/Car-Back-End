@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
-using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,9 +27,9 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefault(journey => (journey.Participants.Any(user => user.Id == userId)
                                             || journey.OrganizerId == userId)
                                            && journey.DepartureTime <= DateTime.Now
-                                           && journey.DepartureTime.AddHours(journey.JourneyDuration.Hours)
-                                               .AddMinutes(journey.JourneyDuration.Minutes)
-                                               .AddSeconds(journey.JourneyDuration.Seconds) > DateTime.Now);
+                                           && journey.DepartureTime.AddHours(journey.Duration.Hours)
+                                               .AddMinutes(journey.Duration.Minutes)
+                                               .AddSeconds(journey.Duration.Seconds) > DateTime.Now);
             return currentJourney;
         }
 
@@ -53,10 +51,10 @@ namespace Car.Domain.Services.Implementation
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
-                                   || journey.OrganizerId == userId)
-                                  && journey.DepartureTime.AddHours(journey.JourneyDuration.Hours)
-                                      .AddMinutes(journey.JourneyDuration.Minutes)
-                                      .AddSeconds(journey.JourneyDuration.Seconds) < DateTime.Now)
+                                  || journey.OrganizerId == userId)
+                                  && journey.DepartureTime.AddHours(journey.Duration.Hours)
+                                      .AddMinutes(journey.Duration.Minutes)
+                                      .AddSeconds(journey.Duration.Seconds) < DateTime.Now)
                 .ToList();
             return journeys;
         }
@@ -68,7 +66,7 @@ namespace Car.Domain.Services.Implementation
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
-                                   || journey.OrganizerId == userId)
+                                  || journey.OrganizerId == userId)
                                   && journey.Schedule != null)
                 .ToList();
             return journeys;
@@ -81,27 +79,12 @@ namespace Car.Domain.Services.Implementation
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
-                                   || journey.OrganizerId == userId)
-                                  && journey.DepartureTime.AddHours(journey.JourneyDuration.Hours)
-                                      .AddMinutes(journey.JourneyDuration.Minutes)
-                                      .AddSeconds(journey.JourneyDuration.Seconds) > DateTime.Now)
+                                  || journey.OrganizerId == userId)
+                                  && journey.DepartureTime.AddHours(journey.Duration.Hours)
+                                      .AddMinutes(journey.Duration.Minutes)
+                                      .AddSeconds(journey.Duration.Seconds) > DateTime.Now)
                 .ToList();
             return journeys;
-        }
-
-        public async Task AddParticipantAsync(ParticipantDto participantDto)
-        {
-            var res = await journeyUnitOfWork.GetRepository().Query(
-                        journeyParticipants => journeyParticipants.Participants,
-                        journeyUserJourneys => journeyUserJourneys.UserJourneys)
-                    .FirstOrDefaultAsync(journeyIdentifier => journeyIdentifier.Id == participantDto.JourneyId);
-            res.UserJourneys.Add(new UserJourney()
-            {
-                JourneyId = participantDto.JourneyId,
-                UserId = participantDto.UserId,
-                HasLuggage = participantDto.HasLuggage,
-            });
-            await journeyUnitOfWork.SaveChangesAsync();
         }
     }
 }

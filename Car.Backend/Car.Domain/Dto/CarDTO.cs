@@ -1,4 +1,6 @@
-﻿namespace Car.Domain.Dto
+﻿using Car.Data.Enums;
+
+namespace Car.Domain.Dto
 {
     public class CarDto
     {
@@ -10,6 +12,6 @@
 
         public string PlateNumber { get; set; }
 
-        public int UserId { get; set; }
+        public int OwnerId { get; set; }
     }
 }

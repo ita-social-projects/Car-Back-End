@@ -20,7 +20,7 @@ namespace Car.Domain.Services.Implementation
 
         public Chat GetChatById(int chatId)
         {
-            return unitOfWorkChat.GetRepository().Query(u => u.Receiver).FirstOrDefault(p => p.Id == chatId);
+            return unitOfWorkChat.GetRepository().Query().FirstOrDefault(p => p.Id == chatId);
         }
 
         public Chat AddChat(Chat chat)
@@ -29,7 +29,6 @@ namespace Car.Domain.Services.Implementation
             {
                 Id = chat.Id,
                 Name = chat.Name,
-                Receiver = new User(),
             };
 
             var addedChat = unitOfWorkChat.GetRepository().Add(newChat);
@@ -40,16 +39,16 @@ namespace Car.Domain.Services.Implementation
         public User AddUserToChat(int userId, int chatId)
         {
             var user = unitOfWorkUser.GetRepository().GetById(userId);
-            var chat = unitOfWorkChat.GetRepository().Query(receiver => receiver.Receiver).FirstOrDefault(chat => chat.Id == chatId);
-            chat.Receiver = user;
+            var chat = unitOfWorkChat.GetRepository().Query().FirstOrDefault(chat => chat.Id == chatId);
             unitOfWorkChat.SaveChanges();
             return user;
         }
 
         public List<Chat> GetUsersChats(int userId)
         {
-            var user = unitOfWorkUser.GetRepository().Query().Include(chat => chat.Chats).ThenInclude(receiver => receiver.Receiver).FirstOrDefault(user => user.Id == userId);
-            return user?.Chats.ToList();
+            var user = unitOfWorkUser.GetRepository().Query().FirstOrDefault(user => user.Id == userId);
+            // return user?.Chats.ToList();
+            return new List<Chat>();
         }
     }
 }

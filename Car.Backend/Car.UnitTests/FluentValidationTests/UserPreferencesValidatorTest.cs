@@ -41,7 +41,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Should_have_error_when_UserId_is_not_valid(int value)
         {
-            validator.ShouldHaveValidationErrorFor(userPreferences => userPreferences.UserId, value);
+            validator.ShouldHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
         }
 
         [Xunit.Theory]
@@ -49,7 +49,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Should_not_have_error_when_UserId_is_specified(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.UserId, value);
+            validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
         }
 
         [Xunit.Theory]

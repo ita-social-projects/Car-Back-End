@@ -1,4 +1,4 @@
-﻿namespace Car.Domain.Dto
+﻿namespace Car.Data.Enums
 {
     public enum Color
     {

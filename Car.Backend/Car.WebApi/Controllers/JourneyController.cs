@@ -46,15 +46,6 @@ namespace Car.WebApi.Controllers
         public IActionResult GetScheduled(int id) => Ok(journeyService.GetScheduledJourneys(id));
 
         /// <summary>
-        /// Adds a new participant to the Journey
-        /// </summary>
-        /// <param name="participantDto">Participant model</param>
-        /// <returns>status of request with appropriate data</returns>
-        [HttpPost("participant")]
-        public IActionResult AddParticipantAsync([FromBody] ParticipantDto participantDto) =>
-            Ok(journeyService.AddParticipantAsync(participantDto));
-
-        /// <summary>
         /// Gets journey by identifier.
         /// </summary>
         /// <param name="id">Journey identifier</param>

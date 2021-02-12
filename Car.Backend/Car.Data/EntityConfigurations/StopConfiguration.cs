@@ -8,6 +8,7 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Stop> builder)
         {
+            builder.ToTable("Stop");
             builder.HasKey(stop => stop.Id);
 
             builder.HasOne(stop => stop.Address).WithMany(address => address.Stops)

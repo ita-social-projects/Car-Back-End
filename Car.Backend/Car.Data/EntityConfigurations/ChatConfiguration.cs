@@ -7,9 +7,14 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Entities.Chat> builder)
         {
+            builder.ToTable("Chat");
             builder.HasKey(chat => chat.Id);
 
-            builder.HasOne(u => u.User).WithMany(c => c.Chats);
+            builder.Property(chat => chat.Name).HasMaxLength(150).IsRequired();
+
+            builder.HasMany(chat => chat.Messages)
+                .WithOne(message => message.Chat)
+                .HasForeignKey(message => message.ChatId);
         }
     }
 }

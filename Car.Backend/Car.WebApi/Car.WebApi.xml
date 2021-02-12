@@ -55,32 +55,32 @@
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
             <summary>
-            Get the user chats by User Id
+            Get the user chats by Sender Id
             </summary>
-            <param name="id">User identifier</param>
-            <returns>Chats of User by Id</returns>
+            <param name="id">Sender identifier</param>
+            <returns>Chats of Sender by Id</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetChat(System.Int32)">
             <summary>
             Get chat by Chat Id
             </summary>
-            <param name="id">User identifier</param>
+            <param name="id">Sender identifier</param>
             <returns>Chat</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Data.Entities.Chat)">
             <summary>
             Add the chat
             </summary>
-            <param name="chat">User identifier</param>
+            <param name="chat">Sender identifier</param>
             <returns>New chat</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.AddUserToChat(System.Int32,System.Int32)">
             <summary>
             Add user to the chat
             </summary>
-            <param name="userId">User identifier</param>
+            <param name="userId">Sender identifier</param>
             <param name="chatId">Chat identifier</param>
-            <returns>Added User</returns>
+            <returns>Added Sender</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetCurrent(System.Int32)">
             <summary>
@@ -110,13 +110,6 @@
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.AddParticipantAsync(Car.Domain.Dto.ParticipantDto)">
-            <summary>
-            Adds a new participant to the Journey
-            </summary>
-            <param name="participantDto">Participant model</param>
-            <returns>status of request with appropriate data</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32)">
             <summary>
             Gets journey by identifier.
@@ -129,7 +122,7 @@
             ensures the user and returns a UserDTO for client app,
             if user doesn't exist in DB it creates a user and saves them to DB
             </summary>
-            <param name="userModel">User model params</param>
+            <param name="userModel">Sender model params</param>
             <returns>UserDTO for a client app</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ModelController.GetAll(System.Int32)">

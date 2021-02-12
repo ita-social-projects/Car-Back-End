@@ -3,6 +3,7 @@ using System.Linq;
 using Car.Data.Interfaces;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.Domain.Services.Implementation
@@ -22,9 +23,9 @@ namespace Car.Domain.Services.Implementation
             var newCar = new CarEntity
             {
                 ModelId = carDto.ModelId,
-                Color = carDto.Color.ToString(),
+                Color = carDto.Color,
                 PlateNumber = carDto.PlateNumber,
-                OwnerId = carDto.UserId,
+                OwnerId = carDto.OwnerId,
             };
 
             var car = unitOfWork.GetRepository().Add(newCar);
@@ -35,7 +36,10 @@ namespace Car.Domain.Services.Implementation
 
         public CarEntity GetCarById(int carId)
         {
-            return unitOfWork.GetRepository().GetById(carId);
+            return unitOfWork.GetRepository().Query()
+                .Include(c => c.Model)
+                .ThenInclude(model => model.Brand)
+                .FirstOrDefault(c => c.Id == carId);
         }
 
         public IEnumerable<CarInfoDto> GetAllByUserId(int userId)
@@ -48,7 +52,7 @@ namespace Car.Domain.Services.Implementation
                     Id = car.Id,
                     BrandName = car.Model.Brand.Name,
                     ModelName = car.Model.Name,
-                    Color = car.Color,
+                    Color = car.Color.ToString(),
                     PlateNumber = car.PlateNumber,
                 });
         }

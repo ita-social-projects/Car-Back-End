@@ -8,7 +8,10 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Model> builder)
         {
+            builder.ToTable("Model");
             builder.HasKey(model => model.Id);
+
+            builder.Property(model => model.Name).HasMaxLength(50).IsRequired();
 
             builder.HasOne(model => model.Brand)
                 .WithMany(brand => brand.Models)

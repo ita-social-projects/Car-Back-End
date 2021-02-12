@@ -18,6 +18,6 @@ namespace Car.Data.Entities
 
         public User User { get; set; }
 
-        public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
+        public ICollection<Stop> Stops { get; set; } = new List<Stop>();
     }
 }

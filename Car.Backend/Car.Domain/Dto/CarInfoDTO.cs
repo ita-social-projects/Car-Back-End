@@ -12,8 +12,8 @@
 
         public string PlateNumber { get; set; }
 
-        public string ByteOfImage { get; set; }
+        public string ImageId { get; set; }
 
-        public int UserId { get; set; }
+        public int OwnerId { get; set; }
     }
 }

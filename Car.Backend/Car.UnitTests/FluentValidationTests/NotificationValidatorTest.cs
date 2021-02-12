@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -13,7 +9,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class NotificationValidatorTest
     {
-        private NotificationValidator validator;
+        private readonly NotificationValidator validator;
 
         public NotificationValidatorTest()
         {
@@ -70,14 +66,14 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("2020-01-01")]
         public void Should_have_error_when_CreateAt_is_not_valid(string value)
         {
-            validator.ShouldHaveValidationErrorFor(notification => notification.CreateAt, DateTime.Parse(value));
+            validator.ShouldHaveValidationErrorFor(notification => notification.CreatedAt, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
         [InlineData("2090-06-27")]
         public void Should_not_have_error_when_CreateAt_is_specified(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(notification => notification.CreateAt, DateTime.Parse(value));
+            validator.ShouldNotHaveValidationErrorFor(notification => notification.CreatedAt, DateTime.Parse(value));
         }
     }
 }

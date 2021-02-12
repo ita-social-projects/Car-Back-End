@@ -10,8 +10,8 @@ namespace Car.Data.FluentValidation
             RuleFor(notificationValidator => notificationValidator.Id).GreaterThan(0);
             RuleFor(notificationValidator => notificationValidator.Description).NotNull().Length(1, 400);
             RuleFor(notificationValidator => notificationValidator.IsRead).NotNull();
-            RuleFor(notificationValidator => notificationValidator.CreateAt).NotNull().GreaterThanOrEqualTo(DateTime.Now);
-            RuleFor(notificationValidator => notificationValidator.User).NotNull().SetValidator(new UserValidator());
+            RuleFor(notificationValidator => notificationValidator.CreatedAt).NotNull().GreaterThanOrEqualTo(DateTime.Now);
+            RuleFor(notificationValidator => notificationValidator.Sender).NotNull().SetValidator(new UserValidator());
         }
     }
 }

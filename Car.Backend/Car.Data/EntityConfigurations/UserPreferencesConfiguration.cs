@@ -8,6 +8,7 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<UserPreferences> builder)
         {
+            builder.ToTable("UserPreferences");
             builder.HasKey(preferences => preferences.Id);
 
             builder.Property(preferences => preferences.Comments).HasMaxLength(100);
