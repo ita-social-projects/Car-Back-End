@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -12,6 +15,8 @@ namespace Car.Domain.Services.Interfaces
         public List<Journey> GetScheduledJourneys(int userId);
 
         public Journey GetCurrentJourney(int userId);
+
+        public Task AddParticipantAsync(ParticipantDto participantDto);
 
         public Journey GetJourneyById(int journeyId);
     }

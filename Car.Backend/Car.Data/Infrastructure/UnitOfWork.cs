@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Car.Data.Context;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
@@ -28,6 +29,8 @@ namespace Car.Data.Infrastructure
         /// Saves changes in DB
         /// </summary>
         public void SaveChanges() => context.SaveChanges();
+
+        public Task SaveChangesAsync() => context.SaveChangesAsync();
 
         private bool disposed = false;
 

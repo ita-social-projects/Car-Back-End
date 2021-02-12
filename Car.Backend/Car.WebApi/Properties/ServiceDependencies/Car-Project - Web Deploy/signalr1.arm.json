@@ -36,7 +36,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('Car-ApplicationInsights', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('Car-SignalR', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -49,12 +49,16 @@
           "contentVersion": "1.0.0.0",
           "resources": [
             {
-              "name": "Car-ApplicationInsights",
-              "type": "microsoft.insights/components",
+              "sku": {
+                "name": "Free_F1",
+                "tier": "Free",
+                "size": "F1",
+                "capacity": 1
+              },
               "location": "[parameters('resourceLocation')]",
-              "kind": "web",
-              "properties": {},
-              "apiVersion": "2015-05-01"
+              "name": "Car-SignalR",
+              "type": "Microsoft.SignalRService/SignalR",
+              "apiVersion": "2018-10-01"
             }
           ]
         }
@@ -62,6 +66,6 @@
     }
   ],
   "metadata": {
-    "_dependencyType": "appInsights.azure"
+    "_dependencyType": "signalr.azure"
   }
 }
