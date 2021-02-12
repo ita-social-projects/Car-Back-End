@@ -10,16 +10,16 @@ namespace Car.Domain.Services.Implementation
 {
     public class JourneyService : IJourneyService
     {
-        private readonly IUnitOfWork<Journey> unitOfWork;
+        private readonly IUnitOfWork<Journey> journeyUnitOfWork;
 
-        public JourneyService(IUnitOfWork<Journey> unitOfWork)
+        public JourneyService(IUnitOfWork<Journey> journeyUnitOfWork)
         {
-            this.unitOfWork = unitOfWork;
+            this.journeyUnitOfWork = journeyUnitOfWork;
         }
 
         public Journey GetCurrentJourney(int userId)
         {
-            var currentJourney = unitOfWork
+            var currentJourney = journeyUnitOfWork
                 .GetRepository()
                 .Query(
                     journeyStops => journeyStops.Stops,
@@ -35,7 +35,7 @@ namespace Car.Domain.Services.Implementation
 
         public Journey GetJourneyById(int journeyId)
         {
-            var currentJourney = unitOfWork.GetRepository()
+            var currentJourney = journeyUnitOfWork.GetRepository()
                 .Query(journey => journey.Organizer, journey => journey.Participants)
                 .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
                 .ThenInclude(stop => stop.Address)
@@ -46,7 +46,7 @@ namespace Car.Domain.Services.Implementation
 
         public List<Journey> GetPastJourneys(int userId)
         {
-            var journeys = unitOfWork.GetRepository()
+            var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
@@ -61,7 +61,7 @@ namespace Car.Domain.Services.Implementation
 
         public List<Journey> GetScheduledJourneys(int userId)
         {
-            var journeys = unitOfWork.GetRepository()
+            var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
@@ -74,7 +74,7 @@ namespace Car.Domain.Services.Implementation
 
         public List<Journey> GetUpcomingJourneys(int userId)
         {
-            var journeys = unitOfWork.GetRepository()
+            var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)

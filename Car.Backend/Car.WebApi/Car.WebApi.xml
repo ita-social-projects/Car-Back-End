@@ -110,13 +110,6 @@
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.AddParticipantAsync(Car.Domain.Dto.ParticipantDto)">
-            <summary>
-            Adds a new participant to the Journey
-            </summary>
-            <param name="participantDto">Participant model</param>
-            <returns>status of request with appropriate data</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32)">
             <summary>
             Gets journey by identifier.
