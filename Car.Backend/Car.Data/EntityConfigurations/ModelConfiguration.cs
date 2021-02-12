@@ -11,6 +11,8 @@ namespace Car.Data.EntityConfigurations
             builder.ToTable("Model");
             builder.HasKey(model => model.Id);
 
+            builder.Property(model => model.Name).HasMaxLength(50).IsRequired();
+
             builder.HasOne(model => model.Brand)
                 .WithMany(brand => brand.Models)
                 .HasForeignKey(model => model.BrandId);

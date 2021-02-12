@@ -14,7 +14,8 @@ namespace Car.Data.EntityConfigurations
             builder.Property(address => address.Street).HasMaxLength(50).IsRequired();
 
             builder.HasOne(address => address.User).WithMany(user => user.Addresses)
-                .HasForeignKey(address => address.UserId);
+                .HasForeignKey(address => address.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

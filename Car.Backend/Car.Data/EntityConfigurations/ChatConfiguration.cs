@@ -10,11 +10,11 @@ namespace Car.Data.EntityConfigurations
             builder.ToTable("Chat");
             builder.HasKey(chat => chat.Id);
 
-            builder.Property(chat => chat.Name).HasMaxLength(100);
+            builder.Property(chat => chat.Name).HasMaxLength(150).IsRequired();
 
             builder.HasMany(chat => chat.Messages)
                 .WithOne(message => message.Chat)
-                .HasForeignKey(chat => chat.ChatId);
+                .HasForeignKey(message => message.ChatId);
         }
     }
 }

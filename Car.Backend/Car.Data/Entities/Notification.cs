@@ -23,5 +23,7 @@ namespace Car.Data.Entities
         public User Sender { get; set; }
 
         public User Receiver { get; set; }
+
+        public Journey Journey { get; set; }
     }
 }

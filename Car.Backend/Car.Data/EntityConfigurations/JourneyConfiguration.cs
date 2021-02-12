@@ -14,11 +14,12 @@ namespace Car.Data.EntityConfigurations
 
             builder.HasOne(journey => journey.Schedule)
                 .WithOne(schedule => schedule.Journey)
-                .HasForeignKey<Journey>(journey => journey.ScheduleId);
+                .HasForeignKey<Schedule>(schedule => schedule.Id);
 
             builder.HasOne(journey => journey.Organizer)
                 .WithMany(user => user.OrganizerJourneys)
-                .HasForeignKey(journey => journey.OrganizerId);
+                .HasForeignKey(journey => journey.OrganizerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(journey => journey.Participants)
                 .WithMany(user => user.ParticipantJourneys);

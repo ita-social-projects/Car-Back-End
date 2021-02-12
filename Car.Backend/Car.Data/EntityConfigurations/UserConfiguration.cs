@@ -21,6 +21,8 @@ namespace Car.Data.EntityConfigurations
             builder.Property(user => user.Name).HasMaxLength(64).IsRequired();
             builder.Property(user => user.Position).HasMaxLength(100);
             builder.Property(user => user.Surname).HasMaxLength(64).IsRequired();
+            builder.Property(user => user.HireDate).HasColumnType("date");
+            builder.Property(user => user.ImageId).HasMaxLength(1500);
         }
     }
 }

@@ -46,8 +46,9 @@ namespace Car.Domain.Services.Implementation
 
         public List<Chat> GetUsersChats(int userId)
         {
-            var user = unitOfWorkUser.GetRepository().Query().Include(chat => chat.Chats).FirstOrDefault(user => user.Id == userId);
-            return user?.Chats.ToList();
+            var user = unitOfWorkUser.GetRepository().Query().FirstOrDefault(user => user.Id == userId);
+            // return user?.Chats.ToList();
+            return new List<Chat>();
         }
     }
 }

@@ -92,7 +92,7 @@ namespace Car.WebApi
                 logger.LogInformation("Configuring for Production environment");
             }
 
-            app.UseMiddelwareHendler();
+            app.UseMiddlewareHandler();
 
             app.UseRouting();
 

@@ -35,6 +35,6 @@ namespace Car.Data.Entities
 
         public ICollection<Journey> ParticipantJourneys { get; set; } = new List<Journey>();
 
-        public ICollection<Chat> Chats { get; set; } = new List<Chat>();
+        public ICollection<Message> SentMessages { get; set; } = new List<Message>();
     }
 }

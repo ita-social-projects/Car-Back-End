@@ -14,8 +14,8 @@ namespace Car.Data.Entities
 
         public int ChatId { get; set; }
 
-        public virtual User Sender { get; set; }
+        public User Sender { get; set; }
 
-        public virtual Chat Chat { get; set; }
+        public Chat Chat { get; set; }
     }
 }

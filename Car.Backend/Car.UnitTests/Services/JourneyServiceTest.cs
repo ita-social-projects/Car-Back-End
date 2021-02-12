@@ -180,6 +180,7 @@ namespace Car.UnitTests.Services
             var journeys = fixture.Create<Journey[]>().AsQueryable();
             var journey = journeys.FirstOrDefault();
 
+            // todo
             repository.Setup(r => r.Query(j => j.Organizer, j => j.Participants))
                 .Returns(journeys);
             unitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);

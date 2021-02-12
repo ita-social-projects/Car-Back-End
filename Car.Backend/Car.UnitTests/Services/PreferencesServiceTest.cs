@@ -40,7 +40,7 @@ namespace Car.UnitTests.Services
             unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
-            preferencesService.GetPreferences(preferences.UserId).Should().NotBeEquivalentTo(preferences);
+            preferencesService.GetPreferences(preferences.Id).Should().NotBeEquivalentTo(preferences);
         }
 
         [Fact]

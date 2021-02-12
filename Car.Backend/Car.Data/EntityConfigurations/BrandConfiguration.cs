@@ -10,6 +10,8 @@ namespace Car.Data.EntityConfigurations
         {
             builder.ToTable("Brand");
             builder.HasKey(brand => brand.Id);
+
+            builder.Property(brand => brand.Name).HasMaxLength(50).IsRequired();
         }
     }
 }
