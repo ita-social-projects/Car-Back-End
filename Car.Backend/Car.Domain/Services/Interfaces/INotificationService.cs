@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Car.Data.Entities;
 
 namespace Car.Domain.Services.Interfaces
@@ -16,5 +17,11 @@ namespace Car.Domain.Services.Interfaces
         Notification AddNotification(Notification notification);
 
         Notification DeleteNotification(int id);
+
+        Task<Notification> GetNotificationAsync(int id);
+
+        Task<List<Notification>> GetNotificationsAsync(int userId);
+
+        Task<Notification> MarkAsReadAsync(int notificationId);
     }
 }

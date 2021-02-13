@@ -139,7 +139,7 @@
             <param name="id">notification id</param>
             <returns>notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotifications(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotificationsAsync(System.Int32)">
             <summary>
             gets all user notifications
             </summary>
@@ -152,6 +152,13 @@
             </summary>
             <param name="userId">user Id</param>
             <returns>int number</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.MarkAsRead(System.Int32)">
+            <summary>
+            Marks notification as read
+            </summary>
+            <param name="notificationId">notificationId Id</param>
+            <returns>Notification</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.UpdateNotification(Car.Domain.Dto.NotificationDto)">
             <summary>
