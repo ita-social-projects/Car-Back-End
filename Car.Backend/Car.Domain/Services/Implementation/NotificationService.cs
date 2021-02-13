@@ -64,13 +64,10 @@ namespace Car.Domain.Services.Implementation
             await notificationUnitOfWork.GetRepository().Query()
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
 
-        public async Task<List<Notification>> GetNotificationsAsync(int userId)
-        {
-            var c = notificationUnitOfWork.GetRepository().Query();
-            c.Include(notification => notification);
-            c.Where(notificationReceiverId => notificationReceiverId.ReceiverId == userId).ToList();
-            return await new Task<List<Notification>>(() => c.ToList());
-        }
+        public async Task<List<Notification>> GetNotificationsAsync(int userId) =>
+            await Task.Run(() => notificationUnitOfWork.GetRepository().Query(
+                    notificationReceiver => notificationReceiver.Receiver)
+                .Where(notificationReceiverId => notificationReceiverId.Receiver.Id == userId).ToList());
 
         public async Task<Notification> MarkAsReadAsync(int notificationId)
         {

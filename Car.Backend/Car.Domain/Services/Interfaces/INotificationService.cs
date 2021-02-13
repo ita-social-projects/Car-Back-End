@@ -18,7 +18,7 @@ namespace Car.Domain.Services.Interfaces
 
         Notification DeleteNotification(int id);
 
-        Task<Notification> GetNotificationAsync(int id);
+        Task<Notification> GetNotificationAsync(int notificationId);
 
         Task<List<Notification>> GetNotificationsAsync(int userId);
 
