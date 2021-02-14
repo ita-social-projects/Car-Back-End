@@ -1,4 +1,5 @@
-﻿using Car.Data.Entities;
+﻿using System;
+using Car.Data.Entities;
 
 namespace Car.Domain.Dto
 {
@@ -18,11 +19,9 @@ namespace Car.Domain.Dto
 
         public bool IsRead { get; set; }
 
-        public string CreateAt { get; set; }
+        public DateTime CreateAt { get; set; }
 
         public int JourneyId { get; set; }
-
-        public string UserColor { get; set; }
 
         public NotificationType NotificationType { get; set; }
     }

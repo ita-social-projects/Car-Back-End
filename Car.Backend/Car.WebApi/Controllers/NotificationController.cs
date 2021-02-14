@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
@@ -31,35 +32,18 @@ namespace Car.WebApi.Controllers
         /// <param name="id">notification id</param>
         /// <returns>notification</returns>
         [HttpGet("{id}")]
-        public IActionResult GetNotification(int id)
-        {
-            Notification notification = notificationService.GetNotification(id);
-            if (notification == null)
-            {
-                return BadRequest();
-            }
-
-            NotificationDto notificationDto = new NotificationDto
-            {
-                Id = notification.Id,
-                UserId = notification.SenderId,
-                UserName = notification.Sender.Name + " " + notification.Sender.Surname,
-                Position = notification.Sender.Position,
-                Description = notification.Description,
-                IsRead = notification.IsRead,
-                CreateAt = GetTimeDifference(notification.CreatedAt),
-                JourneyId = notification.JourneyId,
-                ReceiverId = notification.ReceiverId,
-                NotificationType = (NotificationType)notification.Type,
-            };
-            return Ok(notificationDto);
-        }
+        public async Task<IActionResult> GetNotification(int id) => Ok(await notificationService.GetNotificationAsync(id));
 
         /// <summary>
         /// gets all user notifications
         /// </summary>
         /// <param name="userId"> user Id</param>
         /// <returns>list of user notifications</returns>
+        [HttpGet("notifications/s{userId}")]
+
+        public async Task<IActionResult> GetNotificationsAsync(int userId) =>
+            Ok(await notificationService.GetNotificationsAsync(userId));
+
         [HttpGet("notifications/{userId}")]
         public IActionResult GetNotifications(int userId)
         {
@@ -80,10 +64,9 @@ namespace Car.WebApi.Controllers
                     Position = item.Sender.Position,
                     Description = item.Description,
                     IsRead = item.IsRead,
-                    CreateAt = GetTimeDifference(item.CreatedAt),
+                    CreateAt = item.CreatedAt,
                     JourneyId = item.JourneyId,
                     ReceiverId = item.ReceiverId,
-                    UserColor = GetUserColor(item.Sender.Name + " " + item.Sender.Surname),
                     NotificationType = (NotificationType)item.Type,
                 };
                 notificationDtos.Add(notificationDto);
@@ -102,6 +85,15 @@ namespace Car.WebApi.Controllers
         {
             return Ok(notificationService.GetUnreadNotificationsNumber(userId));
         }
+
+        /// <summary>
+        /// Marks notification as read
+        /// </summary>
+        /// <param name="notificationId">notificationId Id</param>
+        /// <returns>Notification</returns>
+        [HttpPost("{notificationId}")]
+        public async Task<IActionResult> MarkAsRead(int notificationId) =>
+            Ok(await notificationService.MarkAsReadAsync(notificationId));
 
         /// <summary>
         /// updates user notification
@@ -147,7 +139,7 @@ namespace Car.WebApi.Controllers
             {
                 Id = notificationSaved.Id,
                 UserId = notificationSaved.SenderId,
-                CreateAt = GetTimeDifference(notificationSaved.CreatedAt),
+                CreateAt = notificationSaved.CreatedAt,
                 Description = notificationSaved.Description,
                 IsRead = notificationSaved.IsRead,
                 JourneyId = notificationDto.JourneyId,
@@ -168,45 +160,6 @@ namespace Car.WebApi.Controllers
         public IActionResult DeleteNotification([FromBody] int notificationId)
         {
             return Ok(notificationService.DeleteNotification(notificationId));
-        }
-
-        private static string GetUserColor(string name)
-        {
-            var names = name.ToLower().Split(' ');
-            return "rgb(" + Math.Floor(255 - (((int)names[0][0] - 97) * 10.2)) + "," +
-                Math.Floor(((int)names[0][0] - 97) * 10.2) + "," +
-                Math.Floor(255 - (((int)names[names.Length - 1][0] - 97) * 10.2)) + ")";
-        }
-
-        private static string GetTimeDifference(DateTime creationTime)
-        {
-            TimeSpan differ = DateTime.Now - creationTime;
-            if (differ.TotalMinutes < 60)
-            {
-                if (differ.Minutes == 0)
-                {
-                    return "now";
-                }
-
-                return differ.Minutes + " m";
-            }
-
-            if (differ.TotalHours < 24)
-            {
-                return differ.Hours + " h";
-            }
-
-            if (differ.TotalDays < 30)
-            {
-                return differ.Days + " d";
-            }
-
-            if (differ.TotalDays < 365)
-            {
-                return (int)(differ.TotalDays / 30) + " m";
-            }
-
-            return creationTime.ToShortDateString();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Dto;
@@ -34,40 +35,37 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void TestGetNotificationById_WithRightId_ReturnsOkObjectResult()
+        public async Task TestGetNotificationById_WithRightId_ReturnsOkObjectResult()
         {
             // Arrange
             var notification = fixture.Create<Notification>();
             notificationService.Setup(u => u.GetNotification(notification.Id)).Returns(notification);
 
             // Act
-            var result = notificationController.GetNotification(notification.Id);
+            var result = await notificationController.GetNotification(notification.Id);
 
             // Assert
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<NotificationDto>();
-                ((result as OkObjectResult)?.Value as NotificationDto)?.Id.Should().Be(notification.Id);
-                ((result as OkObjectResult)?.Value as NotificationDto)?.UserId.Should().Be(notification.SenderId);
             }
         }
 
         [Fact]
-        public void TestGetNotificationById_WhenNotificationNotExist_ReturnsNull()
+        public async Task TestGetNotificationById_WhenNotificationNotExist_ReturnsNull()
         {
             // Arrange
             var notification = fixture.Create<Notification>();
             notificationService.Setup(u => u.GetNotification(notification.Id)).Returns((Notification)null);
 
             // Act
-            var result = notificationController.GetNotification(notification.Id);
+            var result = await notificationController.GetNotification(notification.Id);
 
             // Assert
             using (new AssertionScope())
             {
-                result.Should().BeOfType<BadRequestResult>();
-                (result as BadRequestResult)?.Should().As<BadRequestResult>();
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Should().As<OkObjectResult>();
             }
         }
 
