@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using AutoFixture;
 using AutoFixture.Xunit2;
+using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Implementation;
@@ -19,14 +20,16 @@ namespace Car.UnitTests.Services
         private readonly IJourneyService journeyService;
         private readonly Mock<IRepository<Journey>> repository;
         private readonly Mock<IUnitOfWork<Journey>> journeyUnitOfWork;
+        private readonly Mock<IMapper> mapper;
         private readonly Fixture fixture;
 
         public JourneyServiceTest()
         {
             repository = new Mock<IRepository<Journey>>();
             journeyUnitOfWork = new Mock<IUnitOfWork<Journey>>();
+            mapper = new Mock<IMapper>();
 
-            journeyService = new JourneyService(journeyUnitOfWork.Object);
+            journeyService = new JourneyService(journeyUnitOfWork.Object, mapper.Object);
 
             fixture = new Fixture();
 

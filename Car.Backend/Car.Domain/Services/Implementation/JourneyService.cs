@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +14,15 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IUnitOfWork<Journey> journeyUnitOfWork;
 
-        public JourneyService(IUnitOfWork<Journey> journeyUnitOfWork)
+        private readonly IMapper mapper;
+
+        public JourneyService(IUnitOfWork<Journey> journeyUnitOfWork, IMapper mapper)
         {
             this.journeyUnitOfWork = journeyUnitOfWork;
+            this.mapper = mapper;
         }
 
-        public Journey GetCurrentJourney(int userId)
+        public JourneyDto GetCurrentJourney(int userId)
         {
             var currentJourney = journeyUnitOfWork
                 .GetRepository()
@@ -30,10 +35,11 @@ namespace Car.Domain.Services.Implementation
                                            && journey.DepartureTime.AddHours(journey.Duration.Hours)
                                                .AddMinutes(journey.Duration.Minutes)
                                                .AddSeconds(journey.Duration.Seconds) > DateTime.Now);
-            return currentJourney;
+
+            return mapper.Map<Journey, JourneyDto>(currentJourney);
         }
 
-        public Journey GetJourneyById(int journeyId)
+        public JourneyDto GetJourneyById(int journeyId)
         {
             var currentJourney = journeyUnitOfWork.GetRepository()
                 .Query(journey => journey.Organizer, journey => journey.Participants)
@@ -41,38 +47,40 @@ namespace Car.Domain.Services.Implementation
                 .ThenInclude(stop => stop.Address)
                 .FirstOrDefault(journey => journey.Id == journeyId);
 
-            return currentJourney;
+            return mapper.Map<Journey, JourneyDto>(currentJourney);
         }
 
-        public List<Journey> GetPastJourneys(int userId)
+        public IEnumerable<JourneyDto> GetPastJourneys(int userId)
         {
             var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
-                                  || journey.OrganizerId == userId)
+                                   || journey.OrganizerId == userId)
                                   && journey.DepartureTime.AddHours(journey.Duration.Hours)
                                       .AddMinutes(journey.Duration.Minutes)
                                       .AddSeconds(journey.Duration.Seconds) < DateTime.Now)
-                .ToList();
+                .Select(journey => mapper.Map<Journey, JourneyDto>(journey));
+
             return journeys;
         }
 
-        public List<Journey> GetScheduledJourneys(int userId)
+        public IEnumerable<JourneyDto> GetScheduledJourneys(int userId)
         {
             var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
                     journeyStops => journeyStops.Stops,
                     driver => driver.Organizer)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
-                                  || journey.OrganizerId == userId)
+                                   || journey.OrganizerId == userId)
                                   && journey.Schedule != null)
-                .ToList();
+                .Select(journey => mapper.Map<Journey, JourneyDto>(journey));
+
             return journeys;
         }
 
-        public List<Journey> GetUpcomingJourneys(int userId)
+        public IEnumerable<JourneyDto> GetUpcomingJourneys(int userId)
         {
             var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
@@ -83,7 +91,8 @@ namespace Car.Domain.Services.Implementation
                                   && journey.DepartureTime.AddHours(journey.Duration.Hours)
                                       .AddMinutes(journey.Duration.Minutes)
                                       .AddSeconds(journey.Duration.Seconds) > DateTime.Now)
-                .ToList();
+                .Select(journey => mapper.Map<Journey, JourneyDto>(journey));
+
             return journeys;
         }
     }

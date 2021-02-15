@@ -11,9 +11,9 @@ namespace Car.Domain.Mapping
             CreateMap<Data.Entities.Car, CarDto>();
             CreateMap<Address, AddressDto>();
             CreateMap<Stop, StopDto>();
-            CreateMap<Journey, JourneyDto>();
             CreateMap<Notification, NotificationDto>();
             CreateMap<User, UserDto>();
+            CreateMap<Journey, JourneyDto>();
         }
     }
 }

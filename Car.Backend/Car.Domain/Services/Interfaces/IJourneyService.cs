@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface IJourneyService
     {
-        public List<Journey> GetPastJourneys(int userId);
+        public IEnumerable<JourneyDto> GetPastJourneys(int userId);
 
-        public List<Journey> GetUpcomingJourneys(int userId);
+        public IEnumerable<JourneyDto> GetUpcomingJourneys(int userId);
 
-        public List<Journey> GetScheduledJourneys(int userId);
+        public IEnumerable<JourneyDto> GetScheduledJourneys(int userId);
 
-        public Journey GetCurrentJourney(int userId);
+        public JourneyDto GetCurrentJourney(int userId);
 
-        public Journey GetJourneyById(int journeyId);
+        public JourneyDto GetJourneyById(int journeyId);
     }
 }

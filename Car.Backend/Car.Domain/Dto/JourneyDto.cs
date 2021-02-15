@@ -19,9 +19,9 @@ namespace Car.Domain.Dto
 
         public bool IsFree { get; set; }
 
-        public IEnumerable<UserDto> Participants { get; set; } = new List<UserDto>();
+        public ICollection<UserDto> Participants { get; set; } = new List<UserDto>();
 
-        public IEnumerable<StopDto> Stops { get; set; } = new List<StopDto>();
+        public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
 
         public UserDto Organizer { get; set; }
     }
