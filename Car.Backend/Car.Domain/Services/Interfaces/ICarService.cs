@@ -10,6 +10,6 @@ namespace Car.Domain.Services.Interfaces
 
         CarEntity AddCar(CarDto carDto);
 
-        IEnumerable<CarInfoDto> GetAllByUserId(int userId);
+        IEnumerable<CarDto> GetAllByUserId(int userId);
     }
 }

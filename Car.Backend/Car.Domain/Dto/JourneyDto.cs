@@ -11,7 +11,7 @@ namespace Car.Domain.Dto
 
         public DateTime DepartureTime { get; set; }
 
-        public TimeSpan JourneyDuration { get; set; }
+        public TimeSpan Duration { get; set; }
 
         public int CountOfSeats { get; set; }
 

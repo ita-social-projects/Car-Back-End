@@ -22,7 +22,7 @@ namespace Car.Domain.Services.Implementation
         {
             var newCar = new CarEntity
             {
-                ModelId = carDto.ModelId,
+                ModelId = carDto.Model.Id,
                 Color = carDto.Color,
                 PlateNumber = carDto.PlateNumber,
                 OwnerId = carDto.OwnerId,
@@ -42,17 +42,16 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefault(c => c.Id == carId);
         }
 
-        public IEnumerable<CarInfoDto> GetAllByUserId(int userId)
+        public IEnumerable<CarDto> GetAllByUserId(int userId)
         {
             return unitOfWork.GetRepository()
                 .Query()
                 .Where(car => car.OwnerId == userId)
-                .Select(car => new CarInfoDto
+                .Select(car => new CarDto
                 {
                     Id = car.Id,
-                    BrandName = car.Model.Brand.Name,
-                    ModelName = car.Model.Name,
-                    Color = car.Color.ToString(),
+                    Model = car.Model,
+                    Color = car.Color,
                     PlateNumber = car.PlateNumber,
                 });
         }
