@@ -43,7 +43,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetCurrentJourneyForOrganizer_WhenCurrentJourneyExists_ReturnsJourneyObject(
+        public void GetCurrentJourneyForOrganizer_CurrentJourneyExists_ReturnsJourneyObject(
             [Range(1, 3)] int hours, [Range(1, 3)] double divider, [Range(1, 3)] double days)
         {
             var currentJourney = fixture.Create<Journey>();
@@ -72,7 +72,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetCurrentJourneyForParticipant_WhenCurrentJourneyExists_ReturnsJourneyObject(
+        public void GetCurrentJourneyForParticipant_CurrentJourneyExists_ReturnsJourneyObject(
             [Range(1, 3)] int hours, [Range(1, 3)] double divider, [Range(1, 3)] int days)
         {
             var currentJourney = fixture.Create<Journey>();
@@ -103,7 +103,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetCurrentJourney_WhenCurrentJourneyNotExist_ReturnsNull(
+        public void GetCurrentJourney_CurrentJourneyNotExist_ReturnsNull(
             [Range(1, 3)] int days, [Range(1, 3)] int hours)
         {
             var journeys = fixture.Create<List<Journey>>();
@@ -131,7 +131,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void TestGetJourneyById_WhenJourneyExists_ReturnsJourneyObject()
+        public void GetJourneyById_JourneyExists_ReturnsJourneyObject()
         {
             var journeys = fixture.Create<List<Journey>>();
             var journey = fixture.Build<Journey>()
@@ -152,7 +152,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void TestGetJourneyById_WhenJourneyNotExist_ReturnsNull()
+        public void GetJourneyById_JourneyNotExist_ReturnsNull()
         {
             var journeys = fixture.Create<Journey[]>().AsQueryable();
 
@@ -170,7 +170,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetPastJourneys_WhenPastJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public void GetPastJourneys_PastJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             var participant = fixture.Create<User>();
             var journeys = fixture.Build<Journey>()
@@ -198,7 +198,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetPastJourneys_WhenPastJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public void GetPastJourneys_PastJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             var participant = fixture.Create<User>();
             var journeys = fixture.Build<Journey>()
@@ -218,7 +218,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetPastJourneys_WhenUserNotHaveJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public void GetPastJourneys_UserNotHaveJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             var journeys = fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.Now.AddDays(-days))
@@ -243,7 +243,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetUpcomingJourneysForOrganizer_WhenUpcomingJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public void GetUpcomingJourneysForOrganizer_UpcomingJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             var organizer = fixture.Create<User>();
             var journeys = fixture.Build<Journey>()
@@ -268,7 +268,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetUpcomingJourneysForParticipant_WhenUpcomingJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public void GetUpcomingJourneysForParticipant_UpcomingJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             var participant = fixture.Create<User>();
             var journeys = fixture.Build<Journey>()
@@ -296,7 +296,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetUpcomingJourneys_WhenUpcomingJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public void GetUpcomingJourneys_UpcomingJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             var organizer = fixture.Create<User>();
             var journeys = fixture.Build<Journey>()
@@ -319,7 +319,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void TestGetUpcomingJourneys_WhenUserNotHaveUpcomingJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public void GetUpcomingJourneys_UserNotHaveUpcomingJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             var organizer = fixture.Create<User>();
             var anotherUser = fixture.Create<User>();
