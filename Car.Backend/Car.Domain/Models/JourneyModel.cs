@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Car.Domain.Dto
 {
-    public class JourneyDto
+    public class JourneyModel
     {
         public int Id { get; set; }
 
