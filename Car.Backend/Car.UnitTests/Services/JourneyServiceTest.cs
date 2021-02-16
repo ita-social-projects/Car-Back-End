@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using AutoMapper;
@@ -10,6 +11,7 @@ using Car.Data.Interfaces;
 using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -43,7 +45,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetCurrentJourneyForOrganizer_CurrentJourneyExists_ReturnsJourneyObject(
+        public void GetCurrentJourney_CurrentJourneyExistsForOrganizer_ReturnsJourneyObject(
             [Range(1, 3)] int hours, [Range(1, 3)] double divider, [Range(1, 3)] double days)
         {
             var currentJourney = fixture.Create<Journey>();
@@ -56,10 +58,7 @@ namespace Car.UnitTests.Services
                 .ToList();
             journeys.Add(currentJourney);
 
-            repository.Setup(r => r.Query(
-                    journey => journey.Stops,
-                    journey => journey.Organizer,
-                    journey => journey.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
 
             journeyUnitOfWork.Setup(r => r.GetRepository())
@@ -72,7 +71,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetCurrentJourneyForParticipant_CurrentJourneyExists_ReturnsJourneyObject(
+        public void GetCurrentJourney_CurrentJourneyExistsForParticipant_ReturnsJourneyObject(
             [Range(1, 3)] int hours, [Range(1, 3)] double divider, [Range(1, 3)] int days)
         {
             var currentJourney = fixture.Create<Journey>();
@@ -87,10 +86,7 @@ namespace Car.UnitTests.Services
                 .ToList();
             journeys.Add(currentJourney);
 
-            repository.Setup(r => r.Query(
-                    journey => journey.Stops,
-                    journey => journey.Organizer,
-                    journey => journey.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
 
             journeyUnitOfWork.Setup(r => r.GetRepository())
@@ -117,10 +113,7 @@ namespace Car.UnitTests.Services
 
             journeys.Add(journey);
 
-            repository.Setup(r => r.Query(
-                    j => j.Stops,
-                    j => j.Organizer,
-                    j => j.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
@@ -139,10 +132,7 @@ namespace Car.UnitTests.Services
                 .Create();
             journeys.Add(journey);
 
-            repository.Setup(r => r.Query(
-                    j => j.Stops,
-                    j => j.Organizer,
-                    j => j.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
@@ -156,10 +146,7 @@ namespace Car.UnitTests.Services
         {
             var journeys = fixture.Create<Journey[]>().AsQueryable();
 
-            repository.Setup(r => r.Query(
-                    j => j.Stops,
-                    j => j.Organizer,
-                    j => j.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
@@ -181,19 +168,16 @@ namespace Car.UnitTests.Services
             var pastJourneys = fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.Now.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
-                .CreateMany();
+                .CreateMany().ToList();
             journeys.AddRange(pastJourneys);
 
-            repository.Setup(r => r.Query(
-                     j => j.Stops,
-                     j => j.Organizer,
-                     j => j.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             var result = journeyService.GetPastJourneys(participant.Id);
 
-            result.Should().AllBeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys));
+            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys));
         }
 
         [Theory]
@@ -207,7 +191,7 @@ namespace Car.UnitTests.Services
                 .CreateMany()
                 .ToList();
 
-            repository.Setup(r => r.Query(j => j.Organizer, j => j.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
@@ -232,7 +216,7 @@ namespace Car.UnitTests.Services
                 .With(u => u.Id, journeys.SelectMany(j => j.Participants.Select(p => p.Id)).Max() + 1)
                 .Create();
 
-            repository.Setup(r => r.Query(j => j.Organizer, j => j.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
@@ -243,7 +227,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneysForOrganizer_UpcomingJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public void GetUpcomingJourneys_UpcomingJourneysExistForOrganizer_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             var organizer = fixture.Create<User>();
             var journeys = fixture.Build<Journey>()
@@ -257,18 +241,18 @@ namespace Car.UnitTests.Services
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
-            repository.Setup(r => r.Query(j => j.Stops, j => j.Organizer))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             var result = journeyService.GetUpcomingJourneys(organizer.Id);
 
-            result.Should().AllBeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
+            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
         }
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneysForParticipant_UpcomingJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public void GetUpcomingJourneys_UpcomingJourneysExistForParticipant_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             var participant = fixture.Create<User>();
             var journeys = fixture.Build<Journey>()
@@ -282,16 +266,13 @@ namespace Car.UnitTests.Services
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
-            repository.Setup(r => r.Query(
-                    journey => journey.Stops,
-                    journey => journey.Organizer,
-                    journey => journey.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             var result = journeyService.GetUpcomingJourneys(participant.Id);
 
-            result.Should().AllBeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
+            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
         }
 
         [Theory]
@@ -305,10 +286,7 @@ namespace Car.UnitTests.Services
                 .CreateMany()
                 .ToList();
 
-            repository.Setup(r => r.Query(
-                    journey => journey.Stops,
-                    journey => journey.Organizer,
-                    journey => journey.Participants))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
@@ -334,7 +312,7 @@ namespace Car.UnitTests.Services
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
-            repository.Setup(r => r.Query(j => j.Stops, j => j.Organizer))
+            repository.Setup(r => r.Query(It.IsAny<Expression<Func<Journey, object>>[]>()))
                 .Returns(journeys.AsQueryable);
             journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
