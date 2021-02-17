@@ -22,6 +22,8 @@ namespace Car.Data.Interfaces
 
         bool Delete(TEntity entity);
 
+        Task<bool> DeleteAsync(TEntity entity);
+
         void DeleteRange(IEnumerable<TEntity> entities);
 
         TEntity Update(TEntity entity);

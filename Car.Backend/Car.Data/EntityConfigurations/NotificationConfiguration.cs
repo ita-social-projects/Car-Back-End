@@ -13,20 +13,16 @@ namespace Car.Data.EntityConfigurations
 
             builder.HasOne(notification => notification.Sender)
                 .WithMany(user => user.SentNotifications)
-                .HasForeignKey(notification => notification.SenderId)
+                .HasForeignKey(notification => notification.Sender.Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(notification => notification.Receiver)
+            builder.HasOne(notification => notification.Sender)
                 .WithMany(user => user.ReceivedNotifications)
                 .HasForeignKey(notification => notification.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(notification => notification.Journey)
-                .WithMany(journey => journey.Notifications)
-                .HasForeignKey(notification => notification.JourneyId);
-
-            builder.Property(notification => notification.Description).IsRequired();
-            builder.Property(notification => notification.Description).HasMaxLength(400).IsRequired();
+            builder.Property(notification => notification.JsonData).IsRequired();
+            builder.Property(notification => notification.JsonData).HasMaxLength(1000).IsRequired();
         }
     }
 }

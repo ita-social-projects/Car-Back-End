@@ -1,59 +1,82 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
 {
     public class NotificationService : INotificationService
     {
-        private readonly IUnitOfWork<Notification> unitOfWork;
+        private readonly IUnitOfWork<Notification> notificationUnitOfWork;
+        private readonly IUnitOfWork<User> userUnitOfWork;
 
-        public NotificationService(IUnitOfWork<Notification> unitOfWork)
+        public NotificationService(
+            IUnitOfWork<Notification> notificationUnitOfWork,
+            IUnitOfWork<User> userUnitOfWork)
         {
-            this.unitOfWork = unitOfWork;
+            this.notificationUnitOfWork = notificationUnitOfWork;
+            this.userUnitOfWork = userUnitOfWork;
         }
 
-        public Notification GetNotification(int id)
+        public async Task<Notification> GetNotificationAsync(int notificationId) =>
+            await notificationUnitOfWork.GetRepository().Query(
+                    notificationSender => notificationSender.Sender)
+                .FirstOrDefaultAsync(notification => notification.Id == notificationId);
+
+        public async Task<List<Notification>> GetNotificationsAsync(int userId)
         {
-            return unitOfWork.GetRepository().Query(u => u.Sender).FirstOrDefault(u => u.Id == id);
+            return await notificationUnitOfWork.GetRepository().Query(
+                    m => m.Sender)
+                .Where(p => p.ReceiverId == userId)
+                .OrderByDescending(k => k.CreatedAt)
+                .ToListAsync();
         }
 
-        public List<Notification> GetNotifications(int userId)
-        {
-            return unitOfWork.GetRepository().Query(m => m.Sender).Where(p => p.ReceiverId == userId).OrderByDescending(k => k.CreatedAt).ToList();
-        }
+        public async Task<int> GetUnreadNotificationsNumberAsync(int userId) =>
+            await notificationUnitOfWork.GetRepository().Query().CountAsync(p => p.ReceiverId == userId && !p.IsRead);
 
-        public int GetUnreadNotificationsNumber(int userId)
+        public async Task<Notification> UpdateNotificationAsync(Notification notification)
         {
-            return unitOfWork.GetRepository().Query().Count(p => p.ReceiverId == userId && !p.IsRead);
-        }
-
-        public Notification UpdateNotification(Notification notification)
-        {
-            unitOfWork.GetRepository().Update(notification);
-            unitOfWork.SaveChanges();
+            await notificationUnitOfWork.GetRepository().UpdateAsync(notification);
+            await notificationUnitOfWork.SaveChangesAsync();
             return notification;
         }
 
-        public Notification AddNotification(Notification notification)
+        public async Task<Notification> AddNotificationAsync(Notification notification)
         {
-            unitOfWork.GetRepository().Add(notification);
-            unitOfWork.SaveChanges();
+            await notificationUnitOfWork.GetRepository().AddAsync(notification);
+            await notificationUnitOfWork.SaveChangesAsync();
             return notification;
         }
 
-        public Notification DeleteNotification(int id)
+        public async Task<Notification> DeleteNotificationAsync(int notificationId)
         {
-            var notification = unitOfWork.GetRepository().GetById(id);
-            if (notification != null)
+            var result = await notificationUnitOfWork.GetRepository().Query()
+                .FirstOrDefaultAsync(notification => notification.Id == notificationId);
+            await notificationUnitOfWork.GetRepository().DeleteAsync(result);
+            await notificationUnitOfWork.SaveChangesAsync();
+            return result;
+        }
+
+        public async Task<Notification> CreateNewNotificationFromDtoAsync(NotificationDto notificationDto)
+        {
+            var sender = await userUnitOfWork.GetRepository().Query()
+                .FirstOrDefaultAsync(user => user.Id == notificationDto.SenderId);
+            return await new Task<Notification>(() => new()
             {
-                unitOfWork.GetRepository().Delete(notification);
-                unitOfWork.SaveChanges();
-            }
-
-            return notification;
+                Id = notificationDto.Id,
+                Sender = sender,
+                ReceiverId = notificationDto.ReceiverId,
+                Type = notificationDto.Type,
+                JsonData = notificationDto.JsonData,
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
+            });
         }
     }
 }

@@ -127,7 +127,7 @@ dotnet_diagnostic.SA1107.severity = error
 dotnet_diagnostic.SA1110.severity = error
 
 # SA1113: Comma should be on the same line as previous parameter
-dotnet_diagnostic.SA1113.severity = error
+dotnet_diagnostic.SA1113.severity = none
 
 # SA1119: Statement should not use unnecessary parenthesis
 dotnet_diagnostic.SA1119.severity = error
