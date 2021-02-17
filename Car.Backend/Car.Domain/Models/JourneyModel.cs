@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Car.Domain.Dto;
 
-namespace Car.Domain.Dto
+namespace Car.Domain.Models
 {
     public class JourneyModel
     {
@@ -24,5 +25,7 @@ namespace Car.Domain.Dto
         public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
 
         public UserDto Organizer { get; set; }
+
+        public Data.Entities.Car Car { get; set; }
     }
 }

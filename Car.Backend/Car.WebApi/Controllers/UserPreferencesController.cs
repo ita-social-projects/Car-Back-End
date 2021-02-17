@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/user-preferences")]
     [ApiController]
     public class UserPreferencesController : ControllerBase

@@ -5,6 +5,7 @@ namespace Car.Data.Migrations
 {
     public partial class Initial : Migration
     {
+#pragma warning disable SA1413 // Use trailing comma in multi-line initializers
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -13,6 +14,7 @@ namespace Car.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -687,4 +689,5 @@ namespace Car.Data.Migrations
                 name: "User");
         }
     }
+#pragma warning restore SA1413 // Use trailing comma in multi-line initializers
 }

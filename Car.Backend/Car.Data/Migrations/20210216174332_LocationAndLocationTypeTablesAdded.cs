@@ -4,6 +4,7 @@ namespace Car.Data.Migrations
 {
     public partial class LocationAndLocationTypeTablesAdded : Migration
     {
+#pragma warning disable SA1413 // Use trailing comma in multi-line initializers
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
@@ -31,6 +32,7 @@ namespace Car.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+
                     Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false)
                 },
                 constraints: table =>
@@ -142,5 +144,6 @@ namespace Car.Data.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
+#pragma warning restore SA1413 // Use trailing comma in multi-line initializers
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
-using Car.Domain.Dto;
+using Car.Domain.Models;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

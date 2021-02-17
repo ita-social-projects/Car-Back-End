@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Domain.Dto;
+using Car.Domain.Models;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
 using FluentAssertions;
