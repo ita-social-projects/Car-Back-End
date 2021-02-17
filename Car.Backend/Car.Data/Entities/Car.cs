@@ -1,4 +1,5 @@
-﻿using Car.Data.Enums;
+﻿using System.Collections.Generic;
+using Car.Data.Enums;
 
 namespace Car.Data.Entities
 {
@@ -15,6 +16,8 @@ namespace Car.Data.Entities
         public string ImageId { get; set; }
 
         public int OwnerId { get; set; }
+
+        public ICollection<Journey> Journeys { get; set; } = new List<Journey>();
 
         public User Owner { get; set; }
 

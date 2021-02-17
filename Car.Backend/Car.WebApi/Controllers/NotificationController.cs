@@ -61,12 +61,11 @@ namespace Car.WebApi.Controllers
                     UserId = item.SenderId,
                     UserName = item.Sender.Name + " " + item.Sender.Surname,
                     Position = item.Sender.Position,
-                    Description = item.Description,
+                    Description = item.Data,
                     IsRead = item.IsRead,
                     CreateAt = item.CreatedAt,
-                    JourneyId = item.JourneyId,
                     ReceiverId = item.ReceiverId,
-                    NotificationType = (NotificationType)item.Type,
+                    NotificationType = item.Type,
                 };
                 notificationDtos.Add(notificationDto);
             }
@@ -125,10 +124,9 @@ namespace Car.WebApi.Controllers
             Notification notification = new Notification
             {
                 SenderId = notificationDto.UserId,
-                Description = notificationDto.Description,
+                Data = notificationDto.Description,
                 CreatedAt = DateTime.Now,
                 IsRead = notificationDto.IsRead,
-                JourneyId = notificationDto.JourneyId,
                 ReceiverId = notificationDto.ReceiverId,
                 Type = notificationDto.NotificationType,
             };
@@ -139,7 +137,7 @@ namespace Car.WebApi.Controllers
                 Id = notificationSaved.Id,
                 UserId = notificationSaved.SenderId,
                 CreateAt = notificationSaved.CreatedAt,
-                Description = notificationSaved.Description,
+                Description = notificationSaved.Data,
                 IsRead = notificationSaved.IsRead,
                 JourneyId = notificationDto.JourneyId,
                 ReceiverId = notificationDto.ReceiverId,

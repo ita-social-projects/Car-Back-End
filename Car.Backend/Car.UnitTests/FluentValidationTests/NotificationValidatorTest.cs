@@ -37,21 +37,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(null)]
         public void Should_have_error_when_Description_is_null(string value)
         {
-            validator.ShouldHaveValidationErrorFor(notification => notification.Description, value);
+            validator.ShouldHaveValidationErrorFor(notification => notification.Data, value);
         }
 
         [Fact]
         public void Should_have_error_when_Description_is_longer_than_401()
         {
             string longDescription = new string('*', 401);
-            validator.ShouldHaveValidationErrorFor(notification => notification.Description, longDescription);
+            validator.ShouldHaveValidationErrorFor(notification => notification.Data, longDescription);
         }
 
         [Xunit.Theory]
         [InlineData("comment")]
         public void Should_not_have_error_when_Description_is_specified(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(notification => notification.Description, value);
+            validator.ShouldNotHaveValidationErrorFor(notification => notification.Data, value);
         }
 
         [Xunit.Theory]

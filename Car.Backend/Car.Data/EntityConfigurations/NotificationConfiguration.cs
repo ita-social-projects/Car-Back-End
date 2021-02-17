@@ -21,12 +21,8 @@ namespace Car.Data.EntityConfigurations
                 .HasForeignKey(notification => notification.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(notification => notification.Journey)
-                .WithMany(journey => journey.Notifications)
-                .HasForeignKey(notification => notification.JourneyId);
-
-            builder.Property(notification => notification.Description).IsRequired();
-            builder.Property(notification => notification.Description).HasMaxLength(400).IsRequired();
+            builder.Property(notification => notification.Data).IsRequired();
+            builder.Property(notification => notification.Data).HasMaxLength(400).IsRequired();
         }
     }
 }

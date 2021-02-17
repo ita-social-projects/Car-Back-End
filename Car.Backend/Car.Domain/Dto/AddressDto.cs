@@ -11,7 +11,5 @@
         public double Latitude { get; set; }
 
         public double Longitude { get; set; }
-
-        public UserDto User { get; set; }
     }
 }

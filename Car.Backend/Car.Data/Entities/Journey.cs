@@ -21,6 +21,10 @@ namespace Car.Data.Entities
 
         public int OrganizerId { get; set; }
 
+        public int? CarId { get; set; }
+
+        public Car Car { get; set; }
+
         public Schedule Schedule { get; set; }
 
         public User Organizer { get; set; }
@@ -30,7 +34,5 @@ namespace Car.Data.Entities
         public ICollection<User> Participants { get; set; } = new List<User>();
 
         public ICollection<Stop> Stops { get; set; } = new List<Stop>();
-
-        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     }
 }

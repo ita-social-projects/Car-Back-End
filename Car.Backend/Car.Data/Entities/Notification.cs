@@ -10,11 +10,9 @@ namespace Car.Data.Entities
 
         public int ReceiverId { get; set; }
 
-        public string Description { get; set; }
+        public string Data { get; set; }
 
         public bool IsRead { get; set; }
-
-        public int JourneyId { get; set; }
 
         public NotificationType Type { get; set; }
 
@@ -23,7 +21,5 @@ namespace Car.Data.Entities
         public User Sender { get; set; }
 
         public User Receiver { get; set; }
-
-        public Journey Journey { get; set; }
     }
 }

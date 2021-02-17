@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Car.Domain.Dto;
+using Car.Domain.Models;
 
 namespace Car.Domain.Services.Interfaces
 {
