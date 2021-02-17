@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Car.Domain.Dto
 {
-    public class JourneyDto
+    public class JourneyModel
     {
         public int Id { get; set; }
 
@@ -11,7 +11,7 @@ namespace Car.Domain.Dto
 
         public DateTime DepartureTime { get; set; }
 
-        public TimeSpan JourneyDuration { get; set; }
+        public TimeSpan Duration { get; set; }
 
         public int CountOfSeats { get; set; }
 
@@ -19,9 +19,9 @@ namespace Car.Domain.Dto
 
         public bool IsFree { get; set; }
 
-        public IEnumerable<UserDto> Participants { get; set; } = new List<UserDto>();
+        public ICollection<UserDto> Participants { get; set; } = new List<UserDto>();
 
-        public IEnumerable<StopDto> Stops { get; set; } = new List<StopDto>();
+        public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
 
         public UserDto Organizer { get; set; }
     }

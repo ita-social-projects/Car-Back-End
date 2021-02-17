@@ -214,7 +214,7 @@
             <summary>
             returns the preferences for user
             </summary>
-            <param name ="id"> userId</param>
+            <param name ="id">User identifier</param>
             <returns>user preferences</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Data.Entities.UserPreferences)">

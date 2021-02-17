@@ -30,6 +30,10 @@ namespace Car.Data.Context
 
         public DbSet<Chat> Chats { get; set; }
 
+        public DbSet<Location> Locations { get; set; }
+
+        public DbSet<LocationType> LocationTypes { get; set; }
+
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {
@@ -49,6 +53,8 @@ namespace Car.Data.Context
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
             modelBuilder.ApplyConfiguration(new ModelConfiguration());
             modelBuilder.ApplyConfiguration(new ChatConfiguration());
+            modelBuilder.ApplyConfiguration(new LocationConfiguration());
+            modelBuilder.ApplyConfiguration(new LocationTypeConfiguration());
 
             modelBuilder.Seed();
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
 using FluentAssertions;
@@ -32,7 +33,7 @@ namespace Car.UnitTests.Controllers
         public void TestGetCurrentJourney_WithExistingUser_Returns()
         {
             var user = fixture.Create<User>();
-            var journey = fixture.Create<Journey>();
+            var journey = fixture.Create<JourneyModel>();
 
             journeyService.Setup(j => j.GetCurrentJourney(It.IsAny<int>()))
                 .Returns(journey);
@@ -52,7 +53,7 @@ namespace Car.UnitTests.Controllers
             var user = fixture.Create<User>();
 
             journeyService.Setup(j => j.GetCurrentJourney(It.IsAny<int>()))
-                .Returns((Journey)null);
+                .Returns((JourneyModel)null);
 
             var result = journeyController.GetCurrent(user.Id);
 
@@ -67,7 +68,7 @@ namespace Car.UnitTests.Controllers
         public void TestGetPastJourney_WithExistingUser_Returns()
         {
             var user = fixture.Create<User>();
-            var journeys = fixture.Create<List<Journey>>();
+            var journeys = fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetPastJourneys(It.IsAny<int>()))
                 .Returns(journeys);
@@ -85,7 +86,7 @@ namespace Car.UnitTests.Controllers
         public void TestGetUpcomingJourney_WithExistingUser_Returns()
         {
             var user = fixture.Create<User>();
-            var journey = fixture.Create<List<Journey>>();
+            var journey = fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetUpcomingJourneys(It.IsAny<int>()))
                 .Returns(journey);
@@ -103,7 +104,7 @@ namespace Car.UnitTests.Controllers
         public void TestGetScheduledJourney_WithExistingUser_Returns()
         {
             var user = fixture.Create<User>();
-            var journey = fixture.Create<List<Journey>>();
+            var journey = fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetScheduledJourneys(It.IsAny<int>()))
                 .Returns(journey);

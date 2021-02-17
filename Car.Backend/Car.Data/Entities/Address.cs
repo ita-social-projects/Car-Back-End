@@ -14,9 +14,7 @@ namespace Car.Data.Entities
 
         public double Longitude { get; set; }
 
-        public int UserId { get; set; }
-
-        public User User { get; set; }
+        public Location Location { get; set; }
 
         public ICollection<Stop> Stops { get; set; } = new List<Stop>();
     }
