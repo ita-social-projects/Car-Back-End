@@ -30,7 +30,5 @@ namespace Car.Data.Entities
         public ICollection<User> Participants { get; set; } = new List<User>();
 
         public ICollection<Stop> Stops { get; set; } = new List<Stop>();
-
-        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     }
 }

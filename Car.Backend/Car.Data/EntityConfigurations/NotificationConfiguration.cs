@@ -13,10 +13,10 @@ namespace Car.Data.EntityConfigurations
 
             builder.HasOne(notification => notification.Sender)
                 .WithMany(user => user.SentNotifications)
-                .HasForeignKey(notification => notification.Sender.Id)
+                .HasForeignKey(notification => notification.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(notification => notification.Sender)
+            builder.HasOne(notification => notification.Receiver)
                 .WithMany(user => user.ReceivedNotifications)
                 .HasForeignKey(notification => notification.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);

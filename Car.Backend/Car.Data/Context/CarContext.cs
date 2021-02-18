@@ -30,9 +30,15 @@ namespace Car.Data.Context
 
         public DbSet<Chat> Chats { get; set; }
 
+        public CarContext()
+        {
+            Database.EnsureCreated();
+        }
+
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

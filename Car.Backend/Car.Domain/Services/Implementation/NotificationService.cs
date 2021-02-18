@@ -23,10 +23,13 @@ namespace Car.Domain.Services.Implementation
             this.userUnitOfWork = userUnitOfWork;
         }
 
-        public async Task<Notification> GetNotificationAsync(int notificationId) =>
-            await notificationUnitOfWork.GetRepository().Query(
+        public async Task<Notification> GetNotificationAsync(int notificationId)
+        {
+            var result = notificationUnitOfWork.GetRepository().Query(
                     notificationSender => notificationSender.Sender)
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
+            return await result;
+        }
 
         public async Task<List<Notification>> GetNotificationsAsync(int userId)
         {
@@ -65,17 +68,21 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<Notification> CreateNewNotificationFromDtoAsync(NotificationDto notificationDto)
         {
-            var sender = await userUnitOfWork.GetRepository().Query()
-                .FirstOrDefaultAsync(user => user.Id == notificationDto.SenderId);
-            return await new Task<Notification>(() => new()
+            //var sender = await userUnitOfWork.GetRepository().Query()
+            //    .FirstOrDefaultAsync(user => user.Id == notificationDto.SenderId);
+            //var receiver = await userUnitOfWork.GetRepository().Query()
+            //    .FirstOrDefaultAsync(user => user.Id == notificationDto.ReceiverId);
+            return await Task.Run(() => new Notification()
             {
-                Id = notificationDto.Id,
-                Sender = sender,
+                //Id = notificationDto.Id,
+                //Sender = sender,
+                SenderId = notificationDto.SenderId,
+                //Receiver = receiver,
                 ReceiverId = notificationDto.ReceiverId,
                 Type = notificationDto.Type,
                 JsonData = notificationDto.JsonData,
                 IsRead = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
             });
         }
     }

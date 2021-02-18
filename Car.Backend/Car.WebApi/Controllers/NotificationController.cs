@@ -61,6 +61,7 @@ namespace Car.WebApi.Controllers
         public async Task<IActionResult> UpdateNotificationAsync([FromBody] NotificationDto notificationDto)
         {
             var notificationTask = notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
+            await notificationService.UpdateNotificationAsync(await notificationTask);
             await this.notificationHub.Clients.All.SendAsync("sendToReact", await notificationTask);
             return Ok(await notificationTask);
         }
@@ -74,6 +75,7 @@ namespace Car.WebApi.Controllers
         public async Task<IActionResult> AddNotificationAsync([FromBody] NotificationDto notificationDto)
         {
             var notificationTask = notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
+            await notificationService.AddNotificationAsync(await notificationTask);
             await this.notificationHub.Clients.All.SendAsync("sendToReact", await notificationTask);
             return Ok(await notificationTask);
         }
