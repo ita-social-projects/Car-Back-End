@@ -57,9 +57,10 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
-                    journey => journey.Stops,
                     journey => journey.Organizer,
                     journey => journey.Participants)
+                .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
+                .ThenInclude(stop => stop.Address)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
                                    || journey.OrganizerId == userId)
                                   && journey.DepartureTime.AddHours(journey.Duration.Hours)
@@ -74,10 +75,11 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
-                    journey => journey.Stops,
                     journey => journey.Organizer,
                     journey => journey.Participants,
                     journey => journey.Schedule)
+                .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
+                .ThenInclude(stop => stop.Address)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
                                    || journey.OrganizerId == userId)
                                   && journey.Schedule != null)
@@ -90,9 +92,10 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = journeyUnitOfWork.GetRepository()
                 .Query(
-                    journey => journey.Stops,
                     journey => journey.Organizer,
                     journey => journey.Participants)
+                .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
+                .ThenInclude(stop => stop.Address)
                 .Where(journey => (journey.Participants.Any(user => user.Id == userId)
                                   || journey.OrganizerId == userId)
                                   && journey.DepartureTime.AddHours(journey.Duration.Hours)

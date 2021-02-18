@@ -8,7 +8,7 @@ namespace Car.Domain.Services.Interfaces
     {
         CarEntity GetCarById(int carId);
 
-        CarEntity AddCar(CarDto carDto);
+        CarEntity AddCar(CarEntity carDto);
 
         IEnumerable<CarDto> GetAllByUserId(int userId);
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Car.Data.Interfaces;
 using Car.Domain.Dto;
@@ -18,17 +19,9 @@ namespace Car.Domain.Services.Implementation
             this.unitOfWork = unitOfWork;
         }
 
-        public CarEntity AddCar(CarDto carDto)
+        public CarEntity AddCar(CarEntity car)
         {
-            var newCar = new CarEntity
-            {
-                ModelId = carDto.Model.Id,
-                Color = carDto.Color,
-                PlateNumber = carDto.PlateNumber,
-                OwnerId = carDto.OwnerId,
-            };
-
-            var car = unitOfWork.GetRepository().Add(newCar);
+            var newCar = unitOfWork.GetRepository().Add(car);
             unitOfWork.SaveChanges();
 
             return car;
@@ -36,16 +29,20 @@ namespace Car.Domain.Services.Implementation
 
         public CarEntity GetCarById(int carId)
         {
-            return unitOfWork.GetRepository().Query()
+            var car = unitOfWork.GetRepository().Query()
                 .Include(c => c.Model)
                 .ThenInclude(model => model.Brand)
                 .FirstOrDefault(c => c.Id == carId);
+
+            return car;
         }
 
         public IEnumerable<CarDto> GetAllByUserId(int userId)
         {
             return unitOfWork.GetRepository()
                 .Query()
+                .Include(car => car.Model)
+                .ThenInclude(model => model.Brand)
                 .Where(car => car.OwnerId == userId)
                 .Select(car => new CarDto
                 {
@@ -53,6 +50,7 @@ namespace Car.Domain.Services.Implementation
                     Model = car.Model,
                     Color = car.Color,
                     PlateNumber = car.PlateNumber,
+                    ImageId = car.ImageId,
                 });
         }
     }
