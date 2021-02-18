@@ -60,24 +60,55 @@ namespace Car.WebApi.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateNotificationAsync([FromBody] NotificationDto notificationDto)
         {
-            var notificationTask = notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
-            await notificationService.UpdateNotificationAsync(await notificationTask);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", await notificationTask);
-            return Ok(await notificationTask);
+            var notification = await notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
+            await notificationService.UpdateNotificationAsync(notification);
+            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
 
         /// <summary>
         /// adds new user notification Asynchronously
         /// </summary>
         /// <param name="notificationDto">notification to be added</param>
+        /// <code>
+        /// VARIABLE        VALUE          DESCRIPTION
+        /// "senderId"      NUMBER         Specifies the sender of the notification
+        /// "receiverId":   NUMBER         Specifies the receiver of the notification
+        /// "type":         NUMBER
+        ///                 1              PassengerApply
+        ///                 2              ApplicationApproval
+        ///                 3              JourneyCancellation
+        ///                 4              JourneyDetailsUpdate
+        ///                 5              JourneyInvitation
+        ///                 6              AcceptedInvitation
+        ///                 7              RejectedInvitation
+        ///                 8              PassengerWithdrawal
+        ///                 9              HRMarketingMessage
+        ///                 0              HRMarketingSurvey
+        /// <para/>
+        /// jsonData Default Structure for Notification type 1
+        /// <para/>
+        /// "jsonData":
+        /// {
+        /// "title":        STRING         Specifies the title of the notification at the notification tab
+        /// "comments":     STRING?        Specifies the participant's comment (if any) at the modal page
+        /// "hasLuggage:    BOOLEAN?       Specifies if the participant has any luggage
+        /// }
+        /// </code>
         /// <returns>added notification</returns>
         [HttpPost]
         public async Task<IActionResult> AddNotificationAsync([FromBody] NotificationDto notificationDto)
         {
-            var notificationTask = notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
-            await notificationService.AddNotificationAsync(await notificationTask);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", await notificationTask);
-            return Ok(await notificationTask);
+            var notification = await notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
+            await notificationService.AddNotificationAsync(notification);
+            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
 
         /// <summary>
@@ -86,9 +117,25 @@ namespace Car.WebApi.Controllers
         /// <param name="notificationId">notification Id</param>
         /// <returns>deleted notification</returns>
         [HttpDelete]
-        public IActionResult DeleteNotificationAsync([FromBody] int notificationId)
+        public async Task<IActionResult> DeleteNotificationAsync([FromBody] int notificationId)
         {
-            return Ok(notificationService.DeleteNotificationAsync(notificationId));
+            return Ok(await notificationService.DeleteNotificationAsync(notificationId));
+        }
+
+        /// <summary>
+        /// Marks notification as read Asynchronously
+        /// </summary>
+        /// <param name="notificationId">notification Id</param>
+        /// <returns>amended notification</returns>
+        [HttpPut("{notificationId}")]
+        public async Task<IActionResult> MarkNotificationAsReadAsync(int notificationId)
+        {
+            var notification = await notificationService.MarkNotificationAsReadAsync(notificationId);
+            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
     }
 }

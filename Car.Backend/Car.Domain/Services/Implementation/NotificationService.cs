@@ -66,6 +66,15 @@ namespace Car.Domain.Services.Implementation
             return result;
         }
 
+        public async Task<Notification> MarkNotificationAsReadAsync(int notificationId)
+        {
+            var result = await notificationUnitOfWork.GetRepository().Query()
+                .FirstOrDefaultAsync(notification => notification.Id == notificationId);
+            result.IsRead = true;
+            await notificationUnitOfWork.SaveChangesAsync();
+            return result;
+        }
+
         public async Task<Notification> CreateNewNotificationFromDtoAsync(NotificationDto notificationDto)
         {
             //var sender = await userUnitOfWork.GetRepository().Query()

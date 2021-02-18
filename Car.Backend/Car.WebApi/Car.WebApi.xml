@@ -165,6 +165,31 @@
             adds new user notification Asynchronously
             </summary>
             <param name="notificationDto">notification to be added</param>
+            <code>
+            VARIABLE        VALUE          DESCRIPTION
+            "senderId"      NUMBER         Specifies the sender of the notification
+            "receiverId":   NUMBER         Specifies the receiver of the notification
+            "type":         NUMBER
+                            1              PassengerApply
+                            2              ApplicationApproval
+                            3              JourneyCancellation
+                            4              JourneyDetailsUpdate
+                            5              JourneyInvitation
+                            6              AcceptedInvitation
+                            7              RejectedInvitation
+                            8              PassengerWithdrawal
+                            9              HRMarketingMessage
+                            0              HRMarketingSurvey
+            <para/>
+            jsonData Default Structure for Notification type 1
+            <para/>
+            "jsonData":
+            {
+            "title":        STRING         Specifies the title of the notification at the notification tab
+            "comments":     STRING?        Specifies the participant's comment (if any) at the modal page
+            "hasLuggage:    BOOLEAN?       Specifies if the participant has any luggage
+            }
+            </code>
             <returns>added notification</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.DeleteNotificationAsync(System.Int32)">
@@ -173,6 +198,13 @@
             </summary>
             <param name="notificationId">notification Id</param>
             <returns>deleted notification</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.MarkNotificationAsReadAsync(System.Int32)">
+            <summary>
+            Marks notification as read Asynchronously
+            </summary>
+            <param name="notificationId">notification Id</param>
+            <returns>amended notification</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
