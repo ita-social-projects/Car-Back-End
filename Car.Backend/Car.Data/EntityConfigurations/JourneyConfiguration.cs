@@ -28,6 +28,11 @@ namespace Car.Data.EntityConfigurations
                 .WithOne(chat => chat.Journey)
                 .HasForeignKey<Chat>(chat => chat.Id);
 
+            builder.HasOne(journey => journey.Car)
+                .WithMany(car => car.Journeys)
+                .HasForeignKey(journey => journey.CarId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.Property(journey => journey.Comments).HasMaxLength(100);
         }
     }

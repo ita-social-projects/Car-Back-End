@@ -1,4 +1,4 @@
-﻿// using System.Collections.Generic;
+// using System.Collections.Generic;
 // using AutoFixture;
 // using Car.Data.Entities;
 // using Car.Domain.Dto;

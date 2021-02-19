@@ -3,7 +3,6 @@ using System.Linq;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
 {
@@ -47,7 +46,6 @@ namespace Car.Domain.Services.Implementation
         public List<Chat> GetUsersChats(int userId)
         {
             var user = unitOfWorkUser.GetRepository().Query().FirstOrDefault(user => user.Id == userId);
-            // return user?.Chats.ToList();
             return new List<Chat>();
         }
     }

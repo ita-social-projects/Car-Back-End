@@ -1,22 +1,20 @@
-﻿using Car.Data.Enums;
-
-namespace Car.Data.Entities
+﻿namespace Car.Data.Entities
 {
-    public class Stop : IEntity
+    public class Location
     {
         public int Id { get; set; }
 
-        public int JourneyId { get; set; }
+        public string Name { get; set; }
+
+        public int TypeId { get; set; }
 
         public int AddressId { get; set; }
 
         public int UserId { get; set; }
 
-        public StopType Type { get; set; }
-
-        public Journey Journey { get; set; }
-
         public Address Address { get; set; }
+
+        public LocationType Type { get; set; }
 
         public User User { get; set; }
     }

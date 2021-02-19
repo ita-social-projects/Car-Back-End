@@ -53,7 +53,7 @@ namespace Car.WebApi.Controllers
         /// <param name="car">The car.</param>
         /// <returns>New car</returns>
         [HttpPost]
-        public IActionResult AddCar([FromBody] CarDto car)
+        public IActionResult AddCar([FromBody] Data.Entities.Car car)
         {
             return Ok(carService.AddCar(car));
         }

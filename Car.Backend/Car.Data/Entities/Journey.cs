@@ -21,6 +21,10 @@ namespace Car.Data.Entities
 
         public int OrganizerId { get; set; }
 
+        public int? CarId { get; set; }
+
+        public Car Car { get; set; }
+
         public Schedule Schedule { get; set; }
 
         public User Organizer { get; set; }

@@ -30,15 +30,13 @@ namespace Car.Data.Context
 
         public DbSet<Chat> Chats { get; set; }
 
-        public CarContext()
-        {
-            Database.EnsureCreated();
-        }
+        public DbSet<Location> Locations { get; set; }
+
+        public DbSet<LocationType> LocationTypes { get; set; }
 
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -55,6 +53,8 @@ namespace Car.Data.Context
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
             modelBuilder.ApplyConfiguration(new ModelConfiguration());
             modelBuilder.ApplyConfiguration(new ChatConfiguration());
+            modelBuilder.ApplyConfiguration(new LocationConfiguration());
+            modelBuilder.ApplyConfiguration(new LocationTypeConfiguration());
 
             modelBuilder.Seed();
         }

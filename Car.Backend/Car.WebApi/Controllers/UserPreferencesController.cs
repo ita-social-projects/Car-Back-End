@@ -18,7 +18,7 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// returns the preferences for user
         /// </summary>
-        /// <param name ="id"> userId</param>
+        /// <param name ="id">User identifier</param>
         /// <returns>user preferences</returns>
         [HttpGet("{id}")]
         public IActionResult GetPreferences(int id) => Ok(preferencesService.GetPreferences(id));

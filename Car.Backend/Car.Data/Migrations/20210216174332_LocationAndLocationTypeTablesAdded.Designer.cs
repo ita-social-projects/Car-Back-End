@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210216174332_LocationAndLocationTypeTablesAdded")]
+    partial class LocationAndLocationTypeTablesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,9 +219,6 @@ namespace Car.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("CarId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Comments")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -243,8 +242,6 @@ namespace Car.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CarId");
 
                     b.HasIndex("OrganizerId");
 
@@ -1589,7 +1586,7 @@ namespace Car.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Data")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
@@ -1597,7 +1594,7 @@ namespace Car.Data.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("JourneyId")
+                    b.Property<int>("JourneyId")
                         .HasColumnType("int");
 
                     b.Property<int>("ReceiverId")
@@ -1683,9 +1680,6 @@ namespace Car.Data.Migrations
                     b.Property<string>("ImageId")
                         .HasMaxLength(1500)
                         .HasColumnType("nvarchar(1500)");
-
-                    b.Property<int>("JourneyCount")
-                        .HasColumnType("int");
 
                     b.Property<string>("Location")
                         .HasMaxLength(100)
@@ -1780,18 +1774,11 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
                 {
-                    b.HasOne("Car.Data.Entities.Car", "Car")
-                        .WithMany("Journeys")
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Car.Data.Entities.User", "Organizer")
                         .WithMany("OrganizerJourneys")
                         .HasForeignKey("OrganizerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Car");
 
                     b.Navigation("Organizer");
                 });
@@ -1855,9 +1842,11 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Notification", b =>
                 {
-                    b.HasOne("Car.Data.Entities.Journey", null)
+                    b.HasOne("Car.Data.Entities.Journey", "Journey")
                         .WithMany("Notifications")
-                        .HasForeignKey("JourneyId");
+                        .HasForeignKey("JourneyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Car.Data.Entities.User", "Receiver")
                         .WithMany("ReceivedNotifications")
@@ -1870,6 +1859,8 @@ namespace Car.Data.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Journey");
 
                     b.Navigation("Receiver");
 
@@ -1950,11 +1941,6 @@ namespace Car.Data.Migrations
             modelBuilder.Entity("Car.Data.Entities.Brand", b =>
                 {
                     b.Navigation("Models");
-                });
-
-            modelBuilder.Entity("Car.Data.Entities.Car", b =>
-                {
-                    b.Navigation("Journeys");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Chat", b =>

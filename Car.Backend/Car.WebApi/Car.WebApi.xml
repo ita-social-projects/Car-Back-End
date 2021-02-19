@@ -17,7 +17,7 @@
             <param name="id">The user identifier.</param>
             <returns>All user's cars</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Dto.CarDto)">
+        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Data.Entities.Car)">
             <summary>
             Adds the car.
             </summary>

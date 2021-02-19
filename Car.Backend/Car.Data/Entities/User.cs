@@ -21,6 +21,8 @@ namespace Car.Data.Entities
 
         public string ImageId { get; set; }
 
+        public int JourneyCount { get; set; }
+
         public ICollection<Car> Cars { get; set; } = new List<Car>();
 
         public UserPreferences UserPreferences { get; set; }
@@ -29,7 +31,9 @@ namespace Car.Data.Entities
 
         public ICollection<Notification> SentNotifications { get; set; } = new List<Notification>();
 
-        public ICollection<Address> Addresses { get; set; } = new List<Address>();
+        public ICollection<Location> Locations { get; set; } = new List<Location>();
+
+        public ICollection<Stop> Stops { get; set; } = new List<Stop>();
 
         public ICollection<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
 
