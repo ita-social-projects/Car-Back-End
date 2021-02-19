@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Car.Data.FluentValidation;
 using Car.Data.Interfaces;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
