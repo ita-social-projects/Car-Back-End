@@ -165,7 +165,7 @@
             adds new user notification Asynchronously
             </summary>
             <param name="notificationDto">notification to be added</param>
-            <code>
+            <example>
             VARIABLE        VALUE          DESCRIPTION
             "senderId"      NUMBER         Specifies the sender of the notification
             "receiverId":   NUMBER         Specifies the receiver of the notification
@@ -187,9 +187,9 @@
             {
             "title":        STRING         Specifies the title of the notification at the notification tab
             "comments":     STRING?        Specifies the participant's comment (if any) at the modal page
-            "hasLuggage:    BOOLEAN?       Specifies if the participant has any luggage
+            "hasLuggage":    BOOLEAN?       Specifies if the participant has any luggage
             }
-            </code>
+            </example>
             <returns>added notification</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.DeleteNotificationAsync(System.Int32)">
