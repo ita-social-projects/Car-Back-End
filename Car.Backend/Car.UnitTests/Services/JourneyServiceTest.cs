@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Linq.Expressions;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using Car.Data.Entities;
-using Car.Data.Infrastructure;
 using Car.Data.Interfaces;
 using Car.Domain.Models;
 using Car.Domain.Services.Implementation;
@@ -16,7 +14,6 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 using MapperProfile = Car.Domain.Mapping.Mapper;
-using Range = Moq.Range;
 
 namespace Car.UnitTests.Services
 {

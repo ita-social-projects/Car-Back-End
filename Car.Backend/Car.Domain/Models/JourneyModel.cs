@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Car.Data.Entities;
 using Car.Domain.Dto;
 
 namespace Car.Domain.Models
@@ -20,12 +21,14 @@ namespace Car.Domain.Models
 
         public bool IsFree { get; set; }
 
-        public ICollection<UserDto> Participants { get; set; } = new List<UserDto>();
-
-        public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
+        public Schedule Schedule { get; set; }
 
         public UserDto Organizer { get; set; }
 
         public Data.Entities.Car Car { get; set; }
+
+        public ICollection<UserDto> Participants { get; set; } = new List<UserDto>();
+
+        public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
     }
 }

@@ -36,7 +36,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var car = fixture.Create<Data.Entities.Car>();
-            carService.Setup(c => c.GetCarById(car.Id)).Returns(car);
+            //carService.Setup(c => c.GetCarById(car.Id)).Returns(car);
 
             // Act
             var result = carController.GetCarById(car.Id);
@@ -55,7 +55,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var car = fixture.Create<Data.Entities.Car>();
-            carService.Setup(c => c.GetCarById(It.IsAny<int>())).Returns((Data.Entities.Car)null);
+           // carService.Setup(c => c.GetCarById(It.IsAny<int>())).Returns((Data.Entities.Car)null);
 
             // Act
             var result = carController.GetCarById(car.Id);

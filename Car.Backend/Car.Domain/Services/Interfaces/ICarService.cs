@@ -6,10 +6,12 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface ICarService
     {
-        CarEntity GetCarById(int carId);
+        CarDto GetCarById(int carId);
 
-        CarEntity AddCar(CarEntity carDto);
+        CarEntity AddCar(CarEntity car);
 
         IEnumerable<CarDto> GetAllByUserId(int userId);
+
+        CarEntity UpdateCar(CarEntity car);
     }
 }
