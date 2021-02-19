@@ -8,7 +8,7 @@ namespace Car.Data.FluentValidation
         public NotificationValidator()
         {
             RuleFor(notificationValidator => notificationValidator.Id).GreaterThan(0);
-            RuleFor(notificationValidator => notificationValidator.Data).NotNull().Length(1, 400);
+            RuleFor(notificationValidator => notificationValidator.JsonData).NotNull().Length(1, 1000);
             RuleFor(notificationValidator => notificationValidator.IsRead).NotNull();
             RuleFor(notificationValidator => notificationValidator.CreatedAt).NotNull().GreaterThanOrEqualTo(DateTime.Now);
             RuleFor(notificationValidator => notificationValidator.Sender).NotNull().SetValidator(new UserValidator());

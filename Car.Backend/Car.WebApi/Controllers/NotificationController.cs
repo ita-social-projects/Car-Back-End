@@ -26,52 +26,22 @@ namespace Car.WebApi.Controllers
         }
 
         /// <summary>
-        /// gets a notification by given id
+        /// gets a notification by given id Asynchronously
         /// </summary>
         /// <param name="id">notification id</param>
         /// <returns>notification</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetNotification(int id) => Ok(await notificationService.GetNotificationAsync(id));
+        public async Task<IActionResult> GetNotificationAsync(int id) =>
+            Ok(await notificationService.GetNotificationAsync(id));
 
         /// <summary>
         /// gets all user notifications
         /// </summary>
         /// <param name="userId"> user Id</param>
         /// <returns>list of user notifications</returns>
-        [HttpGet("notifications/s{userId}")]
-
+        [HttpGet("notifications/{userId}")]
         public async Task<IActionResult> GetNotificationsAsync(int userId) =>
             Ok(await notificationService.GetNotificationsAsync(userId));
-
-        [HttpGet("notifications/{userId}")]
-        public IActionResult GetNotifications(int userId)
-        {
-            List<Notification> notifications = notificationService.GetNotifications(userId);
-            if (notifications == null)
-            {
-                return Ok(new List<NotificationDto>());
-            }
-
-            List<NotificationDto> notificationDtos = new List<NotificationDto>();
-            foreach (var item in notifications)
-            {
-                NotificationDto notificationDto = new NotificationDto
-                {
-                    Id = item.Id,
-                    UserId = item.SenderId,
-                    UserName = item.Sender.Name + " " + item.Sender.Surname,
-                    Position = item.Sender.Position,
-                    Description = item.Data,
-                    IsRead = item.IsRead,
-                    CreateAt = item.CreatedAt,
-                    ReceiverId = item.ReceiverId,
-                    NotificationType = item.Type,
-                };
-                notificationDtos.Add(notificationDto);
-            }
-
-            return Ok(notificationDtos);
-        }
 
         /// <summary>
         /// gets user unread notifications number
@@ -79,84 +49,99 @@ namespace Car.WebApi.Controllers
         /// <param name="userId">user Id</param>
         /// <returns>int number</returns>
         [HttpGet("unreadNumber/{userId}")]
-        public IActionResult GetUnreadNumber(int userId)
-        {
-            return Ok(notificationService.GetUnreadNotificationsNumber(userId));
-        }
+        public async Task<IActionResult> GetUnreadNotificationsNumberAsync(int userId) =>
+             Ok(await notificationService.GetUnreadNotificationsNumberAsync(userId));
 
         /// <summary>
-        /// Marks notification as read
-        /// </summary>
-        /// <param name="notificationId">notificationId Id</param>
-        /// <returns>Notification</returns>
-        [HttpPost("{notificationId}")]
-        public async Task<IActionResult> MarkAsRead(int notificationId) =>
-            Ok(await notificationService.MarkAsReadAsync(notificationId));
-
-        /// <summary>
-        /// updates user notification
+        /// updates user notification Asynchronously
         /// </summary>
         /// <param name="notificationDto">notification itself to be updated</param>
         /// <returns>updated notification</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateNotification([FromBody] NotificationDto notificationDto)
+        public async Task<IActionResult> UpdateNotificationAsync([FromBody] NotificationDto notificationDto)
         {
-            var notification = notificationService.GetNotification(notificationDto.Id);
-            notification.IsRead = notificationDto.IsRead;
-            var notificationUpdated = notificationService.UpdateNotification(notification);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", "The message");
-            return Ok(notificationUpdated);
+            var notification = await notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
+            await notificationService.UpdateNotificationAsync(notification);
+            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
 
         /// <summary>
-        /// adds new user notification
+        /// adds new user notification Asynchronously
         /// </summary>
         /// <param name="notificationDto">notification to be added</param>
+        /// // Args:
+        /// //    JSON String
+        /// //
+        /// // JSON STRUCTURE
+        /// //      VARIABLE           TYPE            DESC
+        /// // {
+        /// //      "senderId"         //number        Specifies the sender of the notification
+        /// //      , "receiverId":    //number        Specifies the receiver of the notification
+        /// //      , "type":          //number        Specifies the type of the notification
+        /// //                         //              based on the following enum:
+        /// //                         //
+        /// //                         //              1 PassengerApply
+        /// //                         //              2 ApplicationApproval
+        /// //                         //              3 JourneyCancellation
+        /// //                         //              4 JourneyDetailsUpdate
+        /// //                         //              5 JourneyInvitation
+        /// //                         //              6 AcceptedInvitation
+        /// //                         //              7 RejectedInvitation
+        /// //                         //              8 PassengerWithdrawal
+        /// //                         //              9 HRMarketingMessage
+        /// //                         //              0 HRMarketingSurvey
+        /// //                         //
+        /// //     , "jsonData":       //string        Specifies notification's specific JSON structure
+        /// //                         //
+        /// //                         //              BELOW LISTED STRUCTURE FOR NOTIFICATION TYPE 1 (PassengerApply)
+        /// //     "{                  //
+        /// //     \"title\":          //string        Specifies the title of the notification at the notification tab
+        /// //     \"comments\":       //string?       Specifies the participant's comment (if any) at the modal page
+        /// //     \"hasLuggage\":     //boolean?      Specifies if the participant has any luggage
+        /// //     }"
+        /// // }
         /// <returns>added notification</returns>
         [HttpPost]
-        public async Task<IActionResult> AddNotification([FromBody] NotificationDto notificationDto)
+        public async Task<IActionResult> AddNotificationAsync([FromBody] NotificationDto notificationDto)
         {
-            if (notificationDto == null)
-            {
-                return BadRequest();
-            }
-
-            Notification notification = new Notification
-            {
-                SenderId = notificationDto.UserId,
-                Data = notificationDto.Description,
-                CreatedAt = DateTime.Now,
-                IsRead = notificationDto.IsRead,
-                ReceiverId = notificationDto.ReceiverId,
-                Type = notificationDto.NotificationType,
-            };
-
-            Notification notificationSaved = notificationService.AddNotification(notification);
-            NotificationDto notification_Dto = new NotificationDto
-            {
-                Id = notificationSaved.Id,
-                UserId = notificationSaved.SenderId,
-                CreateAt = notificationSaved.CreatedAt,
-                Description = notificationSaved.Data,
-                IsRead = notificationSaved.IsRead,
-                JourneyId = notificationDto.JourneyId,
-                ReceiverId = notificationDto.ReceiverId,
-                NotificationType = notificationDto.NotificationType,
-            };
-
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", "The message");
-            return Ok(notification_Dto);
+            var notification = await notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
+            await notificationService.AddNotificationAsync(notification);
+            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
 
         /// <summary>
-        /// deletes notification
+        /// deletes notification Asynchronously
         /// </summary>
         /// <param name="notificationId">notification Id</param>
         /// <returns>deleted notification</returns>
         [HttpDelete]
-        public IActionResult DeleteNotification([FromBody] int notificationId)
+        public async Task<IActionResult> DeleteNotificationAsync([FromBody] int notificationId)
         {
-            return Ok(notificationService.DeleteNotification(notificationId));
+            return Ok(await notificationService.DeleteNotificationAsync(notificationId));
+        }
+
+        /// <summary>
+        /// Marks notification as read Asynchronously
+        /// </summary>
+        /// <param name="notificationId">notification Id</param>
+        /// <returns>amended notification</returns>
+        [HttpPut("{notificationId}")]
+        public async Task<IActionResult> MarkNotificationAsReadAsync(int notificationId)
+        {
+            var notification = await notificationService.MarkNotificationAsReadAsync(notificationId);
+            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
     }
 }

@@ -50,6 +50,14 @@ namespace Car.Data.Infrastructure
         public bool Delete(TEntity entity) => dbEntities.Remove(entity).Entity != null;
 
         /// <summary>
+        /// Removes entity from DBContext Asynchronously
+        /// </summary>
+        /// <param name="entity">entity</param>
+        /// <returns>true if entity was successfully deleted, and false in other way</returns>
+        public async Task<bool> DeleteAsync(TEntity entity) =>
+            (await Task.Run(() => dbEntities.Remove(entity))).Entity != null;
+
+        /// <summary>
         /// Removes range of entities from DBContext
         /// </summary>
         /// <param name="entities">IEnumerable of entities</param>
