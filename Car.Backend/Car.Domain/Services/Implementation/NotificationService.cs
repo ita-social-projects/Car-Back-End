@@ -13,14 +13,10 @@ namespace Car.Domain.Services.Implementation
     public class NotificationService : INotificationService
     {
         private readonly IUnitOfWork<Notification> notificationUnitOfWork;
-        private readonly IUnitOfWork<User> userUnitOfWork;
 
-        public NotificationService(
-            IUnitOfWork<Notification> notificationUnitOfWork,
-            IUnitOfWork<User> userUnitOfWork)
+        public NotificationService(IUnitOfWork<Notification> notificationUnitOfWork)
         {
             this.notificationUnitOfWork = notificationUnitOfWork;
-            this.userUnitOfWork = userUnitOfWork;
         }
 
         public async Task<Notification> GetNotificationAsync(int notificationId) =>

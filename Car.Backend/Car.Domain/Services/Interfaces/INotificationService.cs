@@ -7,7 +7,7 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface INotificationService
     {
-        Task<Notification> GetNotificationAsync(int id);
+        Task<Notification> GetNotificationAsync(int notificationId);
 
         Task<List<Notification>> GetNotificationsAsync(int userId);
 
@@ -17,7 +17,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<Notification> AddNotificationAsync(Notification notification);
 
-        Task<Notification> DeleteNotificationAsync(int id);
+        Task<Notification> DeleteNotificationAsync(int notificationId);
 
         Task<Notification> CreateNewNotificationFromDtoAsync(NotificationDto notificationDto);
 
