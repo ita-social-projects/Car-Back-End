@@ -2,6 +2,7 @@
 using System.Linq;
 using AutoFixture;
 using AutoMapper;
+using Car.Data.Entities;
 using Car.Data.Interfaces;
 using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
@@ -79,7 +80,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void AddCar_CarAdded_ReturnsAddedCar()
+        public void AddCar_CarIsValid_ReturnsAddedCar()
         {
             // Arrange
             var car = fixture.Create<CarEntity>();
@@ -97,18 +98,62 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void AddCar_CarNotAdded_ReturnsNull()
+        public void GetAllByUserId_UserHaveCars_ReturnsCarCollection()
+        {
+            // Arrange
+            var cars = fixture.Create<List<CarEntity>>();
+            var owner = fixture.Build<User>()
+                .With(user => user.Id, cars.Max(car => car.Id) + 1)
+                .Create();
+            var ownCars = fixture.Build<CarEntity>().With(c => c.OwnerId, owner.Id).CreateMany();
+            cars.AddRange(ownCars);
+
+            repository.Setup(r => r.Query())
+                .Returns(cars.AsQueryable);
+            unitOfWork.Setup(r => r.GetRepository())
+                .Returns(repository.Object);
+
+            // Act
+            var result = carService.GetAllByUserId(owner.Id);
+
+            // Assert
+            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<CarEntity>, IEnumerable<CarDto>>(ownCars));
+        }
+
+        [Fact]
+        public void GetAllByUserId_UserNotHaveCars_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var cars = fixture.Create<List<CarEntity>>();
+            var owner = fixture.Build<User>()
+                .With(user => user.Id, cars.Max(car => car.Id) + 1)
+                .Create();
+
+            repository.Setup(r => r.Query())
+                .Returns(cars.AsQueryable);
+            unitOfWork.Setup(r => r.GetRepository())
+                .Returns(repository.Object);
+
+            // Act
+            var result = carService.GetAllByUserId(owner.Id);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void UpdateCar_CarIsValid_ReturnsUpdatedCar()
         {
             // Arrange
             var car = fixture.Create<CarEntity>();
 
-            repository.Setup(r => r.Add(car))
+            repository.Setup(r => r.Update(car))
                 .Returns(car);
             unitOfWork.Setup(r => r.GetRepository())
                 .Returns(repository.Object);
 
             // Act
-            var result = carService.AddCar(car);
+            var result = carService.UpdateCar(car);
 
             // Assert
             result.Should().BeEquivalentTo(car);
