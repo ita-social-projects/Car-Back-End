@@ -23,13 +23,10 @@ namespace Car.Domain.Services.Implementation
             this.userUnitOfWork = userUnitOfWork;
         }
 
-        public async Task<Notification> GetNotificationAsync(int notificationId)
-        {
-            var result = notificationUnitOfWork.GetRepository().Query(
+        public async Task<Notification> GetNotificationAsync(int notificationId) =>
+            await notificationUnitOfWork.GetRepository().Query(
                     notificationSender => notificationSender.Sender)
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
-            return await result;
-        }
 
         public async Task<List<Notification>> GetNotificationsAsync(int userId)
         {
@@ -41,7 +38,8 @@ namespace Car.Domain.Services.Implementation
         }
 
         public async Task<int> GetUnreadNotificationsNumberAsync(int userId) =>
-            await notificationUnitOfWork.GetRepository().Query().CountAsync(p => p.ReceiverId == userId && !p.IsRead);
+            await notificationUnitOfWork.GetRepository().Query()
+                .CountAsync(p => p.ReceiverId == userId && !p.IsRead);
 
         public async Task<Notification> UpdateNotificationAsync(Notification notification)
         {
