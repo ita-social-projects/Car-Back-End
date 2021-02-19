@@ -30,41 +30,6 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void TestGetCurrentJourney_WithExistingUser_Returns()
-        {
-            var user = fixture.Create<User>();
-            var journey = fixture.Create<JourneyModel>();
-
-            journeyService.Setup(j => j.GetCurrentJourney(It.IsAny<int>()))
-                .Returns(journey);
-
-            var result = journeyController.GetCurrent(user.Id);
-
-            using (new AssertionScope())
-            {
-                (result as OkObjectResult)?.StatusCode.Should().Be(200);
-                (result as OkObjectResult)?.Value.Should().Be(journey);
-            }
-        }
-
-        [Fact]
-        public void TestGetCurrentJourney_CurrentJourneyDoesntExist_Returns()
-        {
-            var user = fixture.Create<User>();
-
-            journeyService.Setup(j => j.GetCurrentJourney(It.IsAny<int>()))
-                .Returns((JourneyModel)null);
-
-            var result = journeyController.GetCurrent(user.Id);
-
-            using (new AssertionScope())
-            {
-                (result as OkObjectResult)?.StatusCode.Should().Be(200);
-                (result as OkObjectResult)?.Value.Should().BeNull();
-            }
-        }
-
-        [Fact]
         public void TestGetPastJourney_WithExistingUser_Returns()
         {
             var user = fixture.Create<User>();

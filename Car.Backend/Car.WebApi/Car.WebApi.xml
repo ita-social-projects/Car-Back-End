@@ -82,13 +82,6 @@
             <param name="chatId">Chat identifier</param>
             <returns>Added Sender</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetCurrent(System.Int32)">
-            <summary>
-            Looks for information about current journey where current user is participant or driver
-            </summary>
-            <param name="id">id of current user</param>
-            <returns>status of request with appropriate data</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
             <summary>
             Looks for information about past journeys where current user is participant or driver

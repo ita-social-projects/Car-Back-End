@@ -4,9 +4,9 @@ using System.Linq;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Car.Domain.Extensions;
 using Car.Domain.Models;
 using Car.Domain.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
 {
@@ -22,50 +22,25 @@ namespace Car.Domain.Services.Implementation
             this.mapper = mapper;
         }
 
-        public JourneyModel GetCurrentJourney(int userId)
-        {
-            var currentJourney = journeyUnitOfWork
-                .GetRepository()
-                .Query(
-                    journey => journey.Stops,
-                    journey => journey.Organizer,
-                    journey => journey.Participants)
-                .FirstOrDefault(journey => (journey.Participants.Any(user => user.Id == userId)
-                                            || journey.OrganizerId == userId)
-                                           && journey.DepartureTime <= DateTime.Now
-                                           && journey.DepartureTime.AddHours(journey.Duration.Hours)
-                                               .AddMinutes(journey.Duration.Minutes)
-                                               .AddSeconds(journey.Duration.Seconds) > DateTime.Now);
-
-            return mapper.Map<Journey, JourneyModel>(currentJourney);
-        }
-
         public JourneyModel GetJourneyById(int journeyId)
         {
-            var currentJourney = journeyUnitOfWork.GetRepository()
-                .Query(
-                    journey => journey.Organizer,
-                    journey => journey.Participants)
-                .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
-                .ThenInclude(stop => stop.Address)
-                .FirstOrDefault(journey => journey.Id == journeyId);
+            var journey = journeyUnitOfWork.GetRepository()
+                .Query()
+                .IncludeAllParticipants()
+                .IncludeStopsWithAddresses()
+                .FirstOrDefault(j => j.Id == journeyId);
 
-            return mapper.Map<Journey, JourneyModel>(currentJourney);
+            return mapper.Map<Journey, JourneyModel>(journey);
         }
 
         public IEnumerable<JourneyModel> GetPastJourneys(int userId)
         {
             var journeys = journeyUnitOfWork.GetRepository()
-                .Query(
-                    journey => journey.Organizer,
-                    journey => journey.Participants)
-                .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
-                .ThenInclude(stop => stop.Address)
-                .Where(journey => (journey.Participants.Any(user => user.Id == userId)
-                                   || journey.OrganizerId == userId)
-                                  && journey.DepartureTime.AddHours(journey.Duration.Hours)
-                                      .AddMinutes(journey.Duration.Minutes)
-                                      .AddSeconds(journey.Duration.Seconds) < DateTime.Now)
+                .Query()
+                .IncludeAllParticipants()
+                .IncludeStopsWithAddresses()
+                .FilterByUser(userId)
+                .Where(journey => journey.EndTime < DateTime.UtcNow)
                 .Select(journey => mapper.Map<Journey, JourneyModel>(journey));
 
             return journeys;
@@ -74,15 +49,11 @@ namespace Car.Domain.Services.Implementation
         public IEnumerable<JourneyModel> GetScheduledJourneys(int userId)
         {
             var journeys = journeyUnitOfWork.GetRepository()
-                .Query(
-                    journey => journey.Organizer,
-                    journey => journey.Participants,
-                    journey => journey.Schedule)
-                .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
-                .ThenInclude(stop => stop.Address)
-                .Where(journey => (journey.Participants.Any(user => user.Id == userId)
-                                   || journey.OrganizerId == userId)
-                                  && journey.Schedule != null)
+                .Query(journey => journey.Schedule)
+                .IncludeAllParticipants()
+                .IncludeStopsWithAddresses()
+                .FilterByUser(userId)
+                .Where(journey => journey.Schedule != null)
                 .Select(journey => mapper.Map<Journey, JourneyModel>(journey));
 
             return journeys;
@@ -91,16 +62,11 @@ namespace Car.Domain.Services.Implementation
         public IEnumerable<JourneyModel> GetUpcomingJourneys(int userId)
         {
             var journeys = journeyUnitOfWork.GetRepository()
-                .Query(
-                    journey => journey.Organizer,
-                    journey => journey.Participants)
-                .Include(journey => journey.Stops.OrderBy(stop => stop.Type))
-                .ThenInclude(stop => stop.Address)
-                .Where(journey => (journey.Participants.Any(user => user.Id == userId)
-                                  || journey.OrganizerId == userId)
-                                  && journey.DepartureTime.AddHours(journey.Duration.Hours)
-                                      .AddMinutes(journey.Duration.Minutes)
-                                      .AddSeconds(journey.Duration.Seconds) > DateTime.Now)
+                .Query()
+                .IncludeAllParticipants()
+                .IncludeStopsWithAddresses()
+                .FilterByUser(userId)
+                .Where(journey => journey.DepartureTime > DateTime.UtcNow)
                 .Select(journey => mapper.Map<Journey, JourneyModel>(journey));
 
             return journeys;

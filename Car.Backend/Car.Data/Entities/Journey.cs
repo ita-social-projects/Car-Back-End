@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Car.Data.Entities
 {
@@ -22,6 +23,9 @@ namespace Car.Data.Entities
         public int OrganizerId { get; set; }
 
         public int? CarId { get; set; }
+
+        [NotMapped]
+        public DateTime EndTime => DepartureTime.Add(Duration);
 
         public Car Car { get; set; }
 
