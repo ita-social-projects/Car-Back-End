@@ -1,37 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Car.Data.Interfaces;
 using Car.Domain.Dto;
+using Car.Domain.Extensions;
 using Car.Domain.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.Domain.Services.Implementation
 {
     public class CarService : ICarService
     {
-        private readonly IUnitOfWork<CarEntity> unitOfWork;
+        private readonly IUnitOfWork<CarEntity> carUnitOfWork;
 
-        public CarService(
-            IUnitOfWork<CarEntity> unitOfWork)
+        public CarService(IUnitOfWork<CarEntity> carUnitOfWork)
         {
-            this.unitOfWork = unitOfWork;
+            this.carUnitOfWork = carUnitOfWork;
         }
 
         public CarEntity AddCar(CarEntity car)
         {
-            var newCar = unitOfWork.GetRepository().Add(car);
-            unitOfWork.SaveChanges();
+            var newCar = carUnitOfWork.GetRepository().Add(car);
+            carUnitOfWork.SaveChanges();
 
-            return car;
+            return newCar;
         }
 
-        public CarEntity GetCarById(int carId)
+        public CarDto GetCarById(int carId)
         {
-            var car = unitOfWork.GetRepository().Query()
-                .Include(c => c.Model)
-                .ThenInclude(model => model.Brand)
+            var car = carUnitOfWork.GetRepository().Query()
+                .IncludeModelWithBrand()
+                .Select(c => new CarDto
+                {
+                    Id = c.Id,
+                    Model = c.Model,
+                    Color = c.Color,
+                    PlateNumber = c.PlateNumber,
+                    ImageId = c.ImageId,
+                    OwnerId = c.OwnerId,
+                })
                 .FirstOrDefault(c => c.Id == carId);
 
             return car;
@@ -39,10 +45,9 @@ namespace Car.Domain.Services.Implementation
 
         public IEnumerable<CarDto> GetAllByUserId(int userId)
         {
-            return unitOfWork.GetRepository()
+            var cars = carUnitOfWork.GetRepository()
                 .Query()
-                .Include(car => car.Model)
-                .ThenInclude(model => model.Brand)
+                .IncludeModelWithBrand()
                 .Where(car => car.OwnerId == userId)
                 .Select(car => new CarDto
                 {
@@ -51,7 +56,15 @@ namespace Car.Domain.Services.Implementation
                     Color = car.Color,
                     PlateNumber = car.PlateNumber,
                     ImageId = car.ImageId,
+                    OwnerId = car.OwnerId,
                 });
+
+            return cars;
+        }
+
+        public CarEntity UpdateCar(CarEntity car)
+        {
+            return carUnitOfWork.GetRepository().Update(car);
         }
     }
 }

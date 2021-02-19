@@ -14,14 +14,6 @@ namespace Car.WebApi.Controllers
         public JourneyController(IJourneyService journeyService) => this.journeyService = journeyService;
 
         /// <summary>
-        /// Looks for information about current journey where current user is participant or driver
-        /// </summary>
-        /// <param name="id">id of current user</param>
-        /// <returns>status of request with appropriate data</returns>
-        [HttpGet("current/{id}")]
-        public IActionResult GetCurrent(int id) => Ok(journeyService.GetCurrentJourney(id));
-
-        /// <summary>
         /// Looks for information about past journeys where current user is participant or driver
         /// </summary>
         /// <param name="id">id of current user</param>

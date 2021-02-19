@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Car.Domain.Dto;
 using Car.Domain.Models;
 
 namespace Car.Domain.Services.Interfaces
@@ -11,8 +10,6 @@ namespace Car.Domain.Services.Interfaces
         public IEnumerable<JourneyModel> GetUpcomingJourneys(int userId);
 
         public IEnumerable<JourneyModel> GetScheduledJourneys(int userId);
-
-        public JourneyModel GetCurrentJourney(int userId);
 
         public JourneyModel GetJourneyById(int journeyId);
     }
