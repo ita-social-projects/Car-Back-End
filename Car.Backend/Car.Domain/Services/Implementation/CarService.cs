@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Car.Data.FluentValidation;
 using Car.Data.Interfaces;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
 using Car.Domain.Services.Interfaces;
-using FluentValidation;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.Domain.Services.Implementation
@@ -13,12 +11,10 @@ namespace Car.Domain.Services.Implementation
     public class CarService : ICarService
     {
         private readonly IUnitOfWork<CarEntity> carUnitOfWork;
-        private readonly CarValidator validator;
 
         public CarService(IUnitOfWork<CarEntity> carUnitOfWork)
         {
             this.carUnitOfWork = carUnitOfWork;
-            validator = new CarValidator();
         }
 
         public CarEntity AddCar(CarEntity car)
