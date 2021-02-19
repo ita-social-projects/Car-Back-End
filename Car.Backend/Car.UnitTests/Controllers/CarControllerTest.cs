@@ -32,30 +32,12 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void GetCarById_WithExistsCar_ReturnCarObject()
-        {
-            // Arrange
-            var car = fixture.Create<Data.Entities.Car>();
-            //carService.Setup(c => c.GetCarById(car.Id)).Returns(car);
-
-            // Act
-            var result = carController.GetCarById(car.Id);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Data.Entities.Car>();
-                ((result as OkObjectResult)?.Value as Data.Entities.Car)?.Model.Should().Be(car.Model);
-            }
-        }
-
-        [Fact]
         public void GetCarById_WithExistsCar_ReturnNull()
         {
             // Arrange
             var car = fixture.Create<Data.Entities.Car>();
-           // carService.Setup(c => c.GetCarById(It.IsAny<int>())).Returns((Data.Entities.Car)null);
+
+            // carService.Setup(c => c.GetCarById(It.IsAny<int>())).Returns((Data.Entities.Car)null);
 
             // Act
             var result = carController.GetCarById(car.Id);
