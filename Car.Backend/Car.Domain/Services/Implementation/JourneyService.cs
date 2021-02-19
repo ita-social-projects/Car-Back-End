@@ -35,17 +35,15 @@ namespace Car.Domain.Services.Implementation
 
         public IEnumerable<JourneyModel> GetPastJourneys(int userId)
         {
-            var now = DateTime.UtcNow;
-
             var journeys = journeyUnitOfWork.GetRepository()
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .FilterByUser(userId)
-                .AsEnumerable()
-                .Where(journey => journey.EndTime < now);
+                .Where(journey => journey.EndTime < DateTime.UtcNow)
+                .Select(journey => mapper.Map<Journey, JourneyModel>(journey));
 
-            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
+            return journeys;
         }
 
         public IEnumerable<JourneyModel> GetScheduledJourneys(int userId)
@@ -63,16 +61,15 @@ namespace Car.Domain.Services.Implementation
 
         public IEnumerable<JourneyModel> GetUpcomingJourneys(int userId)
         {
-            var now = DateTime.UtcNow;
-
             var journeys = journeyUnitOfWork.GetRepository()
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .FilterByUser(userId)
-                .Where(journey => journey.DepartureTime > now);
+                .Where(journey => journey.DepartureTime > DateTime.UtcNow)
+                .Select(journey => mapper.Map<Journey, JourneyModel>(journey));
 
-            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
+            return journeys;
         }
     }
 }
