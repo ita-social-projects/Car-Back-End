@@ -165,31 +165,37 @@
             adds new user notification Asynchronously
             </summary>
             <param name="notificationDto">notification to be added</param>
-            <example>
-            VARIABLE        VALUE          DESCRIPTION
-            "senderId"      NUMBER         Specifies the sender of the notification
-            "receiverId":   NUMBER         Specifies the receiver of the notification
-            "type":         NUMBER
-                            1              PassengerApply
-                            2              ApplicationApproval
-                            3              JourneyCancellation
-                            4              JourneyDetailsUpdate
-                            5              JourneyInvitation
-                            6              AcceptedInvitation
-                            7              RejectedInvitation
-                            8              PassengerWithdrawal
-                            9              HRMarketingMessage
-                            0              HRMarketingSurvey
-            <para/>
-            jsonData Default Structure for Notification type 1
-            <para/>
-            "jsonData":
-            {
-            "title":        STRING         Specifies the title of the notification at the notification tab
-            "comments":     STRING?        Specifies the participant's comment (if any) at the modal page
-            "hasLuggage":    BOOLEAN?       Specifies if the participant has any luggage
-            }
-            </example>
+            // Args:
+            //    JSON String
+            //
+            // JSON STRUCTURE
+            //      VARIABLE           TYPE            DESC
+            // {
+            //      "senderId"         //number        Specifies the sender of the notification
+            //      , "receiverId":    //number        Specifies the receiver of the notification
+            //      , "type":          //number        Specifies the type of the notification
+            //                         //              based on the following enum:
+            //                         //
+            //                         //              1 PassengerApply
+            //                         //              2 ApplicationApproval
+            //                         //              3 JourneyCancellation
+            //                         //              4 JourneyDetailsUpdate
+            //                         //              5 JourneyInvitation
+            //                         //              6 AcceptedInvitation
+            //                         //              7 RejectedInvitation
+            //                         //              8 PassengerWithdrawal
+            //                         //              9 HRMarketingMessage
+            //                         //              0 HRMarketingSurvey
+            //                         //
+            //     , "jsonData":       //string        Specifies notification's specific JSON structure
+            //                         //
+            //                         //              BELOW LISTED STRUCTURE FOR NOTIFICATION TYPE 1 (PassengerApply)
+            //     "{                  //
+            //     \"title\":          //string        Specifies the title of the notification at the notification tab
+            //     \"comments\":       //string?       Specifies the participant's comment (if any) at the modal page
+            //     \"hasLuggage\":     //boolean?      Specifies if the participant has any luggage
+            //     }"
+            // }
             <returns>added notification</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.DeleteNotificationAsync(System.Int32)">
@@ -239,7 +245,7 @@
             <summary>
             returns the preferences for user
             </summary>
-            <param name ="id"> userId</param>
+            <param name ="id">User identifier</param>
             <returns>user preferences</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Data.Entities.UserPreferences)">

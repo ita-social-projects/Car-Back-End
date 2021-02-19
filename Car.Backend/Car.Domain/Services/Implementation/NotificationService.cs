@@ -75,24 +75,15 @@ namespace Car.Domain.Services.Implementation
             return result;
         }
 
-        public async Task<Notification> CreateNewNotificationFromDtoAsync(NotificationDto notificationDto)
-        {
-            //var sender = await userUnitOfWork.GetRepository().Query()
-            //    .FirstOrDefaultAsync(user => user.Id == notificationDto.SenderId);
-            //var receiver = await userUnitOfWork.GetRepository().Query()
-            //    .FirstOrDefaultAsync(user => user.Id == notificationDto.ReceiverId);
-            return await Task.Run(() => new Notification()
+        public async Task<Notification> CreateNewNotificationFromDtoAsync(NotificationDto notificationDto) =>
+            await Task.Run(() => new Notification
             {
-                //Id = notificationDto.Id,
-                //Sender = sender,
                 SenderId = notificationDto.SenderId,
-                //Receiver = receiver,
                 ReceiverId = notificationDto.ReceiverId,
                 Type = notificationDto.Type,
                 JsonData = notificationDto.JsonData,
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow,
             });
-        }
     }
 }
