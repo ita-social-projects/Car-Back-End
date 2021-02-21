@@ -59,20 +59,5 @@ namespace Car.UnitTests.Services
             Action action = () => userService.GetUserById(4);
             action.Should().Throw<DefaultApplicationException>();
         }
-
-        [Fact]
-        public void TestGetUserWithAvatarById_WhenUserNotExist()
-        {
-            var user = fixture.Create<User>();
-
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
-
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
-
-            Action action = () => userService.GetUserById(4);
-            action.Should().Throw<DefaultApplicationException>();
-        }
     }
 }

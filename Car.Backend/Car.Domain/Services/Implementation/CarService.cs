@@ -13,10 +13,8 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IUnitOfWork<CarEntity> carUnitOfWork;
 
-        public CarService(IUnitOfWork<CarEntity> carUnitOfWork)
-        {
+        public CarService(IUnitOfWork<CarEntity> carUnitOfWork) =>
             this.carUnitOfWork = carUnitOfWork;
-        }
 
         public CarEntity AddCar(CarEntity car)
         {
@@ -63,9 +61,7 @@ namespace Car.Domain.Services.Implementation
             return cars;
         }
 
-        public CarEntity UpdateCar(CarEntity car)
-        {
-            return carUnitOfWork.GetRepository().Update(car);
-        }
+        public CarEntity UpdateCar(CarEntity car) =>
+            carUnitOfWork.GetRepository().Update(car);
     }
 }
