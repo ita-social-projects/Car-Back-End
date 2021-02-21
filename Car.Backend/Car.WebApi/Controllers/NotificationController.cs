@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Hubs;
@@ -123,10 +120,8 @@ namespace Car.WebApi.Controllers
         /// <param name="notificationId">notification Id</param>
         /// <returns>deleted notification</returns>
         [HttpDelete]
-        public async Task<IActionResult> DeleteNotificationAsync([FromBody] int notificationId)
-        {
-            return Ok(await notificationService.DeleteNotificationAsync(notificationId));
-        }
+        public async Task<IActionResult> DeleteNotificationAsync([FromBody] int notificationId) =>
+            Ok(await notificationService.DeleteNotificationAsync(notificationId));
 
         /// <summary>
         /// Marks notification as read Asynchronously

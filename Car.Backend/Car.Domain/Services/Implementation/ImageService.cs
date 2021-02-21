@@ -78,7 +78,7 @@ namespace Car.Domain.Services.Implementation
                 return null;
             }
 
-            byte[] buffer = await driveService.GetFileBytesById(entity.ImageId);
+            var buffer = await driveService.GetFileBytesById(entity.ImageId);
 
             return Convert.ToBase64String(buffer);
         }
