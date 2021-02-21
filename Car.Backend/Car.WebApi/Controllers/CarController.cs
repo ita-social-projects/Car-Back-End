@@ -53,10 +53,7 @@ namespace Car.WebApi.Controllers
         /// <param name="car">The car.</param>
         /// <returns>New car</returns>
         [HttpPost]
-        public IActionResult AddCar([FromBody] Data.Entities.Car car)
-        {
-            return Ok(carService.AddCar(car));
-        }
+        public IActionResult AddCar([FromBody] Data.Entities.Car car) => Ok(carService.AddCar(car));
 
         /// <summary>
         /// Gets the car by identifier.
@@ -64,10 +61,7 @@ namespace Car.WebApi.Controllers
         /// <param name="id">The car identifier.</param>
         /// <returns>The car entity</returns>
         [HttpGet("{id}")]
-        public IActionResult GetCarById(int id)
-        {
-            return Ok(carService.GetCarById(id));
-        }
+        public IActionResult GetCarById(int id) => Ok(carService.GetCarById(id));
 
         /// <summary>
         /// Uploads the car photo.

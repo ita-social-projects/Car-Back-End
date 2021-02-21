@@ -17,10 +17,8 @@ namespace Car.Domain.Services.Implementation
             this.unitOfWorkChat = unitOfWorkChat;
         }
 
-        public Chat GetChatById(int chatId)
-        {
-            return unitOfWorkChat.GetRepository().Query().FirstOrDefault(p => p.Id == chatId);
-        }
+        public Chat GetChatById(int chatId) =>
+            unitOfWorkChat.GetRepository().Query().FirstOrDefault(p => p.Id == chatId);
 
         public Chat AddChat(Chat chat)
         {

@@ -35,29 +35,23 @@ namespace Car.Domain.Services.Implementation
         /// </summary>
         /// <param name="fileId">The file identifier.</param>
         /// <returns>Empty string if successful</returns>
-        public Task<string> DeleteFile(string fileId)
-        {
-            return service.Files.Delete(fileId).ExecuteAsync();
-        }
+        public Task<string> DeleteFile(string fileId) =>
+            service.Files.Delete(fileId).ExecuteAsync();
 
         /// <summary>
         /// Gets all files.
         /// </summary>
         /// <returns>All files</returns>
-        public async Task<IEnumerable<File>> GetAllFiles()
-        {
-           return (await service.Files.List().ExecuteAsync()).Files;
-        }
+        public async Task<IEnumerable<File>> GetAllFiles() =>
+            (await service.Files.List().ExecuteAsync()).Files;
 
         /// <summary>
         /// Gets the file by identifier.
         /// </summary>
         /// <param name="fileId">The file identifier.</param>
         /// <returns>The file instance</returns>
-        public Task<File> GetFileById(string fileId)
-        {
-            return service.Files.Get(fileId).ExecuteAsync();
-        }
+        public Task<File> GetFileById(string fileId) =>
+            service.Files.Get(fileId).ExecuteAsync();
 
         /// <summary>
         /// Gets the file bytes by identifier.
