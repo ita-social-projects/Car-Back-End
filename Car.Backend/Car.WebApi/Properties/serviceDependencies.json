@@ -1,20 +1,23 @@
 {
   "dependencies": {
-    "secrets1": {
-      "type": "secrets",
-      "connectionId": "VaultUri"
-    },
-    "mssql1": {
-      "type": "mssql",
-      "connectionId": "CarDbConnectionString"
+    "signalr1": {
+      "type": "signalr",
+      "connectionId": "Azure__SignalR__ConnectionString"
     },
     "appInsights1": {
       "type": "appInsights",
       "connectionId": "APPINSIGHTS_CONNECTIONSTRING"
     },
-    "signalr1": {
-      "type": "signalr",
-      "connectionId": "Azure__SignalR__ConnectionString"
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "CarConnection"
+    },
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "CarSecrets"
+    },
+    "apis1": {
+      "type": "apis"
     }
   }
 }
