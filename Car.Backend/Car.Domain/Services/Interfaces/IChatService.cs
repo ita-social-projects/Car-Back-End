@@ -16,5 +16,7 @@ namespace Car.Domain.Services.Interfaces
         public Chat AddChat(Chat chat);
 
         public User AddUserToChat(int userId, int chatId);
+
+        public Message AddMessage(Message message);
     }
 }

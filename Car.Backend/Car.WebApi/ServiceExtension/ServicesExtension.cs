@@ -46,6 +46,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IUnitOfWork<Journey>, UnitOfWork<Journey>>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IUnitOfWork<Notification>, UnitOfWork<Notification>>();
+            services.AddScoped<IUnitOfWork<Message>, UnitOfWork<Message>>();
         }
 
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)
