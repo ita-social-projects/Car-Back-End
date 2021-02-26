@@ -12,108 +12,92 @@ using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.Domain.Services.Implementation
 {
-    public class GoogleDriveService : IDriveService<File>
+    public class GoogleDriveService : IFileService<File>
     {
+        private const int Quality = 40;
+        private const string IdFieldName = "id";
+
         private readonly ICompressor compressor;
         private readonly IWebHostEnvironment webHostEnvironment;
-        private readonly IOptions<GoogleApplicationName> googleApplicationNameOptions;
+        private readonly IOptions<GoogleDriveOptions> googleDriveOptions;
 
         private DriveService service;
 
+        public string RootFolderId => googleDriveOptions.Value.RootFolder;
+
         public GoogleDriveService(
-            IOptions<GoogleApplicationName> googleApplicationNameOptions,
+            IOptions<GoogleDriveOptions> googleDriveOptions,
             IWebHostEnvironment webHostEnvironment,
             ICompressor compressor)
         {
-            this.googleApplicationNameOptions = googleApplicationNameOptions;
+            this.googleDriveOptions = googleDriveOptions;
             this.webHostEnvironment = webHostEnvironment;
             this.compressor = compressor;
+            SetCredentials();
         }
 
         /// <summary>
-        /// Deletes the file.
+        /// Sets the credentials for the google-drive service.
         /// </summary>
-        /// <param name="fileId">The file identifier.</param>
-        /// <returns>Empty string if successful</returns>
-        public Task<string> DeleteFile(string fileId) =>
-            service.Files.Delete(fileId).ExecuteAsync();
-
-        /// <summary>
-        /// Gets all files.
-        /// </summary>
-        /// <returns>All files</returns>
-        public async Task<IEnumerable<File>> GetAllFiles() =>
-            (await service.Files.List().ExecuteAsync()).Files;
-
-        /// <summary>
-        /// Gets the file by identifier.
-        /// </summary>
-        /// <param name="fileId">The file identifier.</param>
-        /// <returns>The file instance</returns>
-        public Task<File> GetFileById(string fileId) =>
-            service.Files.Get(fileId).ExecuteAsync();
-
-        /// <summary>
-        /// Gets the file bytes by identifier.
-        /// </summary>
-        /// <param name="fileId">The file identifier.</param>
-        /// <returns>base64 array of file</returns>
-        public async Task<byte[]> GetFileBytesById(string fileId)
-        {
-            await using var stream = new MemoryStream();
-            await service.Files.Get(fileId).DownloadAsync(stream);
-            return stream.GetBuffer();
-        }
-
-        /// <summary>
-        /// Sets the credentials.
-        /// </summary>
-        /// <param name="credentialFilePath">The credential file path.</param>
-        public void SetCredentials(string credentialFilePath)
+        public void SetCredentials()
         {
             var keyFilePath = Path.Combine(
                 webHostEnvironment.WebRootPath,
-                "Credentials",
-                credentialFilePath);
+                googleDriveOptions.Value.CredentialsPath);
 
             var stream = new FileStream(keyFilePath, FileMode.Open, FileAccess.Read);
             var credential = GoogleCredential.FromStream(stream);
-            credential = credential.CreateScoped(new string[] { DriveService.Scope.Drive });
+            credential = credential.CreateScoped(DriveService.Scope.Drive);
 
             service = new DriveService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = googleApplicationNameOptions.Value.AppName,
+                ApplicationName = googleDriveOptions.Value.ApplicationName,
             });
         }
 
         /// <summary>
-        /// Uploads the file.
+        /// Uploads a file from the specified stream.
         /// </summary>
-        /// <param name="fileStream">The file stream.</param>
-        /// <param name="folderId">The folder identifier.</param>
+        /// <param name="fileStream">Stream of the file.</param>
         /// <param name="fileName">Name of the file.</param>
-        /// <param name="contentType">Type of the content.</param>
-        /// <returns>Uploaded file</returns>
-        public async Task<File> UploadFile(Stream fileStream, string folderId, string fileName, string contentType)
+        /// <param name="contentType">Type of the file content.</param>
+        /// <returns>Identifier of the uploaded file.</returns>
+        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
         {
-            const int quality = 40;
-
-            var fileMetadata = new File();
-            fileMetadata.Name = fileName;
-            fileMetadata.Parents = new List<string> { folderId };
+            var fileMetadata = new File { Name = fileName, Parents = new List<string> { RootFolderId } };
 
             FilesResource.CreateMediaUpload request;
 
             await using (fileStream)
             {
-                await using var compressedFile = compressor.CompressFile(fileStream, quality);
+                await using var compressedFile = compressor.CompressFile(fileStream, Quality);
                 request = service.Files.Create(fileMetadata, compressedFile, contentType);
-                request.Fields = "id, name, webViewLink, size";
+                request.Fields = IdFieldName;
                 await request.UploadAsync();
             }
 
-            return request.ResponseBody;
+            return request.ResponseBody.Id;
+        }
+
+        /// <summary>
+        /// Gets a link for a file with the specified id.
+        /// </summary>
+        /// <param name="fileId">Identifier of the required file.</param>
+        /// <returns>Link for a file with the specified id.</returns>
+        public string GetFileLinkAsync(string fileId)
+        {
+            return $"https://drive.google.com/uc?id={fileId}&export=view";
+        }
+
+        /// <summary>
+        /// Deletes a file with the specified id.
+        /// </summary>
+        /// <param name="fileId">Identifier of the required file.</param>
+        /// <returns>Result object.</returns>
+        public Task<string> DeleteFileAsync(string fileId)
+        {
+            return service.Files.Delete(fileId).ExecuteAsync();
         }
     }
 }

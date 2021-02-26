@@ -5,10 +5,10 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface IImageService<TEntity, TFile>
     {
-        Task<TEntity> UploadImage(int entityId, IFormFile entityFile);
+        Task<TEntity> UploadImageAsync(int entityId, IFormFile entityFile);
 
-        Task<TEntity> DeleteImage(int entityId);
+        Task<TEntity> DeleteImageAsync(int entityId);
 
-        Task<string> GetImageBytesById(int entityId);
+        Task<string> GetFileLinkAsync(string fileId);
     }
 }

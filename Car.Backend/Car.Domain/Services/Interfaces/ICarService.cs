@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
-using Car.Domain.Dto;
+using System.Threading.Tasks;
+using Car.Domain.Models;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface ICarService
     {
-        CarDto GetCarById(int carId);
+        Task<CarEntity> GetCarByIdAsync(int carId);
 
-        CarEntity AddCar(CarEntity car);
+        Task<CarEntity> AddCarAsync(CreateCarModel car);
 
-        IEnumerable<CarDto> GetAllByUserId(int userId);
+        Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId);
 
-        CarEntity UpdateCar(CarEntity car);
+        Task<CarEntity> UpdateCarAsync(UpdateCarModel car);
     }
 }
