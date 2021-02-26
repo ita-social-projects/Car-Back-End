@@ -59,5 +59,16 @@ namespace Car.WebApi.Controllers
         {
             return Ok(userManager.AddUserToChat(chatId, userId));
         }
+
+        /// <summary>
+        /// Add new message
+        /// </summary>
+        /// <param name="message">Message entity</param>
+        /// <returns>Added Message</returns>
+        [HttpPost("message")]
+        public IActionResult AddMessage([FromBody] Message message)
+        {
+            return Ok(userManager.AddMessage(message));
+        }
     }
 }

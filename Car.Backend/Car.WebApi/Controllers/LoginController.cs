@@ -40,7 +40,7 @@ namespace Car.WebApi.Controllers
 
             var tokenString = GenerateJSONWebToken(user);
 
-            UserDto userDTO = new UserDto
+            var userDTO = new UserDto
             {
                 Name = user.Name,
                 Surname = user.Surname,
@@ -50,6 +50,7 @@ namespace Car.WebApi.Controllers
                 Email = user.Email,
                 Token = tokenString,
                 HireDate = user.HireDate,
+                JourneyCount = user.JourneyCount,
             };
 
             return Ok(userDTO);

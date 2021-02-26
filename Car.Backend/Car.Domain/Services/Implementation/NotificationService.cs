@@ -14,24 +14,20 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IUnitOfWork<Notification> notificationUnitOfWork;
 
-        public NotificationService(IUnitOfWork<Notification> notificationUnitOfWork)
-        {
+        public NotificationService(IUnitOfWork<Notification> notificationUnitOfWork) =>
             this.notificationUnitOfWork = notificationUnitOfWork;
-        }
 
         public async Task<Notification> GetNotificationAsync(int notificationId) =>
             await notificationUnitOfWork.GetRepository().Query(
                     notificationSender => notificationSender.Sender)
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
 
-        public async Task<List<Notification>> GetNotificationsAsync(int userId)
-        {
-            return await notificationUnitOfWork.GetRepository().Query(
+        public async Task<List<Notification>> GetNotificationsAsync(int userId) =>
+            await notificationUnitOfWork.GetRepository().Query(
                     m => m.Sender)
                 .Where(p => p.ReceiverId == userId)
                 .OrderByDescending(k => k.CreatedAt)
                 .ToListAsync();
-        }
 
         public async Task<int> GetUnreadNotificationsNumberAsync(int userId) =>
             await notificationUnitOfWork.GetRepository().Query()
