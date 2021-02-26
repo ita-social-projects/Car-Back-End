@@ -2,6 +2,7 @@
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Models;
+using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.Domain.Mapping
 {
@@ -9,14 +10,16 @@ namespace Car.Domain.Mapping
     {
         public Mapper()
         {
-            CreateMap<Data.Entities.Car, CarDto>();
+            CreateMap<CreateCarModel, CarEntity>();
+            CreateMap<UpdateCarModel, CarEntity>();
+            CreateMap<CarEntity, CarDto>();
             CreateMap<Address, AddressDto>();
             CreateMap<Stop, StopDto>();
             CreateMap<Notification, NotificationDto>();
             CreateMap<User, UserDto>();
             CreateMap<Journey, JourneyModel>();
 
-            CreateMap<CarDto, Data.Entities.Car>();
+            CreateMap<CarDto, CarEntity>();
             CreateMap<AddressDto, Address>();
             CreateMap<Stop, StopDto>();
             CreateMap<NotificationDto, Notification>();

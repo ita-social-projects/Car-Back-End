@@ -37,7 +37,7 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var car = fixture.Create<Data.Entities.Car>();
 
-            // carService.Setup(c => c.GetCarById(It.IsAny<int>())).Returns((Data.Entities.Car)null);
+            // carService.Setup(c => c.GetCarByIdAsync(It.IsAny<int>())).Returns((Data.Entities.Car)null);
 
             // Act
             var result = carController.GetCarById(car.Id);

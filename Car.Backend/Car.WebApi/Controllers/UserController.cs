@@ -12,14 +12,10 @@ namespace Car.WebApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
-        private readonly IImageService<User, File> imageService;
 
-        public UserController(
-            IUserService userService,
-            IImageService<User, File> imageService)
+        public UserController(IUserService userService)
         {
             this.userService = userService;
-            this.imageService = imageService;
         }
 
         /// <summary>
@@ -29,32 +25,5 @@ namespace Car.WebApi.Controllers
         /// <returns>The user entity</returns>
         [HttpGet("{id}")]
         public IActionResult GetUserById(int id) => Ok(userService.GetUserById(id));
-
-        /// <summary>
-        /// Uploads the user avatar.
-        /// </summary>
-        /// <param name="id">The user identifier.</param>
-        /// <param name="userFile">The user file.</param>
-        /// <returns>The user entity</returns>
-        [HttpPut("{id}/avatar")]
-        public async Task<IActionResult> UploadUserAvatar(int id, [FromForm] FormImage userFile) =>
-            Ok(await imageService.UploadImage(id, userFile.Image));
-
-        /// <summary>
-        /// Deletes the user avatar.
-        /// </summary>
-        /// <param name="id">The user identifier.</param>
-        /// <returns>The user entity</returns>
-        [HttpDelete("{id}/avatar")]
-        public async Task<IActionResult> DeleteUserAvatar(int id) => Ok(await imageService.DeleteImage(id));
-
-        /// <summary>
-        /// Gets the user file by identifier.
-        /// </summary>
-        /// <param name="id">The user identifier.</param>
-        /// <returns>Base64 array of user avatar</returns>
-        [HttpGet("{id}/avatar")]
-        public async Task<IActionResult> GetUserFileById(int id) =>
-            Ok(await imageService.GetImageBytesById(id));
     }
 }

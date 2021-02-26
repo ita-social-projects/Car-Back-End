@@ -55,7 +55,7 @@ namespace Car.UnitTests.Services
                 .Returns(repository.Object);
 
             // Act
-            var result = carService.GetCarById(car.Id);
+            var result = carService.GetCarByIdAsync(car.Id);
 
             // Assert
             result.Should().BeEquivalentTo(mapper.Map<CarEntity, CarDto>(car));
@@ -73,7 +73,7 @@ namespace Car.UnitTests.Services
                .Returns(repository.Object);
 
             // Act
-            var result = carService.GetCarById(cars.Max(car => car.Id) + 1);
+            var result = carService.GetCarByIdAsync(cars.Max(car => car.Id) + 1);
 
             // Assert
             result.Should().BeNull();
@@ -91,7 +91,7 @@ namespace Car.UnitTests.Services
                 .Returns(repository.Object);
 
             // Act
-            var result = carService.AddCar(car);
+            var result = carService.AddCarAsync(car);
 
             // Assert
             result.Should().BeEquivalentTo(car);
@@ -153,7 +153,7 @@ namespace Car.UnitTests.Services
                 .Returns(repository.Object);
 
             // Act
-            var result = carService.UpdateCar(car);
+            var result = carService.UpdateCarAsync(car);
 
             // Assert
             result.Should().BeEquivalentTo(car);

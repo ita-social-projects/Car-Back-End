@@ -24,7 +24,7 @@ namespace Car.UnitTests.Services
 
         public ImageServiceTest()
         {
-            var driveService = new Mock<IDriveService<File>>();
+            var driveService = new Mock<IFileService<File>>();
             var strategy = new Mock<IEntityTypeStrategy<User>>();
 
             repository = new Mock<IRepository<User>>();
