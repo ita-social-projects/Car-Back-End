@@ -12,6 +12,7 @@ namespace Car.Domain.Mapping
         {
             CreateMap<CreateCarModel, CarEntity>();
             CreateMap<UpdateCarModel, CarEntity>();
+            CreateMap<UpdateUserModel, User>();
             CreateMap<CarEntity, CarDto>();
             CreateMap<Address, AddressDto>();
             CreateMap<Stop, StopDto>();

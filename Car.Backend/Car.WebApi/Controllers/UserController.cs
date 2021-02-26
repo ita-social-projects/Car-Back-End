@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Car.Data.Entities;
-using Car.Domain.Dto;
+using Car.Domain.Models;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.WebApi.Controllers
 {
@@ -13,17 +11,25 @@ namespace Car.WebApi.Controllers
     {
         private readonly IUserService userService;
 
-        public UserController(IUserService userService)
-        {
+        public UserController(IUserService userService) =>
             this.userService = userService;
-        }
 
         /// <summary>
-        /// Gets the user by identifier.
+        /// Gets the user by identifier asynchronously.
         /// </summary>
         /// <param name="id">The user identifier.</param>
         /// <returns>The user entity</returns>
         [HttpGet("{id}")]
-        public IActionResult GetUserById(int id) => Ok(userService.GetUserById(id));
+        public async Task<IActionResult> GetUserById(int id) =>
+            Ok(await userService.GetUserByIdAsync(id));
+
+        /// <summary>
+        /// Updates a user with the identifier asynchronously.
+        /// </summary>
+        /// <param name="updateUserModel">User object to update.</param>
+        /// <returns>Updated user.</returns>
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserModel updateUserModel) =>
+            Ok(await userService.UpdateUserAsync(updateUserModel));
     }
 }

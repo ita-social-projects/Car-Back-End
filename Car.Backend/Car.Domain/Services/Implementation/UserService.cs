@@ -1,29 +1,63 @@
-﻿using System.Net;
-using Car.Data.Entities;
+﻿using System.Threading.Tasks;
+using AutoMapper;
 using Car.Data.Interfaces;
-using Car.Domain.Dto;
+using Car.Domain.Models;
 using Car.Domain.Services.Interfaces;
+using Google.Apis.Drive.v3.Data;
+using Microsoft.EntityFrameworkCore;
+using User = Car.Data.Entities.User;
 
 namespace Car.Domain.Services.Implementation
 {
     public class UserService : IUserService
     {
         private readonly IUnitOfWork<User> unitOfWork;
+        private readonly IFileService<File> fileService;
+        private readonly IMapper mapper;
 
-        public UserService(IUnitOfWork<User> unitOfWork) => this.unitOfWork = unitOfWork;
-
-        public User GetUserById(int userId)
+        public UserService(IUnitOfWork<User> unitOfWork, IFileService<File> fileService, IMapper mapper)
         {
-            var user = unitOfWork.GetRepository().GetById(userId);
-            if (user == null)
+            this.unitOfWork = unitOfWork;
+            this.fileService = fileService;
+            this.mapper = mapper;
+        }
+
+        public async Task<User> GetUserByIdAsync(int userId)
+        {
+            var user = await unitOfWork.GetRepository().Query().FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user?.ImageId != null)
             {
-                throw new Exceptions.DefaultApplicationException($"This user id - {userId} wasn't found")
-                {
-                    StatusCode = (int)HttpStatusCode.NotFound,
-                    Severity = Severity.Error,
-                };
+                user.ImageId = fileService.GetFileLinkAsync(user.ImageId);
             }
 
+            return user;
+        }
+
+        public async Task<User> UpdateUserAsync(UpdateUserModel updateUserModel)
+        {
+            var user = await unitOfWork.GetRepository().Query().FirstOrDefaultAsync(u => u.Id == updateUserModel.Id);
+
+            if (user?.ImageId != null)
+            {
+                await fileService.DeleteFileAsync(user.ImageId);
+                user.ImageId = null;
+            }
+
+            user.Name = updateUserModel.Name;
+            user.Surname = updateUserModel.Surname;
+            user.Position = updateUserModel.Position;
+            user.Location = updateUserModel.Location;
+
+            if (updateUserModel.Image != null)
+            {
+                user.ImageId = await fileService.UploadFileAsync(
+                    updateUserModel.Image.OpenReadStream(),
+                    updateUserModel.Image.Name,
+                    "image/png");
+            }
+
+            await unitOfWork.SaveChangesAsync();
             return user;
         }
     }

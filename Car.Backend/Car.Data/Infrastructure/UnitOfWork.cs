@@ -11,8 +11,13 @@ namespace Car.Data.Infrastructure
         where TEntity : class, IEntity
     {
         private readonly CarContext context;
+        private readonly IRepository<TEntity> repository;
 
-        public UnitOfWork(CarContext context) => this.context = context;
+        public UnitOfWork(CarContext context)
+        {
+            this.context = context;
+            repository = new Repository<TEntity>(context);
+        }
 
         /// <summary>
         /// Gets DBContext, is used for disposing
@@ -23,7 +28,7 @@ namespace Car.Data.Infrastructure
         /// Gets repository for TEntity
         /// </summary>
         /// <returns>instance of repository</returns>
-        public IRepository<TEntity> GetRepository() => new Repository<TEntity>(context);
+        public IRepository<TEntity> GetRepository() => repository;
 
         /// <summary>
         /// Saves changes in DB
