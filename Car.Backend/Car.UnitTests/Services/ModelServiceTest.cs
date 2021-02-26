@@ -2,7 +2,7 @@
 using System.Linq;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
@@ -15,7 +15,6 @@ namespace Car.UnitTests.Services
     {
         private readonly IModelService modelService;
         private readonly Mock<IRepository<Model>> repository;
-        private readonly Mock<IUnitOfWork<Model>> unitOfWork;
         private readonly Fixture fixture;
 
         public ModelServiceTest()

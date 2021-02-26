@@ -1,7 +1,7 @@
 ﻿using Car.Data.Enums;
 using Microsoft.AspNetCore.Http;
 
-namespace Car.Domain.Models
+namespace Car.Domain.Models.Car
 {
     public class UpdateCarModel
     {

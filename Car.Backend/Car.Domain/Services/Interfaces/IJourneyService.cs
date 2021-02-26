@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Car.Domain.Models;
+using Car.Domain.Models.Journey;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface IJourneyService
     {
-        public IEnumerable<JourneyModel> GetPastJourneys(int userId);
+        Task<List<JourneyModel>> GetPastJourneysAsync(int userId);
 
-        public IEnumerable<JourneyModel> GetUpcomingJourneys(int userId);
+        Task<List<JourneyModel>> GetUpcomingJourneysAsync(int userId);
 
-        public IEnumerable<JourneyModel> GetScheduledJourneys(int userId);
+        Task<List<JourneyModel>> GetScheduledJourneysAsync(int userId);
 
-        public JourneyModel GetJourneyById(int journeyId);
+        Task<JourneyModel> GetJourneyByIdAsync(int journeyId);
     }
 }

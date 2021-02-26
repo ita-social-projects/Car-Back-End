@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Models;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Google.Apis.Drive.v3.Data;
 using Microsoft.EntityFrameworkCore;
@@ -11,20 +11,18 @@ namespace Car.Domain.Services.Implementation
 {
     public class UserService : IUserService
     {
-        private readonly IUnitOfWork<User> unitOfWork;
+        private readonly IRepository<User> userRepository;
         private readonly IFileService<File> fileService;
-        private readonly IMapper mapper;
 
-        public UserService(IUnitOfWork<User> unitOfWork, IFileService<File> fileService, IMapper mapper)
+        public UserService(IRepository<User> userRepository, IFileService<File> fileService)
         {
-            this.unitOfWork = unitOfWork;
+            this.userRepository = userRepository;
             this.fileService = fileService;
-            this.mapper = mapper;
         }
 
         public async Task<User> GetUserByIdAsync(int userId)
         {
-            var user = await unitOfWork.GetRepository().Query().FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user?.ImageId != null)
             {
@@ -36,7 +34,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<User> UpdateUserAsync(UpdateUserModel updateUserModel)
         {
-            var user = await unitOfWork.GetRepository().Query().FirstOrDefaultAsync(u => u.Id == updateUserModel.Id);
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == updateUserModel.Id);
 
             if (user?.ImageId != null)
             {
@@ -57,7 +55,7 @@ namespace Car.Domain.Services.Implementation
                     "image/png");
             }
 
-            await unitOfWork.SaveChangesAsync();
+            await userRepository.SaveChangesAsync();
             return user;
         }
     }

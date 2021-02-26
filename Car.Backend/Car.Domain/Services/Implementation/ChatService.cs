@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
-using Car.Domain.Dto;
+using Car.Data.Infrastructure;
+using Car.Domain.Extensions;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,65 +11,49 @@ namespace Car.Domain.Services.Implementation
 {
     public class ChatService : IChatService
     {
-        private readonly IUnitOfWork<User> unitOfWorkUser;
-        private readonly IUnitOfWork<Chat> unitOfWorkChat;
-        private readonly IUnitOfWork<Message> unitOfWorkMessage;
+        private readonly IRepository<User> userRepository;
+        private readonly IRepository<Chat> chatRepository;
+        private readonly IRepository<Message> messageRepository;
 
-        public ChatService(IUnitOfWork<User> unitOfWorkUser, IUnitOfWork<Chat> unitOfWorkChat, IUnitOfWork<Message> unitOfWorkMessage)
+        public ChatService(IRepository<User> userRepository, IRepository<Chat> chatRepository, IRepository<Message> messageRepository)
         {
-            this.unitOfWorkUser = unitOfWorkUser;
-            this.unitOfWorkChat = unitOfWorkChat;
-            this.unitOfWorkMessage = unitOfWorkMessage;
+            this.userRepository = userRepository;
+            this.chatRepository = chatRepository;
+            this.messageRepository = messageRepository;
         }
 
-        public Chat GetChatById(int chatId)
+        public Task<Chat> GetChatByIdAsync(int chatId)
         {
-            var chat = unitOfWorkChat.GetRepository().Query(message => message.Messages).FirstOrDefault(p => p.Id == chatId);
-            chat.Messages = chat.Messages.OrderByDescending(time => time.CreatedAt).ToList();
-            return chat;
+            return chatRepository
+                .Query(message => message.Messages.OrderByDescending(m => m.CreatedAt))
+                .FirstOrDefaultAsync(p => p.Id == chatId);
         }
 
-        public Chat AddChat(Chat chat)
+        public async Task<Chat> AddChatAsync(Chat chat)
         {
-            var addedChat = unitOfWorkChat.GetRepository().Add(chat);
-            unitOfWorkUser.SaveChanges();
+            var addedChat = await chatRepository.AddAsync(chat);
+            await userRepository.SaveChangesAsync();
+
             return addedChat;
         }
 
-        public User AddUserToChat(int userId, int chatId)
+        public async Task<IEnumerable<Chat>> GetUserChatsAsync(int userId)
         {
-            var user = unitOfWorkUser.GetRepository().GetById(userId);
-            var chat = unitOfWorkChat.GetRepository().Query().FirstOrDefault(chat => chat.Id == chatId);
-            unitOfWorkChat.SaveChanges();
-            return user;
-        }
+            var user = await userRepository.Query()
+                .IncludeChats()
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
-        public List<Chat> GetUsersChats(int userId)
-        {
-            var user = unitOfWorkUser.GetRepository().Query()
-                .Include(organizer => organizer.OrganizerJourneys)
-                .ThenInclude(chat => chat.Chat)
-                .Include(participant => participant.ParticipantJourneys)
-                .ThenInclude(chat => chat.Chat)
-                .Include(participant => participant.ParticipantJourneys)
-                .ThenInclude(o => o.Organizer)
-                .FirstOrDefault(user => user.Id == userId);
-
-            if (user == null)
-            {
-                return new List<Chat>();
-            }
-
-            var chats = user.OrganizerJourneys.Select(journey => journey.Chat).ToList();
-            chats.AddRange(user.ParticipantJourneys.Select(journey => journey.Chat));
+            var chats = user?.OrganizerJourneys.Select(journey => journey.Chat)
+                .Union(user.ParticipantJourneys.Select(journey => journey.Chat));
 
             return chats;
         }
 
-        public Message AddMessage(Message message)
+        public async Task<Message> AddMessageAsync(Message message)
         {
-            var addedMessage = unitOfWorkMessage.GetRepository().Add(message);
-            unitOfWorkChat.SaveChanges();
+            var addedMessage = await messageRepository.AddAsync(message);
+            await chatRepository.SaveChangesAsync();
+
             return addedMessage;
         }
     }

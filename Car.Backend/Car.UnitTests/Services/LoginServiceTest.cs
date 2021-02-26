@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
@@ -13,13 +13,11 @@ namespace Car.UnitTests.Services
     {
         private readonly ILoginService loginService;
         private readonly Mock<IRepository<User>> repository;
-        private readonly Mock<IUnitOfWork<User>> unitOfWork;
         private readonly Fixture fixture;
 
         public LoginServiceTest()
         {
             repository = new Mock<IRepository<User>>();
-            unitOfWork = new Mock<IUnitOfWork<User>>();
 
             loginService = new LoginService(unitOfWork.Object);
 

@@ -2,9 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Extensions;
 using Car.Domain.Models;
+using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Google.Apis.Drive.v3.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +15,15 @@ namespace Car.Domain.Services.Implementation
 {
     public class CarService : ICarService
     {
+        // todo: move const to fileService logic
         private const string ImageContentType = "image/png";
-        private readonly IUnitOfWork<CarEntity> carUnitOfWork;
+        private readonly IRepository<CarEntity> carRepository;
         private readonly IFileService<File> fileService;
         private readonly IMapper mapper;
 
-        public CarService(IUnitOfWork<CarEntity> carUnitOfWork, IFileService<File> fileService, IMapper mapper)
+        public CarService(IRepository<CarEntity> carRepository, IFileService<File> fileService, IMapper mapper)
         {
-            this.carUnitOfWork = carUnitOfWork;
+            this.carRepository = carRepository;
             this.fileService = fileService;
             this.mapper = mapper;
         }
@@ -34,15 +36,16 @@ namespace Car.Domain.Services.Implementation
                 carEntity.ImageId = await fileService.UploadFileAsync(car.Image.OpenReadStream(), car.Image.FileName, ImageContentType);
             }
 
-            var newCar = await carUnitOfWork.GetRepository().AddAsync(carEntity);
-            await carUnitOfWork.SaveChangesAsync();
+            var newCar = await carRepository.AddAsync(carEntity);
+            await carRepository.SaveChangesAsync();
 
             return newCar;
         }
 
         public async Task<CarEntity> GetCarByIdAsync(int carId)
         {
-            var car = await carUnitOfWork.GetRepository().Query()
+            var car = await carRepository
+                .Query()
                 .IncludeModelWithBrand()
                 .FirstOrDefaultAsync(c => c.Id == carId);
 
@@ -56,7 +59,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId)
         {
-            var cars = await carUnitOfWork.GetRepository()
+            var cars = await carRepository
                 .Query()
                 .IncludeModelWithBrand()
                 .Where(car => car.OwnerId == userId)
@@ -72,8 +75,9 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<CarEntity> UpdateCarAsync(UpdateCarModel updateCarModel)
         {
-            var car = carUnitOfWork.GetRepository().GetById(updateCarModel.Id);
+            var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 
+            // todo: write ChangeImage(entity)
             if (!string.IsNullOrEmpty(car.ImageId))
             {
                 await fileService.DeleteFileAsync(car.ImageId);
@@ -89,7 +93,7 @@ namespace Car.Domain.Services.Implementation
                     ImageContentType);
             }
 
-            await carUnitOfWork.SaveChangesAsync();
+            await carRepository.SaveChangesAsync();
 
             return car;
         }

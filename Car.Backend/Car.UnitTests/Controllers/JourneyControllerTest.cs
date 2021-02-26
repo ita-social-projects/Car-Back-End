@@ -2,6 +2,7 @@
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Models;
+using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
 using FluentAssertions;

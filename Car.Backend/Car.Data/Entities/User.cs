@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Car.Data.Entities
 {
@@ -22,6 +23,9 @@ namespace Car.Data.Entities
         public string ImageId { get; set; }
 
         public int JourneyCount { get; set; }
+
+        [NotMapped]
+        public string Token { get; set; }
 
         public ICollection<Car> Cars { get; set; } = new List<Car>();
 

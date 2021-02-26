@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
@@ -14,13 +14,12 @@ namespace Car.UnitTests.Services
     {
         private readonly IBrandService brandService;
         private readonly Mock<IRepository<Brand>> repository;
-        private readonly Mock<IUnitOfWork<Brand>> unitOfWork;
+
         private readonly Fixture fixture;
 
         public BrandServiceTest()
         {
             repository = new Mock<IRepository<Brand>>();
-            unitOfWork = new Mock<IUnitOfWork<Brand>>();
 
             brandService = new BrandService(unitOfWork.Object);
 

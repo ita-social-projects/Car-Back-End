@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Car.Domain.Models;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

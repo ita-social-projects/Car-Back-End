@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
@@ -13,7 +13,6 @@ namespace Car.UnitTests.Services
     {
         private readonly IPreferencesService preferencesService;
         private readonly Mock<IRepository<UserPreferences>> repository;
-        private readonly Mock<IUnitOfWork<UserPreferences>> unitOfWork;
         private readonly Fixture fixture;
 
         public PreferencesServiceTest()

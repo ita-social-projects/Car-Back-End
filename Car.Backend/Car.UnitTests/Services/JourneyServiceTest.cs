@@ -6,8 +6,9 @@ using AutoFixture;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Models;
+using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using FluentAssertions;
@@ -21,14 +22,12 @@ namespace Car.UnitTests.Services
     {
         private readonly IJourneyService journeyService;
         private readonly Mock<IRepository<Journey>> repository;
-        private readonly Mock<IUnitOfWork<Journey>> journeyUnitOfWork;
         private readonly IMapper mapper;
         private readonly Fixture fixture;
 
         public JourneyServiceTest()
         {
             repository = new Mock<IRepository<Journey>>();
-            journeyUnitOfWork = new Mock<IUnitOfWork<Journey>>();
 
             MapperProfile profile = new MapperProfile();
             mapper = new Mapper(new MapperConfiguration(m => m.AddProfile(profile)));
