@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Car.Domain.Models;
 using Car.Domain.Models.Car;
 using CarEntity = Car.Data.Entities.Car;
 

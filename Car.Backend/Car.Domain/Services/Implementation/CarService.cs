@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Infrastructure;
 using Car.Domain.Extensions;
-using Car.Domain.Models;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Google.Apis.Drive.v3.Data;

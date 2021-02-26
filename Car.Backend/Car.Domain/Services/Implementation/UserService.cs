@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Car.Data.Infrastructure;
-using Car.Domain.Models;
 using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Google.Apis.Drive.v3.Data;

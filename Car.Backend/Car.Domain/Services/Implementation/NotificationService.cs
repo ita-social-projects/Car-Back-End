@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
-using Car.Domain.Models;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;

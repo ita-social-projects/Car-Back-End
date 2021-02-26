@@ -6,7 +6,6 @@ using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Extensions;
-using Car.Domain.Models;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
