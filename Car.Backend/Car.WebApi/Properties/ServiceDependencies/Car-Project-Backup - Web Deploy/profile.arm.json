@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "Car-Project",
+      "defaultValue": "Car-Project-Backup",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

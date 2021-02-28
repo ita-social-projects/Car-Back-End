@@ -45,7 +45,7 @@ namespace Car.Domain.Services.Implementation
                 .IncludeStopsWithAddresses()
                 .FilterByUser(userId)
                 .AsEnumerable()
-                .Where(journey => journey.EndTime < now);
+                .Where(journey => (journey.DepartureTime + journey.Duration) < now);
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }

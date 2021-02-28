@@ -1,71 +1,97 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Car.Data.FluentValidation;
+using System.Threading.Tasks;
+using AutoMapper;
 using Car.Data.Interfaces;
-using Car.Domain.Dto;
 using Car.Domain.Extensions;
+using Car.Domain.Models;
 using Car.Domain.Services.Interfaces;
+using Google.Apis.Drive.v3.Data;
+using Microsoft.EntityFrameworkCore;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.Domain.Services.Implementation
 {
     public class CarService : ICarService
     {
+        private const string ImageContentType = "image/png";
         private readonly IUnitOfWork<CarEntity> carUnitOfWork;
+        private readonly IFileService<File> fileService;
+        private readonly IMapper mapper;
 
-        public CarService(IUnitOfWork<CarEntity> carUnitOfWork)
+        public CarService(IUnitOfWork<CarEntity> carUnitOfWork, IFileService<File> fileService, IMapper mapper)
         {
             this.carUnitOfWork = carUnitOfWork;
+            this.fileService = fileService;
+            this.mapper = mapper;
         }
 
-        public CarEntity AddCar(CarEntity car)
+        public async Task<CarEntity> AddCarAsync(CreateCarModel car)
         {
-            var newCar = carUnitOfWork.GetRepository().Add(car);
-            carUnitOfWork.SaveChanges();
+            var carEntity = mapper.Map<CreateCarModel, CarEntity>(car);
+            if (car.Image != null)
+            {
+                carEntity.ImageId = await fileService.UploadFileAsync(car.Image.OpenReadStream(), car.Image.FileName, ImageContentType);
+            }
+
+            var newCar = await carUnitOfWork.GetRepository().AddAsync(carEntity);
+            await carUnitOfWork.SaveChangesAsync();
 
             return newCar;
         }
 
-        public CarDto GetCarById(int carId)
+        public async Task<CarEntity> GetCarByIdAsync(int carId)
         {
-            var car = carUnitOfWork.GetRepository().Query()
+            var car = await carUnitOfWork.GetRepository().Query()
                 .IncludeModelWithBrand()
-                .Select(c => new CarDto
-                {
-                    Id = c.Id,
-                    Model = c.Model,
-                    Color = c.Color,
-                    PlateNumber = c.PlateNumber,
-                    ImageId = c.ImageId,
-                    OwnerId = c.OwnerId,
-                })
-                .FirstOrDefault(c => c.Id == carId);
+                .FirstOrDefaultAsync(c => c.Id == carId);
+
+            if (car?.ImageId != null)
+            {
+                car.ImageId = fileService.GetFileLinkAsync(car.ImageId);
+            }
 
             return car;
         }
 
-        public IEnumerable<CarDto> GetAllByUserId(int userId)
+        public async Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId)
         {
-            var cars = carUnitOfWork.GetRepository()
+            var cars = await carUnitOfWork.GetRepository()
                 .Query()
                 .IncludeModelWithBrand()
                 .Where(car => car.OwnerId == userId)
-                .Select(car => new CarDto
-                {
-                    Id = car.Id,
-                    Model = car.Model,
-                    Color = car.Color,
-                    PlateNumber = car.PlateNumber,
-                    ImageId = car.ImageId,
-                    OwnerId = car.OwnerId,
-                });
+                .ToListAsync();
+
+            foreach (var car in cars.Where(car => car.ImageId != null))
+            {
+                car.ImageId = fileService.GetFileLinkAsync(car.ImageId);
+            }
 
             return cars;
         }
 
-        public CarEntity UpdateCar(CarEntity car)
+        public async Task<CarEntity> UpdateCarAsync(UpdateCarModel updateCarModel)
         {
-            return carUnitOfWork.GetRepository().Update(car);
+            var car = carUnitOfWork.GetRepository().GetById(updateCarModel.Id);
+
+            if (!string.IsNullOrEmpty(car.ImageId))
+            {
+                await fileService.DeleteFileAsync(car.ImageId);
+                car.ImageId = null;
+            }
+
+            car = mapper.Map<UpdateCarModel, CarEntity>(updateCarModel);
+            if (updateCarModel.Image != null)
+            {
+                car.ImageId = await fileService.UploadFileAsync(
+                    updateCarModel.Image.OpenReadStream(),
+                    updateCarModel.Image.FileName,
+                    ImageContentType);
+            }
+
+            await carUnitOfWork.SaveChangesAsync();
+
+            return car;
         }
     }
 }

@@ -36,7 +36,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('Car-ApplicationInsights', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('Car-WebApi', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -49,12 +49,25 @@
           "contentVersion": "1.0.0.0",
           "resources": [
             {
-              "name": "Car-ApplicationInsights",
-              "type": "microsoft.insights/components",
+              "name": "Car-API",
+              "type": "Microsoft.ApiManagement/service",
               "location": "[parameters('resourceLocation')]",
-              "kind": "web",
               "properties": {},
-              "apiVersion": "2015-05-01"
+              "sku": {
+                "name": "Consumption",
+                "capacity": 0
+              },
+              "identity": null,
+              "apiVersion": "2019-12-01"
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/apis",
+              "name": "Car-API/Car-WebApi",
+              "properties": {},
+              "apiVersion": "2019-12-01",
+              "dependsOn": [
+                "Car-API"
+              ]
             }
           ]
         }
@@ -62,6 +75,6 @@
     }
   ],
   "metadata": {
-    "_dependencyType": "appInsights.azure"
+    "_dependencyType": "apis.azure"
   }
 }

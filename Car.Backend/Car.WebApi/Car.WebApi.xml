@@ -17,12 +17,12 @@
             <param name="id">The user identifier.</param>
             <returns>All user's cars</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Data.Entities.Car)">
+        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Models.CreateCarModel)">
             <summary>
-            Adds the car.
+            Adds the car asynchronously.
             </summary>
             <param name="car">The car.</param>
-            <returns>New car</returns>
+            <returns>New car.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.CarController.GetCarById(System.Int32)">
             <summary>
@@ -31,27 +31,12 @@
             <param name="id">The car identifier.</param>
             <returns>The car entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.UploadCarPhoto(System.Int32,Car.Domain.Dto.FormImage)">
+        <member name="M:Car.WebApi.Controllers.CarController.UpdateCar(Car.Domain.Models.UpdateCarModel)">
             <summary>
-            Uploads the car photo.
+            Updates car.
             </summary>
-            <param name="id">The car identifier.</param>
-            <param name="carFile">The car file.</param>
-            <returns>The car entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.CarController.DeleteCarPhoto(System.Int32)">
-            <summary>
-            Deletes the car photo.
-            </summary>
-            <param name="id">The car identifier.</param>
-            <returns>The car entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.CarController.GetCarFileById(System.Int32)">
-            <summary>
-            Gets the car file by identifier.
-            </summary>
-            <param name="id">The car identifier.</param>
-            <returns>Base64 array of car photo</returns>
+            <param name="updateCarModel">The car.</param>
+            <returns>The updated car.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
             <summary>
@@ -81,6 +66,13 @@
             <param name="userId">Sender identifier</param>
             <param name="chatId">Chat identifier</param>
             <returns>Added Sender</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.AddMessage(Car.Data.Entities.Message)">
+            <summary>
+            Add new message
+            </summary>
+            <param name="message">Message entity</param>
+            <returns>Added Message</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
             <summary>
@@ -235,32 +227,17 @@
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
-            Gets the user by identifier.
+            Gets the user by identifier asynchronously.
             </summary>
             <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.UploadUserAvatar(System.Int32,Car.Domain.Dto.FormImage)">
+        <member name="M:Car.WebApi.Controllers.UserController.UpdateUser(Car.Domain.Models.UpdateUserModel)">
             <summary>
-            Uploads the user avatar.
+            Updates a user with the identifier asynchronously.
             </summary>
-            <param name="id">The user identifier.</param>
-            <param name="userFile">The user file.</param>
-            <returns>The user entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.UserController.DeleteUserAvatar(System.Int32)">
-            <summary>
-            Deletes the user avatar.
-            </summary>
-            <param name="id">The user identifier.</param>
-            <returns>The user entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.UserController.GetUserFileById(System.Int32)">
-            <summary>
-            Gets the user file by identifier.
-            </summary>
-            <param name="id">The user identifier.</param>
-            <returns>Base64 array of user avatar</returns>
+            <param name="updateUserModel">User object to update.</param>
+            <returns>Updated user.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.GetPreferences(System.Int32)">
             <summary>

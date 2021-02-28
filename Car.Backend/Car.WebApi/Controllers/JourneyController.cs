@@ -1,6 +1,4 @@
-﻿using System;
-using Car.Domain.Dto;
-using Car.Domain.Services.Interfaces;
+﻿using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers

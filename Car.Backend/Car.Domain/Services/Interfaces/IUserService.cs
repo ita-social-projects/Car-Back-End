@@ -1,9 +1,13 @@
-﻿using Car.Data.Entities;
+﻿using System.Threading.Tasks;
+using Car.Data.Entities;
+using Car.Domain.Models;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface IUserService
     {
-        User GetUserById(int userId);
+        Task<User> GetUserByIdAsync(int userId);
+
+        Task<User> UpdateUserAsync(UpdateUserModel updateUserModel);
     }
 }

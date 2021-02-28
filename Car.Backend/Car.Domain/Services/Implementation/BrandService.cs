@@ -9,14 +9,10 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IUnitOfWork<Brand> unitOfWork;
 
-        public BrandService(IUnitOfWork<Brand> unitOfWork)
-        {
+        public BrandService(IUnitOfWork<Brand> unitOfWork) =>
             this.unitOfWork = unitOfWork;
-        }
 
-        public IEnumerable<Brand> GetAllBrands()
-        {
-            return unitOfWork.GetRepository().Query();
-        }
+        public IEnumerable<Brand> GetAllBrands() =>
+            unitOfWork.GetRepository().Query();
     }
 }
