@@ -12,14 +12,14 @@ namespace Car.WebApi.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly IHubContext<SignalRHub> signalRHub;
 
         private readonly INotificationService notificationService;
 
-        public NotificationController(INotificationService notificationService, [NotNull] IHubContext<NotificationHub> notificationHub)
+        public NotificationController(INotificationService notificationService, [NotNull] IHubContext<SignalRHub> signalRHub)
         {
             this.notificationService = notificationService;
-            this.notificationHub = notificationHub;
+            this.signalRHub = signalRHub;
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace Car.WebApi.Controllers
         {
             var notification = await notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
             await notificationService.UpdateNotificationAsync(notification);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await this.notificationHub.Clients.All.SendAsync(
+            await this.signalRHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.signalRHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
                 await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
             return Ok(notification);
@@ -76,7 +76,7 @@ namespace Car.WebApi.Controllers
         /// // JSON STRUCTURE
         /// //      VARIABLE           TYPE            DESC
         /// // {
-        /// //      "senderId"         //number        Specifies the sender of the notification
+        /// //      "senderId":         //number        Specifies the sender of the notification
         /// //      , "receiverId":    //number        Specifies the receiver of the notification
         /// //      , "type":          //number        Specifies the type of the notification
         /// //                         //              based on the following enum:
@@ -96,9 +96,9 @@ namespace Car.WebApi.Controllers
         /// //                         //
         /// //                         //              BELOW LISTED STRUCTURE FOR NOTIFICATION TYPE 1 (PassengerApply)
         /// //     "{                  //
-        /// //     \"title\":          //string        Specifies the title of the notification at the notification tab
-        /// //     \"comments\":       //string?       Specifies the participant's comment (if any) at the modal page
-        /// //     \"hasLuggage\":     //boolean?      Specifies if the participant has any luggage
+        /// //     , \"title\":          //string        Specifies the title of the notification at the notification tab
+        /// //     , \"comments\":       //string?       Specifies the participant's comment (if any) at the modal page
+        /// //     , \"hasLuggage\":     //boolean?      Specifies if the participant has any luggage
         /// //     }"
         /// // }
         /// <returns>added notification</returns>
@@ -107,8 +107,8 @@ namespace Car.WebApi.Controllers
         {
             var notification = await notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
             await notificationService.AddNotificationAsync(notification);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await this.notificationHub.Clients.All.SendAsync(
+            await this.signalRHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.signalRHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
                 await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
             return Ok(notification);
@@ -132,8 +132,8 @@ namespace Car.WebApi.Controllers
         public async Task<IActionResult> MarkNotificationAsReadAsync(int notificationId)
         {
             var notification = await notificationService.MarkNotificationAsReadAsync(notificationId);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await this.notificationHub.Clients.All.SendAsync(
+            await this.signalRHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.signalRHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
                 await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
             return Ok(notification);
