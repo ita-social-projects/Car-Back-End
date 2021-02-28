@@ -26,6 +26,8 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IModelService, ModelService>();
             services.AddScoped<IPreferencesService, PreferencesService>();
+            services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<ILocationTypeService, LocationTypeService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IUnitOfWork<User>, UnitOfWork<User>>();
@@ -46,6 +48,10 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IUnitOfWork<Journey>, UnitOfWork<Journey>>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IUnitOfWork<Notification>, UnitOfWork<Notification>>();
+            services.AddScoped<IUnitOfWork<Location>, UnitOfWork<Location>>();
+            services.AddScoped<IRepository<Location>, Repository<Location>>();
+            services.AddScoped<IUnitOfWork<LocationType>, UnitOfWork<LocationType>>();
+            services.AddScoped<IRepository<LocationType>, Repository<LocationType>>();
         }
 
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)

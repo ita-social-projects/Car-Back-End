@@ -44,5 +44,13 @@ namespace Car.WebApi.Controllers
         /// <returns>Journey</returns>
         [HttpGet("{id}")]
         public IActionResult GetJourneyById(int id) => Ok(journeyService.GetJourneyById(id));
+
+        /// <summary>
+        /// Gets recent addresses by identifier.
+        /// </summary>
+        /// <param name="id">Journey identifier</param>
+        /// <returns>recent addresses</returns>
+        [HttpGet("recent/{id}")]
+        public IActionResult GetRecentAdresses(int id) => Ok(journeyService.GetStopsFromRecentJourneys(id));
     }
 }

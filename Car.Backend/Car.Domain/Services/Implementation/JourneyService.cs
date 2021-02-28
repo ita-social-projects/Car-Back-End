@@ -4,9 +4,11 @@ using System.Linq;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Interfaces;
+using Car.Domain.Dto;
 using Car.Domain.Extensions;
 using Car.Domain.Models;
 using Car.Domain.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
 {
@@ -73,6 +75,34 @@ namespace Car.Domain.Services.Implementation
                 .Where(journey => journey.DepartureTime > now);
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
+        }
+
+        public List<List<StopDto>> GetStopsFromRecentJourneys(int userId, int countToTake = 5)
+        {
+            var journeys = journeyUnitOfWork.GetRepository()
+                .Query().Include(journey => journey.Stops)
+                .ThenInclude(stop => stop.Address)
+                .Where(journey => journey.Participants
+                    .Any(user => user.Id == userId))
+                .OrderByDescending(journey => journey.DepartureTime)
+                .Take(countToTake)
+                .Select(journeyStops => journeyStops.Stops
+                                        .Select(stop => new StopDto
+                                        {
+                                            Id = stop.Id,
+                                            Type = stop.Type,
+                                            Address = new AddressDto
+                                            {
+                                                Id = stop.Address.Id,
+                                                City = stop.Address.City,
+                                                Street = stop.Address.Street,
+                                                Longitude = stop.Address.Longitude,
+                                                Latitude = stop.Address.Latitude,
+                                            },
+                                        }).ToList())
+                .ToList();
+
+            return journeys;
         }
     }
 }
