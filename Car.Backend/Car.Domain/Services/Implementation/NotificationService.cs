@@ -35,16 +35,16 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<Notification> UpdateNotificationAsync(Notification notification)
         {
-            await notificationUnitOfWork.GetRepository().UpdateAsync(notification);
+            var updatedNotification = await notificationUnitOfWork.GetRepository().UpdateAsync(notification);
             await notificationUnitOfWork.SaveChangesAsync();
-            return notification;
+            return updatedNotification;
         }
 
         public async Task<Notification> AddNotificationAsync(Notification notification)
         {
-            await notificationUnitOfWork.GetRepository().AddAsync(notification);
+            var addedNotification = await notificationUnitOfWork.GetRepository().AddAsync(notification);
             await notificationUnitOfWork.SaveChangesAsync();
-            return notification;
+            return addedNotification;
         }
 
         public async Task<Notification> DeleteNotificationAsync(int notificationId)
