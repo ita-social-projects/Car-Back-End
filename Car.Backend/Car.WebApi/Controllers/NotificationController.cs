@@ -12,14 +12,14 @@ namespace Car.WebApi.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly IHubContext<SignalRHub> signalRHub;
 
         private readonly INotificationService notificationService;
 
-        public NotificationController(INotificationService notificationService, [NotNull] IHubContext<NotificationHub> notificationHub)
+        public NotificationController(INotificationService notificationService, [NotNull] IHubContext<SignalRHub> signalRHub)
         {
             this.notificationService = notificationService;
-            this.notificationHub = notificationHub;
+            this.signalRHub = signalRHub;
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace Car.WebApi.Controllers
         {
             var notification = await notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
             await notificationService.UpdateNotificationAsync(notification);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await this.notificationHub.Clients.All.SendAsync(
+            await this.signalRHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.signalRHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
                 await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
             return Ok(notification);
@@ -107,8 +107,8 @@ namespace Car.WebApi.Controllers
         {
             var notification = await notificationService.CreateNewNotificationFromDtoAsync(notificationDto);
             await notificationService.AddNotificationAsync(notification);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await this.notificationHub.Clients.All.SendAsync(
+            await this.signalRHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.signalRHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
                 await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
             return Ok(notification);
@@ -132,8 +132,8 @@ namespace Car.WebApi.Controllers
         public async Task<IActionResult> MarkNotificationAsReadAsync(int notificationId)
         {
             var notification = await notificationService.MarkNotificationAsReadAsync(notificationId);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await this.notificationHub.Clients.All.SendAsync(
+            await this.signalRHub.Clients.All.SendAsync("sendToReact", notification);
+            await this.signalRHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
                 await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
             return Ok(notification);
