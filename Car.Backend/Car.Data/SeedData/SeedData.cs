@@ -18,97 +18,312 @@ namespace Car.Data.EntityConfigurations
                 new Brand()
                 {
                     Id = 1,
-                    Name = "BMW",
+                    Name = "Acura",
                 },
                 new Brand()
                 {
                     Id = 2,
-                    Name = "Audi",
+                    Name = "Alfa Romeo",
                 },
                 new Brand()
                 {
                     Id = 3,
-                    Name = "Chevrolet",
+                    Name = "Aston Martin",
                 },
                 new Brand()
                 {
                     Id = 4,
-                    Name = "Fiat",
+                    Name = "Audi",
                 },
                 new Brand()
                 {
                     Id = 5,
-                    Name = "Ford",
+                    Name = "BMW",
                 },
                 new Brand()
                 {
                     Id = 6,
-                    Name = "Geely",
+                    Name = "Bentley",
                 },
                 new Brand()
                 {
                     Id = 7,
-                    Name = "Volvo",
+                    Name = "Buick",
                 },
                 new Brand()
                 {
                     Id = 8,
-                    Name = "Skoda",
+                    Name = "Cadillac",
                 },
                 new Brand()
                 {
                     Id = 9,
-                    Name = "Mitsubishi",
+                    Name = "Chevrolet",
                 },
                 new Brand()
                 {
                     Id = 10,
-                    Name = "Honda",
+                    Name = "Chrysler",
                 },
                 new Brand()
                 {
                     Id = 11,
-                    Name = "ZAZ",
+                    Name = "Daewoo",
                 },
                 new Brand()
                 {
                     Id = 12,
-                    Name = "Nissan",
+                    Name = "Daihatsu",
                 },
                 new Brand()
                 {
                     Id = 13,
-                    Name = "Hyundai",
+                    Name = "Dodge",
                 },
                 new Brand()
                 {
                     Id = 14,
-                    Name = "Volkswagen",
+                    Name = "Eagle",
                 },
                 new Brand()
                 {
                     Id = 15,
-                    Name = "Lexus",
+                    Name = "FIAT",
                 },
                 new Brand()
                 {
                     Id = 16,
-                    Name = "Mazda",
+                    Name = "Ferrari",
                 },
                 new Brand()
                 {
                     Id = 17,
-                    Name = "Porsche",
+                    Name = "Fisker",
                 },
                 new Brand()
                 {
                     Id = 18,
-                    Name = "Mercedez-Benz",
+                    Name = "Ford",
                 },
                 new Brand()
                 {
                     Id = 19,
+                    Name = "Freightliner",
+                },
+                new Brand()
+                {
+                    Id = 20,
+                    Name = "GMC",
+                },
+                new Brand()
+                {
+                    Id = 21,
+                    Name = "Genesis",
+                },
+                new Brand()
+                {
+                    Id = 22,
+                    Name = "Geo",
+                },
+                new Brand()
+                {
+                    Id = 23,
+                    Name = "HUMMER",
+                },
+                new Brand()
+                {
+                    Id = 24,
+                    Name = "Honda",
+                },
+                new Brand()
+                {
+                    Id = 25,
+                    Name = "Hyundai",
+                },
+                new Brand()
+                {
+                    Id = 26,
+                    Name = "INFINITI",
+                },
+                new Brand()
+                {
+                    Id = 27,
+                    Name = "Isuzu",
+                },
+                new Brand()
+                {
+                    Id = 28,
+                    Name = "Jaguar",
+                },
+                new Brand()
+                {
+                    Id = 29,
+                    Name = "Jeep",
+                },
+                new Brand()
+                {
+                    Id = 30,
+                    Name = "Kia",
+                },
+                new Brand()
+                {
+                    Id = 31,
+                    Name = "Lamborghini",
+                },
+                new Brand()
+                {
+                    Id = 32,
+                    Name = "Land Rover",
+                },
+                new Brand()
+                {
+                    Id = 33,
+                    Name = "Lexus",
+                },
+                new Brand()
+                {
+                    Id = 34,
+                    Name = "Lincoln",
+                },
+                new Brand()
+                {
+                    Id = 35,
+                    Name = "Lotus",
+                },
+                new Brand()
+                {
+                    Id = 36,
+                    Name = "MAZDA",
+                },
+                new Brand()
+                {
+                    Id = 37,
+                    Name = "MINI",
+                },
+                new Brand()
+                {
+                    Id = 38,
+                    Name = "Maserati",
+                },
+                new Brand()
+                {
+                    Id = 39,
+                    Name = "Maybach",
+                },
+                new Brand()
+                {
+                    Id = 40,
+                    Name = "McLaren",
+                },
+                new Brand()
+                {
+                    Id = 41,
+                    Name = "Mercedes-Benz",
+                },
+                new Brand()
+                {
+                    Id = 42,
+                    Name = "Mercury",
+                },
+                new Brand()
+                {
+                    Id = 43,
+                    Name = "Mitsubishi",
+                },
+                new Brand()
+                {
+                    Id = 44,
+                    Name = "Nissan",
+                },
+                new Brand()
+                {
+                    Id = 45,
+                    Name = "Oldsmobile",
+                },
+                new Brand()
+                {
+                    Id = 46,
+                    Name = "Panoz",
+                },
+                new Brand()
+                {
+                    Id = 47,
+                    Name = "Plymouth",
+                },
+                new Brand()
+                {
+                    Id = 48,
+                    Name = "Pontiac",
+                },
+                new Brand()
+                {
+                    Id = 49,
+                    Name = "Porsche",
+                },
+                new Brand()
+                {
+                    Id = 50,
+                    Name = "Ram",
+                },
+                new Brand()
+                {
+                    Id = 51,
+                    Name = "Rolls-Royce",
+                },
+                new Brand()
+                {
+                    Id = 52,
+                    Name = "SRT",
+                },
+                new Brand()
+                {
+                    Id = 53,
+                    Name = "Saab",
+                },
+                new Brand()
+                {
+                    Id = 54,
+                    Name = "Saturn",
+                },
+                new Brand()
+                {
+                    Id = 55,
+                    Name = "Scion",
+                },
+                new Brand()
+                {
+                    Id = 56,
+                    Name = "Subaru",
+                },
+                new Brand()
+                {
+                    Id = 57,
+                    Name = "Suzuki",
+                },
+                new Brand()
+                {
+                    Id = 58,
+                    Name = "Tesla",
+                },
+                new Brand()
+                {
+                    Id = 59,
                     Name = "Toyota",
+                },
+                new Brand()
+                {
+                    Id = 60,
+                    Name = "Volkswagen",
+                },
+                new Brand()
+                {
+                    Id = 61,
+                    Name = "Volvo",
+                },
+                new Brand()
+                {
+                    Id = 62,
+                    Name = "smart",
                 });
 
         public static void SeedModels(EntityTypeBuilder<Model> builder) =>
@@ -116,1226 +331,7472 @@ namespace Car.Data.EntityConfigurations
                 new Model()
                 {
                     Id = 1,
-                    Name = "1 Series",
+                    Name = "CL",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 2,
-                    Name = "2 Series",
+                    Name = "ILX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 3,
-                    Name = "3 Series",
+                    Name = "Integra",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 4,
-                    Name = "4 Series",
+                    Name = "Legend",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 5,
-                    Name = "5 Series",
+                    Name = "MDX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 6,
-                    Name = "6 Series",
+                    Name = "MDX Sport Hybrid",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 7,
-                    Name = "7 Series",
+                    Name = "NSX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 8,
-                    Name = "8 Series",
+                    Name = "RDX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 9,
-                    Name = "M",
+                    Name = "RL",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 10,
-                    Name = "M2",
+                    Name = "RLX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 11,
-                    Name = "M3",
+                    Name = "RLX Sport Hybrid",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 12,
-                    Name = "M4",
+                    Name = "RSX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 13,
-                    Name = "M5",
+                    Name = "SLX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 14,
-                    Name = "M6",
+                    Name = "TL",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 15,
-                    Name = "X1",
+                    Name = "TLX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 16,
-                    Name = "X2",
+                    Name = "TSX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 17,
-                    Name = "X3",
+                    Name = "Vigor",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 18,
-                    Name = "X4",
+                    Name = "ZDX",
                     BrandId = 1,
                 },
                 new Model()
                 {
                     Id = 19,
-                    Name = "X5",
-                    BrandId = 1,
+                    Name = "164",
+                    BrandId = 2,
                 },
                 new Model()
                 {
                     Id = 20,
-                    Name = "X6",
-                    BrandId = 1,
+                    Name = "4C",
+                    BrandId = 2,
                 },
                 new Model()
                 {
                     Id = 21,
-                    Name = "X6 M",
-                    BrandId = 1,
+                    Name = "4C Spider",
+                    BrandId = 2,
                 },
                 new Model()
                 {
                     Id = 22,
-                    Name = "X7",
-                    BrandId = 1,
+                    Name = "Giulia",
+                    BrandId = 2,
                 },
                 new Model()
                 {
                     Id = 23,
-                    Name = "100",
+                    Name = "Spider",
                     BrandId = 2,
                 },
                 new Model()
                 {
                     Id = 24,
-                    Name = "80",
+                    Name = "Stelvio",
                     BrandId = 2,
                 },
                 new Model()
                 {
                     Id = 25,
-                    Name = "90",
-                    BrandId = 2,
+                    Name = "DB11",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 26,
-                    Name = "A3",
-                    BrandId = 2,
+                    Name = "DB9",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 27,
-                    Name = "A4",
-                    BrandId = 2,
+                    Name = "DB9 GT",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 28,
-                    Name = "A5",
-                    BrandId = 2,
+                    Name = "DBS",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 29,
-                    Name = "A6",
-                    BrandId = 2,
+                    Name = "Rapide",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 30,
-                    Name = "A7",
-                    BrandId = 2,
+                    Name = "Rapide S",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 31,
-                    Name = "A8",
-                    BrandId = 2,
+                    Name = "Vanquish",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 32,
-                    Name = "Q3",
-                    BrandId = 2,
+                    Name = "Vanquish S",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 33,
-                    Name = "Q5",
-                    BrandId = 2,
+                    Name = "Vantage",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 34,
-                    Name = "Q7",
-                    BrandId = 2,
+                    Name = "Virage",
+                    BrandId = 3,
                 },
                 new Model()
                 {
                     Id = 35,
-                    Name = "Q8",
-                    BrandId = 2,
+                    Name = "100",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 36,
-                    Name = "Aveo",
-                    BrandId = 3,
+                    Name = "80",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 37,
-                    Name = "Avalanche 1500",
-                    BrandId = 3,
+                    Name = "90",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 38,
-                    Name = "Avalanche",
-                    BrandId = 3,
+                    Name = "A3",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 39,
-                    Name = "Avalanche 2500",
-                    BrandId = 3,
+                    Name = "A3 Sportback e-tron",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 40,
-                    Name = "Cavalier",
-                    BrandId = 3,
+                    Name = "A4",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 41,
-                    Name = "Classic",
-                    BrandId = 3,
+                    Name = "A4 (2005.5)",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 42,
-                    Name = "Cobalt",
-                    BrandId = 3,
+                    Name = "A4 allroad",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 43,
-                    Name = "Colorado Crew Cab",
-                    BrandId = 3,
+                    Name = "A5",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 44,
-                    Name = "Corvette",
-                    BrandId = 3,
+                    Name = "A5 Sport",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 45,
-                    Name = "Cruze",
-                    BrandId = 3,
+                    Name = "A6",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 46,
-                    Name = "Equinox",
-                    BrandId = 3,
+                    Name = "A7",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 47,
-                    Name = "124 Spider",
+                    Name = "A8",
                     BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 48,
-                    Name = "500",
+                    Name = "Cabriolet",
                     BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 49,
-                    Name = "500 Abarth",
+                    Name = "Q3",
                     BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 50,
-                    Name = "500L",
+                    Name = "Q5",
                     BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 51,
-                    Name = "500X",
+                    Name = "Q7",
                     BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 52,
-                    Name = "500c",
+                    Name = "Q8",
                     BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 53,
-                    Name = "500e",
+                    Name = "Quattro",
                     BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 54,
-                    Name = "E150 Cargo",
-                    BrandId = 5,
+                    Name = "R8",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 55,
-                    Name = "E150 Passenger",
-                    BrandId = 5,
+                    Name = "RS 3",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 56,
-                    Name = "E150 Super Duty Cargo",
-                    BrandId = 5,
+                    Name = "RS 4",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 57,
-                    Name = "E250 Cargo",
-                    BrandId = 5,
+                    Name = "RS 5",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 58,
-                    Name = "E350 Super Duty Cargo",
-                    BrandId = 5,
+                    Name = "RS 6",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 59,
-                    Name = "Econoline E150 Cargo",
-                    BrandId = 5,
+                    Name = "RS 7",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 60,
-                    Name = "Econoline E250 Cargo",
-                    BrandId = 5,
+                    Name = "S3",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 61,
-                    Name = "Edge",
-                    BrandId = 5,
+                    Name = "S4",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 62,
-                    Name = "Escape",
-                    BrandId = 5,
+                    Name = "S4 (2005.5)",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 63,
-                    Name = "Escort",
-                    BrandId = 5,
+                    Name = "S5",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 64,
-                    Name = "Excursion",
-                    BrandId = 5,
+                    Name = "S6",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 65,
-                    Name = "ATLAS",
-                    BrandId = 6,
+                    Name = "S7",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 66,
-                    Name = "GC6",
-                    BrandId = 6,
+                    Name = "S8",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 67,
-                    Name = "GX7",
-                    BrandId = 6,
+                    Name = "SQ5",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 68,
-                    Name = "MK",
-                    BrandId = 6,
+                    Name = "TT",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 69,
-                    Name = "EMGRAND",
-                    BrandId = 6,
+                    Name = "allroad",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 70,
-                    Name = "EMGRAND 7",
-                    BrandId = 6,
+                    Name = "e-tron",
+                    BrandId = 4,
                 },
                 new Model()
                 {
                     Id = 71,
-                    Name = "EMGRAND EC7",
-                    BrandId = 6,
+                    Name = "1 Series",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 72,
-                    Name = "EMGRAND GS",
-                    BrandId = 6,
+                    Name = "2 Series",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 73,
-                    Name = "TUGELLA",
-                    BrandId = 6,
+                    Name = "3 Series",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 74,
-                    Name = "PREFACE",
-                    BrandId = 6,
+                    Name = "4 Series",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 75,
-                    Name = "C30",
-                    BrandId = 7,
+                    Name = "5 Series",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 76,
-                    Name = "C70",
-                    BrandId = 7,
+                    Name = "6 Series",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 77,
-                    Name = "S40",
-                    BrandId = 7,
+                    Name = "7 Series",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 78,
-                    Name = "S60",
-                    BrandId = 7,
+                    Name = "8 Series",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 79,
-                    Name = "S70",
-                    BrandId = 7,
+                    Name = "Alpina B7",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 80,
-                    Name = "S80",
-                    BrandId = 7,
+                    Name = "M",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 81,
-                    Name = "S90",
-                    BrandId = 7,
+                    Name = "M2",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 82,
-                    Name = "V40",
-                    BrandId = 7,
+                    Name = "M3",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 83,
-                    Name = "V50",
-                    BrandId = 7,
+                    Name = "M4",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 84,
-                    Name = "V60",
-                    BrandId = 7,
+                    Name = "M5",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 85,
-                    Name = "Fabia",
-                    BrandId = 8,
+                    Name = "M6",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 86,
-                    Name = "SUPERB",
-                    BrandId = 8,
+                    Name = "X1",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 87,
-                    Name = "OCTAVIA",
-                    BrandId = 8,
+                    Name = "X2",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 88,
-                    Name = "KAROQ",
-                    BrandId = 8,
+                    Name = "X3",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 89,
-                    Name = "KODIAQ",
-                    BrandId = 8,
+                    Name = "X4",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 90,
-                    Name = "SCALA",
-                    BrandId = 8,
+                    Name = "X5",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 91,
-                    Name = "KAMIQ",
-                    BrandId = 8,
+                    Name = "X5 M",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 92,
-                    Name = "Rapid TSI",
-                    BrandId = 8,
+                    Name = "X6",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 93,
-                    Name = "New Octavia",
-                    BrandId = 8,
+                    Name = "X6 M",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 94,
-                    Name = "Vision In Concept",
-                    BrandId = 8,
+                    Name = "X7",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 95,
-                    Name = "Diamante",
-                    BrandId = 9,
+                    Name = "Z3",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 96,
-                    Name = "Eclipse",
-                    BrandId = 9,
+                    Name = "Z4",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 97,
-                    Name = "Expo",
-                    BrandId = 9,
+                    Name = "Z4 M",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 98,
-                    Name = "Galant",
-                    BrandId = 9,
+                    Name = "Z8",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 99,
-                    Name = "Endeavor",
-                    BrandId = 9,
+                    Name = "i3",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 100,
-                    Name = "Lancer",
-                    BrandId = 9,
+                    Name = "i8",
+                    BrandId = 5,
                 },
                 new Model()
                 {
                     Id = 101,
-                    Name = "Mirage",
-                    BrandId = 9,
+                    Name = "Arnage",
+                    BrandId = 6,
                 },
                 new Model()
                 {
                     Id = 102,
-                    Name = "Outlander",
-                    BrandId = 9,
+                    Name = "Azure",
+                    BrandId = 6,
                 },
                 new Model()
                 {
                     Id = 103,
-                    Name = "i-MiEV",
-                    BrandId = 9,
+                    Name = "Azure T",
+                    BrandId = 6,
                 },
                 new Model()
                 {
                     Id = 104,
-                    Name = "Raider Double Cab",
-                    BrandId = 9,
+                    Name = "Bentayga",
+                    BrandId = 6,
                 },
                 new Model()
                 {
                     Id = 105,
-                    Name = "Accord",
-                    BrandId = 10,
+                    Name = "Brooklands",
+                    BrandId = 6,
                 },
                 new Model()
                 {
                     Id = 106,
-                    Name = "Accord Hybrid",
-                    BrandId = 10,
+                    Name = "Continental",
+                    BrandId = 6,
                 },
                 new Model()
                 {
                     Id = 107,
-                    Name = "CR-V",
-                    BrandId = 10,
+                    Name = "Flying Spur",
+                    BrandId = 6,
                 },
                 new Model()
                 {
                     Id = 108,
-                    Name = "Civic",
-                    BrandId = 10,
+                    Name = "Mulsanne",
+                    BrandId = 6,
                 },
                 new Model()
                 {
                     Id = 109,
-                    Name = "Element",
-                    BrandId = 10,
+                    Name = "Cascada",
+                    BrandId = 7,
                 },
                 new Model()
                 {
                     Id = 110,
-                    Name = "Fit",
-                    BrandId = 10,
+                    Name = "Century",
+                    BrandId = 7,
                 },
                 new Model()
                 {
                     Id = 111,
-                    Name = "HR-V",
-                    BrandId = 10,
+                    Name = "Enclave",
+                    BrandId = 7,
                 },
                 new Model()
                 {
                     Id = 112,
-                    Name = "Insight",
-                    BrandId = 10,
+                    Name = "Encore",
+                    BrandId = 7,
                 },
                 new Model()
                 {
                     Id = 113,
-                    Name = "Odyssey",
-                    BrandId = 10,
+                    Name = "Envision",
+                    BrandId = 7,
                 },
                 new Model()
                 {
                     Id = 114,
-                    Name = "Passport",
-                    BrandId = 10,
+                    Name = "LaCrosse",
+                    BrandId = 7,
                 },
                 new Model()
                 {
                     Id = 115,
-                    Name = "Tavria",
-                    BrandId = 11,
+                    Name = "LeSabre",
+                    BrandId = 7,
                 },
                 new Model()
                 {
                     Id = 116,
-                    Name = "Slavuta",
-                    BrandId = 11,
+                    Name = "Lucerne",
+                    BrandId = 7,
                 },
                 new Model()
                 {
                     Id = 117,
+                    Name = "Park Avenue",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 118,
+                    Name = "Rainier",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 119,
+                    Name = "Regal",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 120,
+                    Name = "Regal Sportback",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 121,
+                    Name = "Regal TourX",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 122,
+                    Name = "Rendezvous",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 123,
+                    Name = "Riviera",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 124,
+                    Name = "Roadmaster",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 125,
+                    Name = "Skylark",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 126,
+                    Name = "Terraza",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 127,
+                    Name = "Verano",
+                    BrandId = 7,
+                },
+                new Model()
+                {
+                    Id = 128,
+                    Name = "ATS",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 129,
+                    Name = "ATS-V",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 130,
+                    Name = "Allante",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 131,
+                    Name = "Brougham",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 132,
+                    Name = "CT5",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 133,
+                    Name = "CT6",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 134,
+                    Name = "CT6-V",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 135,
+                    Name = "CTS",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 136,
+                    Name = "CTS-V",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 137,
+                    Name = "Catera",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 138,
+                    Name = "DTS",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 139,
+                    Name = "DeVille",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 140,
+                    Name = "ELR",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 141,
+                    Name = "Eldorado",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 142,
+                    Name = "Escalade",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 143,
+                    Name = "Escalade ESV",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 144,
+                    Name = "Escalade EXT",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 145,
+                    Name = "Fleetwood",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 146,
+                    Name = "SRX",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 147,
+                    Name = "STS",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 148,
+                    Name = "Seville",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 149,
+                    Name = "Sixty Special",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 150,
+                    Name = "XLR",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 151,
+                    Name = "XT4",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 152,
+                    Name = "XT5",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 153,
+                    Name = "XT6",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 154,
+                    Name = "XTS",
+                    BrandId = 8,
+                },
+                new Model()
+                {
+                    Id = 155,
+                    Name = "1500 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 156,
+                    Name = "1500 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 157,
+                    Name = "2500 Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 158,
+                    Name = "2500 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 159,
+                    Name = "2500 HD Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 160,
+                    Name = "2500 HD Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 161,
+                    Name = "2500 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 162,
+                    Name = "3500 Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 163,
+                    Name = "3500 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 164,
+                    Name = "3500 HD Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 165,
+                    Name = "3500 HD Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 166,
+                    Name = "3500 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 167,
+                    Name = "APV Cargo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 168,
+                    Name = "Astro Cargo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 169,
+                    Name = "Astro Passenger",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 170,
+                    Name = "Avalanche",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 171,
+                    Name = "Avalanche 1500",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 172,
+                    Name = "Avalanche 2500",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 173,
+                    Name = "Aveo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 174,
+                    Name = "Beretta",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 175,
+                    Name = "Blazer",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 176,
+                    Name = "Bolt EV",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 177,
+                    Name = "Camaro",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 178,
+                    Name = "Caprice",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 179,
+                    Name = "Caprice Classic",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 180,
+                    Name = "Captiva Sport",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 181,
+                    Name = "Cavalier",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 182,
+                    Name = "City Express",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 183,
+                    Name = "Classic",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 184,
+                    Name = "Cobalt",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 185,
+                    Name = "Colorado Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 186,
+                    Name = "Colorado Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 187,
+                    Name = "Colorado Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 188,
+                    Name = "Corsica",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 189,
+                    Name = "Corvette",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 190,
+                    Name = "Cruze",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 191,
+                    Name = "Cruze Limited",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 192,
+                    Name = "Equinox",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 193,
+                    Name = "Express 1500 Cargo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 194,
+                    Name = "Express 1500 Passenger",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 195,
+                    Name = "Express 2500 Cargo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 196,
+                    Name = "Express 2500 Passenger",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 197,
+                    Name = "Express 3500 Cargo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 198,
+                    Name = "Express 3500 Passenger",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 199,
+                    Name = "G-Series 1500",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 200,
+                    Name = "G-Series 2500",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 201,
+                    Name = "G-Series 3500",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 202,
+                    Name = "G-Series G10",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 203,
+                    Name = "G-Series G20",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 204,
+                    Name = "G-Series G30",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 205,
+                    Name = "HHR",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 206,
+                    Name = "Impala",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 207,
+                    Name = "Impala Limited",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 208,
+                    Name = "Lumina",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 209,
+                    Name = "Lumina APV",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 210,
+                    Name = "Lumina Cargo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 211,
+                    Name = "Lumina Passenger",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 212,
+                    Name = "Malibu",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 213,
+                    Name = "Malibu (Classic)",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 214,
+                    Name = "Malibu Limited",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 215,
+                    Name = "Metro",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 216,
+                    Name = "Monte Carlo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 217,
+                    Name = "Prizm",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 218,
+                    Name = "S10 Blazer",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 219,
+                    Name = "S10 Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 220,
+                    Name = "S10 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 221,
+                    Name = "S10 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 222,
+                    Name = "SS",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 223,
+                    Name = "SSR",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 224,
+                    Name = "Silverado (Classic) 1500 Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 225,
+                    Name = "Silverado (Classic) 1500 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 226,
+                    Name = "Silverado (Classic) 1500 HD Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 227,
+                    Name = "Silverado (Classic) 1500 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 228,
+                    Name = "Silverado (Classic) 2500 HD Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 229,
+                    Name = "Silverado (Classic) 2500 HD Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 230,
+                    Name = "Silverado (Classic) 2500 HD Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 231,
+                    Name = "Silverado (Classic) 3500 Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 232,
+                    Name = "Silverado (Classic) 3500 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 233,
+                    Name = "Silverado (Classic) 3500 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 234,
+                    Name = "Silverado 1500 Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 235,
+                    Name = "Silverado 1500 Double Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 236,
+                    Name = "Silverado 1500 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 237,
+                    Name = "Silverado 1500 HD Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 238,
+                    Name = "Silverado 1500 LD Double Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 239,
+                    Name = "Silverado 1500 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 240,
+                    Name = "Silverado 2500 Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 241,
+                    Name = "Silverado 2500 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 242,
+                    Name = "Silverado 2500 HD Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 243,
+                    Name = "Silverado 2500 HD Double Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 244,
+                    Name = "Silverado 2500 HD Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 245,
+                    Name = "Silverado 2500 HD Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 246,
+                    Name = "Silverado 2500 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 247,
+                    Name = "Silverado 3500 Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 248,
+                    Name = "Silverado 3500 Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 249,
+                    Name = "Silverado 3500 HD Crew Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 250,
+                    Name = "Silverado 3500 HD Double Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 251,
+                    Name = "Silverado 3500 HD Extended Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 252,
+                    Name = "Silverado 3500 HD Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 253,
+                    Name = "Silverado 3500 Regular Cab",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 254,
+                    Name = "Sonic",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 255,
+                    Name = "Spark",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 256,
+                    Name = "Spark EV",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 257,
+                    Name = "Sportvan G10",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 258,
+                    Name = "Sportvan G20",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 259,
+                    Name = "Sportvan G30",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 260,
+                    Name = "Suburban",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 261,
+                    Name = "Suburban 1500",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 262,
+                    Name = "Suburban 2500",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 263,
+                    Name = "Suburban 3500HD",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 264,
+                    Name = "Tahoe",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 265,
+                    Name = "Tahoe (New)",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 266,
+                    Name = "Tracker",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 267,
+                    Name = "TrailBlazer",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 268,
+                    Name = "Traverse",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 269,
+                    Name = "Trax",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 270,
+                    Name = "Uplander Cargo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 271,
+                    Name = "Uplander Passenger",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 272,
+                    Name = "Venture Cargo",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 273,
+                    Name = "Venture Passenger",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 274,
+                    Name = "Volt",
+                    BrandId = 9,
+                },
+                new Model()
+                {
+                    Id = 275,
+                    Name = "200",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 276,
+                    Name = "300",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 277,
+                    Name = "300M",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 278,
+                    Name = "Aspen",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 279,
+                    Name = "Cirrus",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 280,
+                    Name = "Concorde",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 281,
+                    Name = "Crossfire",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 282,
+                    Name = "Fifth Ave",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 283,
+                    Name = "Grand Voyager",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 284,
+                    Name = "Imperial",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 285,
+                    Name = "LHS",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 286,
+                    Name = "LeBaron",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 287,
+                    Name = "New Yorker",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 288,
+                    Name = "PT Cruiser",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 289,
+                    Name = "Pacifica",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 290,
+                    Name = "Pacifica Hybrid",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 291,
+                    Name = "Prowler",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 292,
+                    Name = "Sebring",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 293,
+                    Name = "Town & Country",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 294,
+                    Name = "Voyager",
+                    BrandId = 10,
+                },
+                new Model()
+                {
+                    Id = 295,
                     Name = "Lanos",
                     BrandId = 11,
                 },
                 new Model()
                 {
-                    Id = 118,
-                    Name = "Forza",
+                    Id = 296,
+                    Name = "Leganza",
                     BrandId = 11,
                 },
                 new Model()
                 {
-                    Id = 119,
-                    Name = "Vida",
+                    Id = 297,
+                    Name = "Nubira",
                     BrandId = 11,
                 },
                 new Model()
                 {
-                    Id = 120,
-                    Name = "Sens",
-                    BrandId = 11,
-                },
-                new Model()
-                {
-                    Id = 121,
-                    Name = "Pick-up",
-                    BrandId = 11,
-                },
-                new Model()
-                {
-                    Id = 122,
-                    Name = "Dana",
-                    BrandId = 11,
-                },
-                new Model()
-                {
-                    Id = 123,
-                    Name = "Vida Cargo",
-                    BrandId = 11,
-                },
-                new Model()
-                {
-                    Id = 124,
-                    Name = "Lanos Cargo",
-                    BrandId = 11,
-                },
-                new Model()
-                {
-                    Id = 125,
-                    Name = "350Z",
+                    Id = 298,
+                    Name = "Charade",
                     BrandId = 12,
                 },
                 new Model()
                 {
-                    Id = 126,
-                    Name = "370Z",
+                    Id = 299,
+                    Name = "Rocky",
                     BrandId = 12,
                 },
                 new Model()
                 {
-                    Id = 127,
-                    Name = "Altima",
-                    BrandId = 12,
+                    Id = 300,
+                    Name = "Avenger",
+                    BrandId = 13,
                 },
                 new Model()
                 {
-                    Id = 128,
-                    Name = "Armada",
-                    BrandId = 12,
+                    Id = 301,
+                    Name = "Caliber",
+                    BrandId = 13,
                 },
                 new Model()
                 {
-                    Id = 129,
-                    Name = "Frontier King Cab",
-                    BrandId = 12,
+                    Id = 302,
+                    Name = "Caravan Cargo",
+                    BrandId = 13,
                 },
                 new Model()
                 {
-                    Id = 130,
-                    Name = "GT-R",
-                    BrandId = 12,
+                    Id = 303,
+                    Name = "Caravan Passenger",
+                    BrandId = 13,
                 },
                 new Model()
                 {
-                    Id = 131,
-                    Name = "JUKE",
-                    BrandId = 12,
+                    Id = 304,
+                    Name = "Challenger",
+                    BrandId = 13,
                 },
                 new Model()
                 {
-                    Id = 132,
-                    Name = "LEAF",
-                    BrandId = 12,
+                    Id = 305,
+                    Name = "Charger",
+                    BrandId = 13,
                 },
                 new Model()
                 {
-                    Id = 133,
-                    Name = "Maxima",
-                    BrandId = 12,
+                    Id = 306,
+                    Name = "Colt",
+                    BrandId = 13,
                 },
                 new Model()
                 {
-                    Id = 134,
-                    Name = "Murano",
-                    BrandId = 12,
+                    Id = 307,
+                    Name = "D150 Club Cab",
+                    BrandId = 13,
                 },
                 new Model()
                 {
-                    Id = 135,
+                    Id = 308,
+                    Name = "D150 Regular Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 309,
+                    Name = "D250 Club Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 310,
+                    Name = "D250 Regular Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 311,
+                    Name = "D350 Club Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 312,
+                    Name = "D350 Regular Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 313,
+                    Name = "Dakota Club Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 314,
+                    Name = "Dakota Crew Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 315,
+                    Name = "Dakota Extended Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 316,
+                    Name = "Dakota Quad Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 317,
+                    Name = "Dakota Regular Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 318,
+                    Name = "Dart",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 319,
+                    Name = "Daytona",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 320,
+                    Name = "Durango",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 321,
+                    Name = "Dynasty",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 322,
+                    Name = "Grand Caravan Cargo",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 323,
+                    Name = "Grand Caravan Passenger",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 324,
+                    Name = "Intrepid",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 325,
+                    Name = "Journey",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 326,
+                    Name = "Magnum",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 327,
+                    Name = "Monaco",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 328,
+                    Name = "Neon",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 329,
+                    Name = "Nitro",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 330,
+                    Name = "Ram 1500 Club Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 331,
+                    Name = "Ram 1500 Crew Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 332,
+                    Name = "Ram 1500 Mega Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 333,
+                    Name = "Ram 1500 Quad Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 334,
+                    Name = "Ram 1500 Regular Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 335,
+                    Name = "Ram 2500 Club Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 336,
+                    Name = "Ram 2500 Crew Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 337,
+                    Name = "Ram 2500 Mega Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 338,
+                    Name = "Ram 2500 Quad Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 339,
+                    Name = "Ram 2500 Regular Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 340,
+                    Name = "Ram 3500 Club Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 341,
+                    Name = "Ram 3500 Crew Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 342,
+                    Name = "Ram 3500 Mega Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 343,
+                    Name = "Ram 3500 Quad Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 344,
+                    Name = "Ram 3500 Regular Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 345,
+                    Name = "Ram 50 Regular Cab",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 346,
+                    Name = "Ram Van 1500",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 347,
+                    Name = "Ram Van 2500",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 348,
+                    Name = "Ram Van 3500",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 349,
+                    Name = "Ram Van B150",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 350,
+                    Name = "Ram Van B250",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 351,
+                    Name = "Ram Van B350",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 352,
+                    Name = "Ram Wagon 1500",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 353,
+                    Name = "Ram Wagon 2500",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 354,
+                    Name = "Ram Wagon 3500",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 355,
+                    Name = "Ram Wagon B150",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 356,
+                    Name = "Ram Wagon B250",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 357,
+                    Name = "Ram Wagon B350",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 358,
+                    Name = "Ramcharger",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 359,
+                    Name = "Shadow",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 360,
+                    Name = "Spirit",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 361,
+                    Name = "Sprinter 2500 Cargo",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 362,
+                    Name = "Sprinter 2500 Passenger",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 363,
+                    Name = "Sprinter 3500 Cargo",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 364,
+                    Name = "Stealth",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 365,
+                    Name = "Stratus",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 366,
+                    Name = "Viper",
+                    BrandId = 13,
+                },
+                new Model()
+                {
+                    Id = 367,
+                    Name = "Premier",
+                    BrandId = 14,
+                },
+                new Model()
+                {
+                    Id = 368,
+                    Name = "Summit",
+                    BrandId = 14,
+                },
+                new Model()
+                {
+                    Id = 369,
+                    Name = "Talon",
+                    BrandId = 14,
+                },
+                new Model()
+                {
+                    Id = 370,
+                    Name = "Vision",
+                    BrandId = 14,
+                },
+                new Model()
+                {
+                    Id = 371,
+                    Name = "124 Spider",
+                    BrandId = 15,
+                },
+                new Model()
+                {
+                    Id = 372,
+                    Name = "500",
+                    BrandId = 15,
+                },
+                new Model()
+                {
+                    Id = 373,
+                    Name = "500 Abarth",
+                    BrandId = 15,
+                },
+                new Model()
+                {
+                    Id = 374,
+                    Name = "500L",
+                    BrandId = 15,
+                },
+                new Model()
+                {
+                    Id = 375,
+                    Name = "500X",
+                    BrandId = 15,
+                },
+                new Model()
+                {
+                    Id = 376,
+                    Name = "500c",
+                    BrandId = 15,
+                },
+                new Model()
+                {
+                    Id = 377,
+                    Name = "500c Abarth",
+                    BrandId = 15,
+                },
+                new Model()
+                {
+                    Id = 378,
+                    Name = "500e",
+                    BrandId = 15,
+                },
+                new Model()
+                {
+                    Id = 379,
+                    Name = "430 Scuderia",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 380,
+                    Name = "458 Italia",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 381,
+                    Name = "458 Speciale",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 382,
+                    Name = "458 Spider",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 383,
+                    Name = "488 GTB",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 384,
+                    Name = "488 Spider",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 385,
+                    Name = "599 GTB Fiorano",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 386,
+                    Name = "599 GTO",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 387,
+                    Name = "612 Scaglietti",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 388,
+                    Name = "812 Superfast",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 389,
+                    Name = "California",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 390,
+                    Name = "F12berlinetta",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 391,
+                    Name = "F430",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 392,
+                    Name = "FF",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 393,
+                    Name = "GTC4Lusso",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 394,
+                    Name = "Portofino",
+                    BrandId = 16,
+                },
+                new Model()
+                {
+                    Id = 395,
+                    Name = "Karma",
+                    BrandId = 17,
+                },
+                new Model()
+                {
+                    Id = 396,
+                    Name = "Aerostar Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 397,
+                    Name = "Aerostar Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 398,
+                    Name = "Aspire",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 399,
+                    Name = "Bronco",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 400,
+                    Name = "C-MAX Energi",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 401,
+                    Name = "C-MAX Hybrid",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 402,
+                    Name = "Club Wagon",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 403,
+                    Name = "Contour",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 404,
+                    Name = "Crown Victoria",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 405,
+                    Name = "E150 Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 406,
+                    Name = "E150 Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 407,
+                    Name = "E150 Super Duty Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 408,
+                    Name = "E150 Super Duty Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 409,
+                    Name = "E250 Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 410,
+                    Name = "E250 Super Duty Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 411,
+                    Name = "E350 Super Duty Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 412,
+                    Name = "E350 Super Duty Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 413,
+                    Name = "EcoSport",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 414,
+                    Name = "Econoline E150 Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 415,
+                    Name = "Econoline E150 Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 416,
+                    Name = "Econoline E250 Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 417,
+                    Name = "Econoline E350 Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 418,
+                    Name = "Econoline E350 Super Duty Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 419,
+                    Name = "Econoline E350 Super Duty Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 420,
+                    Name = "Edge",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 421,
+                    Name = "Escape",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 422,
+                    Name = "Escort",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 423,
+                    Name = "Excursion",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 424,
+                    Name = "Expedition",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 425,
+                    Name = "Expedition EL",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 426,
+                    Name = "Expedition MAX",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 427,
+                    Name = "Explorer",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 428,
+                    Name = "Explorer Sport",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 429,
+                    Name = "Explorer Sport Trac",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 430,
+                    Name = "F150 (Heritage) Regular Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 431,
+                    Name = "F150 (Heritage) Super Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 432,
+                    Name = "F150 Regular Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 433,
+                    Name = "F150 Super Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 434,
+                    Name = "F150 SuperCrew Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 435,
+                    Name = "F250 Crew Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 436,
+                    Name = "F250 Regular Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 437,
+                    Name = "F250 Super Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 438,
+                    Name = "F250 Super Duty Crew Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 439,
+                    Name = "F250 Super Duty Regular Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 440,
+                    Name = "F250 Super Duty Super Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 441,
+                    Name = "F350 Crew Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 442,
+                    Name = "F350 Regular Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 443,
+                    Name = "F350 Super Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 444,
+                    Name = "F350 Super Duty Crew Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 445,
+                    Name = "F350 Super Duty Regular Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 446,
+                    Name = "F350 Super Duty Super Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 447,
+                    Name = "F450 Super Duty Crew Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 448,
+                    Name = "Festiva",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 449,
+                    Name = "Fiesta",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 450,
+                    Name = "Five Hundred",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 451,
+                    Name = "Flex",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 452,
+                    Name = "Focus",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 453,
+                    Name = "Focus ST",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 454,
+                    Name = "Freestar Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 455,
+                    Name = "Freestar Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 456,
+                    Name = "Freestyle",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 457,
+                    Name = "Fusion",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 458,
+                    Name = "Fusion Energi",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 459,
+                    Name = "GT",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 460,
+                    Name = "Mustang",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 461,
+                    Name = "Probe",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 462,
+                    Name = "Ranger Regular Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 463,
+                    Name = "Ranger Super Cab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 464,
+                    Name = "Ranger SuperCab",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 465,
+                    Name = "Ranger SuperCrew",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 466,
+                    Name = "Taurus",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 467,
+                    Name = "Taurus X",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 468,
+                    Name = "Tempo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 469,
+                    Name = "Thunderbird",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 470,
+                    Name = "Transit 150 Van",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 471,
+                    Name = "Transit 150 Wagon",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 472,
+                    Name = "Transit 250 Van",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 473,
+                    Name = "Transit 350 HD Van",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 474,
+                    Name = "Transit 350 Van",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 475,
+                    Name = "Transit 350 Wagon",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 476,
+                    Name = "Transit Connect Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 477,
+                    Name = "Transit Connect Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 478,
+                    Name = "Windstar Cargo",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 479,
+                    Name = "Windstar Passenger",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 480,
+                    Name = "ZX2",
+                    BrandId = 18,
+                },
+                new Model()
+                {
+                    Id = 481,
+                    Name = "Sprinter 2500 Cargo",
+                    BrandId = 19,
+                },
+                new Model()
+                {
+                    Id = 482,
+                    Name = "Sprinter 2500 Crew",
+                    BrandId = 19,
+                },
+                new Model()
+                {
+                    Id = 483,
+                    Name = "Sprinter 2500 Passenger",
+                    BrandId = 19,
+                },
+                new Model()
+                {
+                    Id = 484,
+                    Name = "Sprinter 3500 Cargo",
+                    BrandId = 19,
+                },
+                new Model()
+                {
+                    Id = 485,
+                    Name = "Sprinter 3500XD Cargo",
+                    BrandId = 19,
+                },
+                new Model()
+                {
+                    Id = 486,
+                    Name = "Sprinter WORKER Cargo",
+                    BrandId = 19,
+                },
+                new Model()
+                {
+                    Id = 487,
+                    Name = "Sprinter WORKER Passenger",
+                    BrandId = 19,
+                },
+                new Model()
+                {
+                    Id = 488,
+                    Name = "1500 Club Coupe",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 489,
+                    Name = "1500 Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 490,
+                    Name = "2500 Club Coupe",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 491,
+                    Name = "2500 Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 492,
+                    Name = "2500 HD Club Coupe",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 493,
+                    Name = "2500 HD Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 494,
+                    Name = "2500 HD Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 495,
+                    Name = "2500 Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 496,
+                    Name = "3500 Club Coupe",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 497,
+                    Name = "3500 Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 498,
+                    Name = "3500 Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 499,
+                    Name = "3500 Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 500,
+                    Name = "Acadia",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 501,
+                    Name = "Acadia Limited",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 502,
+                    Name = "Canyon Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 503,
+                    Name = "Canyon Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 504,
+                    Name = "Canyon Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 505,
+                    Name = "Envoy",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 506,
+                    Name = "Envoy XL",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 507,
+                    Name = "Envoy XUV",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 508,
+                    Name = "Jimmy",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 509,
+                    Name = "Rally Wagon 1500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 510,
+                    Name = "Rally Wagon 2500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 511,
+                    Name = "Rally Wagon 3500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 512,
+                    Name = "Rally Wagon G2500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 513,
+                    Name = "Rally Wagon G3500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 514,
+                    Name = "Safari Cargo",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 515,
+                    Name = "Safari Passenger",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 516,
+                    Name = "Savana 1500 Cargo",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 517,
+                    Name = "Savana 1500 Passenger",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 518,
+                    Name = "Savana 2500 Cargo",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 519,
+                    Name = "Savana 2500 Passenger",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 520,
+                    Name = "Savana 3500 Cargo",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 521,
+                    Name = "Savana 3500 Passenger",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 522,
+                    Name = "Sierra (Classic) 1500 Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 523,
+                    Name = "Sierra (Classic) 1500 Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 524,
+                    Name = "Sierra (Classic) 1500 HD Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 525,
+                    Name = "Sierra (Classic) 1500 Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 526,
+                    Name = "Sierra (Classic) 2500 Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 527,
+                    Name = "Sierra (Classic) 2500 HD Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 528,
+                    Name = "Sierra (Classic) 2500 HD Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 529,
+                    Name = "Sierra (Classic) 2500 HD Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 530,
+                    Name = "Sierra (Classic) 3500 Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 531,
+                    Name = "Sierra (Classic) 3500 Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 532,
+                    Name = "Sierra (Classic) 3500 Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 533,
+                    Name = "Sierra 1500 Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 534,
+                    Name = "Sierra 1500 Double Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 535,
+                    Name = "Sierra 1500 Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 536,
+                    Name = "Sierra 1500 HD Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 537,
+                    Name = "Sierra 1500 Limited Double Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 538,
+                    Name = "Sierra 1500 Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 539,
+                    Name = "Sierra 2500 Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 540,
+                    Name = "Sierra 2500 Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 541,
+                    Name = "Sierra 2500 HD Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 542,
+                    Name = "Sierra 2500 HD Double Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 543,
+                    Name = "Sierra 2500 HD Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 544,
+                    Name = "Sierra 2500 HD Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 545,
+                    Name = "Sierra 2500 Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 546,
+                    Name = "Sierra 3500 Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 547,
+                    Name = "Sierra 3500 Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 548,
+                    Name = "Sierra 3500 HD Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 549,
+                    Name = "Sierra 3500 HD Double Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 550,
+                    Name = "Sierra 3500 HD Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 551,
+                    Name = "Sierra 3500 HD Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 552,
+                    Name = "Sierra 3500 Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 553,
+                    Name = "Sonoma Club Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 554,
+                    Name = "Sonoma Club Coupe Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 555,
+                    Name = "Sonoma Crew Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 556,
+                    Name = "Sonoma Extended Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 557,
+                    Name = "Sonoma Regular Cab",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 558,
+                    Name = "Suburban 1500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 559,
+                    Name = "Suburban 2500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 560,
+                    Name = "Terrain",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 561,
+                    Name = "Vandura 1500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 562,
+                    Name = "Vandura 2500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 563,
+                    Name = "Vandura 3500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 564,
+                    Name = "Vandura G1500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 565,
+                    Name = "Vandura G2500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 566,
+                    Name = "Vandura G3500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 567,
+                    Name = "Yukon",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 568,
+                    Name = "Yukon Denali",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 569,
+                    Name = "Yukon XL",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 570,
+                    Name = "Yukon XL 1500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 571,
+                    Name = "Yukon XL 2500",
+                    BrandId = 20,
+                },
+                new Model()
+                {
+                    Id = 572,
+                    Name = "G70",
+                    BrandId = 21,
+                },
+                new Model()
+                {
+                    Id = 573,
+                    Name = "G80",
+                    BrandId = 21,
+                },
+                new Model()
+                {
+                    Id = 574,
+                    Name = "G90",
+                    BrandId = 21,
+                },
+                new Model()
+                {
+                    Id = 575,
+                    Name = "Metro",
+                    BrandId = 22,
+                },
+                new Model()
+                {
+                    Id = 576,
+                    Name = "Prizm",
+                    BrandId = 22,
+                },
+                new Model()
+                {
+                    Id = 577,
+                    Name = "Storm",
+                    BrandId = 22,
+                },
+                new Model()
+                {
+                    Id = 578,
+                    Name = "Tracker",
+                    BrandId = 22,
+                },
+                new Model()
+                {
+                    Id = 579,
+                    Name = "H1",
+                    BrandId = 23,
+                },
+                new Model()
+                {
+                    Id = 580,
+                    Name = "H2",
+                    BrandId = 23,
+                },
+                new Model()
+                {
+                    Id = 581,
+                    Name = "H3",
+                    BrandId = 23,
+                },
+                new Model()
+                {
+                    Id = 582,
+                    Name = "H3T",
+                    BrandId = 23,
+                },
+                new Model()
+                {
+                    Id = 583,
+                    Name = "Accord",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 584,
+                    Name = "Accord Crosstour",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 585,
+                    Name = "Accord Hybrid",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 586,
+                    Name = "CR-V",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 587,
+                    Name = "CR-Z",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 588,
+                    Name = "Civic",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 589,
+                    Name = "Civic Type R",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 590,
+                    Name = "Clarity Electric",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 591,
+                    Name = "Clarity Fuel Cell",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 592,
+                    Name = "Clarity Plug-in Hybrid",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 593,
+                    Name = "Crosstour",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 594,
+                    Name = "Element",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 595,
+                    Name = "Fit",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 596,
+                    Name = "HR-V",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 597,
+                    Name = "Insight",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 598,
+                    Name = "Odyssey",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 599,
+                    Name = "Passport",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 600,
+                    Name = "Pilot",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 601,
+                    Name = "Prelude",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 602,
+                    Name = "Ridgeline",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 603,
+                    Name = "S2000",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 604,
+                    Name = "del Sol",
+                    BrandId = 24,
+                },
+                new Model()
+                {
+                    Id = 605,
                     Name = "Accent",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 136,
+                    Id = 606,
                     Name = "Azera",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 137,
+                    Id = 607,
                     Name = "Elantra",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 138,
+                    Id = 608,
+                    Name = "Elantra GT",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 609,
                     Name = "Entourage",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 139,
+                    Id = 610,
                     Name = "Equus",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 140,
+                    Id = 611,
+                    Name = "Excel",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 612,
                     Name = "Genesis",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 141,
+                    Id = 613,
                     Name = "Genesis Coupe",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 142,
+                    Id = 614,
                     Name = "Ioniq Electric",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 143,
+                    Id = 615,
+                    Name = "Ioniq Hybrid",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 616,
+                    Name = "Ioniq Plug-in Hybrid",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 617,
                     Name = "Kona",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 144,
+                    Id = 618,
+                    Name = "Kona Electric",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 619,
                     Name = "NEXO",
-                    BrandId = 13,
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 145,
-                    Name = "Arteon",
-                    BrandId = 14,
+                    Id = 620,
+                    Name = "Palisade",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 146,
-                    Name = "Beetle",
-                    BrandId = 14,
+                    Id = 621,
+                    Name = "Santa Fe",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 147,
-                    Name = "CC",
-                    BrandId = 14,
+                    Id = 622,
+                    Name = "Santa Fe Sport",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 148,
-                    Name = "Eos",
-                    BrandId = 14,
+                    Id = 623,
+                    Name = "Santa Fe XL",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 149,
-                    Name = "GTI",
-                    BrandId = 14,
+                    Id = 624,
+                    Name = "Scoupe",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 150,
-                    Name = "Golf",
-                    BrandId = 14,
+                    Id = 625,
+                    Name = "Sonata",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 151,
-                    Name = "Jetta",
-                    BrandId = 14,
+                    Id = 626,
+                    Name = "Sonata Hybrid",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 152,
-                    Name = "New Beetle",
-                    BrandId = 14,
+                    Id = 627,
+                    Name = "Sonata Plug-in Hybrid",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 153,
-                    Name = "Passat",
-                    BrandId = 14,
+                    Id = 628,
+                    Name = "Tiburon",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 154,
-                    Name = "Rabbit",
-                    BrandId = 14,
+                    Id = 629,
+                    Name = "Tucson",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 155,
-                    Name = "ES",
-                    BrandId = 15,
+                    Id = 630,
+                    Name = "Tucson Fuel Cell",
+                    BrandId = 25,
                 },
                 new Model()
                 {
-                    Id = 156,
+                    Id = 631,
+                    Name = "Veloster",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 632,
+                    Name = "Venue",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 633,
+                    Name = "Veracruz",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 634,
+                    Name = "XG300",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 635,
+                    Name = "XG350",
+                    BrandId = 25,
+                },
+                new Model()
+                {
+                    Id = 636,
+                    Name = "EX",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 637,
+                    Name = "FX",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 638,
+                    Name = "G",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 639,
+                    Name = "I",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 640,
+                    Name = "J",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 641,
+                    Name = "JX",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 642,
+                    Name = "M",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 643,
+                    Name = "Q",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 644,
+                    Name = "Q40",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 645,
+                    Name = "Q50",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 646,
+                    Name = "Q60",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 647,
+                    Name = "Q70",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 648,
+                    Name = "QX",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 649,
+                    Name = "QX30",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 650,
+                    Name = "QX50",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 651,
+                    Name = "QX60",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 652,
+                    Name = "QX70",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 653,
+                    Name = "QX80",
+                    BrandId = 26,
+                },
+                new Model()
+                {
+                    Id = 654,
+                    Name = "Amigo",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 655,
+                    Name = "Ascender",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 656,
+                    Name = "Axiom",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 657,
+                    Name = "Hombre Regular Cab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 658,
+                    Name = "Hombre Spacecab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 659,
+                    Name = "Impulse",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 660,
+                    Name = "Oasis",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 661,
+                    Name = "Regular Cab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 662,
+                    Name = "Rodeo",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 663,
+                    Name = "Rodeo Sport",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 664,
+                    Name = "Spacecab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 665,
+                    Name = "Stylus",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 666,
+                    Name = "Trooper",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 667,
+                    Name = "VehiCROSS",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 668,
+                    Name = "i-280 Extended Cab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 669,
+                    Name = "i-290 Extended Cab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 670,
+                    Name = "i-350 Crew Cab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 671,
+                    Name = "i-370 Crew Cab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 672,
+                    Name = "i-370 Extended Cab",
+                    BrandId = 27,
+                },
+                new Model()
+                {
+                    Id = 673,
+                    Name = "E-PACE",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 674,
+                    Name = "F-PACE",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 675,
+                    Name = "F-TYPE",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 676,
+                    Name = "I-PACE",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 677,
+                    Name = "S-Type",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 678,
+                    Name = "X-Type",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 679,
+                    Name = "XE",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 680,
+                    Name = "XF",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 681,
+                    Name = "XJ",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 682,
+                    Name = "XK",
+                    BrandId = 28,
+                },
+                new Model()
+                {
+                    Id = 683,
+                    Name = "Cherokee",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 684,
+                    Name = "Comanche Regular Cab",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 685,
+                    Name = "Commander",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 686,
+                    Name = "Compass",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 687,
+                    Name = "Gladiator",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 688,
+                    Name = "Grand Cherokee",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 689,
+                    Name = "Liberty",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 690,
+                    Name = "Patriot",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 691,
+                    Name = "Renegade",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 692,
+                    Name = "Wrangler",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 693,
+                    Name = "Wrangler Unlimited",
+                    BrandId = 29,
+                },
+                new Model()
+                {
+                    Id = 694,
+                    Name = "Amanti",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 695,
+                    Name = "Borrego",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 696,
+                    Name = "Cadenza",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 697,
+                    Name = "Forte",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 698,
+                    Name = "Forte Koup",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 699,
+                    Name = "Forte5",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 700,
+                    Name = "K900",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 701,
+                    Name = "Niro",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 702,
+                    Name = "Niro EV",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 703,
+                    Name = "Niro Plug-in Hybrid",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 704,
+                    Name = "Optima",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 705,
+                    Name = "Optima (2006.5)",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 706,
+                    Name = "Optima Hybrid",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 707,
+                    Name = "Optima Plug-in Hybrid",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 708,
+                    Name = "Rio",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 709,
+                    Name = "Rondo",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 710,
+                    Name = "Sedona",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 711,
+                    Name = "Sephia",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 712,
+                    Name = "Sorento",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 713,
+                    Name = "Soul",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 714,
+                    Name = "Soul EV",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 715,
+                    Name = "Spectra",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 716,
+                    Name = "Sportage",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 717,
+                    Name = "Stinger",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 718,
+                    Name = "Telluride",
+                    BrandId = 30,
+                },
+                new Model()
+                {
+                    Id = 719,
+                    Name = "Aventador",
+                    BrandId = 31,
+                },
+                new Model()
+                {
+                    Id = 720,
+                    Name = "Gallardo",
+                    BrandId = 31,
+                },
+                new Model()
+                {
+                    Id = 721,
+                    Name = "Huracan",
+                    BrandId = 31,
+                },
+                new Model()
+                {
+                    Id = 722,
+                    Name = "Murcielago",
+                    BrandId = 31,
+                },
+                new Model()
+                {
+                    Id = 723,
+                    Name = "Murcielago LP640",
+                    BrandId = 31,
+                },
+                new Model()
+                {
+                    Id = 724,
+                    Name = "Defender 110",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 725,
+                    Name = "Defender 90",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 726,
+                    Name = "Discovery",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 727,
+                    Name = "Discovery Series II",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 728,
+                    Name = "Discovery Sport",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 729,
+                    Name = "Freelander",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 730,
+                    Name = "LR2",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 731,
+                    Name = "LR3",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 732,
+                    Name = "LR4",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 733,
+                    Name = "Range Rover",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 734,
+                    Name = "Range Rover Evoque",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 735,
+                    Name = "Range Rover Sport",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 736,
+                    Name = "Range Rover Velar",
+                    BrandId = 32,
+                },
+                new Model()
+                {
+                    Id = 737,
                     Name = "CT",
-                    BrandId = 15,
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 157,
+                    Id = 738,
+                    Name = "ES",
+                    BrandId = 33,
+                },
+                new Model()
+                {
+                    Id = 739,
                     Name = "GS",
-                    BrandId = 15,
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 158,
+                    Id = 740,
                     Name = "GX",
-                    BrandId = 15,
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 159,
+                    Id = 741,
+                    Name = "HS",
+                    BrandId = 33,
+                },
+                new Model()
+                {
+                    Id = 742,
                     Name = "IS",
-                    BrandId = 15,
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 160,
-                    Name = "LS",
-                    BrandId = 15,
+                    Id = 743,
+                    Name = "IS F",
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 161,
+                    Id = 744,
                     Name = "LC",
-                    BrandId = 15,
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 162,
-                    Name = "RC",
-                    BrandId = 15,
+                    Id = 745,
+                    Name = "LFA",
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 163,
+                    Id = 746,
+                    Name = "LS",
+                    BrandId = 33,
+                },
+                new Model()
+                {
+                    Id = 747,
                     Name = "LX",
-                    BrandId = 15,
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 164,
+                    Id = 748,
+                    Name = "NX",
+                    BrandId = 33,
+                },
+                new Model()
+                {
+                    Id = 749,
+                    Name = "RC",
+                    BrandId = 33,
+                },
+                new Model()
+                {
+                    Id = 750,
+                    Name = "RX",
+                    BrandId = 33,
+                },
+                new Model()
+                {
+                    Id = 751,
                     Name = "SC",
-                    BrandId = 15,
+                    BrandId = 33,
                 },
                 new Model()
                 {
-                    Id = 165,
+                    Id = 752,
+                    Name = "UX",
+                    BrandId = 33,
+                },
+                new Model()
+                {
+                    Id = 753,
+                    Name = "Aviator",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 754,
+                    Name = "Blackwood",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 755,
+                    Name = "Continental",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 756,
+                    Name = "Corsair",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 757,
+                    Name = "LS",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 758,
+                    Name = "MKC",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 759,
+                    Name = "MKS",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 760,
+                    Name = "MKT",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 761,
+                    Name = "MKX",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 762,
+                    Name = "MKZ",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 763,
+                    Name = "Mark LT",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 764,
+                    Name = "Mark VII",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 765,
+                    Name = "Mark VIII",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 766,
+                    Name = "Nautilus",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 767,
+                    Name = "Navigator",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 768,
+                    Name = "Navigator L",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 769,
+                    Name = "Town Car",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 770,
+                    Name = "Zephyr",
+                    BrandId = 34,
+                },
+                new Model()
+                {
+                    Id = 771,
+                    Name = "Elise",
+                    BrandId = 35,
+                },
+                new Model()
+                {
+                    Id = 772,
+                    Name = "Evora",
+                    BrandId = 35,
+                },
+                new Model()
+                {
+                    Id = 773,
+                    Name = "Evora 400",
+                    BrandId = 35,
+                },
+                new Model()
+                {
+                    Id = 774,
+                    Name = "Exige",
+                    BrandId = 35,
+                },
+                new Model()
+                {
+                    Id = 775,
+                    Name = "Exige S",
+                    BrandId = 35,
+                },
+                new Model()
+                {
+                    Id = 776,
+                    Name = "323",
+                    BrandId = 36,
+                },
+                new Model()
+                {
+                    Id = 777,
+                    Name = "626",
+                    BrandId = 36,
+                },
+                new Model()
+                {
+                    Id = 778,
+                    Name = "929",
+                    BrandId = 36,
+                },
+                new Model()
+                {
+                    Id = 779,
+                    Name = "B-Series Cab Plus",
+                    BrandId = 36,
+                },
+                new Model()
+                {
+                    Id = 780,
+                    Name = "B-Series Extended Cab",
+                    BrandId = 36,
+                },
+                new Model()
+                {
+                    Id = 781,
+                    Name = "B-Series Regular Cab",
+                    BrandId = 36,
+                },
+                new Model()
+                {
+                    Id = 782,
                     Name = "CX-3",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 166,
+                    Id = 783,
                     Name = "CX-30",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 167,
+                    Id = 784,
                     Name = "CX-5",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 168,
+                    Id = 785,
                     Name = "CX-7",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 169,
+                    Id = 786,
                     Name = "CX-9",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 170,
+                    Id = 787,
                     Name = "MAZDA2",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 171,
+                    Id = 788,
                     Name = "MAZDA3",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 172,
+                    Id = 789,
                     Name = "MAZDA5",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 173,
+                    Id = 790,
                     Name = "MAZDA6",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 174,
+                    Id = 791,
+                    Name = "MPV",
+                    BrandId = 36,
+                },
+                new Model()
+                {
+                    Id = 792,
+                    Name = "MX-3",
+                    BrandId = 36,
+                },
+                new Model()
+                {
+                    Id = 793,
                     Name = "MX-5 Miata",
-                    BrandId = 16,
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 175,
-                    Name = "911",
-                    BrandId = 17,
+                    Id = 794,
+                    Name = "MX-5 Miata RF",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 176,
-                    Name = "Boxster",
-                    BrandId = 17,
+                    Id = 795,
+                    Name = "MX-6",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 177,
-                    Name = "Cayenne",
-                    BrandId = 17,
+                    Id = 796,
+                    Name = "Millenia",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 178,
-                    Name = "Cayman",
-                    BrandId = 17,
+                    Id = 797,
+                    Name = "Navajo",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 179,
-                    Name = "Macan",
-                    BrandId = 17,
+                    Id = 798,
+                    Name = "Protege",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 180,
-                    Name = "Panamera",
-                    BrandId = 17,
+                    Id = 799,
+                    Name = "Protege5",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 181,
-                    Name = "Taycan",
-                    BrandId = 17,
+                    Id = 800,
+                    Name = "RX-7",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 182,
-                    Name = "718 Boxster",
-                    BrandId = 17,
+                    Id = 801,
+                    Name = "RX-8",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 183,
-                    Name = "718 Cayman",
-                    BrandId = 17,
+                    Id = 802,
+                    Name = "Tribute",
+                    BrandId = 36,
                 },
                 new Model()
                 {
-                    Id = 184,
-                    Name = "Cayenne Coupe",
-                    BrandId = 17,
+                    Id = 803,
+                    Name = "Clubman",
+                    BrandId = 37,
                 },
                 new Model()
                 {
-                    Id = 185,
+                    Id = 804,
+                    Name = "Convertible",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 805,
+                    Name = "Cooper",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 806,
+                    Name = "Countryman",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 807,
+                    Name = "Coupe",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 808,
+                    Name = "Hardtop",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 809,
+                    Name = "Hardtop 2 Door",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 810,
+                    Name = "Hardtop 4 Door",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 811,
+                    Name = "Paceman",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 812,
+                    Name = "Roadster",
+                    BrandId = 37,
+                },
+                new Model()
+                {
+                    Id = 813,
+                    Name = "Coupe",
+                    BrandId = 38,
+                },
+                new Model()
+                {
+                    Id = 814,
+                    Name = "Ghibli",
+                    BrandId = 38,
+                },
+                new Model()
+                {
+                    Id = 815,
+                    Name = "GranSport",
+                    BrandId = 38,
+                },
+                new Model()
+                {
+                    Id = 816,
+                    Name = "GranTurismo",
+                    BrandId = 38,
+                },
+                new Model()
+                {
+                    Id = 817,
+                    Name = "Levante",
+                    BrandId = 38,
+                },
+                new Model()
+                {
+                    Id = 818,
+                    Name = "Quattroporte",
+                    BrandId = 38,
+                },
+                new Model()
+                {
+                    Id = 819,
+                    Name = "57",
+                    BrandId = 39,
+                },
+                new Model()
+                {
+                    Id = 820,
+                    Name = "62",
+                    BrandId = 39,
+                },
+                new Model()
+                {
+                    Id = 821,
+                    Name = "570GT",
+                    BrandId = 40,
+                },
+                new Model()
+                {
+                    Id = 822,
+                    Name = "570S",
+                    BrandId = 40,
+                },
+                new Model()
+                {
+                    Id = 823,
+                    Name = "650S",
+                    BrandId = 40,
+                },
+                new Model()
+                {
+                    Id = 824,
+                    Name = "675LT",
+                    BrandId = 40,
+                },
+                new Model()
+                {
+                    Id = 825,
+                    Name = "720S",
+                    BrandId = 40,
+                },
+                new Model()
+                {
+                    Id = 826,
+                    Name = "MP4-12C",
+                    BrandId = 40,
+                },
+                new Model()
+                {
+                    Id = 827,
+                    Name = "190 E",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 828,
+                    Name = "300 CE",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 829,
+                    Name = "300 D",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 830,
+                    Name = "300 E",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 831,
+                    Name = "300 SD",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 832,
+                    Name = "300 SE",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 833,
+                    Name = "300 SL",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 834,
+                    Name = "300 TE",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 835,
+                    Name = "400 E",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 836,
+                    Name = "400 SE",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 837,
+                    Name = "400 SEL",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 838,
+                    Name = "500 E",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 839,
+                    Name = "500 SEC",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 840,
+                    Name = "500 SEL",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 841,
+                    Name = "500 SL",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 842,
+                    Name = "600 SEC",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 843,
+                    Name = "600 SEL",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 844,
+                    Name = "600 SL",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 845,
                     Name = "A-Class",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 186,
+                    Id = 846,
                     Name = "B-Class",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 187,
+                    Id = 847,
                     Name = "C-Class",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 188,
+                    Id = 848,
                     Name = "CL-Class",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 189,
+                    Id = 849,
+                    Name = "CLA",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 850,
+                    Name = "CLA-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 851,
+                    Name = "CLK-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 852,
                     Name = "CLS",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 190,
+                    Id = 853,
+                    Name = "CLS-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 854,
                     Name = "E-Class",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 191,
+                    Id = 855,
                     Name = "G-Class",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 192,
+                    Id = 856,
+                    Name = "GL-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 857,
                     Name = "GLA",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 193,
+                    Id = 858,
+                    Name = "GLA-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 859,
+                    Name = "GLC",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 860,
+                    Name = "GLC Coupe",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 861,
+                    Name = "GLE",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 862,
+                    Name = "GLE Coupe",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 863,
+                    Name = "GLK-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 864,
+                    Name = "GLS",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 865,
                     Name = "M-Class",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 194,
+                    Id = 866,
+                    Name = "Mercedes-AMG C-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 867,
+                    Name = "Mercedes-AMG CLA",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 868,
+                    Name = "Mercedes-AMG CLS",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 869,
+                    Name = "Mercedes-AMG E-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 870,
+                    Name = "Mercedes-AMG G-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 871,
+                    Name = "Mercedes-AMG GLA",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 872,
+                    Name = "Mercedes-AMG GLC",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 873,
+                    Name = "Mercedes-AMG GLC Coupe",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 874,
+                    Name = "Mercedes-AMG GLE",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 875,
+                    Name = "Mercedes-AMG GLE Coupe",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 876,
+                    Name = "Mercedes-AMG GLS",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 877,
+                    Name = "Mercedes-AMG GT",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 878,
+                    Name = "Mercedes-AMG S-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 879,
+                    Name = "Mercedes-AMG SL",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 880,
+                    Name = "Mercedes-AMG SLC",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 881,
+                    Name = "Mercedes-AMG SLK",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 882,
+                    Name = "Mercedes-Maybach S 600",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 883,
+                    Name = "Mercedes-Maybach S-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 884,
+                    Name = "Metris Cargo",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 885,
+                    Name = "Metris Passenger",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 886,
+                    Name = "Metris WORKER Cargo",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 887,
+                    Name = "Metris WORKER Passenger",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 888,
+                    Name = "R-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 889,
                     Name = "S-Class",
-                    BrandId = 18,
+                    BrandId = 41,
                 },
                 new Model()
                 {
-                    Id = 195,
+                    Id = 890,
+                    Name = "SL",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 891,
+                    Name = "SL-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 892,
+                    Name = "SLC",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 893,
+                    Name = "SLK",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 894,
+                    Name = "SLK-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 895,
+                    Name = "SLR McLaren",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 896,
+                    Name = "SLS-Class",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 897,
+                    Name = "Sprinter 2500 Cargo",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 898,
+                    Name = "Sprinter 2500 Crew",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 899,
+                    Name = "Sprinter 2500 Passenger",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 900,
+                    Name = "Sprinter 3500 Cargo",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 901,
+                    Name = "Sprinter 3500 XD Cargo",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 902,
+                    Name = "Sprinter WORKER Cargo",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 903,
+                    Name = "Sprinter WORKER Passenger",
+                    BrandId = 41,
+                },
+                new Model()
+                {
+                    Id = 904,
+                    Name = "Capri",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 905,
+                    Name = "Cougar",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 906,
+                    Name = "Grand Marquis",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 907,
+                    Name = "Marauder",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 908,
+                    Name = "Mariner",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 909,
+                    Name = "Milan",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 910,
+                    Name = "Montego",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 911,
+                    Name = "Monterey",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 912,
+                    Name = "Mountaineer",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 913,
+                    Name = "Mystique",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 914,
+                    Name = "Sable",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 915,
+                    Name = "Topaz",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 916,
+                    Name = "Tracer",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 917,
+                    Name = "Villager",
+                    BrandId = 42,
+                },
+                new Model()
+                {
+                    Id = 918,
+                    Name = "3000GT",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 919,
+                    Name = "Diamante",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 920,
+                    Name = "Eclipse",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 921,
+                    Name = "Eclipse Cross",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 922,
+                    Name = "Endeavor",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 923,
+                    Name = "Expo",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 924,
+                    Name = "Galant",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 925,
+                    Name = "Lancer",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 926,
+                    Name = "Lancer Evolution",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 927,
+                    Name = "Mighty Max Macro Cab",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 928,
+                    Name = "Mighty Max Regular Cab",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 929,
+                    Name = "Mirage",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 930,
+                    Name = "Mirage G4",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 931,
+                    Name = "Montero",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 932,
+                    Name = "Montero Sport",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 933,
+                    Name = "Outlander",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 934,
+                    Name = "Outlander PHEV",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 935,
+                    Name = "Outlander Sport",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 936,
+                    Name = "Precis",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 937,
+                    Name = "Raider Double Cab",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 938,
+                    Name = "Raider Extended Cab",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 939,
+                    Name = "i-MiEV",
+                    BrandId = 43,
+                },
+                new Model()
+                {
+                    Id = 940,
+                    Name = "200SX",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 941,
+                    Name = "240SX",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 942,
+                    Name = "300ZX",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 943,
+                    Name = "350Z",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 944,
+                    Name = "370Z",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 945,
+                    Name = "Altima",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 946,
+                    Name = "Armada",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 947,
+                    Name = "Frontier Crew Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 948,
+                    Name = "Frontier King Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 949,
+                    Name = "Frontier Regular Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 950,
+                    Name = "GT-R",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 951,
+                    Name = "JUKE",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 952,
+                    Name = "Kicks",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 953,
+                    Name = "King Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 954,
+                    Name = "LEAF",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 955,
+                    Name = "Maxima",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 956,
+                    Name = "Murano",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 957,
+                    Name = "NV1500 Cargo",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 958,
+                    Name = "NV200",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 959,
+                    Name = "NV200 Taxi",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 960,
+                    Name = "NV2500 HD Cargo",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 961,
+                    Name = "NV3500 HD Cargo",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 962,
+                    Name = "NV3500 HD Passenger",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 963,
+                    Name = "NX",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 964,
+                    Name = "Pathfinder",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 965,
+                    Name = "Pathfinder Armada",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 966,
+                    Name = "Quest",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 967,
+                    Name = "Regular Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 968,
+                    Name = "Rogue",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 969,
+                    Name = "Rogue Select",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 970,
+                    Name = "Rogue Sport",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 971,
+                    Name = "Sentra",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 972,
+                    Name = "Stanza",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 973,
+                    Name = "TITAN Single Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 974,
+                    Name = "TITAN XD Crew Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 975,
+                    Name = "TITAN XD King Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 976,
+                    Name = "TITAN XD Single Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 977,
+                    Name = "Titan Crew Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 978,
+                    Name = "Titan King Cab",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 979,
+                    Name = "Versa",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 980,
+                    Name = "Versa Note",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 981,
+                    Name = "Xterra",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 982,
+                    Name = "cube",
+                    BrandId = 44,
+                },
+                new Model()
+                {
+                    Id = 983,
+                    Name = "88",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 984,
+                    Name = "98",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 985,
+                    Name = "Achieva",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 986,
+                    Name = "Alero",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 987,
+                    Name = "Aurora",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 988,
+                    Name = "Bravada",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 989,
+                    Name = "Ciera",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 990,
+                    Name = "Custom Cruiser",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 991,
+                    Name = "Cutlass",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 992,
+                    Name = "Cutlass Ciera",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 993,
+                    Name = "Cutlass Cruiser",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 994,
+                    Name = "Cutlass Supreme",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 995,
+                    Name = "Intrigue",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 996,
+                    Name = "LSS",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 997,
+                    Name = "Regency",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 998,
+                    Name = "Silhouette",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 999,
+                    Name = "Toronado",
+                    BrandId = 45,
+                },
+                new Model()
+                {
+                    Id = 1000,
+                    Name = "Esperante",
+                    BrandId = 46,
+                },
+                new Model()
+                {
+                    Id = 1001,
+                    Name = "Acclaim",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1002,
+                    Name = "Breeze",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1003,
+                    Name = "Colt",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1004,
+                    Name = "Colt Vista",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1005,
+                    Name = "Grand Voyager",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1006,
+                    Name = "Laser",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1007,
+                    Name = "Neon",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1008,
+                    Name = "Prowler",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1009,
+                    Name = "Sundance",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1010,
+                    Name = "Voyager",
+                    BrandId = 47,
+                },
+                new Model()
+                {
+                    Id = 1011,
+                    Name = "Aztek",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1012,
+                    Name = "Bonneville",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1013,
+                    Name = "Firebird",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1014,
+                    Name = "G3",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1015,
+                    Name = "G5",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1016,
+                    Name = "G6",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1017,
+                    Name = "G6 (2009.5)",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1018,
+                    Name = "G8",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1019,
+                    Name = "GTO",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1020,
+                    Name = "Grand Am",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1021,
+                    Name = "Grand Prix",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1022,
+                    Name = "LeMans",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1023,
+                    Name = "Montana",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1024,
+                    Name = "Montana SV6",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1025,
+                    Name = "Solstice",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1026,
+                    Name = "Sunbird",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1027,
+                    Name = "Sunfire",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1028,
+                    Name = "Torrent",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1029,
+                    Name = "Trans Sport",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1030,
+                    Name = "Vibe",
+                    BrandId = 48,
+                },
+                new Model()
+                {
+                    Id = 1031,
+                    Name = "718 Boxster",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1032,
+                    Name = "718 Cayman",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1033,
+                    Name = "911",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1034,
+                    Name = "928",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1035,
+                    Name = "968",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1036,
+                    Name = "Boxster",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1037,
+                    Name = "Carrera GT",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1038,
+                    Name = "Cayenne",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1039,
+                    Name = "Cayenne Coupe",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1040,
+                    Name = "Cayman",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1041,
+                    Name = "Macan",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1042,
+                    Name = "Panamera",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1043,
+                    Name = "Taycan",
+                    BrandId = 49,
+                },
+                new Model()
+                {
+                    Id = 1044,
+                    Name = "1500 Classic Crew Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1045,
+                    Name = "1500 Classic Quad Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1046,
+                    Name = "1500 Classic Regular Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1047,
+                    Name = "1500 Crew Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1048,
+                    Name = "1500 Quad Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1049,
+                    Name = "1500 Regular Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1050,
+                    Name = "2500 Crew Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1051,
+                    Name = "2500 Mega Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1052,
+                    Name = "2500 Regular Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1053,
+                    Name = "3500 Crew Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1054,
+                    Name = "3500 Mega Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1055,
+                    Name = "3500 Regular Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1056,
+                    Name = "C/V",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1057,
+                    Name = "C/V Tradesman",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1058,
+                    Name = "Dakota Crew Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1059,
+                    Name = "Dakota Extended Cab",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1060,
+                    Name = "ProMaster 1500 Cargo",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1061,
+                    Name = "ProMaster 2500 Cargo",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1062,
+                    Name = "ProMaster 3500 Cargo",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1063,
+                    Name = "ProMaster Cargo Van",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1064,
+                    Name = "ProMaster City",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1065,
+                    Name = "ProMaster Window Van",
+                    BrandId = 50,
+                },
+                new Model()
+                {
+                    Id = 1066,
+                    Name = "Dawn",
+                    BrandId = 51,
+                },
+                new Model()
+                {
+                    Id = 1067,
+                    Name = "Ghost",
+                    BrandId = 51,
+                },
+                new Model()
+                {
+                    Id = 1068,
+                    Name = "Phantom",
+                    BrandId = 51,
+                },
+                new Model()
+                {
+                    Id = 1069,
+                    Name = "Wraith",
+                    BrandId = 51,
+                },
+                new Model()
+                {
+                    Id = 1070,
+                    Name = "Viper",
+                    BrandId = 52,
+                },
+                new Model()
+                {
+                    Id = 1071,
+                    Name = "3-Sep",
+                    BrandId = 53,
+                },
+                new Model()
+                {
+                    Id = 1072,
+                    Name = "5-Sep",
+                    BrandId = 53,
+                },
+                new Model()
+                {
+                    Id = 1073,
+                    Name = "9-2X",
+                    BrandId = 53,
+                },
+                new Model()
+                {
+                    Id = 1074,
+                    Name = "9-4X",
+                    BrandId = 53,
+                },
+                new Model()
+                {
+                    Id = 1075,
+                    Name = "9-7X",
+                    BrandId = 53,
+                },
+                new Model()
+                {
+                    Id = 1076,
+                    Name = "900",
+                    BrandId = 53,
+                },
+                new Model()
+                {
+                    Id = 1077,
+                    Name = "9000",
+                    BrandId = 53,
+                },
+                new Model()
+                {
+                    Id = 1078,
+                    Name = "Astra",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1079,
+                    Name = "Aura",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1080,
+                    Name = "Ion",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1081,
+                    Name = "L-Series",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1082,
+                    Name = "Outlook",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1083,
+                    Name = "Relay",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1084,
+                    Name = "S-Series",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1085,
+                    Name = "SKY",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1086,
+                    Name = "VUE",
+                    BrandId = 54,
+                },
+                new Model()
+                {
+                    Id = 1087,
+                    Name = "FR-S",
+                    BrandId = 55,
+                },
+                new Model()
+                {
+                    Id = 1088,
+                    Name = "iA",
+                    BrandId = 55,
+                },
+                new Model()
+                {
+                    Id = 1089,
+                    Name = "iM",
+                    BrandId = 55,
+                },
+                new Model()
+                {
+                    Id = 1090,
+                    Name = "iQ",
+                    BrandId = 55,
+                },
+                new Model()
+                {
+                    Id = 1091,
+                    Name = "tC",
+                    BrandId = 55,
+                },
+                new Model()
+                {
+                    Id = 1092,
+                    Name = "xA",
+                    BrandId = 55,
+                },
+                new Model()
+                {
+                    Id = 1093,
+                    Name = "xB",
+                    BrandId = 55,
+                },
+                new Model()
+                {
+                    Id = 1094,
+                    Name = "xD",
+                    BrandId = 55,
+                },
+                new Model()
+                {
+                    Id = 1095,
+                    Name = "Ascent",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1096,
+                    Name = "B9 Tribeca",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1097,
+                    Name = "BRZ",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1098,
+                    Name = "Baja",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1099,
+                    Name = "Crosstrek",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1100,
+                    Name = "Forester",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1101,
+                    Name = "Impreza",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1102,
+                    Name = "Justy",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1103,
+                    Name = "Legacy",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1104,
+                    Name = "Loyale",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1105,
+                    Name = "Outback",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1106,
+                    Name = "SVX",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1107,
+                    Name = "Tribeca",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1108,
+                    Name = "WRX",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1109,
+                    Name = "XV Crosstrek",
+                    BrandId = 56,
+                },
+                new Model()
+                {
+                    Id = 1110,
+                    Name = "Aerio",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1111,
+                    Name = "Equator Crew Cab",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1112,
+                    Name = "Equator Extended Cab",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1113,
+                    Name = "Esteem",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1114,
+                    Name = "Forenza",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1115,
+                    Name = "Grand Vitara",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1116,
+                    Name = "Kizashi",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1117,
+                    Name = "Reno",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1118,
+                    Name = "SX4",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1119,
+                    Name = "Samurai",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1120,
+                    Name = "Sidekick",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1121,
+                    Name = "Swift",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1122,
+                    Name = "Verona",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1123,
+                    Name = "Vitara",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1124,
+                    Name = "X-90",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1125,
+                    Name = "XL-7",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1126,
+                    Name = "XL7",
+                    BrandId = 57,
+                },
+                new Model()
+                {
+                    Id = 1127,
+                    Name = "Model 3",
+                    BrandId = 58,
+                },
+                new Model()
+                {
+                    Id = 1128,
+                    Name = "Model S",
+                    BrandId = 58,
+                },
+                new Model()
+                {
+                    Id = 1129,
+                    Name = "Model X",
+                    BrandId = 58,
+                },
+                new Model()
+                {
+                    Id = 1130,
                     Name = "4Runner",
-                    BrandId = 19,
+                    BrandId = 59,
                 },
                 new Model()
                 {
-                    Id = 196,
-                    Name = "Avalon",
-                    BrandId = 19,
-                },
-                new Model()
-                {
-                    Id = 197,
+                    Id = 1131,
                     Name = "86",
-                    BrandId = 19,
+                    BrandId = 59,
                 },
                 new Model()
                 {
-                    Id = 198,
+                    Id = 1132,
+                    Name = "Avalon",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1133,
+                    Name = "Avalon Hybrid",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1134,
+                    Name = "C-HR",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1135,
                     Name = "Camry",
-                    BrandId = 19,
+                    BrandId = 59,
                 },
                 new Model()
                 {
-                    Id = 199,
+                    Id = 1136,
                     Name = "Camry Hybrid",
-                    BrandId = 19,
+                    BrandId = 59,
                 },
                 new Model()
                 {
-                    Id = 200,
+                    Id = 1137,
+                    Name = "Celica",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1138,
                     Name = "Corolla",
-                    BrandId = 19,
+                    BrandId = 59,
                 },
                 new Model()
                 {
-                    Id = 201,
+                    Id = 1139,
+                    Name = "Corolla Hatchback",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1140,
+                    Name = "Corolla Hybrid",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1141,
+                    Name = "Corolla iM",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1142,
+                    Name = "Cressida",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1143,
+                    Name = "Echo",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1144,
+                    Name = "FJ Cruiser",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1145,
+                    Name = "GR Supra",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1146,
                     Name = "Highlander",
-                    BrandId = 19,
+                    BrandId = 59,
                 },
                 new Model()
                 {
-                    Id = 202,
+                    Id = 1147,
+                    Name = "Highlander Hybrid",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1148,
                     Name = "Land Cruiser",
-                    BrandId = 19,
+                    BrandId = 59,
                 },
                 new Model()
                 {
-                    Id = 203,
+                    Id = 1149,
+                    Name = "MR2",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1150,
+                    Name = "Matrix",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1151,
                     Name = "Mirai",
-                    BrandId = 19,
+                    BrandId = 59,
                 },
                 new Model()
                 {
-                    Id = 204,
+                    Id = 1152,
+                    Name = "Paseo",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1153,
+                    Name = "Previa",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1154,
                     Name = "Prius",
-                    BrandId = 19,
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1155,
+                    Name = "Prius Plug-in Hybrid",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1156,
+                    Name = "Prius Prime",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1157,
+                    Name = "Prius c",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1158,
+                    Name = "Prius v",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1159,
+                    Name = "RAV4",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1160,
+                    Name = "RAV4 Hybrid",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1161,
+                    Name = "Regular Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1162,
+                    Name = "Sequoia",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1163,
+                    Name = "Sienna",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1164,
+                    Name = "Solara",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1165,
+                    Name = "Supra",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1166,
+                    Name = "T100 Regular Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1167,
+                    Name = "T100 Xtracab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1168,
+                    Name = "Tacoma Access Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1169,
+                    Name = "Tacoma Double Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1170,
+                    Name = "Tacoma Regular Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1171,
+                    Name = "Tacoma Xtracab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1172,
+                    Name = "Tercel",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1173,
+                    Name = "Tundra Access Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1174,
+                    Name = "Tundra CrewMax",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1175,
+                    Name = "Tundra Double Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1176,
+                    Name = "Tundra Regular Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1177,
+                    Name = "Venza",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1178,
+                    Name = "Xtra Cab",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1179,
+                    Name = "Yaris",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1180,
+                    Name = "Yaris Hatchback",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1181,
+                    Name = "Yaris iA",
+                    BrandId = 59,
+                },
+                new Model()
+                {
+                    Id = 1182,
+                    Name = "Arteon",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1183,
+                    Name = "Atlas",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1184,
+                    Name = "Beetle",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1185,
+                    Name = "CC",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1186,
+                    Name = "Cabrio",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1187,
+                    Name = "Cabrio (New)",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1188,
+                    Name = "Cabriolet",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1189,
+                    Name = "Corrado",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1190,
+                    Name = "Eos",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1191,
+                    Name = "Eurovan",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1192,
+                    Name = "Fox",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1193,
+                    Name = "GLI",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1194,
+                    Name = "GTI",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1195,
+                    Name = "GTI (New)",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1196,
+                    Name = "Golf",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1197,
+                    Name = "Golf (New)",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1198,
+                    Name = "Golf Alltrack",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1199,
+                    Name = "Golf GTI",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1200,
+                    Name = "Golf III",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1201,
+                    Name = "Golf R",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1202,
+                    Name = "Golf SportWagen",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1203,
+                    Name = "Jetta",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1204,
+                    Name = "Jetta (New)",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1205,
+                    Name = "Jetta GLI",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1206,
+                    Name = "Jetta III",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1207,
+                    Name = "Jetta SportWagen",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1208,
+                    Name = "New Beetle",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1209,
+                    Name = "Passat",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1210,
+                    Name = "Passat (New)",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1211,
+                    Name = "Phaeton",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1212,
+                    Name = "R32",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1213,
+                    Name = "Rabbit",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1214,
+                    Name = "Routan",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1215,
+                    Name = "Tiguan",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1216,
+                    Name = "Tiguan Limited",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1217,
+                    Name = "Touareg",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1218,
+                    Name = "Touareg 2",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1219,
+                    Name = "e-Golf",
+                    BrandId = 60,
+                },
+                new Model()
+                {
+                    Id = 1220,
+                    Name = "240",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1221,
+                    Name = "740",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1222,
+                    Name = "850",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1223,
+                    Name = "940",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1224,
+                    Name = "960",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1225,
+                    Name = "C30",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1226,
+                    Name = "C70",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1227,
+                    Name = "S40",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1228,
+                    Name = "S40 (New)",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1229,
+                    Name = "S60",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1230,
+                    Name = "S70",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1231,
+                    Name = "S80",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1232,
+                    Name = "S90",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1233,
+                    Name = "V40",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1234,
+                    Name = "V50",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1235,
+                    Name = "V60",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1236,
+                    Name = "V70",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1237,
+                    Name = "V90",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1238,
+                    Name = "XC40",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1239,
+                    Name = "XC60",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1240,
+                    Name = "XC70",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1241,
+                    Name = "XC90",
+                    BrandId = 61,
+                },
+                new Model()
+                {
+                    Id = 1242,
+                    Name = "fortwo",
+                    BrandId = 62,
+                },
+                new Model()
+                {
+                    Id = 1243,
+                    Name = "fortwo cabrio",
+                    BrandId = 62,
+                },
+                new Model()
+                {
+                    Id = 1244,
+                    Name = "fortwo electric drive",
+                    BrandId = 62,
+                },
+                new Model()
+                {
+                    Id = 1245,
+                    Name = "fortwo electric drive cabrio",
+                    BrandId = 62,
                 });
     }
 }
