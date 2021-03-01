@@ -1,31 +1,27 @@
-﻿using System.Linq;
+﻿using System.Drawing.Printing;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
-using Car.UnitTests.BaseClasses;
+using Car.UnitTests.Base;
 using FluentAssertions;
 using Moq;
-using NUnit.Framework;
 using Xunit;
-using Assert = Xunit.Assert;
 
 namespace Car.UnitTests.Services
 {
-    public class NotificationServiceTest : NotificationTest
+    public class NotificationServiceTest : TestBase
     {
         private readonly INotificationService notificationService;
         private readonly Mock<IRepository<Notification>> repository;
-        private readonly Mock<IUnitOfWork<Notification>> unitOfWork;
 
         public NotificationServiceTest()
         {
             repository = new Mock<IRepository<Notification>>();
-            unitOfWork = new Mock<IUnitOfWork<Notification>>();
-
-            notificationService = new NotificationService(unitOfWork.Object);
+            notificationService = new NotificationService(repository.Object, Mapper);
         }
 
         [Fact(Skip = "true")]
@@ -190,15 +186,12 @@ namespace Car.UnitTests.Services
                 .BeEquivalentTo(notificationToAdd);
         }
 
-        [Fact(Skip="true")]
+        [Fact(Skip = "true")]
         public async Task TestUpdateNotification_WhenNotExist()
         {
             var notification = Fixture.Create<Notification>();
-            repository.Setup(r => r.GetById(notification.Id))
-               .Returns(notification);
-
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            repository.Setup(r => r.GetByIdAsync(notification.Id))
+               .ReturnsAsync(notification);
 
             (await notificationService.GetNotificationAsync(notification.Id))
                 .Should().NotBeNull();

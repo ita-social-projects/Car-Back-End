@@ -5,10 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
-using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
-using Car.Domain.Mapping;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -24,16 +22,11 @@ namespace Car.UnitTests.Services
     {
         private readonly IJourneyService journeyService;
         private readonly Mock<IRepository<Journey>> journeyRepository;
-        private readonly IMapper mapper;
 
         public JourneyServiceTest()
         {
             journeyRepository = new Mock<IRepository<Journey>>();
-            mapper = new Mapper(new MapperConfiguration(
-                (options) => options.AddProfiles(
-                    new List<Profile>() { new JourneyMapper(), new CarMapper(), new UserMapper(), new NotificationMapper() })));
-
-            journeyService = new JourneyService(journeyRepository.Object, mapper);
+            journeyService = new JourneyService(journeyRepository.Object, Mapper);
         }
 
         [Fact]
@@ -53,7 +46,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetJourneyByIdAsync(journey.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<Journey, JourneyModel>(journey));
+            result.Should().BeEquivalentTo(Mapper.Map<Journey, JourneyModel>(journey));
         }
 
         [Fact]
@@ -96,7 +89,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetPastJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys));
+            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys));
         }
 
         [Theory]
@@ -171,7 +164,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
+            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
         }
 
         [Theory]
@@ -198,7 +191,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetUpcomingJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
+            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
         }
 
         [Theory]
@@ -273,7 +266,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetScheduledJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
+            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
         }
 
         [Fact]
@@ -298,7 +291,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetScheduledJourneysAsync(organizer.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
+            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
         }
 
         [Fact]

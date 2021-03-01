@@ -12,10 +12,12 @@ namespace Car.WebApi.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly IHubContext<SignalRHub> notificationHub;
         private readonly INotificationService notificationService;
 
-        public NotificationController(INotificationService notificationService, [NotNull] IHubContext<NotificationHub> notificationHub)
+        public NotificationController(
+            INotificationService notificationService,
+            [NotNull] IHubContext<SignalRHub> notificationHub)
         {
             this.notificationService = notificationService;
             this.notificationHub = notificationHub;
