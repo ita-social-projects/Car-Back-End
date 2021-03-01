@@ -8,7 +8,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class AddressValidatorTest
     {
-        private AddressValidator validator;
+        private readonly AddressValidator validator;
 
         public AddressValidatorTest()
         {

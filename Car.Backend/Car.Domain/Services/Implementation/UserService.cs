@@ -30,12 +30,15 @@ namespace Car.Domain.Services.Implementation
         {
             var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == updateUserModel.Id);
 
-            await imageService.UpdateImageAsync(user, updateUserModel.Image);
+            await imageService.UpdateImageAsync(user, updateUserModel?.Image);
 
-            user.Name = updateUserModel.Name;
-            user.Surname = updateUserModel.Surname;
-            user.Position = updateUserModel.Position;
-            user.Location = updateUserModel.Location;
+            if (user != null && updateUserModel != null)
+            {
+                user.Name = updateUserModel.Name;
+                user.Surname = updateUserModel.Surname;
+                user.Position = updateUserModel.Position;
+                user.Location = updateUserModel.Location;
+            }
 
             await userRepository.SaveChangesAsync();
             return user;

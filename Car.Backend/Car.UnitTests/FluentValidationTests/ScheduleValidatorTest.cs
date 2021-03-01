@@ -8,7 +8,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class ScheduleValidatorTest
     {
-        private ScheduleValidator validator;
+        private readonly ScheduleValidator validator;
 
         public ScheduleValidatorTest()
         {

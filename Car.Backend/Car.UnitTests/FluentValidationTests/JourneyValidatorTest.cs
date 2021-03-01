@@ -9,7 +9,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class JourneyValidatorTest
     {
-        private JourneyValidator validator;
+        private readonly JourneyValidator validator;
 
         public JourneyValidatorTest()
         {

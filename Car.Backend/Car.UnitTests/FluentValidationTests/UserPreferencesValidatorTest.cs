@@ -8,7 +8,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class UserPreferencesValidatorTest
     {
-        private UserPreferencesValidator validator;
+        private readonly UserPreferencesValidator validator;
 
         public UserPreferencesValidatorTest()
         {
