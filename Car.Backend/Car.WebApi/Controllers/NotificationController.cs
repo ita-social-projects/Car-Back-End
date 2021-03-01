@@ -70,6 +70,7 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// adds new user notification Asynchronously
         /// </summary>
+        /// <param name="createNotificationModel">notification itself to be updated</param>
         /// // Args:
         /// //    JSON String
         /// //

@@ -1,5 +1,4 @@
-﻿using System.Drawing.Printing;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
