@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Domain.Models;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
@@ -31,15 +31,15 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void TestGetPastJourney_WithExistingUser_Returns()
+        public async Task GetPastJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
             var user = fixture.Create<User>();
             var journeys = fixture.Create<List<JourneyModel>>();
 
-            journeyService.Setup(j => j.GetPastJourneys(It.IsAny<int>()))
-                .Returns(journeys);
+            journeyService.Setup(j => j.GetPastJourneysAsync(It.IsAny<int>()))
+                .ReturnsAsync(journeys);
 
-            var result = journeyController.GetPast(user.Id);
+            var result = await journeyController.GetPast(user.Id);
 
             using (new AssertionScope())
             {
@@ -49,38 +49,38 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void TestGetUpcomingJourney_WithExistingUser_Returns()
+        public async Task GetUpcomingJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
             var user = fixture.Create<User>();
-            var journey = fixture.Create<List<JourneyModel>>();
+            var journeys = fixture.Create<List<JourneyModel>>();
 
-            journeyService.Setup(j => j.GetUpcomingJourneys(It.IsAny<int>()))
-                .Returns(journey);
+            journeyService.Setup(j => j.GetUpcomingJourneysAsync(It.IsAny<int>()))
+                .ReturnsAsync(journeys);
 
-            var result = journeyController.GetUpcoming(user.Id);
+            var result = await journeyController.GetUpcoming(user.Id);
 
             using (new AssertionScope())
             {
                 (result as OkObjectResult)?.StatusCode.Should().Be(200);
-                (result as OkObjectResult)?.Value.Should().Be(journey);
+                (result as OkObjectResult)?.Value.Should().Be(journeys);
             }
         }
 
         [Fact]
-        public void TestGetScheduledJourney_WithExistingUser_Returns()
+        public async Task GetScheduledJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
             var user = fixture.Create<User>();
-            var journey = fixture.Create<List<JourneyModel>>();
+            var journeys = fixture.Create<List<JourneyModel>>();
 
-            journeyService.Setup(j => j.GetScheduledJourneys(It.IsAny<int>()))
-                .Returns(journey);
+            journeyService.Setup(j => j.GetScheduledJourneysAsync(It.IsAny<int>()))
+                .ReturnsAsync(journeys);
 
-            var result = journeyController.GetScheduled(user.Id);
+            var result = await journeyController.GetScheduled(user.Id);
 
             using (new AssertionScope())
             {
                 (result as OkObjectResult)?.StatusCode.Should().Be(200);
-                (result as OkObjectResult)?.Value.Should().Be(journey);
+                (result as OkObjectResult)?.Value.Should().Be(journeys);
             }
         }
     }
