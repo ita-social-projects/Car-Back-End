@@ -28,7 +28,7 @@ namespace Car.WebApi.Hubs
         public async Task SendMessageToGroup(Message message)
         {
             message.CreatedAt = DateTime.UtcNow;
-            var addedMessage = await userManager.AddMessageAsync(message);
+            await userManager.AddMessageAsync(message);
             await Clients.Group(message.ChatId.ToString()).SendAsync("RecieveMessage", message);
         }
     }
