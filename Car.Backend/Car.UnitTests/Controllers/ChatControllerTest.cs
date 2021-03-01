@@ -29,7 +29,7 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task GetUserChats_WhenUserExists_ReturnsChatObject()
+        public async Task GetUserChats_WhenUserExists_ReturnsOkObjectResult()
         {
             // Arrange
             var user = fixture.Create<User>();
@@ -47,7 +47,7 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task GetUserChats_WhenUserNotExists_ReturnsNull()
+        public async Task GetUserChats_WhenUserNotExist_ReturnsOkObjectResult()
         {
             // Arrange
             var user = fixture.Create<User>();

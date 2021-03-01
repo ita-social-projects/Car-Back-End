@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.Threading.Tasks;
+using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
@@ -27,14 +28,15 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void GetPreferences_WhenUserExists_ReturnsUserObject()
+        public async Task GetPreferences_WhenUserExists_ReturnsPreferencesObject()
         {
             // Arrange
             var user = fixture.Create<User>();
-            preferencesService.Setup(x => x.GetPreferences(It.IsAny<int>())).Returns(new UserPreferences());
+            preferencesService.Setup(x => x.GetPreferencesAsync(It.IsAny<int>()))
+                .ReturnsAsync(user.UserPreferences);
 
             // Act
-            var result = userPreferencesController.GetPreferences(user.Id);
+            var result = await userPreferencesController.GetPreferences(user.Id);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -42,14 +44,15 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void GetPreferences_WhenUserNotExists_ReturnsNull()
+        public async Task GetPreferences_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
             var user = fixture.Create<User>();
-            preferencesService.Setup(x => x.GetPreferences(It.IsAny<int>())).Returns((UserPreferences)null);
+            preferencesService.Setup(x => x.GetPreferencesAsync(It.IsAny<int>()))
+                .ReturnsAsync((UserPreferences)null);
 
             // Act
-            var result = userPreferencesController.GetPreferences(user.Id);
+            var result = await userPreferencesController.GetPreferences(user.Id);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -57,15 +60,16 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void UpdatePreferences_WhenUserPreferencesExists_ReturnsUpdatedUserPreferences()
+        public async Task UpdatePreferences_WhenUserPreferencesExists_ReturnsUserPreferences()
         {
-            var userPreferences = new UserPreferences();
-
             // Arrange
-            preferencesService.Setup(u => u.UpdatePreferences(userPreferences)).Returns(userPreferences);
+            var userPreferences = fixture.Create<UserPreferences>();
+
+            preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))
+                .ReturnsAsync(userPreferences);
 
             // Act
-            var result = userPreferencesController.UpdatePreferences(userPreferences);
+            var result = await userPreferencesController.UpdatePreferences(userPreferences);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -73,15 +77,16 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void UpdatePreferences_WhenUserPreferencesNotExists_ReturnsNull()
+        public async Task UpdatePreferences_WhenUserPreferencesNotExist_ReturnsNull()
         {
+            // Arrange
             var userPreferences = new UserPreferences();
 
-            // Arrange
-            preferencesService.Setup(u => u.UpdatePreferences(userPreferences)).Returns((UserPreferences)null);
+            preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))
+                .ReturnsAsync((UserPreferences)null);
 
             // Act
-            var result = userPreferencesController.UpdatePreferences(userPreferences);
+            var result = await userPreferencesController.UpdatePreferences(userPreferences);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
