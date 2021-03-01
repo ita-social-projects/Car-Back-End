@@ -8,6 +8,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
 
@@ -33,7 +34,7 @@ namespace Car.UnitTests.Services
             users.Add(user);
 
             userRepository.Setup(r => r.Query())
-                .Returns(users.AsQueryable);
+                .Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await loginService.GetUserAsync(user.Email);

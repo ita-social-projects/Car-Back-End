@@ -8,6 +8,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
 
@@ -33,13 +34,13 @@ namespace Car.UnitTests.Services
             preferences.Add(userPreferences);
 
             preferencesRepository.Setup(r => r.Query())
-                .Returns(preferences.AsQueryable);
+                .Returns(preferences.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await preferencesService.GetPreferencesAsync(userPreferences.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(preferences);
+            result.Should().BeEquivalentTo(userPreferences);
         }
 
         [Fact]

@@ -8,6 +8,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
 
@@ -35,9 +36,10 @@ namespace Car.UnitTests.Services
             var specificModels = Fixture.Build<Model>()
                 .With(model => model.BrandId, brand.Id)
                 .CreateMany();
+            models.AddRange(specificModels);
 
             modelRepository.Setup(r => r.Query())
-                .Returns(models.AsQueryable);
+                .Returns(models.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await modelService.GetModelsByBrandIdAsync(brand.Id);
