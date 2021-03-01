@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Mapping;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -25,11 +28,10 @@ namespace Car.UnitTests.Services
         public JourneyServiceTest()
         {
             repository = new Mock<IRepository<Journey>>();
+            mapper = new Mapper(new MapperConfiguration(
+                (options) => options.AddProfile(typeof(JourneyMapper))));
 
-            MapperProfile profile = new MapperProfile();
-            mapper = new Mapper(new MapperConfiguration(m => m.AddProfile(profile)));
-
-            journeyService = new JourneyService(journeyUnitOfWork.Object, mapper);
+            journeyService = new JourneyService(repository.Object, mapper);
 
             fixture = new Fixture();
 
@@ -38,7 +40,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void GetJourneyById_JourneyExists_ReturnsJourneyObject()
+        public async Task GetJourneyByIdAsync_JourneyExists_ReturnsJourneyObject()
         {
             // Arrange
             var journeys = fixture.Create<List<Journey>>();
@@ -49,27 +51,25 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetJourneyById(journey.Id);
+            var result = await journeyService.GetJourneyByIdAsync(journey.Id);
 
             // Assert
             result.Should().BeEquivalentTo(mapper.Map<Journey, JourneyModel>(journey));
         }
 
         [Fact]
-        public void GetJourneyById_JourneyNotExist_ReturnsNull()
+        public async Task GetJourneyByIdAsync_JourneyNotExist_ReturnsNull()
         {
             // Arrange
             var journeys = fixture.Create<Journey[]>().AsQueryable();
 
             repository.Setup(r => r.Query())
                 .Returns(journeys);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetJourneyById(journeys.Max(j => j.Id) + 1);
+            var result = await journeyService.GetJourneyByIdAsync(journeys.Max(j => j.Id) + 1);
 
             // Assert
             result.Should().BeNull();
@@ -77,7 +77,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetPastJourneys_PastJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public async Task GetPastJourneysAsync_PastJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             // Arrange
             var participant = fixture.Create<User>();
@@ -94,10 +94,9 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetPastJourneys(participant.Id);
+            var result = await journeyService.GetPastJourneysAsync(participant.Id);
 
             // Assert
             result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys));
@@ -105,7 +104,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetPastJourneys_PastJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public async Task GetPastJourneysAsync_PastJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             // Arrange
             var participant = fixture.Create<User>();
@@ -117,10 +116,9 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetPastJourneys(participant.Id);
+            var result = await journeyService.GetPastJourneysAsync(participant.Id);
 
             // Assert
             result.Should().BeEmpty();
@@ -128,7 +126,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetPastJourneys_UserNotHaveJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public async Task GetPastJourneysAsync_UserNotHaveJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             // Arrange
             var journeys = fixture.Build<Journey>()
@@ -139,16 +137,16 @@ namespace Car.UnitTests.Services
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .CreateMany();
             journeys.AddRange(pastJourneys);
+            // todo: organizer
             var user = fixture.Build<User>()
                 .With(u => u.Id, journeys.SelectMany(j => j.Participants.Select(p => p.Id)).Max() + 1)
                 .Create();
 
             repository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetPastJourneys(user.Id);
+            var result = await journeyService.GetPastJourneysAsync(user.Id);
 
             // Assert
             result.Should().BeEmpty();
@@ -156,7 +154,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneys_UpcomingJourneysExistForOrganizer_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public async Task GetUpcomingJourneysAsync_UpcomingJourneysExistForOrganizer_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             // Arrange
             var organizer = fixture.Create<User>();
@@ -173,10 +171,9 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetUpcomingJourneys(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
 
             // Assert
             result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
@@ -184,7 +181,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneys_UpcomingJourneysExistForParticipant_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public async Task GetUpcomingJourneysAsync_UpcomingJourneysExistForParticipant_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             // Arrange
             var participant = fixture.Create<User>();
@@ -201,10 +198,9 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetUpcomingJourneys(participant.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync(participant.Id);
 
             // Assert
             result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
@@ -212,7 +208,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneys_UpcomingJourneysNotExistForOrganizer_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public async Task GetUpcomingJourneysAsync_UpcomingJourneysNotExistForOrganizer_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             // Arrange
             var organizer = fixture.Create<User>();
@@ -224,10 +220,9 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetUpcomingJourneys(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
 
             // Assert
             result.Should().BeEmpty();
@@ -235,7 +230,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneys_UserNotHaveUpcomingJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public async Task GetUpcomingJourneysAsync_UserNotHaveUpcomingJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             // Arrange
             var organizer = fixture.Create<User>();
@@ -253,17 +248,16 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetUpcomingJourneys(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
 
             // Assert
             result.Should().BeEmpty();
         }
 
         [Fact]
-        public void GetScheduledJourneys_ScheduledJourneysExistForParticipant_ReturnsJourneyCollection()
+        public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForParticipant_ReturnsJourneyCollection()
         {
             // Arrange
             var participant = fixture.Create<User>();
@@ -279,17 +273,16 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query(journey => journey.Schedule))
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetScheduledJourneys(participant.Id);
+            var result = await journeyService.GetScheduledJourneysAsync(participant.Id);
 
             // Assert
             result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
         }
 
         [Fact]
-        public void GetScheduledJourneys_ScheduledJourneysExistForOrganizer_ReturnsJourneyCollection()
+        public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForOrganizer_ReturnsJourneyCollection()
         {
             // Arrange
             var organizer = fixture.Create<User>();
@@ -305,17 +298,16 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query(journey => journey.Schedule))
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetScheduledJourneys(organizer.Id);
+            var result = await journeyService.GetScheduledJourneysAsync(organizer.Id);
 
             // Assert
             result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
         }
 
         [Fact]
-        public void GetScheduledJourneys_ScheduledJourneysNotExist_ReturnsEmptyCollection()
+        public async Task GetScheduledJourneysAsync_ScheduledJourneysNotExist_ReturnsEmptyCollection()
         {
             // Arrange
             var organizer = fixture.Create<User>();
@@ -331,10 +323,9 @@ namespace Car.UnitTests.Services
 
             repository.Setup(r => r.Query(journey => journey.Schedule))
                 .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
 
             // Act
-            var result = journeyService.GetScheduledJourneys(organizer.Id);
+            var result = await journeyService.GetScheduledJourneysAsync(organizer.Id);
 
             // Assert
             result.Should().BeEmpty();

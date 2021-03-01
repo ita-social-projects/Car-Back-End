@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
@@ -21,7 +23,7 @@ namespace Car.UnitTests.Services
         {
             repository = new Mock<IRepository<Brand>>();
 
-            brandService = new BrandService(unitOfWork.Object);
+            brandService = new BrandService(repository.Object);
 
             fixture = new Fixture();
 
@@ -30,17 +32,19 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void TestGetAllBrands()
+        public async Task GetAllBrands_WhenBrandsExist_ReturnsBrandCollection()
         {
-            var brands = fixture.Create<Brand[]>();
+            // Arrange
+            var brands = fixture.Create<List<Brand>>();
 
             repository.Setup(r => r.Query())
-                .Returns(brands.AsQueryable());
+                .Returns(brands.AsQueryable);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await brandService.GetAllAsync();
 
-            brandService.GetAllBrands().Should().BeEquivalentTo(brands);
+            // Assert
+            result.Should().BeEquivalentTo(brands);
         }
     }
 }

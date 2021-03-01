@@ -1,4 +1,7 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
@@ -12,14 +15,14 @@ namespace Car.UnitTests.Services
     public class LoginServiceTest
     {
         private readonly ILoginService loginService;
-        private readonly Mock<IRepository<User>> repository;
+        private readonly Mock<IRepository<User>> userRepository;
         private readonly Fixture fixture;
 
         public LoginServiceTest()
         {
-            repository = new Mock<IRepository<User>>();
+            userRepository = new Mock<IRepository<User>>();
 
-            loginService = new LoginService(unitOfWork.Object);
+            loginService = new LoginService(userRepository.Object);
 
             fixture = new Fixture();
 
@@ -28,43 +31,36 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public void TestGetUser_WhenUserExists()
+        public async Task GetUser_WhenUserExists_ReturnsUserObject()
         {
+            // Arrange
             var user = fixture.Create<User>();
+            var users = fixture.Create<List<User>>();
+            users.Add(user);
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            userRepository.Setup(r => r.Query())
+                .Returns(users.AsQueryable);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await loginService.GetUserAsync(user.Email);
 
-            loginService.GetUser(user.Email).Should().NotBeSameAs(user);
+            // Assert
+            result.Should().BeEquivalentTo(user);
         }
 
         [Fact]
-        public void TestUpdateUser()
+        public async Task AddUser_WhenUserIsValid_ReturnsUserObject()
         {
+            // Arrange
             var user = fixture.Create<User>();
-            repository.Setup(r => r.GetById(user.Id))
-               .Returns(user);
+            userRepository.Setup(r => r.AddAsync(user))
+               .ReturnsAsync(user);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await loginService.AddUserAsync(user);
 
-            loginService.SaveUser(user).Should().BeSameAs(user);
-        }
-
-        [Fact]
-        public void TestUpdateUser_WhenNotExist()
-        {
-            var user = fixture.Create<User>();
-            repository.Setup(r => r.GetById(user.Id))
-               .Returns(user);
-
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
-
-            loginService.SaveUser(user).Should().NotBeNull();
+            // Assert
+            result.Should().BeEquivalentTo(user);
         }
     }
 }
