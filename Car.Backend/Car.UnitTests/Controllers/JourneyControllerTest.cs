@@ -4,6 +4,7 @@ using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -13,29 +14,23 @@ using Xunit;
 
 namespace Car.UnitTests.Controllers
 {
-    public class JourneyControllerTest
+    public class JourneyControllerTest : TestBase
     {
         private readonly Mock<IJourneyService> journeyService;
         private readonly JourneyController journeyController;
-        private readonly Fixture fixture;
 
         public JourneyControllerTest()
         {
             journeyService = new Mock<IJourneyService>();
             journeyController = new JourneyController(journeyService.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public async Task GetPastJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
             // Arrange
-            var user = fixture.Create<User>();
-            var journeys = fixture.Create<List<JourneyModel>>();
+            var user = Fixture.Create<User>();
+            var journeys = Fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetPastJourneysAsync(It.IsAny<int>()))
                 .ReturnsAsync(journeys);
@@ -55,8 +50,8 @@ namespace Car.UnitTests.Controllers
         public async Task GetUpcomingJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
             // Arrange
-            var user = fixture.Create<User>();
-            var journeys = fixture.Create<List<JourneyModel>>();
+            var user = Fixture.Create<User>();
+            var journeys = Fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetUpcomingJourneysAsync(It.IsAny<int>()))
                 .ReturnsAsync(journeys);
@@ -76,8 +71,8 @@ namespace Car.UnitTests.Controllers
         public async Task GetScheduledJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
             // Arrange
-            var user = fixture.Create<User>();
-            var journeys = fixture.Create<List<JourneyModel>>();
+            var user = Fixture.Create<User>();
+            var journeys = Fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetScheduledJourneysAsync(It.IsAny<int>()))
                 .ReturnsAsync(journeys);

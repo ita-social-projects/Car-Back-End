@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -12,28 +13,22 @@ using Xunit;
 
 namespace Car.UnitTests.Controllers
 {
-    public class BrandControllerTest
+    public class BrandControllerTest : TestBase
     {
         private readonly Mock<IBrandService> brandService;
         private readonly BrandController brandController;
-        private readonly Fixture fixture;
 
         public BrandControllerTest()
         {
             brandService = new Mock<IBrandService>();
             brandController = new BrandController(brandService.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public async Task GetBrands_BrandsExist_ReturnsBrandCollection()
         {
             // Arrange
-            var brands = fixture.Create<List<Brand>>();
+            var brands = Fixture.Create<List<Brand>>();
 
             brandService.Setup(service => service.GetAllAsync()).ReturnsAsync(brands);
 

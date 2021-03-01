@@ -6,36 +6,30 @@ using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
 namespace Car.UnitTests.Services
 {
-    public class PreferencesServiceTest
+    public class PreferencesServiceTest : TestBase
     {
         private readonly IPreferencesService preferencesService;
         private readonly Mock<IRepository<UserPreferences>> preferencesRepository;
-        private readonly Fixture fixture;
 
         public PreferencesServiceTest()
         {
             preferencesRepository = new Mock<IRepository<UserPreferences>>();
-
             preferencesService = new PreferencesService(preferencesRepository.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public async Task GetPreferencesAsync_WhenPreferencesExist_ReturnsPreferencesObject()
         {
             // Arrange
-            var preferences = fixture.Create<List<UserPreferences>>();
-            var userPreferences = fixture.Create<UserPreferences>();
+            var preferences = Fixture.Create<List<UserPreferences>>();
+            var userPreferences = Fixture.Create<UserPreferences>();
             preferences.Add(userPreferences);
 
             preferencesRepository.Setup(r => r.Query())
@@ -52,7 +46,7 @@ namespace Car.UnitTests.Services
         public async Task UpdatePreferences_WhenPreferencesIsValid_ReturnsPreferencesObject()
         {
             // Arrange
-            var preferences = fixture.Create<UserPreferences>();
+            var preferences = Fixture.Create<UserPreferences>();
 
             preferencesRepository.Setup(r => r.UpdateAsync(preferences))
                .ReturnsAsync(preferences);

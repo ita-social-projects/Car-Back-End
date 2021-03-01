@@ -2,6 +2,7 @@
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -10,28 +11,22 @@ using Xunit;
 
 namespace Car.UnitTests.Controllers
 {
-    public class UserPreferencesControllerTest
+    public class UserPreferencesControllerTest : TestBase
     {
         private readonly Mock<IPreferencesService> preferencesService;
         private readonly UserPreferencesController userPreferencesController;
-        private readonly Fixture fixture;
 
         public UserPreferencesControllerTest()
         {
             preferencesService = new Mock<IPreferencesService>();
             userPreferencesController = new UserPreferencesController(preferencesService.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public async Task GetPreferences_WhenUserExists_ReturnsPreferencesObject()
         {
             // Arrange
-            var user = fixture.Create<User>();
+            var user = Fixture.Create<User>();
             preferencesService.Setup(x => x.GetPreferencesAsync(It.IsAny<int>()))
                 .ReturnsAsync(user.UserPreferences);
 
@@ -47,7 +42,7 @@ namespace Car.UnitTests.Controllers
         public async Task GetPreferences_WhenUserNotExist_ReturnsNull()
         {
             // Arrange
-            var user = fixture.Create<User>();
+            var user = Fixture.Create<User>();
             preferencesService.Setup(x => x.GetPreferencesAsync(It.IsAny<int>()))
                 .ReturnsAsync((UserPreferences)null);
 
@@ -63,7 +58,7 @@ namespace Car.UnitTests.Controllers
         public async Task UpdatePreferences_WhenUserPreferencesExists_ReturnsUserPreferences()
         {
             // Arrange
-            var userPreferences = fixture.Create<UserPreferences>();
+            var userPreferences = Fixture.Create<UserPreferences>();
 
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))
                 .ReturnsAsync(userPreferences);

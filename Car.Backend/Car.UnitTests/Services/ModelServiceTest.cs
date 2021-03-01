@@ -6,39 +6,33 @@ using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
 namespace Car.UnitTests.Services
 {
-    public class ModelServiceTest
+    public class ModelServiceTest : TestBase
     {
         private readonly IModelService modelService;
         private readonly Mock<IRepository<Model>> modelRepository;
-        private readonly Fixture fixture;
 
         public ModelServiceTest()
         {
             modelRepository = new Mock<IRepository<Model>>();
-
             modelService = new ModelService(modelRepository.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public async Task GetModelsByBrandIdAsync_WhenModelsExist_ReturnsModelCollection()
         {
             // Arrange
-            var models = fixture.Create<List<Model>>();
-            var brand = fixture.Build<Brand>()
+            var models = Fixture.Create<List<Model>>();
+            var brand = Fixture.Build<Brand>()
                 .With(b => b.Id, models.Max(m => m.BrandId) + 1)
                 .Create();
-            var specificModels = fixture.Build<Model>()
+            var specificModels = Fixture.Build<Model>()
                 .With(model => model.BrandId, brand.Id)
                 .CreateMany();
 

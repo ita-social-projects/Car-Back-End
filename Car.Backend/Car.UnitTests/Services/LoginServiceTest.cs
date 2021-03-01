@@ -6,36 +6,30 @@ using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
 namespace Car.UnitTests.Services
 {
-    public class LoginServiceTest
+    public class LoginServiceTest : TestBase
     {
         private readonly ILoginService loginService;
         private readonly Mock<IRepository<User>> userRepository;
-        private readonly Fixture fixture;
 
         public LoginServiceTest()
         {
             userRepository = new Mock<IRepository<User>>();
-
             loginService = new LoginService(userRepository.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public async Task GetUser_WhenUserExists_ReturnsUserObject()
         {
             // Arrange
-            var user = fixture.Create<User>();
-            var users = fixture.Create<List<User>>();
+            var user = Fixture.Create<User>();
+            var users = Fixture.Create<List<User>>();
             users.Add(user);
 
             userRepository.Setup(r => r.Query())
@@ -52,7 +46,7 @@ namespace Car.UnitTests.Services
         public async Task AddUser_WhenUserIsValid_ReturnsUserObject()
         {
             // Arrange
-            var user = fixture.Create<User>();
+            var user = Fixture.Create<User>();
             userRepository.Setup(r => r.AddAsync(user))
                .ReturnsAsync(user);
 

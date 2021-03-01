@@ -2,6 +2,7 @@
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using Car.WebApi.JwtConfiguration;
 using FluentAssertions;
@@ -12,28 +13,24 @@ using Xunit;
 
 namespace Car.UnitTests.Controllers
 {
-    public class LoginControllerTest
+    public class LoginControllerTest : TestBase
     {
         private readonly Mock<ILoginService> loginService;
         private readonly Mock<IWebTokenGenerator> webTokenGenerator;
         private readonly LoginController loginController;
-        private readonly Fixture fixture;
 
         public LoginControllerTest()
         {
             loginService = new Mock<ILoginService>();
             webTokenGenerator = new Mock<IWebTokenGenerator>();
             loginController = new LoginController(loginService.Object, webTokenGenerator.Object);
-            fixture = new Fixture();
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
         public async Task Login_WhenUserExists_ReturnsOkObjectResult()
         {
             // Arrange
-            var user = fixture.Create<User>();
+            var user = Fixture.Create<User>();
 
             loginService.Setup(service => service.LoginAsync(user))
                 .ReturnsAsync(user);
