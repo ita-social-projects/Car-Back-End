@@ -25,6 +25,8 @@ namespace Car.UnitTests.Controllers
             webTokenGenerator = new Mock<IWebTokenGenerator>();
             loginController = new LoginController(loginService.Object, webTokenGenerator.Object);
             fixture = new Fixture();
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
@@ -46,26 +48,6 @@ namespace Car.UnitTests.Controllers
                 (result as OkObjectResult)?.Value.Should().BeOfType<User>();
                 ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
                 ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
-            }
-        }
-
-        [Fact]
-        public async Task Login_WhenUserNotExist_ReturnsOkObjectResult()
-        {
-            // Arrange
-            var user = fixture.Create<User>();
-
-            loginService.Setup(service => service.LoginAsync(user))
-                .ReturnsAsync((User)null);
-
-            // Act
-            var result = await loginController.Login(user);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeNull();
             }
         }
     }

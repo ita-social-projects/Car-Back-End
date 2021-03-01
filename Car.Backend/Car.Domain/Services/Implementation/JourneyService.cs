@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -34,21 +33,18 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
-        public async Task<List<JourneyModel>> GetPastJourneysAsync(int userId)
+        public async Task<IEnumerable<JourneyModel>> GetPastJourneysAsync(int userId)
         {
-            var now = DateTime.UtcNow;
-
             var journeys = await journeyRepository
                 .Query()
                 .IncludeJourneyInfo(userId)
-                .Where(journey =>
-                    EF.Functions.DateDiffMinute(now, journey.DepartureTime) > journey.Duration.TotalMinutes)
+                .FilterPast()
                 .ToListAsync();
 
-            return mapper.Map<List<Journey>, List<JourneyModel>>(journeys);
+            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
 
-        public async Task<List<JourneyModel>> GetScheduledJourneysAsync(int userId)
+        public async Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync(int userId)
         {
             var journeys = await journeyRepository
                 .Query(journey => journey.Schedule)
@@ -56,20 +52,18 @@ namespace Car.Domain.Services.Implementation
                 .Where(journey => journey.Schedule != null)
                 .ToListAsync();
 
-            return mapper.Map<List<Journey>, List<JourneyModel>>(journeys);
+            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
 
-        public async Task<List<JourneyModel>> GetUpcomingJourneysAsync(int userId)
+        public async Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync(int userId)
         {
-            var now = DateTime.UtcNow;
-
             var journeys = await journeyRepository
                 .Query()
                 .IncludeJourneyInfo(userId)
-                .Where(journey => journey.DepartureTime > now)
+                .FilterUpcoming()
                 .ToListAsync();
 
-            return mapper.Map<List<Journey>, List<JourneyModel>>(journeys);
+            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
     }
 }

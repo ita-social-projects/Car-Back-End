@@ -30,9 +30,7 @@ namespace Car.Data.Infrastructure
         {
             var dbSet = context.Set<TEntity>();
             var query = includes
-                .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                    dbSet,
-                    (current, include) => current.Include(include));
+                .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(dbSet, (current, include) => current.Include(include));
 
             return query ?? dbSet;
         }
