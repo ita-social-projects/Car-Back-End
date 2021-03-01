@@ -9,7 +9,7 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<CarEntity> GetCarByIdAsync(int carId);
 
-        Task<CarEntity> AddCarAsync(CreateCarModel car);
+        Task<CarEntity> AddCarAsync(CreateCarModel createCarModel);
 
         Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId);
 

@@ -1,14 +1,17 @@
 ﻿using System.Threading.Tasks;
+using Car.Data.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace Car.Domain.Services.Interfaces
 {
-    public interface IImageService<TEntity, TFile>
+    public interface IImageService
     {
-        Task<TEntity> UploadImageAsync(int entityId, IFormFile entityFile);
+        Task UploadImageAsync(IEntityWithImage entity, IFormFile entityFile);
 
-        Task<TEntity> DeleteImageAsync(int entityId);
+        Task UpdateImageAsync(IEntityWithImage entity, IFormFile entityFile);
 
-        Task<string> GetFileLinkAsync(string fileId);
+        Task DeleteImageAsync(IEntityWithImage entity);
+
+        void SetImageLink(IEntityWithImage entity);
     }
 }

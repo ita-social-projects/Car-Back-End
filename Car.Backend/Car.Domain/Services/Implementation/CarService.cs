@@ -6,7 +6,6 @@ using Car.Data.Infrastructure;
 using Car.Domain.Extensions;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
-using Google.Apis.Drive.v3.Data;
 using Microsoft.EntityFrameworkCore;
 using CarEntity = Car.Data.Entities.Car;
 
@@ -14,26 +13,21 @@ namespace Car.Domain.Services.Implementation
 {
     public class CarService : ICarService
     {
-        // todo: move const to fileService logic
-        private const string ImageContentType = "image/png";
         private readonly IRepository<CarEntity> carRepository;
-        private readonly IFileService<File> fileService;
+        private readonly IImageService imageService;
         private readonly IMapper mapper;
 
-        public CarService(IRepository<CarEntity> carRepository, IFileService<File> fileService, IMapper mapper)
+        public CarService(IRepository<CarEntity> carRepository, IImageService imageService, IMapper mapper)
         {
             this.carRepository = carRepository;
-            this.fileService = fileService;
+            this.imageService = imageService;
             this.mapper = mapper;
         }
 
-        public async Task<CarEntity> AddCarAsync(CreateCarModel car)
+        public async Task<CarEntity> AddCarAsync(CreateCarModel createCarModel)
         {
-            var carEntity = mapper.Map<CreateCarModel, CarEntity>(car);
-            if (car.Image != null)
-            {
-                carEntity.ImageId = await fileService.UploadFileAsync(car.Image.OpenReadStream(), car.Image.FileName, ImageContentType);
-            }
+            var carEntity = mapper.Map<CreateCarModel, CarEntity>(createCarModel);
+            await imageService.UploadImageAsync(carEntity, createCarModel.Image);
 
             var newCar = await carRepository.AddAsync(carEntity);
             await carRepository.SaveChangesAsync();
@@ -47,11 +41,7 @@ namespace Car.Domain.Services.Implementation
                 .Query()
                 .IncludeModelWithBrand()
                 .FirstOrDefaultAsync(c => c.Id == carId);
-
-            if (car?.ImageId != null)
-            {
-                car.ImageId = fileService.GetFileLinkAsync(car.ImageId);
-            }
+            imageService.SetImageLink(car);
 
             return car;
         }
@@ -64,10 +54,7 @@ namespace Car.Domain.Services.Implementation
                 .Where(car => car.OwnerId == userId)
                 .ToListAsync();
 
-            foreach (var car in cars.Where(car => car.ImageId != null))
-            {
-                car.ImageId = fileService.GetFileLinkAsync(car.ImageId);
-            }
+            cars.ForEach((car) => imageService.SetImageLink(car));
 
             return cars;
         }
@@ -76,21 +63,10 @@ namespace Car.Domain.Services.Implementation
         {
             var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 
-            // todo: write ChangeImage(entity)
-            if (!string.IsNullOrEmpty(car.ImageId))
-            {
-                await fileService.DeleteFileAsync(car.ImageId);
-                car.ImageId = null;
-            }
-
-            car = mapper.Map<UpdateCarModel, CarEntity>(updateCarModel);
-            if (updateCarModel.Image != null)
-            {
-                car.ImageId = await fileService.UploadFileAsync(
-                    updateCarModel.Image.OpenReadStream(),
-                    updateCarModel.Image.FileName,
-                    ImageContentType);
-            }
+            await imageService.UpdateImageAsync(car, updateCarModel.Image);
+            car.Color = updateCarModel.Color;
+            car.ModelId = updateCarModel.ModelId;
+            car.PlateNumber = updateCarModel.PlateNumber;
 
             await carRepository.SaveChangesAsync();
 

@@ -24,9 +24,7 @@ namespace Car.Domain.Services.Implementation
             return newUser;
         }
 
-        public async Task<User> LoginAsync(User user)
-        {
-            return await GetUserAsync(user.Email) ?? await AddUserAsync(user);
-        }
+        public async Task<User> LoginAsync(User user) =>
+            await GetUserAsync(user.Email) ?? await AddUserAsync(user);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Car.Data.Entities;
+﻿using System.Threading.Tasks;
+using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,11 @@ namespace Car.WebApi.Controllers
     [ApiController]
     public class ChatController : ControllerBase
     {
-        private readonly IChatService userManager;
+        private readonly IChatService chatService;
 
-        public ChatController(IChatService userManager)
+        public ChatController(IChatService chatService)
         {
-            this.userManager = userManager;
+            this.chatService = chatService;
         }
 
         /// <summary>
@@ -21,10 +22,8 @@ namespace Car.WebApi.Controllers
         /// <param name="id">Sender identifier</param>
         /// <returns>Chats of Sender by Id</returns>
         [HttpGet("{id}")]
-        public IActionResult GetUserChats(int id)
-        {
-            return Ok(userManager.GetUsersChats(id));
-        }
+        public async Task<IActionResult> GetUserChats(int id) =>
+            Ok(await chatService.GetUserChatsAsync(id));
 
         /// <summary>
         /// Get chat by Chat Id
@@ -32,10 +31,8 @@ namespace Car.WebApi.Controllers
         /// <param name="id">Sender identifier</param>
         /// <returns>Chat</returns>
         [HttpGet("chat/{id}")]
-        public IActionResult GetChat(int id)
-        {
-            return Ok(userManager.GetChatById(id));
-        }
+        public async Task<IActionResult> GetChat(int id) =>
+            Ok(await chatService.GetChatByIdAsync(id));
 
         /// <summary>
         /// Add the chat
@@ -43,22 +40,8 @@ namespace Car.WebApi.Controllers
         /// <param name="chat">Sender identifier</param>
         /// <returns>New chat</returns>
         [HttpPost]
-        public IActionResult AddChat([FromBody] Chat chat)
-        {
-            return Ok(userManager.AddChat(chat));
-        }
-
-        /// <summary>
-        /// Add user to the chat
-        /// </summary>
-        /// <param name="userId">Sender identifier</param>
-        /// <param name="chatId">Chat identifier</param>
-        /// <returns>Added Sender</returns>
-        [HttpPut]
-        public IActionResult AddUserToChat(int userId, int chatId)
-        {
-            return Ok(userManager.AddUserToChat(chatId, userId));
-        }
+        public async Task<IActionResult> AddChat([FromBody] Chat chat) =>
+            Ok(await chatService.AddChatAsync(chat));
 
         /// <summary>
         /// Add new message
@@ -66,9 +49,7 @@ namespace Car.WebApi.Controllers
         /// <param name="message">Message entity</param>
         /// <returns>Added Message</returns>
         [HttpPost("message")]
-        public IActionResult AddMessage([FromBody] Message message)
-        {
-            return Ok(userManager.AddMessage(message));
-        }
+        public async Task<IActionResult> AddMessage([FromBody] Message message) =>
+            Ok(await chatService.AddMessageAsync(message));
     }
 }

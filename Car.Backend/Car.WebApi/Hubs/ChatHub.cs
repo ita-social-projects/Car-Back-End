@@ -8,11 +8,11 @@ namespace Car.WebApi.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly IChatService userManager;
+        private readonly IChatService chatService;
 
-        public ChatHub(IChatService userManager)
+        public ChatHub(IChatService chatService)
         {
-            this.userManager = userManager;
+            this.chatService = chatService;
         }
 
         public async Task EnterToGroup(string groupName)
@@ -28,7 +28,7 @@ namespace Car.WebApi.Hubs
         public async Task SendMessageToGroup(Message message)
         {
             message.CreatedAt = DateTime.UtcNow;
-            var addedMessage = userManager.AddMessage(message);
+            var addedMessage = await chatService.AddMessageAsync(message);
             await Clients.Group(message.ChatId.ToString()).SendAsync("RecieveMessage", message);
         }
     }

@@ -32,6 +32,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IJourneyService, JourneyService>();
             services.AddScoped<IRepository<Journey>, Repository<Journey>>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IImageService, ImageService>();
         }
 
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)

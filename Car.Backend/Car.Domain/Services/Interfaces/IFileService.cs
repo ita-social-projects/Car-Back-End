@@ -11,6 +11,6 @@ namespace Car.Domain.Services.Interfaces
 
         void SetCredentials();
 
-        string GetFileLinkAsync(string fileId);
+        string GetFileLink(string fileId);
     }
 }

@@ -17,7 +17,7 @@
             <param name="id">The user identifier.</param>
             <returns>All user's cars</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Models.CreateCarModel)">
+        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Models.Car.CreateCarModel)">
             <summary>
             Adds the car asynchronously.
             </summary>
@@ -31,7 +31,7 @@
             <param name="id">The car identifier.</param>
             <returns>The car entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.UpdateCar(Car.Domain.Models.UpdateCarModel)">
+        <member name="M:Car.WebApi.Controllers.CarController.UpdateCar(Car.Domain.Models.Car.UpdateCarModel)">
             <summary>
             Updates car.
             </summary>
@@ -58,14 +58,6 @@
             </summary>
             <param name="chat">Sender identifier</param>
             <returns>New chat</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.AddUserToChat(System.Int32,System.Int32)">
-            <summary>
-            Add user to the chat
-            </summary>
-            <param name="userId">Sender identifier</param>
-            <param name="chatId">Chat identifier</param>
-            <returns>Added Sender</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.AddMessage(Car.Data.Entities.Message)">
             <summary>
@@ -102,13 +94,13 @@
             <param name="id">Journey identifier</param>
             <returns>Journey</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
+        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Data.Entities.User)">
             <summary>
-            ensures the user and returns a UserDTO for client app,
+            ensures the user and returns a User for client app,
             if user doesn't exist in DB it creates a user and saves them to DB
             </summary>
-            <param name="userModel">Sender model params</param>
-            <returns>UserDTO for a client app</returns>
+            <param name="user">Sender model params</param>
+            <returns>User for a client app</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ModelController.GetAll(System.Int32)">
             <summary>
@@ -138,18 +130,17 @@
             <param name="userId">user Id</param>
             <returns>int number</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.UpdateNotificationAsync(Car.Domain.Dto.NotificationDto)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.UpdateNotificationAsync(Car.Domain.Models.Notification.CreateNotificationModel)">
             <summary>
             updates user notification Asynchronously
             </summary>
-            <param name="notificationDto">notification itself to be updated</param>
+            <param name="createNotificationModel">notification itself to be updated</param>
             <returns>updated notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Dto.NotificationDto)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Models.Notification.CreateNotificationModel)">
             <summary>
             adds new user notification Asynchronously
             </summary>
-            <param name="notificationDto">notification to be added</param>
             // Args:
             //    JSON String
             //
@@ -204,7 +195,7 @@
             <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.UpdateUser(Car.Domain.Models.UpdateUserModel)">
+        <member name="M:Car.WebApi.Controllers.UserController.UpdateUser(Car.Domain.Models.User.UpdateUserModel)">
             <summary>
             Updates a user with the identifier asynchronously.
             </summary>
