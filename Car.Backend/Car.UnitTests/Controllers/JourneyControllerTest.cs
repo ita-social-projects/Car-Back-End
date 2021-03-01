@@ -33,14 +33,17 @@ namespace Car.UnitTests.Controllers
         [Fact]
         public async Task GetPastJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
+            // Arrange
             var user = fixture.Create<User>();
             var journeys = fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetPastJourneysAsync(It.IsAny<int>()))
                 .ReturnsAsync(journeys);
 
+            // Act
             var result = await journeyController.GetPast(user.Id);
 
+            // Assert
             using (new AssertionScope())
             {
                 (result as OkObjectResult)?.StatusCode.Should().Be(200);
@@ -51,14 +54,17 @@ namespace Car.UnitTests.Controllers
         [Fact]
         public async Task GetUpcomingJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
+            // Arrange
             var user = fixture.Create<User>();
             var journeys = fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetUpcomingJourneysAsync(It.IsAny<int>()))
                 .ReturnsAsync(journeys);
 
+            // Act
             var result = await journeyController.GetUpcoming(user.Id);
 
+            // Assert
             using (new AssertionScope())
             {
                 (result as OkObjectResult)?.StatusCode.Should().Be(200);
@@ -69,14 +75,17 @@ namespace Car.UnitTests.Controllers
         [Fact]
         public async Task GetScheduledJourneys_WithExistingUser_ReturnsJourneyCollection()
         {
+            // Arrange
             var user = fixture.Create<User>();
             var journeys = fixture.Create<List<JourneyModel>>();
 
             journeyService.Setup(j => j.GetScheduledJourneysAsync(It.IsAny<int>()))
                 .ReturnsAsync(journeys);
 
+            // Act
             var result = await journeyController.GetScheduled(user.Id);
 
+            // Assert
             using (new AssertionScope())
             {
                 (result as OkObjectResult)?.StatusCode.Should().Be(200);

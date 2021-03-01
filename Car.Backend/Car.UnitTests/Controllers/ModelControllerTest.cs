@@ -1,4 +1,6 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Controllers;
@@ -28,19 +30,23 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public void TestGetBrands()
+        public async Task GetAll_WhenModelsExist_ReturnsOkObjectResult()
         {
-            var models = fixture.Create<Model[]>();
+            // Arrange
+            var models = fixture.Create<List<Model>>();
+            var brand = fixture.Create<Brand>();
 
-            modelService.Setup(service => service.GetModelsByBrandId(It.IsAny<int>()))
-                .Returns(models);
+            modelService.Setup(service => service.GetModelsByBrandIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(models);
 
-            var result = modelController.GetAll(It.IsAny<int>());
+            // Act
+            var result = await modelController.GetAll(brand.Id);
 
+            // Assert
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Model[]>();
+                (result as OkObjectResult)?.Value.Should().BeOfType<List<Model>>();
             }
         }
     }

@@ -32,12 +32,15 @@ namespace Car.UnitTests.Controllers
         [Fact]
         public async Task GetBrands_BrandsExist_ReturnsBrandCollection()
         {
+            // Arrange
             var brands = fixture.Create<List<Brand>>();
 
             brandService.Setup(service => service.GetAllAsync()).ReturnsAsync(brands);
 
+            // Act
             var result = await brandController.GetBrands();
 
+            // Assert
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
