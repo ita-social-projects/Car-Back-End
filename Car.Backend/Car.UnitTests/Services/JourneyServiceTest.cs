@@ -7,14 +7,11 @@ using AutoFixture.Xunit2;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
-using Car.Domain.Models;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
-using FluentAssertions;
 using Moq;
 using Xunit;
-using MapperProfile = Car.Domain.Mapping.Mapper;
 
 namespace Car.UnitTests.Services
 {
