@@ -42,11 +42,13 @@ namespace Car.UnitTests.Services
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
+            var expected = Mapper.Map<Journey, JourneyModel>(journey);
+
             // Act
             var result = await journeyService.GetJourneyByIdAsync(journey.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(Mapper.Map<Journey, JourneyModel>(journey));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
@@ -84,12 +86,13 @@ namespace Car.UnitTests.Services
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
-            // todo: replace
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys);
+
             // Act
             var result = await journeyService.GetPastJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -159,12 +162,13 @@ namespace Car.UnitTests.Services
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys);
 
             // Act
             var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -186,12 +190,13 @@ namespace Car.UnitTests.Services
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys);
 
             // Act
             var result = await journeyService.GetUpcomingJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -262,11 +267,13 @@ namespace Car.UnitTests.Services
             journeyRepository.Setup(r => r.Query(journey => journey.Schedule))
               .Returns(journeys.AsQueryable().BuildMock().Object);
 
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys);
+
             // Act
             var result = await journeyService.GetScheduledJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
@@ -287,11 +294,13 @@ namespace Car.UnitTests.Services
             journeyRepository.Setup(r => r.Query(journey => journey.Schedule))
              .Returns(journeys.AsQueryable().BuildMock().Object);
 
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys);
+
             // Act
             var result = await journeyService.GetScheduledJourneysAsync(organizer.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]

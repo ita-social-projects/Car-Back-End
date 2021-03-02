@@ -44,7 +44,8 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             var chats = user?.OrganizerJourneys.Select(journey => journey.Chat)
-                .Union(user.ParticipantJourneys.Select(journey => journey.Chat));
+                .Union(user.ParticipantJourneys.Select(journey => journey.Chat))
+                .Except(new List<Chat>() { null });
 
             return chats;
         }

@@ -18,13 +18,11 @@ namespace Car.UnitTests.Services
     {
         private readonly ILoginService loginService;
         private readonly Mock<IRepository<User>> userRepository;
-        private readonly Mock<IWebTokenGenerator> webTokenGenerator;
 
         public LoginServiceTest()
         {
             userRepository = new Mock<IRepository<User>>();
-            webTokenGenerator = new Mock<IWebTokenGenerator>();
-            loginService = new LoginService(userRepository.Object, webTokenGenerator.Object);
+            loginService = new LoginService(userRepository.Object, Mock.Of<IWebTokenGenerator>());
         }
 
         [Fact]
