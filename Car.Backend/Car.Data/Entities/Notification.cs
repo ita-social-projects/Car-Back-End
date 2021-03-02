@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Car.Data.Entities
 {
@@ -21,6 +20,6 @@ namespace Car.Data.Entities
 
         public bool IsRead { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

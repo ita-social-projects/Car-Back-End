@@ -1,24 +1,48 @@
-﻿using System.Linq;
+﻿using System.Threading.Tasks;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
 {
     public class LoginService : ILoginService
     {
-        private readonly IUnitOfWork<User> unitOfWork;
+        private readonly IRepository<User> userRepository;
+        private readonly IWebTokenGenerator webTokenGenerator;
 
-        public LoginService(IUnitOfWork<User> unitOfWork) => this.unitOfWork = unitOfWork;
-
-        public User GetUser(string email) =>
-            unitOfWork.GetRepository().Query().FirstOrDefault(p => p.Email == email);
-
-        public User SaveUser(User user)
+        public LoginService(IRepository<User> userRepository, IWebTokenGenerator webTokenGenerator)
         {
-            unitOfWork.GetRepository().Add(user);
-            unitOfWork.SaveChanges();
-            return user;
+            this.userRepository = userRepository;
+            this.webTokenGenerator = webTokenGenerator;
+        }
+
+        public Task<User> GetUserAsync(string email) =>
+            userRepository.Query().FirstOrDefaultAsync(p => p.Email == email);
+
+        public async Task<User> AddUserAsync(User user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            user.UserPreferences = new UserPreferences();
+            var newUser = await userRepository.AddAsync(user);
+            await userRepository.SaveChangesAsync();
+
+            return newUser;
+        }
+
+        public async Task<User> LoginAsync(User user)
+        {
+            var loginUser = await GetUserAsync(user?.Email) ?? await AddUserAsync(user);
+            if (loginUser != null)
+            {
+                loginUser.Token = webTokenGenerator.GenerateWebToken(loginUser);
+            }
+
+            return loginUser;
         }
     }
 }

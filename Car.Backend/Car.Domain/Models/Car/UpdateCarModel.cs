@@ -1,13 +1,11 @@
 ﻿using Car.Data.Enums;
 using Microsoft.AspNetCore.Http;
 
-namespace Car.Domain.Models
+namespace Car.Domain.Models.Car
 {
     public class UpdateCarModel
     {
         public int Id { get; set; }
-
-        public int OwnerId { get; set; }
 
         public int ModelId { get; set; }
 
