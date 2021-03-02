@@ -63,10 +63,13 @@ namespace Car.Domain.Services.Implementation
         {
             var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 
-            await imageService.UpdateImageAsync(car, updateCarModel.Image);
-            car.Color = updateCarModel.Color;
-            car.ModelId = updateCarModel.ModelId;
-            car.PlateNumber = updateCarModel.PlateNumber;
+            if (car != null)
+            {
+                await imageService.UpdateImageAsync(car, updateCarModel.Image);
+                car.Color = updateCarModel.Color;
+                car.ModelId = updateCarModel.ModelId;
+                car.PlateNumber = updateCarModel.PlateNumber;
+            }
 
             await carRepository.SaveChangesAsync();
 

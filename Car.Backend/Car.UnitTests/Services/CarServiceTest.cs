@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
-using Car.Domain.Models;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -13,7 +12,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using MockQueryable.Moq;
 using Moq;
-using NUnit.Framework;
 using Xunit;
 using CarEntity = Car.Data.Entities.Car;
 
@@ -144,22 +142,42 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateCarAsync_WhenCarsIsValid_ReturnsCarObject()
+        public async Task UpdateCarAsync_WhenCarIsValid_ReturnsCarObject()
         {
             // Arrange
             var updateCarModel = Fixture.Build<UpdateCarModel>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
-            var car = Mapper.Map<UpdateCarModel, CarEntity>(updateCarModel);
+            var inputCar = Fixture.Build<CarEntity>()
+                .With(c => c.Id, updateCarModel.Id)
+                .Create();
 
-            carRepository.Setup(repo => repo.UpdateAsync(It.IsAny<CarEntity>()))
-                .ReturnsAsync(car);
+            carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
+                .ReturnsAsync(inputCar);
 
             // Act
             var result = await carService.UpdateCarAsync(updateCarModel);
 
             // Assert
-            result.Should().BeEquivalentTo(car);
+            result.Should().BeEquivalentTo(updateCarModel, options => options.ExcludingMissingMembers());
+        }
+
+        [Fact]
+        public async Task UpdateCarAsync_WhenCarIsNotExist_ReturnsNull()
+        {
+            // Arrange
+            var updateCarModel = Fixture.Build<UpdateCarModel>()
+                .With(model => model.Image, (IFormFile)null)
+                .Create();
+
+            carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
+                .ReturnsAsync((CarEntity)null);
+
+            // Act
+            var result = await carService.UpdateCarAsync(updateCarModel);
+
+            // Assert
+            result.Should().BeNull();
         }
     }
 }
