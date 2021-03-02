@@ -52,6 +52,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<Message> AddMessageAsync(Message message)
         {
+            // todo: should not contain messageRepo - instead of this should work with chatRepo
             var addedMessage = await messageRepository.AddAsync(message);
             await chatRepository.SaveChangesAsync();
 
