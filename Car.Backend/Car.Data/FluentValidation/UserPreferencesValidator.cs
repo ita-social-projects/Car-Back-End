@@ -9,7 +9,8 @@ namespace Car.Data.FluentValidation
             RuleFor(userPreferences => userPreferences.Id).GreaterThan(0);
             RuleFor(userPreferences => userPreferences.DoAllowSmoking).NotNull();
             RuleFor(userPreferences => userPreferences.DoAllowEating).NotNull();
-            RuleFor(userPreferences => userPreferences.Comments).Length(0, 100);
+            RuleFor(userPreferences => userPreferences.Comments).MaximumLength(Constants.COMMENTSMAXLENGTH);
+            RuleFor(userPreferences => userPreferences.User).SetValidator(new UserValidator());
         }
     }
 }

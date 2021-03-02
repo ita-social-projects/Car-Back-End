@@ -2,9 +2,16 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Car.Data.Entities;
+using Car.Data.FluentValidation;
+using Car.Domain.Dto;
+using Car.Domain.FluentValidation;
+using Car.Domain.FluentValidationDto;
 using Car.WebApi.Hubs;
 using Car.WebApi.JwtConfiguration;
 using Car.WebApi.ServiceExtension;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -79,6 +86,28 @@ namespace Car.WebApi
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
                };
            });
+
+            services.AddMvc().AddFluentValidation();
+
+            services.AddTransient<IValidator<Address>, AddressValidator>();
+            services.AddTransient<IValidator<Brand>, BrandValidator>();
+            services.AddTransient<IValidator<Data.Entities.Car>, CarValidator>();
+            services.AddTransient<IValidator<Chat>, ChatValidator>();
+            services.AddTransient<IValidator<Journey>, JourneyValidator>();
+            services.AddTransient<IValidator<LocationType>, LocationTypeValidator>();
+            services.AddTransient<IValidator<Location>, LocationValidator>();
+            services.AddTransient<IValidator<Message>, MessageValidator>();
+            services.AddTransient<IValidator<Model>, ModelValidator>();
+            services.AddTransient<IValidator<Notification>, NotificationValidator>();
+            services.AddTransient<IValidator<Schedule>, ScheduleValidator>();
+            services.AddTransient<IValidator<Stop>, StopValidator>();
+            services.AddTransient<IValidator<UserPreferences>, UserPreferencesValidator>();
+            services.AddTransient<IValidator<User>, UserValidator>();
+
+            services.AddTransient<IValidator<AddressDto>, AddressDtoValidator>();
+            services.AddTransient<IValidator<CarDto>, CarDtoValidator>();
+            services.AddTransient<IValidator<NotificationDto>, NotificationDtoValidator>();
+            services.AddTransient<IValidator<ParticipantDto>, ParticipantDtoValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

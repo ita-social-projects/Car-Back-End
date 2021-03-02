@@ -1,17 +1,17 @@
-﻿using FluentValidation;
+﻿using Car.Data;
+using FluentValidation;
 
-namespace Car.Data.FluentValidation
+namespace Car.Domain.FluentValidationDto
 {
-    public class AddressValidator : AbstractValidator<Entities.Address>
+    public class AddressDtoValidator : AbstractValidator<Dto.AddressDto>
     {
-        public AddressValidator()
+        public AddressDtoValidator()
         {
             RuleFor(address => address.Id).GreaterThan(Constants.IDLENGTH);
             RuleFor(address => address.City).NotNull().NotEmpty().MaximumLength(Constants.STRINGMAXLENGTH);
             RuleFor(address => address.Street).NotNull().NotEmpty().MaximumLength(Constants.STRINGMAXLENGTH);
             RuleFor(address => address.Latitude).NotNull();
             RuleFor(address => address.Longitude).NotNull();
-            RuleFor(address => address.Location).SetValidator(new LocationValidator());
         }
     }
 }

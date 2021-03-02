@@ -1,10 +1,12 @@
-﻿using FluentValidation;
+﻿using Car.Data;
+using Car.Data.FluentValidation;
+using FluentValidation;
 
-namespace Car.Data.FluentValidation
+namespace Car.Domain.FluentValidationDto
 {
-    public class CarValidator : AbstractValidator<Entities.Car>
+    public class CarDtoValidator : AbstractValidator<Dto.CarDto>
     {
-        public CarValidator()
+        public CarDtoValidator()
         {
             RuleFor(car => car.Id).GreaterThan(Constants.IDLENGTH);
             RuleFor(car => car.Color).NotNull();
@@ -12,7 +14,6 @@ namespace Car.Data.FluentValidation
                                                      .MinimumLength(Constants.PLATENUMBERMINLENGTH)
                                                      .MaximumLength(Constants.PLATENUMBERMAXLENGTH);
             RuleFor(car => car.OwnerId).GreaterThan(Constants.IDLENGTH);
-            RuleFor(car => car.Owner).SetValidator(new UserValidator());
             RuleFor(car => car.Model).SetValidator(new ModelValidator());
         }
     }
