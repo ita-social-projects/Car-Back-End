@@ -10,9 +10,11 @@ namespace Car.Domain.Extensions
         {
             return user
                 .Include(organizer => organizer.OrganizerJourneys)
-                .ThenInclude(journey => journey.Chat)
+                .ThenInclude(chat => chat.Chat)
                 .Include(participant => participant.ParticipantJourneys)
-                .ThenInclude(journey => journey.Chat);
+                .ThenInclude(chat => chat.Chat)
+                .Include(participant => participant.ParticipantJourneys)
+                .ThenInclude(o => o.Organizer);
         }
     }
 }
