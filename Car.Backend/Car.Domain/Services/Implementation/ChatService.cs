@@ -24,7 +24,7 @@ namespace Car.Domain.Services.Implementation
 
         public Chat GetChatById(int chatId)
         {
-            var chat = unitOfWorkChat.GetRepository().Query(message => message.Messages).FirstOrDefault(p => p.Id == chatId);
+            var chat = unitOfWorkChat.GetRepository().Query().Include(message => message.Messages).ThenInclude(user => user.Sender).FirstOrDefault(p => p.Id == chatId);
             chat.Messages = chat.Messages.OrderByDescending(time => time.CreatedAt).ToList();
             return chat;
         }
@@ -68,9 +68,9 @@ namespace Car.Domain.Services.Implementation
 
         public Message AddMessage(Message message)
         {
-            var addedMessage = unitOfWorkMessage.GetRepository().Add(message);
-            unitOfWorkChat.SaveChanges();
-            return addedMessage;
+           var addedMessage = unitOfWorkMessage.GetRepository().Add(message);
+           unitOfWorkMessage.SaveChanges();
+           return addedMessage;
         }
     }
 }
