@@ -44,6 +44,23 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
+        public async Task GetPreferencesAsync_WhenPreferencesNotExist_ReturnsNull()
+        {
+            // Arrange
+            var preferences = Fixture.Create<List<UserPreferences>>();
+            var userPreferences = Fixture.Create<UserPreferences>();
+
+            preferencesRepository.Setup(r => r.Query())
+                .Returns(preferences.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await preferencesService.GetPreferencesAsync(userPreferences.Id);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
         public async Task UpdatePreferences_WhenPreferencesIsValid_ReturnsPreferencesObject()
         {
             // Arrange
@@ -57,6 +74,22 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeEquivalentTo(preferences);
+        }
+
+        [Fact]
+        public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var preferences = Fixture.Create<UserPreferences>();
+
+            preferencesRepository.Setup(r => r.UpdateAsync(preferences))
+                .ReturnsAsync((UserPreferences)null);
+
+            // Act
+            var result = await preferencesService.UpdatePreferencesAsync(preferences);
+
+            // Assert
+            result.Should().BeNull();
         }
     }
 }

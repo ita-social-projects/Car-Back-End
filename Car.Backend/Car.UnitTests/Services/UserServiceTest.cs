@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
@@ -21,14 +19,12 @@ namespace Car.UnitTests.Services
     public class UserServiceTest : TestBase
     {
         private readonly Mock<IRepository<User>> userRepository;
-        private readonly Mock<IImageService> imageService;
         private readonly IUserService userService;
 
         public UserServiceTest()
         {
             userRepository = new Mock<IRepository<User>>();
-            imageService = new Mock<IImageService>();
-            userService = new UserService(userRepository.Object, imageService.Object);
+            userService = new UserService(userRepository.Object, Mock.Of<IImageService>());
         }
 
         [Fact]
