@@ -28,11 +28,15 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<User> UpdateUserAsync(UpdateUserModel updateUserModel)
         {
-            var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == updateUserModel.Id);
+            if (updateUserModel == null)
+            {
+                return null;
+            }
 
-            await imageService.UpdateImageAsync(user, updateUserModel?.Image);
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => updateUserModel.Id == u.Id);
 
-            if (user != null && updateUserModel != null)
+            await imageService.UpdateImageAsync(user, updateUserModel.Image);
+            if (user != null)
             {
                 user.Name = updateUserModel.Name;
                 user.Surname = updateUserModel.Surname;
