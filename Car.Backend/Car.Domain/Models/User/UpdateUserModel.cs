@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Car.Domain.Models
+namespace Car.Domain.Models.User
 {
     public class UpdateUserModel
     {

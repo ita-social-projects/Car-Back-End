@@ -1,47 +1,60 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
 
 namespace Car.UnitTests.Services
 {
-    public class BrandServiceTest
+    public class BrandServiceTest : TestBase
     {
         private readonly IBrandService brandService;
-        private readonly Mock<IRepository<Brand>> repository;
-        private readonly Mock<IUnitOfWork<Brand>> unitOfWork;
-        private readonly Fixture fixture;
+        private readonly Mock<IRepository<Brand>> brandRepository;
 
         public BrandServiceTest()
         {
-            repository = new Mock<IRepository<Brand>>();
-            unitOfWork = new Mock<IUnitOfWork<Brand>>();
-
-            brandService = new BrandService(unitOfWork.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            brandRepository = new Mock<IRepository<Brand>>();
+            brandService = new BrandService(brandRepository.Object);
         }
 
         [Fact]
-        public void TestGetAllBrands()
+        public async Task GetAllBrands_WhenBrandsExist_ReturnsBrandCollection()
         {
-            var brands = fixture.Create<Brand[]>();
+            // Arrange
+            var brands = Fixture.Create<List<Brand>>();
 
-            repository.Setup(r => r.Query())
-                .Returns(brands.AsQueryable());
+            brandRepository.Setup(r => r.Query())
+                .Returns(brands.AsQueryable().BuildMock().Object);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await brandService.GetAllAsync();
 
-            brandService.GetAllBrands().Should().BeEquivalentTo(brands);
+            // Assert
+            result.Should().BeEquivalentTo(brands);
+        }
+
+        [Fact]
+        public async Task GetAllBrands_WhenBrandsNotExist_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var brands = new List<Brand>();
+
+            brandRepository.Setup(r => r.Query())
+                .Returns(brands.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await brandService.GetAllAsync();
+
+            // Assert
+            result.Should().BeEmpty();
         }
     }
 }

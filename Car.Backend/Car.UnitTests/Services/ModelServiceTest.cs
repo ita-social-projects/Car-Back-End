@@ -1,50 +1,70 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
 
 namespace Car.UnitTests.Services
 {
-    public class ModelServiceTest
+    public class ModelServiceTest : TestBase
     {
         private readonly IModelService modelService;
-        private readonly Mock<IRepository<Model>> repository;
-        private readonly Mock<IUnitOfWork<Model>> unitOfWork;
-        private readonly Fixture fixture;
+        private readonly Mock<IRepository<Model>> modelRepository;
 
         public ModelServiceTest()
         {
-            repository = new Mock<IRepository<Model>>();
-            unitOfWork = new Mock<IUnitOfWork<Model>>();
-
-            modelService = new ModelService(unitOfWork.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            modelRepository = new Mock<IRepository<Model>>();
+            modelService = new ModelService(modelRepository.Object);
         }
 
         [Fact]
-        public void TestGetModelsByBrandId()
+        public async Task GetModelsByBrandIdAsync_WhenModelsExist_ReturnsModelCollection()
         {
-            var models = fixture.Create<Model[]>();
+            // Arrange
+            var models = Fixture.Create<List<Model>>();
+            var brand = Fixture.Build<Brand>()
+                .With(b => b.Id, models.Max(m => m.BrandId) + 1)
+                .Create();
+            var specificModels = Fixture.Build<Model>()
+                .With(model => model.BrandId, brand.Id)
+                .CreateMany();
+            models.AddRange(specificModels);
 
-            repository.Setup(r => r.Query())
-                .Returns(models.AsQueryable());
+            modelRepository.Setup(r => r.Query())
+                .Returns(models.AsQueryable().BuildMock().Object);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await modelService.GetModelsByBrandIdAsync(brand.Id);
 
-            modelService.GetModelsByBrandId(models.FirstOrDefault().BrandId)
-                .Should()
-                .BeEquivalentTo(models.Where(m => m.BrandId == models.FirstOrDefault().BrandId));
+            // Assert
+            result.Should().BeEquivalentTo(specificModels);
+        }
+
+        [Fact]
+        public async Task GetModelsByBrandIdAsync_WhenModelsNotExist_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var models = Fixture.Create<List<Model>>();
+            var brand = Fixture.Build<Brand>()
+                .With(b => b.Id, models.Max(m => m.BrandId) + 1)
+                .Create();
+
+            modelRepository.Setup(r => r.Query())
+                .Returns(models.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await modelService.GetModelsByBrandIdAsync(brand.Id);
+
+            // Assert
+            result.Should().BeEmpty();
         }
     }
 }

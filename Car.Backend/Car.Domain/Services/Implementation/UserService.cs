@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
-using Car.Data.Interfaces;
-using Car.Domain.Models;
+using Car.Data.Infrastructure;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
-using Google.Apis.Drive.v3.Data;
 using Microsoft.EntityFrameworkCore;
 using User = Car.Data.Entities.User;
 
@@ -11,53 +9,42 @@ namespace Car.Domain.Services.Implementation
 {
     public class UserService : IUserService
     {
-        private readonly IUnitOfWork<User> unitOfWork;
-        private readonly IFileService<File> fileService;
-        private readonly IMapper mapper;
+        private readonly IRepository<User> userRepository;
+        private readonly IImageService imageService;
 
-        public UserService(IUnitOfWork<User> unitOfWork, IFileService<File> fileService, IMapper mapper)
+        public UserService(IRepository<User> userRepository, IImageService imageService)
         {
-            this.unitOfWork = unitOfWork;
-            this.fileService = fileService;
-            this.mapper = mapper;
+            this.userRepository = userRepository;
+            this.imageService = imageService;
         }
 
         public async Task<User> GetUserByIdAsync(int userId)
         {
-            var user = await unitOfWork.GetRepository().Query().FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (user?.ImageId != null)
-            {
-                user.ImageId = fileService.GetFileLinkAsync(user.ImageId);
-            }
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userId);
+            imageService.SetImageLink(user);
 
             return user;
         }
 
         public async Task<User> UpdateUserAsync(UpdateUserModel updateUserModel)
         {
-            var user = await unitOfWork.GetRepository().Query().FirstOrDefaultAsync(u => u.Id == updateUserModel.Id);
-
-            if (user?.ImageId != null)
+            if (updateUserModel == null)
             {
-                await fileService.DeleteFileAsync(user.ImageId);
-                user.ImageId = null;
+                return null;
             }
 
-            user.Name = updateUserModel.Name;
-            user.Surname = updateUserModel.Surname;
-            user.Position = updateUserModel.Position;
-            user.Location = updateUserModel.Location;
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => updateUserModel.Id == u.Id);
 
-            if (updateUserModel.Image != null)
+            await imageService.UpdateImageAsync(user, updateUserModel.Image);
+            if (user != null)
             {
-                user.ImageId = await fileService.UploadFileAsync(
-                    updateUserModel.Image.OpenReadStream(),
-                    updateUserModel.Image.Name,
-                    "image/png");
+                user.Name = updateUserModel.Name;
+                user.Surname = updateUserModel.Surname;
+                user.Position = updateUserModel.Position;
+                user.Location = updateUserModel.Location;
             }
 
-            await unitOfWork.SaveChangesAsync();
+            await userRepository.SaveChangesAsync();
             return user;
         }
     }

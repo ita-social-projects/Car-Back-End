@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Car.WebApi.Hubs
 {
-    public class ChatHub : Hub
+    public class SignalRHub : Hub
     {
         private readonly IChatService userManager;
 
-        public ChatHub(IChatService userManager)
+        public SignalRHub(IChatService userManager)
         {
             this.userManager = userManager;
         }
@@ -28,7 +28,7 @@ namespace Car.WebApi.Hubs
         public async Task SendMessageToGroup(Message message)
         {
             message.CreatedAt = DateTime.UtcNow;
-            var addedMessage = userManager.AddMessage(message);
+            await userManager.AddMessageAsync(message);
             await Clients.Group(message.ChatId.ToString()).SendAsync("RecieveMessage", message);
         }
     }
