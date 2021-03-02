@@ -18,15 +18,17 @@ namespace Car.UnitTests.Services
     {
         private readonly ILoginService loginService;
         private readonly Mock<IRepository<User>> userRepository;
+        private readonly Mock<IWebTokenGenerator> webTokenGenerator;
 
         public LoginServiceTest()
         {
             userRepository = new Mock<IRepository<User>>();
-            loginService = new LoginService(userRepository.Object, Mock.Of<IWebTokenGenerator>());
+            webTokenGenerator = new Mock<IWebTokenGenerator>();
+            loginService = new LoginService(userRepository.Object, webTokenGenerator.Object);
         }
 
         [Fact]
-        public async Task GetUser_WhenUserExists_ReturnsUserObject()
+        public async Task GetUserAsync_WhenUserExists_ReturnsUserObject()
         {
             // Arrange
             var user = Fixture.Create<User>();
@@ -44,7 +46,23 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddUser_WhenUserIsValid_ReturnsUserObject()
+        public async Task GetUserAsync_WhenUserNotExist_ReturnsNull()
+        {
+            // Arrange
+            var users = Fixture.Create<List<User>>();
+
+            userRepository.Setup(r => r.Query())
+                .Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await loginService.GetUserAsync(null);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task AddUserAsync_WhenUserIsValid_ReturnsUserObject()
         {
             // Arrange
             var user = Fixture.Create<User>();
@@ -56,6 +74,58 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeEquivalentTo(user);
+        }
+
+        [Fact]
+        public async Task AddUserAsync_WhenUserIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var user = Fixture.Create<User>();
+            userRepository.Setup(r => r.AddAsync(user))
+                .ReturnsAsync((User)null);
+
+            // Act
+            var result = await loginService.AddUserAsync(user);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task LoginAsync_WhenUserExists_ReturnsUserWithToken()
+        {
+            // Arrange
+            var users = Fixture.CreateMany<User>();
+            var user = users.First();
+            var token = Fixture.Create<string>();
+
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+            webTokenGenerator.Setup(w => w.GenerateWebToken(user)).Returns(token);
+
+            // Act
+            var result = await loginService.LoginAsync(user);
+
+            // Assert
+            result.Token.Should().BeSameAs(token);
+        }
+
+        [Fact]
+        public async Task LoginAsync_WhenUserNotExist_ReturnsUserWithToken()
+        {
+            // Arrange
+            var users = new List<User>();
+            var user = Fixture.Create<User>();
+            var token = Fixture.Create<string>();
+
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+            webTokenGenerator.Setup(w => w.GenerateWebToken(user)).Returns(token);
+            userRepository.Setup(repo => repo.AddAsync(user)).ReturnsAsync(user);
+
+            // Act
+            var result = await loginService.LoginAsync(user);
+
+            // Assert
+            result.Token.Should().BeSameAs(token);
         }
     }
 }
