@@ -127,5 +127,22 @@ namespace Car.UnitTests.Services
             // Assert
             result.Token.Should().BeSameAs(token);
         }
+
+        [Fact]
+        public async Task LoginAsync_WhenUserIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var users = Fixture.CreateMany<User>();
+            User user = null;
+
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+            userRepository.Setup(repo => repo.AddAsync(user)).ReturnsAsync(user);
+
+            // Act
+            var result = await loginService.LoginAsync(user);
+
+            // Assert
+            result.Should().BeNull();
+        }
     }
 }

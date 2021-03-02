@@ -22,6 +22,11 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<User> AddUserAsync(User user)
         {
+            if (user == null)
+            {
+                return null;
+            }
+
             user.UserPreferences = new UserPreferences();
             var newUser = await userRepository.AddAsync(user);
             await userRepository.SaveChangesAsync();
@@ -31,8 +36,11 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<User> LoginAsync(User user)
         {
-            var loginUser = await GetUserAsync(user.Email) ?? await AddUserAsync(user);
-            loginUser.Token = webTokenGenerator.GenerateWebToken(loginUser);
+            var loginUser = await GetUserAsync(user?.Email) ?? await AddUserAsync(user);
+            if (loginUser != null)
+            {
+                loginUser.Token = webTokenGenerator.GenerateWebToken(loginUser);
+            }
 
             return loginUser;
         }

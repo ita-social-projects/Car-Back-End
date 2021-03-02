@@ -47,5 +47,24 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().BeEquivalentTo(specificModels);
         }
+
+        [Fact]
+        public async Task GetModelsByBrandIdAsync_WhenModelsNotExist_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var models = Fixture.Create<List<Model>>();
+            var brand = Fixture.Build<Brand>()
+                .With(b => b.Id, models.Max(m => m.BrandId) + 1)
+                .Create();
+
+            modelRepository.Setup(r => r.Query())
+                .Returns(models.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await modelService.GetModelsByBrandIdAsync(brand.Id);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
     }
 }
