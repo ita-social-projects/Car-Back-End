@@ -1,6 +1,6 @@
 ﻿using Car.Data.Entities;
 
-namespace Car.WebApi.JwtConfiguration
+namespace Car.Domain.Services.Interfaces
 {
     public interface IWebTokenGenerator
     {

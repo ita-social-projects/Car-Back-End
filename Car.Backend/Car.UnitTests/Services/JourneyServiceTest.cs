@@ -38,7 +38,7 @@ namespace Car.UnitTests.Services
                 .With(j => j.Id, journeys.Max(j => j.Id) + 1)
                 .Create();
             journeys.Add(journey);
-            journeys.AsQueryable().BuildMock();
+
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
@@ -84,7 +84,7 @@ namespace Car.UnitTests.Services
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
-
+            // todo: replace
             // Act
             var result = await journeyService.GetPastJourneysAsync(participant.Id);
 

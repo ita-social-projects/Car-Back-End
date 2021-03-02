@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
-using Car.WebApi.JwtConfiguration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,13 +11,9 @@ namespace Car.WebApi.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILoginService loginService;
-        private readonly IWebTokenGenerator webTokenGenerator;
 
-        public LoginController(ILoginService loginService, IWebTokenGenerator webTokenGenerator)
-        {
+        public LoginController(ILoginService loginService) =>
             this.loginService = loginService;
-            this.webTokenGenerator = webTokenGenerator;
-        }
 
         /// <summary>
         /// ensures the user and returns a User for client app,
@@ -28,12 +23,7 @@ namespace Car.WebApi.Controllers
         /// <returns>User for a client app</returns>
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] User user)
-        {
-            var loginUser = await loginService.LoginAsync(user);
-            loginUser.Token = webTokenGenerator.GenerateWebToken(loginUser);
-
-            return Ok(loginUser);
-        }
+        public async Task<IActionResult> Login([FromBody] User user) =>
+            Ok(await loginService.LoginAsync(user));
     }
 }

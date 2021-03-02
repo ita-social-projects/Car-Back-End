@@ -9,8 +9,13 @@ namespace Car.Domain.Services.Implementation
     public class LoginService : ILoginService
     {
         private readonly IRepository<User> userRepository;
+        private readonly IWebTokenGenerator webTokenGenerator;
 
-        public LoginService(IRepository<User> userRepository) => this.userRepository = userRepository;
+        public LoginService(IRepository<User> userRepository, IWebTokenGenerator webTokenGenerator)
+        {
+            this.userRepository = userRepository;
+            this.webTokenGenerator = webTokenGenerator;
+        }
 
         public Task<User> GetUserAsync(string email) =>
             userRepository.Query().FirstOrDefaultAsync(p => p.Email == email);
@@ -24,7 +29,12 @@ namespace Car.Domain.Services.Implementation
             return newUser;
         }
 
-        public async Task<User> LoginAsync(User user) =>
-            await GetUserAsync(user.Email) ?? await AddUserAsync(user);
+        public async Task<User> LoginAsync(User user)
+        {
+            var loginUser = await GetUserAsync(user.Email) ?? await AddUserAsync(user);
+            loginUser.Token = webTokenGenerator.GenerateWebToken(loginUser);
+
+            return loginUser;
+        }
     }
 }

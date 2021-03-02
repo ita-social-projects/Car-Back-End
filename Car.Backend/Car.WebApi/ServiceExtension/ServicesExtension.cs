@@ -3,7 +3,6 @@ using Car.Data.Infrastructure;
 using Car.Domain.Configurations;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
-using Car.WebApi.JwtConfiguration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using File = Google.Apis.Drive.v3.Data.File;

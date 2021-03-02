@@ -3,10 +3,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Car.Data.Entities;
+using Car.Domain.Configurations;
+using Car.Domain.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Car.WebApi.JwtConfiguration
+namespace Car.Domain.Services.Implementation
 {
     public class JsonWebTokenGenerator : IWebTokenGenerator
     {

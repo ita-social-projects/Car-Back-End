@@ -17,12 +17,12 @@ namespace Car.UnitTests.Services
     public class BrandServiceTest : TestBase
     {
         private readonly IBrandService brandService;
-        private readonly Mock<IRepository<Brand>> repository;
+        private readonly Mock<IRepository<Brand>> brandRepository;
 
         public BrandServiceTest()
         {
-            repository = new Mock<IRepository<Brand>>();
-            brandService = new BrandService(repository.Object);
+            brandRepository = new Mock<IRepository<Brand>>();
+            brandService = new BrandService(brandRepository.Object);
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace Car.UnitTests.Services
             // Arrange
             var brands = Fixture.Create<List<Brand>>();
 
-            repository.Setup(r => r.Query())
+            brandRepository.Setup(r => r.Query())
                 .Returns(brands.AsQueryable().BuildMock().Object);
 
             // Act
@@ -39,6 +39,22 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeEquivalentTo(brands);
+        }
+
+        [Fact]
+        public async Task GetAllBrands_WhenBrandsNotExist_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var brands = new List<Brand>();
+
+            brandRepository.Setup(r => r.Query())
+                .Returns(brands.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await brandService.GetAllAsync();
+
+            // Assert
+            result.Should().BeEmpty();
         }
     }
 }

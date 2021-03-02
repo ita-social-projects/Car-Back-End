@@ -4,7 +4,6 @@ using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
-using Car.WebApi.JwtConfiguration;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +15,12 @@ namespace Car.UnitTests.Controllers
     public class LoginControllerTest : TestBase
     {
         private readonly Mock<ILoginService> loginService;
-        private readonly Mock<IWebTokenGenerator> webTokenGenerator;
         private readonly LoginController loginController;
 
         public LoginControllerTest()
         {
             loginService = new Mock<ILoginService>();
-            webTokenGenerator = new Mock<IWebTokenGenerator>();
-            loginController = new LoginController(loginService.Object, webTokenGenerator.Object);
+            loginController = new LoginController(loginService.Object);
         }
 
         [Fact]

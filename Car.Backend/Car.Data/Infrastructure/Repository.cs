@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Car.Data.Infrastructure
 {
-    // todo: should contain SaveChanges() method
     public sealed class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity
     {
