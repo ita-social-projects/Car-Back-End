@@ -52,8 +52,8 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<Message> AddMessageAsync(Message message)
         {
-            var addedMessage = unitOfWorkMessage.GetRepository().Add(message);
-            unitOfWorkChat.SaveChanges();
+            var addedMessage = await messageRepository.AddAsync(message);
+            await messageRepository.SaveChangesAsync();
             return addedMessage;
         }
     }
