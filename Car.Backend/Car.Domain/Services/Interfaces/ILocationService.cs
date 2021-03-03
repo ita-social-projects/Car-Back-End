@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Car.Data.Entities;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface ILocationService
     {
-        Location GetLocationById(int locationId);
+        Task<Location> GetLocationByIdAsync(int locationId);
 
-        Location AddLocation(Location location);
+        Task<Location> AddLocationAsync(Location location);
 
-        IEnumerable<Location> GetAllByUserId(int locationId);
+        Task<IEnumerable<Location>> GetAllByUserIdAsync(int locationId);
 
-        Location UpdateLocation(Location location);
+        Task<Location> UpdateLocationAsync(Location location);
     }
 }

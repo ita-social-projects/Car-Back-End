@@ -1,23 +1,23 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Interfaces;
 
 namespace Car.Domain.Services.Implementation
 {
     public class LocationTypeService : ILocationTypeService
     {
-        private readonly IUnitOfWork<LocationType> locationTypeUnitOfWork;
+        private readonly IRepository<LocationType> locationTypeRepository;
 
-        public LocationTypeService(IUnitOfWork<LocationType> locationTypeUnitOfWork)
+        public LocationTypeService(IRepository<LocationType> locationTypeRepository)
         {
-            this.locationTypeUnitOfWork = locationTypeUnitOfWork;
+            this.locationTypeRepository = locationTypeRepository;
         }
 
-        public IEnumerable<LocationType> GetAllLocationTypes()
+        public async Task<IEnumerable<LocationType>> GetAllLocationTypesAsync()
         {
-            return locationTypeUnitOfWork.GetRepository().Query();
+            return locationTypeRepository.Query();
         }
     }
 }

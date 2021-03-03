@@ -23,12 +23,8 @@ namespace Car.WebApi.Controllers
         /// <param name="id">The location identifier.</param>
         /// <returns>All user's locations</returns>
         [HttpGet("by-user/{id}")]
-        public IActionResult GetAllByUserId(int id)
-        {
-            var locations = locationService.GetAllByUserId(id).ToList();
-
-            return Ok(locations);
-        }
+        public async Task<IActionResult> GetAllByUserId(int id) =>
+            Ok(await locationService.GetAllByUserIdAsync(id));
 
         /// <summary>
         /// Adds the location.
@@ -36,10 +32,8 @@ namespace Car.WebApi.Controllers
         /// <param name="location">The location.</param>
         /// <returns>New location</returns>
         [HttpPost]
-        public IActionResult AddLocation([FromBody] Location location)
-        {
-            return Ok(locationService.AddLocation(location));
-        }
+        public async Task<IActionResult> AddLocation([FromBody] Location location) =>
+            Ok(await locationService.AddLocationAsync(location));
 
         /// <summary>
         /// Gets the location by identifier.
@@ -47,9 +41,7 @@ namespace Car.WebApi.Controllers
         /// <param name="id">The location identifier.</param>
         /// <returns>The location entity</returns>
         [HttpGet("{id}")]
-        public IActionResult GetLocationById(int id)
-        {
-            return Ok(locationService.GetLocationById(id));
-        }
+        public async Task<IActionResult> GetLocationById(int id) =>
+            Ok(await locationService.GetLocationByIdAsync(id));
     }
 }

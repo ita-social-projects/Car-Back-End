@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Extensions;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
@@ -66,9 +67,9 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
 
-        public List<List<StopDto>> GetStopsFromRecentJourneys(int userId, int countToTake = 5)
+        public async Task<List<List<StopDto>>> GetStopsFromRecentJourneysAsync(int userId, int countToTake = 5)
         {
-            var journeys = journeyUnitOfWork.GetRepository()
+            var journeys = await journeyRepository
                 .Query().Include(journey => journey.Stops)
                 .ThenInclude(stop => stop.Address)
                 .Where(journey => journey.Participants
@@ -89,7 +90,7 @@ namespace Car.Domain.Services.Implementation
                                                 Latitude = stop.Address.Latitude,
                                             },
                                         }).ToList())
-                .ToList();
+                .ToListAsync();
 
             return journeys;
         }

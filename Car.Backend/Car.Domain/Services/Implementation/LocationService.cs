@@ -1,47 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
 {
     public class LocationService : ILocationService
     {
-        private readonly IUnitOfWork<Location> locationUnitOfWork;
+        private readonly IRepository<Location> locationRepository;
 
-        public LocationService(IUnitOfWork<Location> locationUnitOfWork)
-        {
-            this.locationUnitOfWork = locationUnitOfWork;
-        }
+        public LocationService(IRepository<Location> locationRepository) =>
+            this.locationRepository = locationRepository;
 
-        public Location GetLocationById(int locationId)
-        {
-            return locationUnitOfWork.GetRepository().Query().FirstOrDefault(i => i.Id == locationId);
-        }
+        public async Task<Location> GetLocationByIdAsync(int locationId) =>
+            await locationRepository.Query().FirstOrDefaultAsync(i => i.Id == locationId);
 
-        public IEnumerable<Location> GetAllByUserId(int userId)
-        {
-            return locationUnitOfWork.GetRepository()
+        public async Task<IEnumerable<Location>> GetAllByUserIdAsync(int userId) =>
+            locationRepository
                 .Query(locationAddress => locationAddress.Address, locationType => locationType.Type)
                 .Where(location => location.UserId == userId);
+
+        public async Task<Location> AddLocationAsync(Location location)
+        {
+            var addedLocation = locationRepository.AddAsync(location);
+            locationRepository.SaveChangesAsync();
+
+            return await addedLocation;
         }
 
-        public Location AddLocation(Location location)
+        public async Task<Location> UpdateLocationAsync(Location location)
         {
-            var addedLocation = locationUnitOfWork.GetRepository().Add(location);
-            locationUnitOfWork.SaveChanges();
+            var updatedLocation = locationRepository.UpdateAsync(location);
+            locationRepository.SaveChangesAsync();
 
-            return addedLocation;
-        }
-
-        public Location UpdateLocation(Location location)
-        {
-            var updatedLocation = locationUnitOfWork.GetRepository().Update(location);
-            locationUnitOfWork.SaveChanges();
-
-            return updatedLocation;
+            return await updatedLocation;
         }
     }
 }
