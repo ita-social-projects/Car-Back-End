@@ -94,6 +94,40 @@
             <param name="id">Journey identifier</param>
             <returns>Journey</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAdresses(System.Int32)">
+            <summary>
+            Gets recent addresses by identifier.
+            </summary>
+            <param name="id">Journey identifier</param>
+            <returns>recent addresses</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
+            <summary>
+            Gets all the locations by user id
+            </summary>
+            <param name="id">The location identifier.</param>
+            <returns>All user's locations</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.AddLocation(Car.Data.Entities.Location)">
+            <summary>
+            Adds the location.
+            </summary>
+            <param name="location">The location.</param>
+            <returns>New location</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.GetLocationById(System.Int32)">
+            <summary>
+            Gets the location by identifier.
+            </summary>
+            <param name="id">The location identifier.</param>
+            <returns>The location entity</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationTypeController.GetAll">
+            <summary>
+            Gets all location types.
+            </summary>
+            <returns>All the models</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Data.Entities.User)">
             <summary>
             ensures the user and returns a User for client app,

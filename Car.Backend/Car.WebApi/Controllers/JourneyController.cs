@@ -48,5 +48,13 @@ namespace Car.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetJourneyById(int id) =>
             Ok(await journeyService.GetJourneyByIdAsync(id));
+
+        /// <summary>
+        /// Gets recent addresses by identifier.
+        /// </summary>
+        /// <param name="id">Journey identifier</param>
+        /// <returns>recent addresses</returns>
+        [HttpGet("recent/{id}")]
+        public async Task<IActionResult> GetRecentAdresses(int id) => Ok(await journeyService.GetStopsFromRecentJourneysAsync(id));
     }
 }
