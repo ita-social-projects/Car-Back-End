@@ -24,9 +24,10 @@ namespace Car.Domain.Services.Implementation
 
         public Task<Chat> GetChatByIdAsync(int chatId)
         {
-            return chatRepository
-                .Query(message => message.Messages.OrderByDescending(m => m.CreatedAt))
+            var chat = chatRepository
+                .Query().Include(chat => chat.Messages.OrderByDescending(time => time.CreatedAt)).ThenInclude(chat => chat.Sender)
                 .FirstOrDefaultAsync(p => p.Id == chatId);
+            return chat;
         }
 
         public async Task<Chat> AddChatAsync(Chat chat)
