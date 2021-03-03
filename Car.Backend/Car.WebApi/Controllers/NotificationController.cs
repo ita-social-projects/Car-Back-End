@@ -137,6 +137,7 @@ namespace Car.WebApi.Controllers
             await notificationHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
                 await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+
             return Ok(notification);
         }
     }
