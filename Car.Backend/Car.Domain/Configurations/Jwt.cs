@@ -1,4 +1,4 @@
-namespace Car.WebApi.JwtConfiguration
+namespace Car.Domain.Configurations
 {
     public class Jwt
     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Car.Data.Entities
+﻿namespace Car.Data.Entities
 {
     public enum NotificationType
     {

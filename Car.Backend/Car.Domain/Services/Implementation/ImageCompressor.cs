@@ -6,7 +6,7 @@ using Car.Domain.Services.Interfaces;
 
 namespace Car.Domain.Services.Implementation
 {
-    public class CompressorWithQuality : ICompressor
+    public class ImageCompressor : ICompressor
     {
         /// <summary>
         /// Compresses the file.
@@ -18,15 +18,14 @@ namespace Car.Domain.Services.Implementation
         {
             using var image = Image.FromStream(fileStream);
 
-            var imageQualitysParameter = new EncoderParameter(
+            var imageQualityParameter = new EncoderParameter(
                 Encoder.Quality, imageQuality);
 
-            var alleCodecs = ImageCodecInfo.GetImageEncoders();
+            var imageCodecInfos = ImageCodecInfo.GetImageEncoders();
 
-            var codecParameter = new EncoderParameters(1);
-            codecParameter.Param[0] = imageQualitysParameter;
+            var codecParameter = new EncoderParameters(1) { Param = { [0] = imageQualityParameter } };
 
-            var jpegCodec = alleCodecs.FirstOrDefault(t => t.MimeType == "image/jpeg");
+            var jpegCodec = imageCodecInfos.FirstOrDefault(t => t.MimeType == "image/jpeg");
 
             var compressedFile = new MemoryStream();
 

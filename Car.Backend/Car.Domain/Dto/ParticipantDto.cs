@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Car.Domain.Dto
+﻿namespace Car.Domain.Dto
 {
     public sealed class ParticipantDto
     {

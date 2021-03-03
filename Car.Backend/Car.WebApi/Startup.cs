@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Car.Domain.Configurations;
 using Car.WebApi.Hubs;
-using Car.WebApi.JwtConfiguration;
 using Car.WebApi.ServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -106,8 +106,7 @@ namespace Car.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/chat");
-                endpoints.MapHub<NotificationHub>("/notification");
+                endpoints.MapHub<SignalRHub>("/signalr");
             });
 
             app.UseSwagger();

@@ -85,19 +85,15 @@ namespace Car.Domain.Services.Implementation
         /// </summary>
         /// <param name="fileId">Identifier of the required file.</param>
         /// <returns>Link for a file with the specified id.</returns>
-        public string GetFileLinkAsync(string fileId)
-        {
-            return $"https://drive.google.com/uc?id={fileId}&export=view";
-        }
+        public string GetFileLink(string fileId) =>
+            string.Format(googleDriveOptions.Value.LinkTemplate, fileId);
 
         /// <summary>
         /// Deletes a file with the specified id.
         /// </summary>
         /// <param name="fileId">Identifier of the required file.</param>
         /// <returns>Result object.</returns>
-        public Task<string> DeleteFileAsync(string fileId)
-        {
-            return service.Files.Delete(fileId).ExecuteAsync();
-        }
+        public Task<string> DeleteFileAsync(string fileId) =>
+            service.Files.Delete(fileId).ExecuteAsync();
     }
 }

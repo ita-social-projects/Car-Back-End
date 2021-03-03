@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Car.Data.Entities;
 using Car.Data.FluentValidation;
-using FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
@@ -15,7 +9,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class UserValidatorTest
     {
-        private UserValidator validator;
+        private readonly UserValidator validator;
 
         public UserValidatorTest()
         {

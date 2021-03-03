@@ -4,7 +4,6 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
@@ -15,16 +14,16 @@ namespace Car.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.3")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Car.Data.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -52,7 +51,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -381,7 +380,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Color")
                         .HasColumnType("int");
@@ -430,7 +429,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("CarId")
                         .HasColumnType("int");
@@ -471,7 +470,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
@@ -504,7 +503,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -521,7 +520,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ChatId")
                         .HasColumnType("int");
@@ -551,7 +550,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
@@ -8045,7 +8044,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -8096,7 +8095,7 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
@@ -8126,7 +8125,10 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BadgeCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
