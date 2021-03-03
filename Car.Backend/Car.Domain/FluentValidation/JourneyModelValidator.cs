@@ -1,11 +1,13 @@
 ﻿using System;
+using Car.Data;
+using Car.Data.FluentValidation;
 using FluentValidation;
 
-namespace Car.Data.FluentValidation
+namespace Car.Domain.FluentValidation
 {
-    public class JourneyValidator : AbstractValidator<Entities.Journey>
+    public class JourneyModelValidator : AbstractValidator<Models.Journey.JourneyModel>
     {
-        public JourneyValidator()
+        public JourneyModelValidator()
         {
             RuleFor(journey => journey.Id).GreaterThan(Constants.IDLENGTH);
             RuleFor(journey => journey.RouteDistance).NotNull().NotEmpty();
@@ -13,11 +15,10 @@ namespace Car.Data.FluentValidation
             RuleFor(journey => journey.CountOfSeats).NotNull().NotEmpty().GreaterThanOrEqualTo(Constants.SEATSMAXLENGTH);
             RuleFor(journey => journey.Comments).MaximumLength(Constants.COMMENTSMAXLENGTH);
             RuleFor(journey => journey.IsFree).NotNull();
-            RuleFor(journey => journey.OrganizerId).GreaterThan(Constants.IDLENGTH);
+            RuleFor(journey => journey.Organizer).SetValidator(new UserDtoValidator());
             RuleFor(journey => journey.Car).SetValidator(new CarValidator());
             RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator());
-            RuleFor(journey => journey.Organizer).NotNull().SetValidator(new UserValidator());
-            RuleForEach(journey => journey.Participants).SetValidator(new UserValidator());
+            RuleForEach(journey => journey.Participants).SetValidator(new UserDtoValidator());
             RuleForEach(journey => journey.Stops).SetValidator(new StopDtoValidator());
         }
     }

@@ -1,12 +1,13 @@
 ﻿using Car.Data;
 using FluentValidation;
 
-namespace Car.Domain.FluentValidationDto
+namespace Car.Domain.FluentValidation
 {
-    public class NotificationDtoValidator : AbstractValidator<Dto.NotificationDto>
+    public class CreateNotificationModelValidator : AbstractValidator<Models.Notification.CreateNotificationModel>
     {
-        public NotificationDtoValidator()
+        public CreateNotificationModelValidator()
         {
+
             RuleFor(notification => notification.ReceiverId).GreaterThan(Constants.IDLENGTH);
             RuleFor(notification => notification.SenderId).GreaterThan(Constants.IDLENGTH);
             RuleFor(notification => notification.Type).NotNull();

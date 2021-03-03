@@ -6,7 +6,12 @@ using Car.Data.Entities;
 using Car.Data.FluentValidation;
 using Car.Domain.Configurations;
 using Car.Domain.Dto;
-using Car.Domain.FluentValidationDto;
+using Car.Domain.FluentValidation;
+using Car.Domain.Models;
+using Car.Domain.Models.Car;
+using Car.Domain.Models.Journey;
+using Car.Domain.Models.Notification;
+using Car.Domain.Models.User;
 using Car.WebApi.Hubs;
 using Car.WebApi.ServiceExtension;
 using FluentValidation;
@@ -106,6 +111,12 @@ namespace Car.WebApi
             services.AddTransient<IValidator<CarDto>, CarDtoValidator>();
             services.AddTransient<IValidator<NotificationDto>, NotificationDtoValidator>();
             services.AddTransient<IValidator<ParticipantDto>, ParticipantDtoValidator>();
+
+            services.AddTransient<IValidator<CreateCarModel>, CreateCarModelValidator>();
+            services.AddTransient<IValidator<UpdateCarModel>, UpdateCarModelValidator>();
+            services.AddTransient<IValidator<JourneyModel>, JourneyModelValidator>();
+            services.AddTransient<IValidator<CreateNotificationModel>, CreateNotificationModelValidator>();
+            services.AddTransient<IValidator<UpdateUserModel>, UpdateUserModelValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

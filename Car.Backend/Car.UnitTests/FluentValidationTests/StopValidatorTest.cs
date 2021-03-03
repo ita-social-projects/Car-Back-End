@@ -8,11 +8,11 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class StopValidatorTest
     {
-        private StopValidator validator;
+        private StopDtoValidator validator;
 
         public StopValidatorTest()
         {
-            validator = new StopValidator();
+            validator = new StopDtoValidator();
         }
 
         [Xunit.Theory]

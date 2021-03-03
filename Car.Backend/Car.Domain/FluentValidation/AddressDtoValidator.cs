@@ -1,7 +1,7 @@
 ﻿using Car.Data;
 using FluentValidation;
 
-namespace Car.Domain.FluentValidationDto
+namespace Car.Domain.FluentValidation
 {
     public class AddressDtoValidator : AbstractValidator<Dto.AddressDto>
     {
