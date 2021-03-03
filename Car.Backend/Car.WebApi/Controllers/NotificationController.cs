@@ -77,7 +77,7 @@ namespace Car.WebApi.Controllers
         /// // JSON STRUCTURE
         /// //      VARIABLE           TYPE            DESC
         /// // {
-        /// //      "senderId"         //number        Specifies the sender of the notification
+        /// //      "senderId":        //number        Specifies the sender of the notification
         /// //      , "receiverId":    //number        Specifies the receiver of the notification
         /// //      , "type":          //number        Specifies the type of the notification
         /// //                         //              based on the following enum:
@@ -93,14 +93,14 @@ namespace Car.WebApi.Controllers
         /// //                         //              9 HRMarketingMessage
         /// //                         //              0 HRMarketingSurvey
         /// //                         //
-        /// //     , "jsonData":       //string        Specifies notification's specific JSON structure
+        /// //      , "jsonData":      //string        Specifies notification's specific JSON structure
         /// //                         //
         /// //                         //              BELOW LISTED STRUCTURE FOR NOTIFICATION TYPE 1 (PassengerApply)
-        /// //     "{                  //
-        /// //     \"title\":          //string        Specifies the title of the notification at the notification tab
-        /// //     \"comments\":       //string?       Specifies the participant's comment (if any) at the modal page
-        /// //     \"hasLuggage\":     //boolean?      Specifies if the participant has any luggage
-        /// //     }"
+        /// //      "{                 //
+        /// //        \"title\":       //string        Specifies the title of the notification at the notification tab
+        /// //        \"comments\":    //string?       Specifies the participant's comment (if any) at the modal page
+        /// //        \"hasLuggage\":  //boolean?      Specifies if the participant has any luggage
+        /// //      }"
         /// // }
         /// <returns>added notification</returns>
         [HttpPost]
