@@ -33,7 +33,6 @@ namespace Car.UnitTests.FluentValidationTests
 
         [Xunit.Theory]
         [InlineData("")]
-        [InlineData("a")]
         [InlineData(null)]
         public void Should_have_error_when_Street_is_null(string value)
         {
@@ -49,7 +48,6 @@ namespace Car.UnitTests.FluentValidationTests
 
         [Xunit.Theory]
         [InlineData("")]
-        [InlineData("a")]
         [InlineData(null)]
         public void Should_have_error_when_City_is_null(string value)
         {

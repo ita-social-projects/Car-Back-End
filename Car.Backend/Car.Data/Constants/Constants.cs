@@ -5,8 +5,8 @@
         public const int IDLENGTH = 0;
         public const int STRINGMAXLENGTH = 64;
 
-        public const int EMAILMAXLENGTH = 2;
-        public const int EMAILMINLENGTH = 100;
+        public const int EMAILMINLENGTH = 2;
+        public const int EMAILMAXLENGTH = 100;
 
         public const int JSONMAXLENGTH = 2;
         public const int JSONMINLENGTH = 100;

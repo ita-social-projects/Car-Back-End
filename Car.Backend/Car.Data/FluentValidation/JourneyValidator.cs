@@ -8,9 +8,9 @@ namespace Car.Data.FluentValidation
         public JourneyValidator()
         {
             RuleFor(journey => journey.Id).GreaterThan(Constants.IDLENGTH);
-            RuleFor(journey => journey.RouteDistance).NotNull().NotEmpty();
+            RuleFor(journey => journey.RouteDistance).NotNull().GreaterThan(0);
             RuleFor(journey => journey.DepartureTime).GreaterThanOrEqualTo(DateTime.Now);
-            RuleFor(journey => journey.CountOfSeats).NotNull().NotEmpty().GreaterThanOrEqualTo(Constants.SEATSMAXLENGTH);
+            RuleFor(journey => journey.CountOfSeats).NotNull().GreaterThan(0).LessThanOrEqualTo(Constants.SEATSMAXLENGTH);
             RuleFor(journey => journey.Comments).MaximumLength(Constants.COMMENTSMAXLENGTH);
             RuleFor(journey => journey.IsFree).NotNull();
             RuleFor(journey => journey.OrganizerId).GreaterThan(Constants.IDLENGTH);

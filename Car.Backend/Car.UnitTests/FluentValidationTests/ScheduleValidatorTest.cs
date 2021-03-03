@@ -33,7 +33,6 @@ namespace Car.UnitTests.FluentValidationTests
 
         [Xunit.Theory]
         [InlineData("")]
-        [InlineData("a")]
         [InlineData(null)]
         public void Should_have_error_when_Name_is_not_valid(string value)
         {
