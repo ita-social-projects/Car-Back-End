@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Car.Data.FluentValidation;
+﻿using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
@@ -13,7 +8,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class AddressValidatorTest
     {
-        private AddressValidator validator;
+        private readonly AddressValidator validator;
 
         public AddressValidatorTest()
         {

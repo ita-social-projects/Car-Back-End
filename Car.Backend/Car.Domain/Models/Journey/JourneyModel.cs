@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 
-namespace Car.Domain.Models
+namespace Car.Domain.Models.Journey
 {
     public class JourneyModel
     {

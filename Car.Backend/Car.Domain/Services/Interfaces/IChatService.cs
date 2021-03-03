@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Car.Data.Entities;
 
@@ -9,14 +6,12 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface IChatService
     {
-        public List<Chat> GetUsersChats(int userId);
+        Task<IEnumerable<Chat>> GetUserChatsAsync(int userId);
 
-        public Chat GetChatById(int chatId);
+        Task<Chat> GetChatByIdAsync(int chatId);
 
-        public Chat AddChat(Chat chat);
+        Task<Chat> AddChatAsync(Chat chat);
 
-        public User AddUserToChat(int userId, int chatId);
-
-        public Message AddMessage(Message message);
+        Task<Message> AddMessageAsync(Message message);
     }
 }

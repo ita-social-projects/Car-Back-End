@@ -1,6 +1,9 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -10,37 +13,35 @@ using Xunit;
 
 namespace Car.UnitTests.Controllers
 {
-    public class ModelControllerTest
+    public class ModelControllerTest : TestBase
     {
         private readonly Mock<IModelService> modelService;
         private readonly ModelController modelController;
-        private readonly Fixture fixture;
 
         public ModelControllerTest()
         {
             modelService = new Mock<IModelService>();
             modelController = new ModelController(modelService.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
-        public void TestGetBrands()
+        public async Task GetAll_WhenModelsExist_ReturnsOkObjectResult()
         {
-            var models = fixture.Create<Model[]>();
+            // Arrange
+            var models = Fixture.Create<List<Model>>();
+            var brand = Fixture.Create<Brand>();
 
-            modelService.Setup(service => service.GetModelsByBrandId(It.IsAny<int>()))
-                .Returns(models);
+            modelService.Setup(service => service.GetModelsByBrandIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(models);
 
-            var result = modelController.GetAll(It.IsAny<int>());
+            // Act
+            var result = await modelController.GetAll(brand.Id);
 
+            // Assert
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<Model[]>();
+                (result as OkObjectResult)?.Value.Should().BeOfType<List<Model>>();
             }
         }
     }

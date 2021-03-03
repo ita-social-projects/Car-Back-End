@@ -1,11 +1,12 @@
-﻿using Car.Data.Entities;
+﻿using System.Threading.Tasks;
+using Car.Data.Entities;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface IPreferencesService
     {
-        UserPreferences GetPreferences(int userId);
+        Task<UserPreferences> GetPreferencesAsync(int userId);
 
-        UserPreferences UpdatePreferences(UserPreferences preferences);
+        Task<UserPreferences> UpdatePreferencesAsync(UserPreferences preferences);
     }
 }

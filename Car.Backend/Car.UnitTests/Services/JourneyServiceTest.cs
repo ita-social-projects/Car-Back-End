@@ -2,78 +2,66 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
-using AutoMapper;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
-using Car.Domain.Models;
+using Car.Data.Infrastructure;
+using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
-using MapperProfile = Car.Domain.Mapping.Mapper;
 
 namespace Car.UnitTests.Services
 {
-    public class JourneyServiceTest
+    public class JourneyServiceTest : TestBase
     {
         private readonly IJourneyService journeyService;
-        private readonly Mock<IRepository<Journey>> repository;
-        private readonly Mock<IUnitOfWork<Journey>> journeyUnitOfWork;
-        private readonly IMapper mapper;
-        private readonly Fixture fixture;
+        private readonly Mock<IRepository<Journey>> journeyRepository;
 
         public JourneyServiceTest()
         {
-            repository = new Mock<IRepository<Journey>>();
-            journeyUnitOfWork = new Mock<IUnitOfWork<Journey>>();
-
-            MapperProfile profile = new MapperProfile();
-            mapper = new Mapper(new MapperConfiguration(m => m.AddProfile(profile)));
-
-            journeyService = new JourneyService(journeyUnitOfWork.Object, mapper);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            journeyRepository = new Mock<IRepository<Journey>>();
+            journeyService = new JourneyService(journeyRepository.Object, Mapper);
         }
 
         [Fact]
-        public void GetJourneyById_JourneyExists_ReturnsJourneyObject()
+        public async Task GetJourneyByIdAsync_JourneyExists_ReturnsJourneyObject()
         {
             // Arrange
-            var journeys = fixture.Create<List<Journey>>();
-            var journey = fixture.Build<Journey>()
+            var journeys = Fixture.Create<List<Journey>>();
+            var journey = Fixture.Build<Journey>()
                 .With(j => j.Id, journeys.Max(j => j.Id) + 1)
                 .Create();
             journeys.Add(journey);
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            var expected = Mapper.Map<Journey, JourneyModel>(journey);
 
             // Act
-            var result = journeyService.GetJourneyById(journey.Id);
+            var result = await journeyService.GetJourneyByIdAsync(journey.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<Journey, JourneyModel>(journey));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public void GetJourneyById_JourneyNotExist_ReturnsNull()
+        public async Task GetJourneyByIdAsync_JourneyNotExist_ReturnsNull()
         {
             // Arrange
-            var journeys = fixture.Create<Journey[]>().AsQueryable();
+            var journeys = Fixture.Create<Journey[]>();
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = journeyService.GetJourneyById(journeys.Max(j => j.Id) + 1);
+            var result = await journeyService.GetJourneyByIdAsync(journeys.Max(j => j.Id) + 1);
 
             // Assert
             result.Should().BeNull();
@@ -81,50 +69,49 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetPastJourneys_PastJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public async Task GetPastJourneysAsync_PastJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             // Arrange
-            var participant = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var participant = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
                 .CreateMany()
                 .ToList();
-            var pastJourneys = fixture.Build<Journey>()
+            var pastJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
                 .CreateMany().ToList();
             journeys.AddRange(pastJourneys);
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys);
 
             // Act
-            var result = journeyService.GetPastJourneys(participant.Id);
+            var result = await journeyService.GetPastJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
         [AutoData]
-        public void GetPastJourneys_PastJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public async Task GetPastJourneysAsync_PastJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             // Arrange
-            var participant = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var participant = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
                 .CreateMany()
                 .ToList();
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = journeyService.GetPastJourneys(participant.Id);
+            var result = await journeyService.GetPastJourneysAsync(participant.Id);
 
             // Assert
             result.Should().BeEmpty();
@@ -132,27 +119,25 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetPastJourneys_UserNotHaveJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public async Task GetPastJourneysAsync_UserNotHaveJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             // Arrange
-            var journeys = fixture.Build<Journey>()
+            var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .CreateMany()
                 .ToList();
-            var pastJourneys = fixture.Build<Journey>()
-                .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
-                .CreateMany();
-            journeys.AddRange(pastJourneys);
-            var user = fixture.Build<User>()
-                .With(u => u.Id, journeys.SelectMany(j => j.Participants.Select(p => p.Id)).Max() + 1)
+
+            var user = Fixture.Build<User>()
+                .With(
+                    u => u.Id,
+                    journeys.SelectMany(j => j.Participants.Select(p => p.Id)).Union(journeys.Select(j => j.OrganizerId)).Max() + 1)
                 .Create();
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = journeyService.GetPastJourneys(user.Id);
+            var result = await journeyService.GetPastJourneysAsync(user.Id);
 
             // Assert
             result.Should().BeEmpty();
@@ -160,78 +145,77 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneys_UpcomingJourneysExistForOrganizer_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public async Task GetUpcomingJourneysAsync_UpcomingJourneysExistForOrganizer_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             // Arrange
-            var organizer = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var organizer = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
                 .CreateMany()
                 .ToList();
-            var upcomingJourneys = fixture.Build<Journey>()
+            var upcomingJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.OrganizerId, organizer.Id)
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys);
 
             // Act
-            var result = journeyService.GetUpcomingJourneys(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneys_UpcomingJourneysExistForParticipant_ReturnsJourneyCollection([Range(1, 3)] int days)
+        public async Task GetUpcomingJourneysAsync_UpcomingJourneysExistForParticipant_ReturnsJourneyCollection([Range(1, 3)] int days)
         {
             // Arrange
-            var participant = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var participant = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
                 .CreateMany()
                 .ToList();
-            var upcomingJourneys = fixture.Build<Journey>()
+            var upcomingJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys);
 
             // Act
-            var result = journeyService.GetUpcomingJourneys(participant.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneys_UpcomingJourneysNotExistForOrganizer_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public async Task GetUpcomingJourneysAsync_UpcomingJourneysNotExistForOrganizer_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             // Arrange
-            var organizer = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var organizer = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
                 .CreateMany()
                 .ToList();
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = journeyService.GetUpcomingJourneys(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
 
             // Assert
             result.Should().BeEmpty();
@@ -239,106 +223,106 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public void GetUpcomingJourneys_UserNotHaveUpcomingJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
+        public async Task GetUpcomingJourneysAsync_UserNotHaveUpcomingJourneys_ReturnsEmptyCollection([Range(1, 3)] int days)
         {
             // Arrange
-            var organizer = fixture.Create<User>();
-            var anotherUser = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var organizer = Fixture.Create<User>();
+            var anotherUser = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
                 .CreateMany()
                 .ToList();
-            var upcomingJourneys = fixture.Build<Journey>()
+            var upcomingJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.OrganizerId, anotherUser.Id)
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
-            repository.Setup(r => r.Query())
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = journeyService.GetUpcomingJourneys(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
 
             // Assert
             result.Should().BeEmpty();
         }
 
         [Fact]
-        public void GetScheduledJourneys_ScheduledJourneysExistForParticipant_ReturnsJourneyCollection()
+        public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForParticipant_ReturnsJourneyCollection()
         {
             // Arrange
-            var participant = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var participant = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.Participants, new List<User>() { participant })
                 .CreateMany().ToList();
-            var scheduledJourneys = fixture.Build<Journey>()
+            var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.Participants, new List<User>() { participant })
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);
 
-            repository.Setup(r => r.Query(journey => journey.Schedule))
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query(journey => journey.Schedule))
+              .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys);
 
             // Act
-            var result = journeyService.GetScheduledJourneys(participant.Id);
+            var result = await journeyService.GetScheduledJourneysAsync(participant.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public void GetScheduledJourneys_ScheduledJourneysExistForOrganizer_ReturnsJourneyCollection()
+        public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForOrganizer_ReturnsJourneyCollection()
         {
             // Arrange
-            var organizer = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var organizer = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
                 .CreateMany().ToList();
-            var scheduledJourneys = fixture.Build<Journey>()
+            var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.OrganizerId, organizer.Id)
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);
 
-            repository.Setup(r => r.Query(journey => journey.Schedule))
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query(journey => journey.Schedule))
+             .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys);
 
             // Act
-            var result = journeyService.GetScheduledJourneys(organizer.Id);
+            var result = await journeyService.GetScheduledJourneysAsync(organizer.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys));
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public void GetScheduledJourneys_ScheduledJourneysNotExist_ReturnsEmptyCollection()
+        public async Task GetScheduledJourneysAsync_ScheduledJourneysNotExist_ReturnsEmptyCollection()
         {
             // Arrange
-            var organizer = fixture.Create<User>();
-            var journeys = fixture.Build<Journey>()
+            var organizer = Fixture.Create<User>();
+            var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
                 .CreateMany().ToList();
-            var scheduledJourneys = fixture.Build<Journey>()
+            var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.OrganizerId, organizer.Id + 1)
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);
 
-            repository.Setup(r => r.Query(journey => journey.Schedule))
-                .Returns(journeys.AsQueryable);
-            journeyUnitOfWork.Setup(r => r.GetRepository()).Returns(repository.Object);
+            journeyRepository.Setup(r => r.Query(journey => journey.Schedule))
+             .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = journeyService.GetScheduledJourneys(organizer.Id);
+            var result = await journeyService.GetScheduledJourneysAsync(organizer.Id);
 
             // Assert
             result.Should().BeEmpty();
