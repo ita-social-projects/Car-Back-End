@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
-using Car.Domain.Exceptions;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -15,124 +13,172 @@ using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.UnitTests.Services
 {
-    public class ImageServiceTest
+    public class ImageServiceTest : TestBase
     {
-        private readonly IImageService<User, File> imageService;
-        private readonly Mock<IRepository<User>> repository;
-        private readonly Mock<IUnitOfWork<User>> unitOfWork;
-        private readonly Fixture fixture;
+        private readonly IImageService imageService;
+        private readonly Mock<IFileService<File>> fileService;
 
         public ImageServiceTest()
         {
-            var driveService = new Mock<IDriveService<File>>();
-            var strategy = new Mock<IEntityTypeStrategy<User>>();
-
-            repository = new Mock<IRepository<User>>();
-            unitOfWork = new Mock<IUnitOfWork<User>>();
-
-            imageService = new ImageService<User>(
-                driveService.Object, unitOfWork.Object, strategy.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            fileService = new Mock<IFileService<File>>();
+            imageService = new ImageService(fileService.Object);
         }
 
         [Fact]
-        public void TestUploadImage()
+        public async Task UploadImageAsync_EntityAndFileNotNull_ReturnsUpdatedEntity()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            IEntityWithImage entity = Fixture.Create<Data.Entities.User>();
+            var imageId = Fixture.Create<string>();
 
-            Func<Task> action = () => imageService
-                .UploadImage(user.Id, fixture.Create<FormFile>());
+            fileService
+                .Setup(f => f.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(imageId);
 
-            action.Should().NotThrowAsync<DefaultApplicationException>();
+            // Act
+            var result = await imageService.UploadImageAsync(entity, Mock.Of<IFormFile>());
+
+            // Assert
+            result.ImageId.Should().BeEquivalentTo(imageId);
         }
 
         [Fact]
-        public void TestUploadImage_WhenFileIsNull()
+        public async Task UploadImageAsync_FileIsNull_ReturnsSameEntity()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            IEntityWithImage entity = Fixture.Create<User>();
+            var expectedImageId = entity.ImageId;
 
-            Func<Task> action = () => imageService.UploadImage(user.Id, null);
-            action.Should().ThrowAsync<DefaultApplicationException>();
+            // Act
+            var result = await imageService.UploadImageAsync(entity, null);
+
+            // Assert
+            result.ImageId.Should().BeEquivalentTo(expectedImageId);
         }
 
         [Fact]
-        public void TestUploadImage_WhenEntityIsNull()
+        public async Task UploadImageAsync_EntityIsNull_ReturnsNull()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            var entity = (IEntityWithImage)null;
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            // Act
+            var result = await imageService.UploadImageAsync(entity, Mock.Of<IFormFile>());
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
-
-            Func<Task> action = () => imageService.UploadImage(It.IsNotIn(user.Id), null);
-            action.Should().ThrowAsync<DefaultApplicationException>();
+            // Assert
+            result.Should().BeNull();
         }
 
         [Fact]
-        public void TestDeleteImage_WhenImageWasNotDeleted()
+        public async Task DeleteImageAsync_EntityIsNull_ReturnsNull()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            var entity = (IEntityWithImage)null;
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            // Act
+            var result = await imageService.DeleteImageAsync(entity);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
-
-            Func<Task> action = () => imageService.DeleteImage(user.Id);
-            action.Should().ThrowAsync<DefaultApplicationException>();
+            // Assert
+            result.Should().BeNull();
         }
 
         [Fact]
-        public void TestDeleteImage_WhenUserNotExist()
+        public async Task DeleteImageAsync_ImageIdIsNull_ReturnsSameEntity()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            IEntityWithImage entity = Fixture.Build<User>().With(u => u.ImageId, (string)null).Create();
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            // Act
+            var result = await imageService.DeleteImageAsync(entity);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
-
-            Func<Task> action = () => imageService.DeleteImage(It.IsNotIn(user.Id));
-            action.Should().ThrowAsync<DefaultApplicationException>();
+            // Assert
+            result.Should().BeEquivalentTo(entity);
         }
 
         [Fact]
-        public void TestGetImageBytesById_WhenUserNotExist()
+        public async Task DeleteImageAsync_ImageIdIsValid_ReturnsUpdatedEntity()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            IEntityWithImage entity = Fixture.Create<User>();
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            // Act
+            var result = await imageService.DeleteImageAsync(entity);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
-
-            Func<Task> action = () => imageService.GetImageBytesById(4);
-            action.Should().ThrowAsync<DefaultApplicationException>();
+            // Assert
+            result.ImageId.Should().BeNull();
         }
 
         [Fact]
-        public void TestGetImageBytesById()
+        public async Task UpdateImageAsync_ImageAndEntityValid_ReturnsUpdatedEntity()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            IEntityWithImage entity = Fixture.Create<User>();
+            var imageId = Fixture.Create<string>();
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            fileService
+                .Setup(f => f.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(imageId);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await imageService.UpdateImageAsync(entity, Mock.Of<IFormFile>());
 
-            Func<Task> action = () => imageService.GetImageBytesById(user.Id);
+            // Assert
+            result.ImageId.Should().BeSameAs(imageId);
+        }
 
-            action.Should().NotThrowAsync();
+        [Fact]
+        public async Task UpdateImageAsync_ImageIsNull_ReturnsUpdatedEntity()
+        {
+            // Arrange
+            IEntityWithImage entity = Fixture.Create<User>();
+
+            // Act
+            var result = await imageService.UpdateImageAsync(entity, null);
+
+            // Assert
+            result.ImageId.Should().BeNull();
+        }
+
+        [Fact]
+        public void SetImageLink_EntityHasImageId_ReturnsUpdatedEntity()
+        {
+            // Arrange
+            IEntityWithImage entity = Fixture.Create<User>();
+            var expectedLink = Fixture.Create<string>();
+
+            fileService.Setup(f => f.GetFileLink(It.IsAny<string>())).Returns(expectedLink);
+
+            // Act
+            var result = imageService.SetImageLink(entity);
+
+            // Assert
+            result.ImageId.Should().BeSameAs(expectedLink);
+        }
+
+        [Fact]
+        public void SetImageLink_EntityNotHaveImageId_ReturnsSameEntity()
+        {
+            // Arrange
+            IEntityWithImage entity = Fixture.Build<User>().With(u => u.ImageId, (string)null).Create();
+
+            // Act
+            var result = imageService.SetImageLink(entity);
+
+            // Assert
+            result.Should().BeEquivalentTo(entity);
+        }
+
+        [Fact]
+        public void SetImageLink_EntityIsNull_ReturnsNull()
+        {
+            // Arrange
+            IEntityWithImage entity = null;
+
+            // Act
+            var result = imageService.SetImageLink(entity);
+
+            // Assert
+            result.Should().BeNull();
         }
     }
 }

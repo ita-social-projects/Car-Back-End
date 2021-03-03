@@ -21,5 +21,7 @@ namespace Car.Domain.Dto
         public string ImageId { get; set; }
 
         public string Token { get; set; }
+
+        public int JourneyCount { get; set; }
     }
 }

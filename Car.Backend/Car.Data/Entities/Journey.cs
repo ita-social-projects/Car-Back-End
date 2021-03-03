@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Car.Data.Entities
 {
@@ -11,7 +12,7 @@ namespace Car.Data.Entities
 
         public DateTime DepartureTime { get; set; }
 
-        public TimeSpan JourneyDuration { get; set; }
+        public TimeSpan Duration { get; set; }
 
         public int CountOfSeats { get; set; }
 
@@ -19,18 +20,23 @@ namespace Car.Data.Entities
 
         public bool IsFree { get; set; }
 
-        public int? OrganizerId { get; set; }
+        public int OrganizerId { get; set; }
 
-        public int? ScheduleId { get; set; }
+        public int? CarId { get; set; }
 
-        public ICollection<User> Participants { get; set; } = new List<User>();
+        [NotMapped]
+        public DateTime EndTime => DepartureTime.Add(Duration);
 
-        public ICollection<UserJourney> UserJourneys { get; set; } = new List<UserJourney>();
-
-        public IEnumerable<Stop> Stops { get; set; } = new List<Stop>();
+        public Car Car { get; set; }
 
         public Schedule Schedule { get; set; }
 
         public User Organizer { get; set; }
+
+        public Chat Chat { get; set; }
+
+        public ICollection<User> Participants { get; set; } = new List<User>();
+
+        public ICollection<Stop> Stops { get; set; } = new List<Stop>();
     }
 }

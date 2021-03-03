@@ -1,12 +1,14 @@
-﻿using Car.Data.Entities;
-using userEntity = Car.Data.Entities.User;
+﻿using System.Threading.Tasks;
+using Car.Data.Entities;
 
 namespace Car.Domain.Services.Interfaces
 {
    public interface ILoginService
    {
-        User GetUser(string email);
+        Task<User> GetUserAsync(string email);
 
-        User SaveUser(User user);
+        Task<User> AddUserAsync(User user);
+
+        Task<User> LoginAsync(User user);
    }
 }

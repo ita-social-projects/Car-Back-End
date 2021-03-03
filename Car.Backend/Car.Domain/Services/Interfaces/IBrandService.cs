@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Car.Data.Entities;
-using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface IBrandService
     {
-        IEnumerable<Brand> GetAllBrands();
+        Task<List<Brand>> GetAllAsync();
     }
 }

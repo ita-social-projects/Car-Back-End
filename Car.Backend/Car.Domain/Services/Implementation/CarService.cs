@@ -1,56 +1,79 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Car.Data.Interfaces;
-using Car.Domain.Dto;
+using System.Threading.Tasks;
+using AutoMapper;
+using Car.Data.Infrastructure;
+using Car.Domain.Extensions;
+using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.Domain.Services.Implementation
 {
     public class CarService : ICarService
     {
-        private readonly IUnitOfWork<CarEntity> unitOfWork;
+        private readonly IRepository<CarEntity> carRepository;
+        private readonly IImageService imageService;
+        private readonly IMapper mapper;
 
-        public CarService(
-            IUnitOfWork<CarEntity> unitOfWork)
+        public CarService(IRepository<CarEntity> carRepository, IImageService imageService, IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
+            this.carRepository = carRepository;
+            this.imageService = imageService;
+            this.mapper = mapper;
         }
 
-        public CarEntity AddCar(CarDto carDto)
+        public async Task<CarEntity> AddCarAsync(CreateCarModel createCarModel)
         {
-            var newCar = new CarEntity
-            {
-                ModelId = carDto.ModelId,
-                Color = carDto.Color.ToString(),
-                PlateNumber = carDto.PlateNumber,
-                OwnerId = carDto.UserId,
-            };
+            var carEntity = mapper.Map<CreateCarModel, CarEntity>(createCarModel);
+            await imageService.UploadImageAsync(carEntity, createCarModel.Image);
 
-            var car = unitOfWork.GetRepository().Add(newCar);
-            unitOfWork.SaveChanges();
+            var newCar = await carRepository.AddAsync(carEntity);
+            await carRepository.SaveChangesAsync();
+
+            return newCar;
+        }
+
+        public async Task<CarEntity> GetCarByIdAsync(int carId)
+        {
+            var car = await carRepository
+                .Query()
+                .IncludeModelWithBrand()
+                .FirstOrDefaultAsync(c => c.Id == carId);
+            imageService.SetImageLink(car);
 
             return car;
         }
 
-        public CarEntity GetCarById(int carId)
+        public async Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId)
         {
-            return unitOfWork.GetRepository().GetById(carId);
+            var cars = await carRepository
+                .Query()
+                .IncludeModelWithBrand()
+                .Where(car => car.OwnerId == userId)
+                .ToListAsync();
+
+            cars.ForEach((car) => imageService.SetImageLink(car));
+
+            return cars;
         }
 
-        public IEnumerable<CarInfoDto> GetAllByUserId(int userId)
+        public async Task<CarEntity> UpdateCarAsync(UpdateCarModel updateCarModel)
         {
-            return unitOfWork.GetRepository()
-                .Query()
-                .Where(car => car.OwnerId == userId)
-                .Select(car => new CarInfoDto
-                {
-                    Id = car.Id,
-                    BrandName = car.Model.Brand.Name,
-                    ModelName = car.Model.Name,
-                    Color = car.Color,
-                    PlateNumber = car.PlateNumber,
-                });
+            var car = await carRepository.GetByIdAsync(updateCarModel.Id);
+
+            if (car != null)
+            {
+                await imageService.UpdateImageAsync(car, updateCarModel.Image);
+                car.Color = updateCarModel.Color;
+                car.ModelId = updateCarModel.ModelId;
+                car.PlateNumber = updateCarModel.PlateNumber;
+            }
+
+            await carRepository.SaveChangesAsync();
+
+            return car;
         }
     }
 }

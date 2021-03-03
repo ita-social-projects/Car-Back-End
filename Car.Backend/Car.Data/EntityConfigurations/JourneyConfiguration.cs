@@ -8,25 +8,30 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Journey> builder)
         {
+            builder.ToTable("Journey");
+
             builder.HasKey(journey => journey.Id);
 
             builder.HasOne(journey => journey.Schedule)
                 .WithOne(schedule => schedule.Journey)
-                .HasForeignKey<Journey>(journey => journey.ScheduleId);
+                .HasForeignKey<Schedule>(schedule => schedule.Id);
 
             builder.HasOne(journey => journey.Organizer)
                 .WithMany(user => user.OrganizerJourneys)
-                .HasForeignKey(journey => journey.OrganizerId);
+                .HasForeignKey(journey => journey.OrganizerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(journey => journey.Participants)
-                .WithMany(user => user.ParticipantJourneys)
-                .UsingEntity<UserJourney>(
-                    userJourney => userJourney.HasOne(uj => uj.User)
-                        .WithMany(uj => uj.UserJourneys)
-                        .HasForeignKey(uj => uj.UserId),
-                    userJourney => userJourney.HasOne(uj => uj.Journey)
-                        .WithMany(j => j.UserJourneys)
-                        .HasForeignKey(uj => uj.JourneyId));
+                .WithMany(user => user.ParticipantJourneys);
+
+            builder.HasOne(journey => journey.Chat)
+                .WithOne(chat => chat.Journey)
+                .HasForeignKey<Chat>(chat => chat.Id);
+
+            builder.HasOne(journey => journey.Car)
+                .WithMany(car => car.Journeys)
+                .HasForeignKey(journey => journey.CarId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Property(journey => journey.Comments).HasMaxLength(100);
         }

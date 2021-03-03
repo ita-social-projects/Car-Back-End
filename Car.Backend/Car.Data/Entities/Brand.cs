@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Car.Data.Entities
 {
@@ -8,6 +9,7 @@ namespace Car.Data.Entities
 
         public string Name { get; set; }
 
-        public IEnumerable<Model> Models { get; set; } = new List<Model>();
+        [JsonIgnore]
+        public ICollection<Model> Models { get; set; } = new List<Model>();
     }
 }

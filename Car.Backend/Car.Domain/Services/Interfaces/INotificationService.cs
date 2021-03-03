@@ -1,20 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Car.Data.Entities;
+using Car.Domain.Models.Notification;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface INotificationService
     {
-        Notification GetNotification(int id);
+        Task<Notification> GetNotificationAsync(int notificationId);
 
-        List<Notification> GetNotifications(int userId);
+        Task<List<Notification>> GetNotificationsAsync(int userId);
 
-        int GetUnreadNotificationsNumber(int userId);
+        Task<int> GetUnreadNotificationsNumberAsync(int userId);
 
-        Notification UpdateNotification(Notification notification);
+        Task<Notification> UpdateNotificationAsync(Notification notification);
 
-        Notification AddNotification(Notification notification);
+        Task<Notification> AddNotificationAsync(Notification notification);
 
-        Notification DeleteNotification(int id);
+        Task<Notification> DeleteNotificationAsync(int notificationId);
+
+        Task<Notification> CreateNewNotificationAsync(CreateNotificationModel createNotificationModel);
+
+        Task<Notification> MarkNotificationAsReadAsync(int notificationId);
     }
 }

@@ -8,10 +8,10 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Schedule> builder)
         {
+            builder.ToTable("Schedule");
             builder.HasKey(schedule => schedule.Id);
 
-            builder.Property(schedule => schedule.Name).IsRequired();
-            builder.Property(schedule => schedule.Name).HasMaxLength(50).IsRequired();
+            builder.Property(schedule => schedule.Name).HasMaxLength(100).IsRequired();
         }
     }
 }

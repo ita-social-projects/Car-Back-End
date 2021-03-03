@@ -16,13 +16,11 @@ namespace Car.Data.Context
 
         public DbSet<Notification> Notifications { get; set; }
 
-        public DbSet<Schedule> Schedule { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
 
         public DbSet<Stop> Stops { get; set; }
 
-        public DbSet<User> User { get; set; }
-
-        public DbSet<UserJourney> UserJourney { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<UserPreferences> UserPreferences { get; set; }
 
@@ -31,6 +29,10 @@ namespace Car.Data.Context
         public DbSet<Model> Models { get; set; }
 
         public DbSet<Chat> Chats { get; set; }
+
+        public DbSet<Location> Locations { get; set; }
+
+        public DbSet<LocationType> LocationTypes { get; set; }
 
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
@@ -41,7 +43,6 @@ namespace Car.Data.Context
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new JourneyConfiguration());
-            modelBuilder.ApplyConfiguration(new UserJourneyConfiguration());
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
             modelBuilder.ApplyConfiguration(new CarConfiguration());
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
@@ -52,6 +53,8 @@ namespace Car.Data.Context
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
             modelBuilder.ApplyConfiguration(new ModelConfiguration());
             modelBuilder.ApplyConfiguration(new ChatConfiguration());
+            modelBuilder.ApplyConfiguration(new LocationConfiguration());
+            modelBuilder.ApplyConfiguration(new LocationTypeConfiguration());
 
             modelBuilder.Seed();
         }

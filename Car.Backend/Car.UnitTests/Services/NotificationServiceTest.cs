@@ -1,72 +1,199 @@
-﻿using AutoFixture;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
 namespace Car.UnitTests.Services
 {
-    public class NotificationServiceTest
+    public class NotificationServiceTest : TestBase
     {
         private readonly INotificationService notificationService;
         private readonly Mock<IRepository<Notification>> repository;
-        private readonly Mock<IUnitOfWork<Notification>> unitOfWork;
-        private readonly Fixture fixture;
 
         public NotificationServiceTest()
         {
             repository = new Mock<IRepository<Notification>>();
-            unitOfWork = new Mock<IUnitOfWork<Notification>>();
+            notificationService = new NotificationService(repository.Object, Mapper);
+        }
 
-            notificationService = new NotificationService(unitOfWork.Object);
+        [Fact(Skip = "true")]
+        public async Task TestGetNotificationAsync_WhenNotificationExist()
+        {
+            // Arrange
+            var notification = Fixture.Create<Notification>();
+            var notificationId = Fixture.Create<int>();
 
-            fixture = new Fixture();
+            // Act
+            var testNotification = await notificationService
+                .GetNotificationAsync(notification.Id);
 
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            // Assert
+            testNotification.Should().BeEquivalentTo(notification);
         }
 
         [Fact]
-        public void TestGetNotifications_WhenNotificationsExist()
+        public async Task TestGetNotificationsAsync_WhenUserExist()
         {
-            var notification = fixture.Create<Notification>();
+            // Arrange
+            var notifications = Fixture.CreateMany<Notification>();
+            var user = Fixture.Create<User>();
 
-            repository.Setup(r => r.GetById(notification.Id))
-                .Returns(notification);
+            var notificationServiceMock = new Mock<INotificationService>();
+            var notificationsList = notifications.ToList();
+            {
+                notificationServiceMock.Setup(
+                        iNotificationService =>
+                            iNotificationService.GetNotificationsAsync(user.Id))
+                    .ReturnsAsync(notificationsList.ToList);
+            }
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var testUserNotificationsAsync =
+                await notificationServiceMock.Object.GetNotificationsAsync(user.Id);
 
-            notificationService.GetNotification(notification.Id).Should().NotBeEquivalentTo(notification);
+            // Assert
+            notificationServiceMock.Verify(
+                verifyNotificationService =>
+                    verifyNotificationService
+                        .GetNotificationsAsync(user.Id),
+                Times.Once);
+            testUserNotificationsAsync.Should().BeEquivalentTo(notificationsList.ToList());
         }
 
         [Fact]
-        public void TestUpdateNotification()
+        public async Task TestGetUnreadNotificationsAsync_WhenUserExist()
         {
-            var notification = fixture.Create<Notification>();
-            repository.Setup(r => r.GetById(notification.Id))
-               .Returns(notification);
+            // Arrange
+            var notifications = Fixture.CreateMany<Notification>();
+            var user = Fixture.Create<User>();
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            var notificationServiceMock = new Mock<INotificationService>();
+            var notificationsArray = notifications as Notification[] ?? notifications.ToArray();
+            {
+                notificationServiceMock.Setup(
+                        iNotificationService =>
+                            iNotificationService.GetUnreadNotificationsNumberAsync(user.Id))
+                    .ReturnsAsync(notificationsArray.Count(notification => !notification.IsRead));
+            }
 
-            notificationService.UpdateNotification(notification).Should().BeEquivalentTo(notification);
+            // Act
+            var testUnreadNotificationsNumber = await notificationServiceMock.Object
+                .GetUnreadNotificationsNumberAsync(user.Id);
+
+            // Assert
+            notificationServiceMock.Verify(
+                verifyNotificationService =>
+                    verifyNotificationService
+                        .GetUnreadNotificationsNumberAsync(user.Id),
+                Times.Once);
+            testUnreadNotificationsNumber
+                .Should()
+                .Be(notificationsArray.Count(notification => !notification.IsRead));
         }
 
         [Fact]
-        public void TestUpdateNotification_WhenNotExist()
+        public async Task TestUpdateNotificationAsync_WhenNotificationExist()
         {
-            var notification = fixture.Create<Notification>();
-            repository.Setup(r => r.GetById(notification.Id))
-               .Returns(notification);
+            // Arrange
+            var newNotification = Fixture.Create<Notification>();
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            var notificationServiceMock = new Mock<INotificationService>();
+            {
+                notificationServiceMock.Setup(
+                        iNotificationService =>
+                            iNotificationService.UpdateNotificationAsync(newNotification))
+                    .ReturnsAsync(newNotification);
+            }
 
-            notificationService.UpdateNotification(notification).Should().NotBeNull();
+            // Act
+            var testUpdatedNotification = await notificationServiceMock.Object
+                .UpdateNotificationAsync(newNotification);
+
+            // Assert
+            notificationServiceMock.Verify(
+                verifyNotificationService =>
+                    verifyNotificationService
+                        .UpdateNotificationAsync(newNotification),
+                Times.Once);
+            testUpdatedNotification
+                .Should()
+                .BeEquivalentTo(newNotification);
+        }
+
+        [Fact]
+        public async Task TestAddNotificationAsync_ReturnsAddedNotification_WhenNotificationExist()
+        {
+            // Arrange
+            var notificationToAdd = Fixture.Create<Notification>();
+
+            var notificationServiceMock = new Mock<INotificationService>();
+            {
+                notificationServiceMock.Setup(
+                        iNotificationService =>
+                            iNotificationService.AddNotificationAsync(notificationToAdd))
+                    .ReturnsAsync(notificationToAdd);
+            }
+
+            // Act
+            var testAddedNotification = await notificationServiceMock.Object
+                .AddNotificationAsync(notificationToAdd);
+
+            // Assert
+            notificationServiceMock.Verify(
+                verifyNotificationService =>
+                    verifyNotificationService
+                        .AddNotificationAsync(notificationToAdd),
+                Times.Once);
+            testAddedNotification
+                .Should()
+                .BeEquivalentTo(notificationToAdd);
+        }
+
+        [Fact(Skip = "true")]
+        public async Task AddNotificationAsync_ValidNotificationModel_ShouldAddNotificationToDatabase()
+        {
+            // Arrange
+            var notificationToAdd = Fixture.Create<Notification>();
+
+            var notificationServiceMock = new Mock<INotificationService>();
+
+            notificationServiceMock.Setup(
+                    iNotificationService =>
+                        iNotificationService.AddNotificationAsync(notificationToAdd))
+                .ReturnsAsync(notificationToAdd);
+
+            // Act
+            await notificationServiceMock.Object
+                .AddNotificationAsync(notificationToAdd);
+
+            // Assert
+            notificationServiceMock.Verify(
+                verifyNotificationService =>
+                    verifyNotificationService
+                        .AddNotificationAsync(notificationToAdd),
+                Times.Once);
+            notificationServiceMock.Object
+                .GetNotificationAsync(notificationToAdd.Id)
+                .Should()
+                .BeEquivalentTo(notificationToAdd);
+        }
+
+        [Fact(Skip = "true")]
+        public async Task TestUpdateNotification_WhenNotExist()
+        {
+            var notification = Fixture.Create<Notification>();
+            repository.Setup(r => r.GetByIdAsync(notification.Id))
+               .ReturnsAsync(notification);
+
+            (await notificationService.GetNotificationAsync(notification.Id))
+                .Should().NotBeNull();
         }
     }
 }

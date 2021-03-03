@@ -17,12 +17,12 @@
             <param name="id">The user identifier.</param>
             <returns>All user's cars</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Dto.CarDto)">
+        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Models.Car.CreateCarModel)">
             <summary>
-            Adds the car.
+            Adds the car asynchronously.
             </summary>
             <param name="car">The car.</param>
-            <returns>New car</returns>
+            <returns>New car.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.CarController.GetCarById(System.Int32)">
             <summary>
@@ -31,63 +31,40 @@
             <param name="id">The car identifier.</param>
             <returns>The car entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.UploadCarPhoto(System.Int32,Car.Domain.Dto.FormImage)">
+        <member name="M:Car.WebApi.Controllers.CarController.UpdateCar(Car.Domain.Models.Car.UpdateCarModel)">
             <summary>
-            Uploads the car photo.
+            Updates car.
             </summary>
-            <param name="id">The car identifier.</param>
-            <param name="carFile">The car file.</param>
-            <returns>The car entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.CarController.DeleteCarPhoto(System.Int32)">
-            <summary>
-            Deletes the car photo.
-            </summary>
-            <param name="id">The car identifier.</param>
-            <returns>The car entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.CarController.GetCarFileById(System.Int32)">
-            <summary>
-            Gets the car file by identifier.
-            </summary>
-            <param name="id">The car identifier.</param>
-            <returns>Base64 array of car photo</returns>
+            <param name="updateCarModel">The car.</param>
+            <returns>The updated car.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
             <summary>
-            Get the user chats by User Id
+            Get the user chats by Sender Id
             </summary>
-            <param name="id">User identifier</param>
-            <returns>Chats of User by Id</returns>
+            <param name="id">Sender identifier</param>
+            <returns>Chats of Sender by Id</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetChat(System.Int32)">
             <summary>
             Get chat by Chat Id
             </summary>
-            <param name="id">User identifier</param>
+            <param name="id">Sender identifier</param>
             <returns>Chat</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Data.Entities.Chat)">
             <summary>
             Add the chat
             </summary>
-            <param name="chat">User identifier</param>
+            <param name="chat">Sender identifier</param>
             <returns>New chat</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.AddUserToChat(System.Int32,System.Int32)">
+        <member name="M:Car.WebApi.Controllers.ChatController.AddMessage(Car.Data.Entities.Message)">
             <summary>
-            Add user to the chat
+            Add new message
             </summary>
-            <param name="userId">User identifier</param>
-            <param name="chatId">Chat identifier</param>
-            <returns>Added User</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetCurrent(System.Int32)">
-            <summary>
-            Looks for information about current journey where current user is participant or driver
-            </summary>
-            <param name="id">id of current user</param>
-            <returns>status of request with appropriate data</returns>
+            <param name="message">Message entity</param>
+            <returns>Added Message</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
             <summary>
@@ -124,13 +101,13 @@
             <param name="id">Journey identifier</param>
             <returns>Journey</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
+        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Data.Entities.User)">
             <summary>
-            ensures the user and returns a UserDTO for client app,
+            ensures the user and returns a User for client app,
             if user doesn't exist in DB it creates a user and saves them to DB
             </summary>
-            <param name="userModel">User model params</param>
-            <returns>UserDTO for a client app</returns>
+            <param name="user">Sender model params</param>
+            <returns>User for a client app</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ModelController.GetAll(System.Int32)">
             <summary>
@@ -139,82 +116,105 @@
             <param name="id">The brand identifier.</param>
             <returns>All the models</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotification(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotificationAsync(System.Int32)">
             <summary>
-            gets a notification by given id
+            gets a notification by given id Asynchronously
             </summary>
             <param name="id">notification id</param>
             <returns>notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotifications(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotificationsAsync(System.Int32)">
             <summary>
             gets all user notifications
             </summary>
             <param name="userId"> user Id</param>
             <returns>list of user notifications</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.GetUnreadNumber(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetUnreadNotificationsNumberAsync(System.Int32)">
             <summary>
             gets user unread notifications number
             </summary>
             <param name="userId">user Id</param>
             <returns>int number</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.UpdateNotification(Car.Domain.Dto.NotificationDto)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.UpdateNotificationAsync(Car.Domain.Models.Notification.CreateNotificationModel)">
             <summary>
-            updates user notification
+            updates user notification Asynchronously
             </summary>
-            <param name="notificationDto">notification itself to be updated</param>
+            <param name="createNotificationModel">notification itself to be updated</param>
             <returns>updated notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotification(Car.Domain.Dto.NotificationDto)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Models.Notification.CreateNotificationModel)">
             <summary>
-            adds new user notification
+            adds new user notification Asynchronously
             </summary>
-            <param name="notificationDto">notification to be added</param>
+            <param name="createNotificationModel">notification itself to be updated</param>
+            // Args:
+            //    JSON String
+            //
+            // JSON STRUCTURE
+            //      VARIABLE           TYPE            DESC
+            // {
+            //      "senderId"         //number        Specifies the sender of the notification
+            //      , "receiverId":    //number        Specifies the receiver of the notification
+            //      , "type":          //number        Specifies the type of the notification
+            //                         //              based on the following enum:
+            //                         //
+            //                         //              1 PassengerApply
+            //                         //              2 ApplicationApproval
+            //                         //              3 JourneyCancellation
+            //                         //              4 JourneyDetailsUpdate
+            //                         //              5 JourneyInvitation
+            //                         //              6 AcceptedInvitation
+            //                         //              7 RejectedInvitation
+            //                         //              8 PassengerWithdrawal
+            //                         //              9 HRMarketingMessage
+            //                         //              0 HRMarketingSurvey
+            //                         //
+            //     , "jsonData":       //string        Specifies notification's specific JSON structure
+            //                         //
+            //                         //              BELOW LISTED STRUCTURE FOR NOTIFICATION TYPE 1 (PassengerApply)
+            //     "{                  //
+            //     \"title\":          //string        Specifies the title of the notification at the notification tab
+            //     \"comments\":       //string?       Specifies the participant's comment (if any) at the modal page
+            //     \"hasLuggage\":     //boolean?      Specifies if the participant has any luggage
+            //     }"
+            // }
             <returns>added notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.DeleteNotification(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.DeleteNotificationAsync(System.Int32)">
             <summary>
-            deletes notification
+            deletes notification Asynchronously
             </summary>
             <param name="notificationId">notification Id</param>
             <returns>deleted notification</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.NotificationController.MarkNotificationAsReadAsync(System.Int32)">
+            <summary>
+            Marks notification as read Asynchronously
+            </summary>
+            <param name="notificationId">notification Id</param>
+            <returns>amended notification</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
-            Gets the user by identifier.
+            Gets the user by identifier asynchronously.
             </summary>
             <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.UploadUserAvatar(System.Int32,Car.Domain.Dto.FormImage)">
+        <member name="M:Car.WebApi.Controllers.UserController.UpdateUser(Car.Domain.Models.User.UpdateUserModel)">
             <summary>
-            Uploads the user avatar.
+            Updates a user with the identifier asynchronously.
             </summary>
-            <param name="id">The user identifier.</param>
-            <param name="userFile">The user file.</param>
-            <returns>The user entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.UserController.DeleteUserAvatar(System.Int32)">
-            <summary>
-            Deletes the user avatar.
-            </summary>
-            <param name="id">The user identifier.</param>
-            <returns>The user entity</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.UserController.GetUserFileById(System.Int32)">
-            <summary>
-            Gets the user file by identifier.
-            </summary>
-            <param name="id">The user identifier.</param>
-            <returns>Base64 array of user avatar</returns>
+            <param name="updateUserModel">User object to update.</param>
+            <returns>Updated user.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.GetPreferences(System.Int32)">
             <summary>
             returns the preferences for user
             </summary>
-            <param name ="id"> userId</param>
+            <param name ="id">User identifier</param>
             <returns>user preferences</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Data.Entities.UserPreferences)">

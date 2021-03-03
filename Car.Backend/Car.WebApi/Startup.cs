@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Car.Domain.Configurations;
 using Car.WebApi.Hubs;
-using Car.WebApi.JwtConfiguration;
 using Car.WebApi.ServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -48,6 +48,7 @@ namespace Car.WebApi
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddServices();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddCorsSettings();
             services.InitializeConfigurations(Configuration);
             services.AddLogging();
@@ -92,7 +93,7 @@ namespace Car.WebApi
                 logger.LogInformation("Configuring for Production environment");
             }
 
-            app.UseMiddelwareHendler();
+            app.UseMiddlewareHandler();
 
             app.UseRouting();
 
@@ -105,8 +106,7 @@ namespace Car.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/chat");
-                endpoints.MapHub<NotificationHub>("/notification");
+                endpoints.MapHub<SignalRHub>("/signalr");
             });
 
             app.UseSwagger();

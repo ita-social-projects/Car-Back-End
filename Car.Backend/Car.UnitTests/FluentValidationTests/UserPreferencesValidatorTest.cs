@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Car.Data.FluentValidation;
+﻿using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
@@ -13,7 +8,7 @@ namespace Car.UnitTests.FluentValidationTests
     [TestFixture]
     public class UserPreferencesValidatorTest
     {
-        private UserPreferencesValidator validator;
+        private readonly UserPreferencesValidator validator;
 
         public UserPreferencesValidatorTest()
         {
@@ -41,7 +36,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Should_have_error_when_UserId_is_not_valid(int value)
         {
-            validator.ShouldHaveValidationErrorFor(userPreferences => userPreferences.UserId, value);
+            validator.ShouldHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
         }
 
         [Xunit.Theory]
@@ -49,7 +44,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Should_not_have_error_when_UserId_is_specified(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.UserId, value);
+            validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
         }
 
         [Xunit.Theory]

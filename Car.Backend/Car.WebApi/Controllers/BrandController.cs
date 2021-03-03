@@ -1,4 +1,5 @@
-﻿using Car.Domain.Services.Interfaces;
+﻿using System.Threading.Tasks;
+using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
@@ -9,19 +10,15 @@ namespace Car.WebApi.Controllers
     {
         private readonly IBrandService brandService;
 
-        public BrandController(IBrandService brandService)
-        {
+        public BrandController(IBrandService brandService) =>
             this.brandService = brandService;
-        }
 
         /// <summary>
         /// Gets the brands.
         /// </summary>
         /// <returns>The brands</returns>
         [HttpGet]
-        public IActionResult GetBrands()
-        {
-            return Ok(brandService.GetAllBrands());
-        }
+        public async Task<IActionResult> GetBrands() =>
+             Ok(await brandService.GetAllAsync());
     }
 }

@@ -1,61 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Car.Data.Entities;
-using Car.Domain.Dto;
+using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Hubs;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Car.WebApi.Controllers
 {
-    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly IHubContext<NotificationHub> notificationHub;
-
+        private readonly IHubContext<SignalRHub> notificationHub;
         private readonly INotificationService notificationService;
 
-        public NotificationController(INotificationService notificationService, [NotNull] IHubContext<NotificationHub> notificationHub)
+        public NotificationController(
+            INotificationService notificationService,
+            [NotNull] IHubContext<SignalRHub> notificationHub)
         {
             this.notificationService = notificationService;
             this.notificationHub = notificationHub;
         }
 
         /// <summary>
-        /// gets a notification by given id
+        /// gets a notification by given id Asynchronously
         /// </summary>
         /// <param name="id">notification id</param>
         /// <returns>notification</returns>
         [HttpGet("{id}")]
-        public IActionResult GetNotification(int id)
-        {
-            Notification notification = notificationService.GetNotification(id);
-            if (notification == null)
-            {
-                return BadRequest();
-            }
-
-            NotificationDto notificationDto = new NotificationDto
-            {
-                Id = notification.Id,
-                UserId = notification.UserId,
-                UserName = notification.User.Name + " " + notification.User.Surname,
-                Position = notification.User.Position,
-                Description = notification.Description,
-                IsRead = notification.IsRead,
-                CreateAt = GetTimeDifference(notification.CreateAt),
-                JourneyId = notification.JourneyId,
-                ReceiverId = notification.ReceiverId,
-                NotificationType = (NotificationType)notification.NotificationTypeId,
-            };
-            return Ok(notificationDto);
-        }
+        public async Task<IActionResult> GetNotificationAsync(int id) =>
+            Ok(await notificationService.GetNotificationAsync(id));
 
         /// <summary>
         /// gets all user notifications
@@ -63,36 +38,8 @@ namespace Car.WebApi.Controllers
         /// <param name="userId"> user Id</param>
         /// <returns>list of user notifications</returns>
         [HttpGet("notifications/{userId}")]
-        public IActionResult GetNotifications(int userId)
-        {
-            List<Notification> notifications = notificationService.GetNotifications(userId);
-            if (notifications == null)
-            {
-                return Ok(new List<NotificationDto>());
-            }
-
-            List<NotificationDto> notificationDtos = new List<NotificationDto>();
-            foreach (var item in notifications)
-            {
-                NotificationDto notificationDto = new NotificationDto
-                {
-                    Id = item.Id,
-                    UserId = item.UserId,
-                    UserName = item.User.Name + " " + item.User.Surname,
-                    Position = item.User.Position,
-                    Description = item.Description,
-                    IsRead = item.IsRead,
-                    CreateAt = GetTimeDifference(item.CreateAt),
-                    JourneyId = item.JourneyId,
-                    ReceiverId = item.ReceiverId,
-                    UserColor = GetUserColor(item.User.Name + " " + item.User.Surname),
-                    NotificationType = (NotificationType)item.NotificationTypeId,
-                };
-                notificationDtos.Add(notificationDto);
-            }
-
-            return Ok(notificationDtos);
-        }
+        public async Task<IActionResult> GetNotificationsAsync(int userId) =>
+            Ok(await notificationService.GetNotificationsAsync(userId));
 
         /// <summary>
         /// gets user unread notifications number
@@ -100,114 +47,97 @@ namespace Car.WebApi.Controllers
         /// <param name="userId">user Id</param>
         /// <returns>int number</returns>
         [HttpGet("unreadNumber/{userId}")]
-        public IActionResult GetUnreadNumber(int userId)
-        {
-            return Ok(notificationService.GetUnreadNotificationsNumber(userId));
-        }
+        public async Task<IActionResult> GetUnreadNotificationsNumberAsync(int userId) =>
+             Ok(await notificationService.GetUnreadNotificationsNumberAsync(userId));
 
         /// <summary>
-        /// updates user notification
+        /// updates user notification Asynchronously
         /// </summary>
-        /// <param name="notificationDto">notification itself to be updated</param>
+        /// <param name="createNotificationModel">notification itself to be updated</param>
         /// <returns>updated notification</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateNotification([FromBody] NotificationDto notificationDto)
+        public async Task<IActionResult> UpdateNotificationAsync([FromBody] CreateNotificationModel createNotificationModel)
         {
-            var notification = notificationService.GetNotification(notificationDto.Id);
-            notification.IsRead = notificationDto.IsRead;
-            var notificationUpdated = notificationService.UpdateNotification(notification);
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", "The message");
-            return Ok(notificationUpdated);
+            var notification = await notificationService.CreateNewNotificationAsync(createNotificationModel);
+            await notificationService.UpdateNotificationAsync(notification);
+            await notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
 
         /// <summary>
-        /// adds new user notification
+        /// adds new user notification Asynchronously
         /// </summary>
-        /// <param name="notificationDto">notification to be added</param>
+        /// <param name="createNotificationModel">notification itself to be updated</param>
+        /// // Args:
+        /// //    JSON String
+        /// //
+        /// // JSON STRUCTURE
+        /// //      VARIABLE           TYPE            DESC
+        /// // {
+        /// //      "senderId"         //number        Specifies the sender of the notification
+        /// //      , "receiverId":    //number        Specifies the receiver of the notification
+        /// //      , "type":          //number        Specifies the type of the notification
+        /// //                         //              based on the following enum:
+        /// //                         //
+        /// //                         //              1 PassengerApply
+        /// //                         //              2 ApplicationApproval
+        /// //                         //              3 JourneyCancellation
+        /// //                         //              4 JourneyDetailsUpdate
+        /// //                         //              5 JourneyInvitation
+        /// //                         //              6 AcceptedInvitation
+        /// //                         //              7 RejectedInvitation
+        /// //                         //              8 PassengerWithdrawal
+        /// //                         //              9 HRMarketingMessage
+        /// //                         //              0 HRMarketingSurvey
+        /// //                         //
+        /// //     , "jsonData":       //string        Specifies notification's specific JSON structure
+        /// //                         //
+        /// //                         //              BELOW LISTED STRUCTURE FOR NOTIFICATION TYPE 1 (PassengerApply)
+        /// //     "{                  //
+        /// //     \"title\":          //string        Specifies the title of the notification at the notification tab
+        /// //     \"comments\":       //string?       Specifies the participant's comment (if any) at the modal page
+        /// //     \"hasLuggage\":     //boolean?      Specifies if the participant has any luggage
+        /// //     }"
+        /// // }
         /// <returns>added notification</returns>
         [HttpPost]
-        public async Task<IActionResult> AddNotification([FromBody] NotificationDto notificationDto)
+        public async Task<IActionResult> AddNotificationAsync([FromBody] CreateNotificationModel createNotificationModel)
         {
-            if (notificationDto == null)
-            {
-                return BadRequest();
-            }
-
-            Notification notification = new Notification
-            {
-                UserId = notificationDto.UserId,
-                Description = notificationDto.Description,
-                CreateAt = DateTime.Now,
-                IsRead = notificationDto.IsRead,
-                JourneyId = notificationDto.JourneyId,
-                ReceiverId = notificationDto.ReceiverId,
-                NotificationTypeId = (int)notificationDto.NotificationType,
-            };
-
-            Notification notificationSaved = notificationService.AddNotification(notification);
-            NotificationDto notification_Dto = new NotificationDto
-            {
-                Id = notificationSaved.Id,
-                UserId = notificationSaved.UserId,
-                CreateAt = GetTimeDifference(notificationSaved.CreateAt),
-                Description = notificationSaved.Description,
-                IsRead = notificationSaved.IsRead,
-                JourneyId = notificationDto.JourneyId,
-                ReceiverId = notificationDto.ReceiverId,
-                NotificationType = notificationDto.NotificationType,
-            };
-
-            await this.notificationHub.Clients.All.SendAsync("sendToReact", "The message");
-            return Ok(notification_Dto);
+            var notification = await notificationService.CreateNewNotificationAsync(createNotificationModel);
+            await notificationService.AddNotificationAsync(notification);
+            await notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
 
         /// <summary>
-        /// deletes notification
+        /// deletes notification Asynchronously
         /// </summary>
         /// <param name="notificationId">notification Id</param>
         /// <returns>deleted notification</returns>
         [HttpDelete]
-        public IActionResult DeleteNotification([FromBody] int notificationId)
-        {
-            return Ok(notificationService.DeleteNotification(notificationId));
-        }
+        public async Task<IActionResult> DeleteNotificationAsync([FromBody] int notificationId) =>
+            Ok(await notificationService.DeleteNotificationAsync(notificationId));
 
-        private static string GetUserColor(string name)
+        /// <summary>
+        /// Marks notification as read Asynchronously
+        /// </summary>
+        /// <param name="notificationId">notification Id</param>
+        /// <returns>amended notification</returns>
+        [HttpPut("{notificationId}")]
+        public async Task<IActionResult> MarkNotificationAsReadAsync(int notificationId)
         {
-            var names = name.ToLower().Split(' ');
-            return "rgb(" + Math.Floor(255 - (((int)names[0][0] - 97) * 10.2)) + "," +
-                Math.Floor(((int)names[0][0] - 97) * 10.2) + "," +
-                Math.Floor(255 - (((int)names[names.Length - 1][0] - 97) * 10.2)) + ")";
-        }
-
-        private static string GetTimeDifference(DateTime creationTime)
-        {
-            TimeSpan differ = DateTime.Now - creationTime;
-            if (differ.TotalMinutes < 60)
-            {
-                if (differ.Minutes == 0)
-                {
-                    return "now";
-                }
-
-                return differ.Minutes + " m";
-            }
-            else if (differ.TotalHours < 24)
-            {
-                return differ.Hours + " h";
-            }
-            else if (differ.TotalDays < 30)
-            {
-                return differ.Days + " d";
-            }
-            else if (differ.TotalDays < 365)
-            {
-                return (int)(differ.TotalDays / 30) + " m";
-            }
-            else
-            {
-                return creationTime.ToShortDateString();
-            }
+            var notification = await notificationService.MarkNotificationAsReadAsync(notificationId);
+            await notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+            return Ok(notification);
         }
     }
 }

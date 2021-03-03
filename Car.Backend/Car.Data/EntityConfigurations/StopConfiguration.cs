@@ -8,12 +8,16 @@ namespace Car.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Stop> builder)
         {
+            builder.ToTable("Stop");
             builder.HasKey(stop => stop.Id);
 
             builder.HasOne(stop => stop.Address).WithMany(address => address.Stops)
                 .HasForeignKey(stop => stop.AddressId);
             builder.HasOne(stop => stop.Journey).WithMany(journey => journey.Stops)
                 .HasForeignKey(stop => stop.JourneyId);
+            builder.HasOne(stop => stop.User).WithMany(user => user.Stops)
+                .HasForeignKey(stop => stop.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

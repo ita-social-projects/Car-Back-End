@@ -1,72 +1,95 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
 
 namespace Car.UnitTests.Services
 {
-    public class PreferencesServiceTest
+    public class PreferencesServiceTest : TestBase
     {
         private readonly IPreferencesService preferencesService;
-        private readonly Mock<IRepository<UserPreferences>> repository;
-        private readonly Mock<IUnitOfWork<UserPreferences>> unitOfWork;
-        private readonly Fixture fixture;
+        private readonly Mock<IRepository<UserPreferences>> preferencesRepository;
 
         public PreferencesServiceTest()
         {
-            repository = new Mock<IRepository<UserPreferences>>();
-            unitOfWork = new Mock<IUnitOfWork<UserPreferences>>();
-
-            preferencesService = new PreferencesService(unitOfWork.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            preferencesRepository = new Mock<IRepository<UserPreferences>>();
+            preferencesService = new PreferencesService(preferencesRepository.Object);
         }
 
         [Fact]
-        public void TestGetPreferences_WhenPreferenceExists()
+        public async Task GetPreferencesAsync_WhenPreferencesExist_ReturnsPreferencesObject()
         {
-            var preferences = fixture.Create<UserPreferences>();
+            // Arrange
+            var preferences = Fixture.Create<List<UserPreferences>>();
+            var userPreferences = Fixture.Create<UserPreferences>();
+            preferences.Add(userPreferences);
 
-            repository.Setup(r => r.GetById(preferences.Id))
-                .Returns(preferences);
+            preferencesRepository.Setup(r => r.Query())
+                .Returns(preferences.AsQueryable().BuildMock().Object);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await preferencesService.GetPreferencesAsync(userPreferences.Id);
 
-            preferencesService.GetPreferences(preferences.UserId).Should().NotBeEquivalentTo(preferences);
+            // Assert
+            result.Should().BeEquivalentTo(userPreferences);
         }
 
         [Fact]
-        public void TestUpdatePreferences()
+        public async Task GetPreferencesAsync_WhenPreferencesNotExist_ReturnsNull()
         {
-            var preferences = fixture.Create<UserPreferences>();
-            repository.Setup(r => r.GetById(preferences.Id))
-               .Returns(preferences);
+            // Arrange
+            var preferences = Fixture.Create<List<UserPreferences>>();
+            var userPreferences = Fixture.Create<UserPreferences>();
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            preferencesRepository.Setup(r => r.Query())
+                .Returns(preferences.AsQueryable().BuildMock().Object);
 
-            preferencesService.UpdatePreferences(preferences).Should().BeEquivalentTo(preferences);
+            // Act
+            var result = await preferencesService.GetPreferencesAsync(userPreferences.Id);
+
+            // Assert
+            result.Should().BeNull();
         }
 
         [Fact]
-        public void TestUpdatePreferences_WhenNotExist()
+        public async Task UpdatePreferences_WhenPreferencesIsValid_ReturnsPreferencesObject()
         {
-            var preferences = fixture.Create<UserPreferences>();
-            repository.Setup(r => r.GetById(preferences.Id))
-               .Returns(preferences);
+            // Arrange
+            var preferences = Fixture.Create<UserPreferences>();
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            preferencesRepository.Setup(r => r.UpdateAsync(preferences))
+               .ReturnsAsync(preferences);
 
-            preferencesService.UpdatePreferences(preferences).Should().NotBeNull();
+            // Act
+            var result = await preferencesService.UpdatePreferencesAsync(preferences);
+
+            // Assert
+            result.Should().BeEquivalentTo(preferences);
+        }
+
+        [Fact]
+        public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var preferences = Fixture.Create<UserPreferences>();
+
+            preferencesRepository.Setup(r => r.UpdateAsync(preferences))
+                .ReturnsAsync((UserPreferences)null);
+
+            // Act
+            var result = await preferencesService.UpdatePreferencesAsync(preferences);
+
+            // Assert
+            result.Should().BeNull();
         }
     }
 }

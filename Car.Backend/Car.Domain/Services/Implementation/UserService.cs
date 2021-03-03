@@ -1,29 +1,50 @@
-﻿using System.Net;
-using Car.Data.Entities;
-using Car.Data.Interfaces;
-using Car.Domain.Dto;
+﻿using System.Threading.Tasks;
+using Car.Data.Infrastructure;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using User = Car.Data.Entities.User;
 
 namespace Car.Domain.Services.Implementation
 {
     public class UserService : IUserService
     {
-        private readonly IUnitOfWork<User> unitOfWork;
+        private readonly IRepository<User> userRepository;
+        private readonly IImageService imageService;
 
-        public UserService(IUnitOfWork<User> unitOfWork) => this.unitOfWork = unitOfWork;
-
-        public User GetUserById(int userId)
+        public UserService(IRepository<User> userRepository, IImageService imageService)
         {
-            var user = unitOfWork.GetRepository().GetById(userId);
-            if (user == null)
+            this.userRepository = userRepository;
+            this.imageService = imageService;
+        }
+
+        public async Task<User> GetUserByIdAsync(int userId)
+        {
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userId);
+            imageService.SetImageLink(user);
+
+            return user;
+        }
+
+        public async Task<User> UpdateUserAsync(UpdateUserModel updateUserModel)
+        {
+            if (updateUserModel == null)
             {
-                throw new Exceptions.DefaultApplicationException($"This user id - {userId} wasn't found")
-                {
-                    StatusCode = (int)HttpStatusCode.NotFound,
-                    Severity = Severity.Error,
-                };
+                return null;
             }
 
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => updateUserModel.Id == u.Id);
+
+            await imageService.UpdateImageAsync(user, updateUserModel.Image);
+            if (user != null)
+            {
+                user.Name = updateUserModel.Name;
+                user.Surname = updateUserModel.Surname;
+                user.Position = updateUserModel.Position;
+                user.Location = updateUserModel.Location;
+            }
+
+            await userRepository.SaveChangesAsync();
             return user;
         }
     }

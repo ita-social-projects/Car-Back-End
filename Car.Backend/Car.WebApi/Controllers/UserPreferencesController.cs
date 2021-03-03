@@ -1,4 +1,5 @@
-﻿using Car.Data.Entities;
+﻿using System.Threading.Tasks;
+using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +19,11 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// returns the preferences for user
         /// </summary>
-        /// <param name ="id"> userId</param>
+        /// <param name ="id">User identifier</param>
         /// <returns>user preferences</returns>
         [HttpGet("{id}")]
-        public IActionResult GetPreferences(int id) => Ok(preferencesService.GetPreferences(id));
+        public async Task<IActionResult> GetPreferences(int id) =>
+            Ok(await preferencesService.GetPreferencesAsync(id));
 
         /// <summary>
         /// updates preferences
@@ -29,7 +31,7 @@ namespace Car.WebApi.Controllers
         /// <param name="preferences">preferences to be updated</param>
         /// <returns>updated preference</returns>
         [HttpPut]
-        public IActionResult UpdatePreferences([FromBody] UserPreferences preferences) =>
-            Ok(preferencesService.UpdatePreferences(preferences));
+        public async Task<IActionResult> UpdatePreferences([FromBody] UserPreferences preferences) =>
+            Ok(await preferencesService.UpdatePreferencesAsync(preferences));
     }
 }

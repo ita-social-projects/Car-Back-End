@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Car.Data.Entities;
-using Car.Domain.Dto;
+using Car.Domain.Models.Journey;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface IJourneyService
     {
-        public List<Journey> GetPastJourneys(int userId);
+        Task<IEnumerable<JourneyModel>> GetPastJourneysAsync(int userId);
 
-        public List<Journey> GetUpcomingJourneys(int userId);
+        Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync(int userId);
 
-        public List<Journey> GetScheduledJourneys(int userId);
+        Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync(int userId);
 
-        public Journey GetCurrentJourney(int userId);
-
-        public Task AddParticipantAsync(ParticipantDto participantDto);
-
-        public Journey GetJourneyById(int journeyId);
+        Task<JourneyModel> GetJourneyByIdAsync(int journeyId);
     }
 }

@@ -8,8 +8,8 @@ namespace Car.Data.Entities
 
         public string Name { get; set; }
 
-        public User Receiver { get; set; }
+        public Journey Journey { get; set; }
 
-        public User User { get; set; }
+        public ICollection<Message> Messages { get; set; } = new List<Message>();
     }
 }

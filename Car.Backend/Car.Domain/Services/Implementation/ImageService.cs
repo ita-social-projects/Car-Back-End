@@ -1,131 +1,77 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
-using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Google.Apis.Drive.v3.Data;
 using Microsoft.AspNetCore.Http;
 
 namespace Car.Domain.Services.Implementation
 {
-    public class ImageService<TEntity> : IImageService<TEntity, File>
-        where TEntity : class, IEntityWithImage
+    public class ImageService : IImageService
     {
-        private readonly IDriveService<File> driveService;
-        private readonly IUnitOfWork<TEntity> unitOfWork;
-        private readonly IEntityTypeStrategy<TEntity> strategy;
+        private const string ImageContentType = "image/png";
+        private readonly IFileService<File> fileService;
 
-        public ImageService(
-            IDriveService<File> driveService,
-            IUnitOfWork<TEntity> unitOfWork,
-            IEntityTypeStrategy<TEntity> strategy)
+        public ImageService(IFileService<File> fileService) =>
+            this.fileService = fileService;
+
+        /// <summary>
+        /// Uploads a new image for an entity with image.
+        /// </summary>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="entityFile">Image to upload.</param>
+        /// <returns>Task.</returns>
+        public async Task<IEntityWithImage> UploadImageAsync(IEntityWithImage entity, IFormFile entityFile)
         {
-            this.driveService = driveService;
-            this.unitOfWork = unitOfWork;
-            this.strategy = strategy;
-            driveService.SetCredentials(strategy.GetCredentialFilePath());
+            if (entityFile != null && entity != null)
+            {
+                entity.ImageId = await fileService.UploadFileAsync(entityFile.OpenReadStream(), entityFile.FileName, ImageContentType);
+            }
+
+            return entity;
         }
 
-        public async Task<TEntity> DeleteImage(int entityId)
+        /// <summary>
+        /// Updates an image for an entity with image.
+        /// </summary>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="entityFile">Image to upload.</param>
+        /// <returns>Task.</returns>
+        public async Task<IEntityWithImage> UpdateImageAsync(IEntityWithImage entity, IFormFile entityFile)
         {
-            var entity = unitOfWork.GetRepository().GetById(entityId);
+            await DeleteImageAsync(entity);
+            await UploadImageAsync(entity, entityFile);
 
-            if (entity == null)
-            {
-                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
-                {
-                    StatusCode = (int)HttpStatusCode.NotFound,
-                    Severity = Severity.Error,
-                };
-            }
-
-            var result = await driveService.DeleteFile(entity.ImageId);
-
-            if (result != string.Empty)
-            {
-                throw new Exceptions.DefaultApplicationException($"The image wasn't deleted")
-                {
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
-                    Severity = Severity.Error,
-                };
-            }
-
-            entity.ImageId = null;
-
-            var newEntity = unitOfWork.GetRepository().Update(entity);
-            unitOfWork.SaveChanges();
-
-            return newEntity;
+            return entity;
         }
 
-        public async Task<string> GetImageBytesById(int entityId)
+        /// <summary>
+        /// Deletes an image from file service using the image id from the input entity.
+        /// </summary>
+        /// <param name="entity">Entity with an image to delete.</param>
+        /// <returns>Task.</returns>
+        public async Task<IEntityWithImage> DeleteImageAsync(IEntityWithImage entity)
         {
-            var entity = unitOfWork.GetRepository().GetById(entityId);
-
-            if (entity == null)
+            if (entity?.ImageId != null)
             {
-                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
-                {
-                    StatusCode = (int)HttpStatusCode.NotFound,
-                    Severity = Severity.Error,
-                };
+                await fileService.DeleteFileAsync(entity.ImageId);
+                entity.ImageId = null;
             }
 
-            if (entity.ImageId == null)
-            {
-                return null;
-            }
-
-            byte[] buffer = await driveService.GetFileBytesById(entity.ImageId);
-
-            return Convert.ToBase64String(buffer);
+            return entity;
         }
 
-        public async Task<TEntity> UploadImage(int entityId, IFormFile entityFile)
+        /// <summary>
+        /// Replaces an image id to an image link for the input entity.
+        /// </summary>
+        /// <param name="entity">Entity to replace.</param>
+        public IEntityWithImage SetImageLink(IEntityWithImage entity)
         {
-            if (entityFile == null)
+            if (entity?.ImageId != null)
             {
-                throw new Exceptions.DefaultApplicationException("Received file is null")
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Severity = Severity.Warning,
-                };
+                entity.ImageId = fileService.GetFileLink(entity.ImageId);
             }
 
-            var entity = unitOfWork.GetRepository().GetById(entityId);
-
-            if (entity == null)
-            {
-                throw new Exceptions.DefaultApplicationException($"This entity id - {entityId} wasn't found")
-                {
-                    StatusCode = (int)HttpStatusCode.NotFound,
-                    Severity = Severity.Error,
-                };
-            }
-
-            var newFile = await driveService.UploadFile(
-                 entityFile.OpenReadStream(),
-                 strategy.GetFolderId(),
-                 strategy.GetFileName(entity),
-                 "image/png");
-
-            if (newFile == null)
-            {
-                throw new Exceptions.DefaultApplicationException("This image wasn't uploaded")
-                {
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
-                    Severity = Severity.Error,
-                };
-            }
-
-            entity.ImageId = newFile.Id;
-
-            var newEntity = unitOfWork.GetRepository().Update(entity);
-
-            unitOfWork.SaveChanges();
-            return newEntity;
+            return entity;
         }
     }
 }

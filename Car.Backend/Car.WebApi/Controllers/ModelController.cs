@@ -1,4 +1,5 @@
-﻿using Car.Domain.Services.Interfaces;
+﻿using System.Threading.Tasks;
+using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
@@ -9,10 +10,7 @@ namespace Car.WebApi.Controllers
     {
         private readonly IModelService modelService;
 
-        public ModelController(IModelService modelService)
-        {
-            this.modelService = modelService;
-        }
+        public ModelController(IModelService modelService) => this.modelService = modelService;
 
         /// <summary>
         /// Gets all models.
@@ -20,9 +18,7 @@ namespace Car.WebApi.Controllers
         /// <param name="id">The brand identifier.</param>
         /// <returns>All the models</returns>
         [HttpGet("by-brand/{id}")]
-        public IActionResult GetAll(int id)
-        {
-            return Ok(modelService.GetModelsByBrandId(id));
-        }
+        public async Task<IActionResult> GetAll(int id) =>
+            Ok(await modelService.GetModelsByBrandIdAsync(id));
     }
 }

@@ -1,78 +1,100 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Data.Interfaces;
-using Car.Domain.Exceptions;
+using Car.Data.Infrastructure;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
+using Car.UnitTests.Base;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using MockQueryable.Moq;
 using Moq;
 using Xunit;
 
 namespace Car.UnitTests.Services
 {
-    public class UserServiceTest
+    public class UserServiceTest : TestBase
     {
+        private readonly Mock<IRepository<User>> userRepository;
         private readonly IUserService userService;
-        private readonly Mock<IRepository<User>> repository;
-        private readonly Mock<IUnitOfWork<User>> unitOfWork;
-        private readonly Fixture fixture;
 
         public UserServiceTest()
         {
-            repository = new Mock<IRepository<User>>();
-            unitOfWork = new Mock<IUnitOfWork<User>>();
-
-            userService = new UserService(unitOfWork.Object);
-
-            fixture = new Fixture();
-
-            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            userRepository = new Mock<IRepository<User>>();
+            userService = new UserService(userRepository.Object, Mock.Of<IImageService>());
         }
 
         [Fact]
-        public void TestGetUserById_WhenUserExists()
+        public async Task GetUserByIdAsync_WhenUserExists_ReturnsUserObject()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            var users = Fixture.CreateMany<User>();
+            var user = users.First();
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await userService.GetUserByIdAsync(user.Id);
 
-            userService.GetUserById(user.Id).Should().BeEquivalentTo(user);
+            // Assert
+            result.Should().BeEquivalentTo(user, options => options.Excluding(u => u.ImageId));
         }
 
         [Fact]
-        public void TestGetUserById_WhenUserNotExist()
+        public async Task GetUserByIdAsync_WhenUserNotExist_ReturnsNull()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            var users = Fixture.CreateMany<User>();
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, users.Max(u => u.Id) + 1)
+                .Create();
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await userService.GetUserByIdAsync(user.Id);
 
-            Action action = () => userService.GetUserById(4);
-            action.Should().Throw<DefaultApplicationException>();
+            // Assert
+            result.Should().BeNull();
         }
 
         [Fact]
-        public void TestGetUserWithAvatarById_WhenUserNotExist()
+        public async Task UpdateUserAsync_WhenUserIsValid_ReturnsUpdatedUser()
         {
-            var user = fixture.Create<User>();
+            // Arrange
+            var updateUserModel = Fixture.Build<UpdateUserModel>()
+                .With(u => u.Image, (IFormFile)null).Create();
+            var user = Fixture.Build<User>().With(u => u.Id, updateUserModel.Id)
+                .Create();
+            var users = Fixture.Create<List<User>>();
+            users.Add(user);
 
-            repository.Setup(r => r.GetById(user.Id))
-                .Returns(user);
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
-            unitOfWork.Setup(r => r.GetRepository())
-                .Returns(repository.Object);
+            // Act
+            var result = await userService.UpdateUserAsync(updateUserModel);
 
-            Action action = () => userService.GetUserById(4);
-            action.Should().Throw<DefaultApplicationException>();
+            // Assert
+            result.Should().BeEquivalentTo(updateUserModel, options => options.ExcludingMissingMembers());
+        }
+
+        [Fact]
+        public async Task UpdateUserAsync_WhenUserIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            UpdateUserModel updateUserModel = null;
+            var users = Fixture.Create<List<User>>();
+
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await userService.UpdateUserAsync(updateUserModel);
+
+            // Assert
+            result.Should().BeNull();
         }
     }
 }

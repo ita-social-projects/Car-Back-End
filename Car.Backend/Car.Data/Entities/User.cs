@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Car.Data.Entities
 {
@@ -21,24 +22,29 @@ namespace Car.Data.Entities
 
         public string ImageId { get; set; }
 
-        public IEnumerable<Car> Cars { get; set; } = new List<Car>();
+        public int BadgeCount { get; set; }
+
+        public int JourneyCount { get; set; }
+
+        [NotMapped]
+        public string Token { get; set; }
+
+        public ICollection<Car> Cars { get; set; } = new List<Car>();
 
         public UserPreferences UserPreferences { get; set; }
 
-        public IEnumerable<Notification> Notifications { get; set; } = new List<Notification>();
+        public ICollection<Notification> ReceivedNotifications { get; set; } = new List<Notification>();
 
-        public IEnumerable<Address> Addresses { get; set; } = new List<Address>();
+        public ICollection<Notification> SentNotifications { get; set; } = new List<Notification>();
 
-        public IEnumerable<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
+        public ICollection<Location> Locations { get; set; } = new List<Location>();
 
-        public IEnumerable<Journey> ParticipantJourneys { get; set; } = new List<Journey>();
+        public ICollection<Stop> Stops { get; set; } = new List<Stop>();
 
-        public IEnumerable<UserJourney> UserJourneys { get; set; } = new List<UserJourney>();
+        public ICollection<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
 
-        public virtual IEnumerable<Message> SentMessages { get; set; } = new List<Message>();
+        public ICollection<Journey> ParticipantJourneys { get; set; } = new List<Journey>();
 
-        public virtual IEnumerable<Message> ReceivedMessages { get; set; } = new List<Message>();
-
-        public ICollection<Chat> Chats { get; set; } = new List<Chat>();
+        public ICollection<Message> SentMessages { get; set; } = new List<Message>();
     }
 }
