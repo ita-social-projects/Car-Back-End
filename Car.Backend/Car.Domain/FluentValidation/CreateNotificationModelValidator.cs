@@ -7,7 +7,6 @@ namespace Car.Domain.FluentValidation
     {
         public CreateNotificationModelValidator()
         {
-
             RuleFor(notification => notification.ReceiverId).GreaterThan(Constants.IDLENGTH);
             RuleFor(notification => notification.SenderId).GreaterThan(Constants.IDLENGTH);
             RuleFor(notification => notification.Type).NotNull();
