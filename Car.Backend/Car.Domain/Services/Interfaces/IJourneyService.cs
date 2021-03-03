@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Car.Domain.Dto;
 using Car.Domain.Models.Journey;
 
 namespace Car.Domain.Services.Interfaces
@@ -13,5 +14,7 @@ namespace Car.Domain.Services.Interfaces
         Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync(int userId);
 
         Task<JourneyModel> GetJourneyByIdAsync(int journeyId);
+
+        Task<List<List<StopDto>>> GetStopsFromRecentJourneysAsync(int userId, int countToTake = 5);
     }
 }
