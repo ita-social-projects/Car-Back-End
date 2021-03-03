@@ -47,7 +47,6 @@ namespace Car.Domain.Services.Implementation
         {
             var addedNotification = await notificationRepository.AddAsync(notification);
             await notificationRepository.SaveChangesAsync();
-
             return addedNotification;
         }
 
