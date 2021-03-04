@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -67,6 +65,90 @@ namespace Car.UnitTests.Controllers
             {
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(notifications);
+            }
+        }
+
+        [Fact]
+        public async Task GetUnreadNotificationsNumberAsync_WhenNotificationsExist_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var notifications = Fixture.Create<List<Notification>>();
+            var user = Fixture.Create<User>();
+
+            notificationService.Setup(service => service.GetUnreadNotificationsNumberAsync(user.Id)).ReturnsAsync(notifications.Count);
+
+            // Act
+            var result = await notificationController.GetUnreadNotificationsNumberAsync(user.Id);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(notifications.Count);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var createNotificationModel = Fixture.Create<CreateNotificationModel>();
+            var expectedNotification = Mapper.Map<CreateNotificationModel, Notification>(createNotificationModel);
+
+            notificationService.Setup(service => service.CreateNewNotificationAsync(createNotificationModel))
+                .ReturnsAsync(expectedNotification);
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
+
+            // Act
+            var result = await notificationController.UpdateNotificationAsync(createNotificationModel);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(expectedNotification);
+            }
+        }
+
+        [Fact]
+        public async Task AddNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var createNotificationModel = Fixture.Create<CreateNotificationModel>();
+            var expectedNotification = Mapper.Map<CreateNotificationModel, Notification>(createNotificationModel);
+
+            notificationService.Setup(service => service.CreateNewNotificationAsync(createNotificationModel))
+                .ReturnsAsync(expectedNotification);
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
+
+            // Act
+            var result = await notificationController.AddNotificationAsync(createNotificationModel);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(expectedNotification);
+            }
+        }
+
+        [Fact]
+        public async Task DeleteNotificationAsync_WhenNotificationExists_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var notification = Fixture.Create<Notification>();
+
+            notificationService.Setup(service => service.DeleteNotificationAsync(notification.Id))
+                .ReturnsAsync(notification);
+
+            // Act
+            var result = await notificationController.DeleteNotificationAsync(notification.Id);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(notification);
             }
         }
     }

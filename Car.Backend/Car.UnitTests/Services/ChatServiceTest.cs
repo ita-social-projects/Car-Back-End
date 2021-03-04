@@ -150,6 +150,23 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
+        public async Task GetUserChatsAsync_WhenUserNotExist_ReturnsNull()
+        {
+            // Arrange
+            var users = new List<User>();
+            var user = Fixture.Create<User>();
+
+            userRepository.Setup(repo => repo.Query())
+                .Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await chatService.GetUserChatsAsync(user.Id);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
         public async Task AddMessageAsync_WhenMessageIsValid_ReturnsMessageObject()
         {
             // Arrange
