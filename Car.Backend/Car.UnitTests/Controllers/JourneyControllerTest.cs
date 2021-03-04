@@ -134,7 +134,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = Fixture.Create<User>();
-            var stops = Fixture.Create<List<List<StopDto>>>();
+            var stops = Fixture.Create<List<IEnumerable<StopDto>>>();
 
             journeyService.Setup(j => j.GetStopsFromRecentJourneysAsync(user.Id, 5))
                 .ReturnsAsync(stops);
@@ -155,7 +155,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = Fixture.Create<User>();
-            var stops = new List<List<StopDto>>();
+            var stops = new List<IEnumerable<StopDto>>();
 
             journeyService.Setup(j => j.GetStopsFromRecentJourneysAsync(user.Id, 5))
                 .ReturnsAsync(stops);

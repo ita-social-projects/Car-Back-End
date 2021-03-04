@@ -6,6 +6,7 @@ using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -55,6 +56,86 @@ namespace Car.UnitTests.Controllers
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             (result as OkObjectResult)?.Value.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task GetChat_WhenChatExists_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var chat = Fixture.Create<Chat>();
+
+            chatService.Setup(x => x.GetChatByIdAsync(chat.Id))
+                .ReturnsAsync(chat);
+
+            // Act
+            var result = await chatController.GetChat(chat.Id);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(chat);
+            }
+        }
+
+        [Fact]
+        public async Task GetChat_WhenChatNotExist_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var chat = Fixture.Create<Chat>();
+
+            chatService.Setup(x => x.GetChatByIdAsync(chat.Id))
+                .ReturnsAsync((Chat)null);
+
+            // Act
+            var result = await chatController.GetChat(chat.Id);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().BeNull();
+            }
+        }
+
+        [Fact]
+        public async Task AddChat_WhenChatIsValid_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var chat = Fixture.Create<Chat>();
+
+            chatService.Setup(x => x.AddChatAsync(chat))
+                .ReturnsAsync(chat);
+
+            // Act
+            var result = await chatController.AddChat(chat);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(chat);
+            }
+        }
+
+        [Fact]
+        public async Task AddMessage_WhenMessageIsValid_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var message = Fixture.Create<Message>();
+
+            chatService.Setup(x => x.AddMessageAsync(message))
+                .ReturnsAsync(message);
+
+            // Act
+            var result = await chatController.AddMessage(message);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(message);
+            }
         }
     }
 }
