@@ -94,7 +94,7 @@
             <param name="id">Journey identifier</param>
             <returns>Journey</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAdresses(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAddresses(System.Int32)">
             <summary>
             Gets recent addresses by identifier.
             </summary>
