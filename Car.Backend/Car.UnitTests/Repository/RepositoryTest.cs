@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Context;
@@ -10,7 +8,6 @@ using Car.Data.Infrastructure;
 using Car.UnitTests.Base;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using MockQueryable.Moq;
 using Xunit;
 
 namespace Car.UnitTests.Repository
