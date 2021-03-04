@@ -94,6 +94,40 @@
             <param name="id">Journey identifier</param>
             <returns>Journey</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAdresses(System.Int32)">
+            <summary>
+            Gets recent addresses by identifier.
+            </summary>
+            <param name="id">Journey identifier</param>
+            <returns>recent addresses</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
+            <summary>
+            Gets all the locations by user id
+            </summary>
+            <param name="id">The location identifier.</param>
+            <returns>All user's locations</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.AddLocation(Car.Data.Entities.Location)">
+            <summary>
+            Adds the location.
+            </summary>
+            <param name="location">The location.</param>
+            <returns>New location</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.GetLocationById(System.Int32)">
+            <summary>
+            Gets the location by identifier.
+            </summary>
+            <param name="id">The location identifier.</param>
+            <returns>The location entity</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationTypeController.GetAll">
+            <summary>
+            Gets all location types.
+            </summary>
+            <returns>All the models</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Data.Entities.User)">
             <summary>
             ensures the user and returns a User for client app,
@@ -148,7 +182,7 @@
             // JSON STRUCTURE
             //      VARIABLE           TYPE            DESC
             // {
-            //      "senderId"         //number        Specifies the sender of the notification
+            //      "senderId":        //number        Specifies the sender of the notification
             //      , "receiverId":    //number        Specifies the receiver of the notification
             //      , "type":          //number        Specifies the type of the notification
             //                         //              based on the following enum:
@@ -164,14 +198,14 @@
             //                         //              9 HRMarketingMessage
             //                         //              0 HRMarketingSurvey
             //                         //
-            //     , "jsonData":       //string        Specifies notification's specific JSON structure
+            //      , "jsonData":      //string        Specifies notification's specific JSON structure
             //                         //
             //                         //              BELOW LISTED STRUCTURE FOR NOTIFICATION TYPE 1 (PassengerApply)
-            //     "{                  //
-            //     \"title\":          //string        Specifies the title of the notification at the notification tab
-            //     \"comments\":       //string?       Specifies the participant's comment (if any) at the modal page
-            //     \"hasLuggage\":     //boolean?      Specifies if the participant has any luggage
-            //     }"
+            //      "{                 //
+            //        \"title\":       //string        Specifies the title of the notification at the notification tab
+            //        \"comments\":    //string?       Specifies the participant's comment (if any) at the modal page
+            //        \"hasLuggage\":  //boolean?      Specifies if the participant has any luggage
+            //      }"
             // }
             <returns>added notification</returns>
         </member>

@@ -2,7 +2,7 @@
 
 namespace Car.Data.Entities
 {
-    public class LocationType
+    public class LocationType : IEntity
     {
         public int Id { get; set; }
 

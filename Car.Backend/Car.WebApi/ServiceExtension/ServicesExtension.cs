@@ -21,17 +21,24 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IModelService, ModelService>();
             services.AddScoped<IPreferencesService, PreferencesService>();
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IJourneyService, JourneyService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IWebTokenGenerator, JsonWebTokenGenerator>();
+            services.AddScoped<ILocationService, LocationService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Data.Entities.Car>, Repository<Data.Entities.Car>>();
             services.AddScoped<IRepository<UserPreferences>, Repository<UserPreferences>>();
             services.AddScoped<IRepository<Brand>, Repository<Brand>>();
             services.AddScoped<IRepository<Model>, Repository<Model>>();
-            services.AddScoped<IChatService, ChatService>();
-            services.AddScoped<IJourneyService, JourneyService>();
+            services.AddScoped<IRepository<Chat>, Repository<Chat>>();
+            services.AddScoped<IRepository<Message>, Repository<Message>>();
             services.AddScoped<IRepository<Journey>, Repository<Journey>>();
-            services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IRepository<Notification>, Repository<Notification>>();
+            services.AddScoped<IRepository<Location>, Repository<Location>>();
+            services.AddScoped<IRepository<LocationType>, Repository<LocationType>>();
         }
 
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)
