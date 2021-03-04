@@ -98,5 +98,69 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().BeEmpty();
         }
+
+        [Fact]
+        public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject()
+        {
+            // Arrange
+            var location = Fixture.Create<Location>();
+
+            locationRepository.Setup(repo => repo.AddAsync(location))
+                .ReturnsAsync(location);
+
+            // Act
+            var result = await locationService.AddLocationAsync(location);
+
+            // Assert
+            result.Should().BeEquivalentTo(location);
+        }
+
+        [Fact]
+        public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var location = Fixture.Create<Location>();
+
+            locationRepository.Setup(repo => repo.AddAsync(location))
+                .ReturnsAsync((Location)null);
+
+            // Act
+            var result = await locationService.AddLocationAsync(location);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task UpdateLocationAsync_WhenLocationIsValid_ReturnsUpdatedLocation()
+        {
+            // Arrange
+            var location = Fixture.Create<Location>();
+
+            locationRepository.Setup(repo => repo.UpdateAsync(location))
+                .ReturnsAsync(location);
+
+            // Act
+            var result = await locationService.UpdateLocationAsync(location);
+
+            // Assert
+            result.Should().BeEquivalentTo(location);
+        }
+
+        [Fact]
+        public async Task UpdateLocationAsync_WhenLocationIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var location = Fixture.Create<Location>();
+
+            locationRepository.Setup(repo => repo.UpdateAsync(location))
+                .ReturnsAsync((Location)null);
+
+            // Act
+            var result = await locationService.UpdateLocationAsync(location);
+
+            // Assert
+            result.Should().BeNull();
+        }
     }
 }
