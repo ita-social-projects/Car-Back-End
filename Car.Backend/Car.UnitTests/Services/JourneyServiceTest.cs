@@ -327,5 +327,42 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().BeEmpty();
         }
+
+        [Theory]
+        [AutoData]
+        public async Task GetStopsFromRecentJourneysAsync_RecentJourneysExist_ReturnsStopCollection([Range(1, 10)] int journeyCount, [Range(1, 5)] int countToTake)
+        {
+            // Arrange
+            var organizer = Fixture.Create<User>();
+            var recentJourneys = Fixture.Build<Journey>()
+                .With(journey => journey.OrganizerId, organizer.Id + 1)
+                .CreateMany(journeyCount);
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(recentJourneys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetStopsFromRecentJourneysAsync(organizer.Id, countToTake);
+
+            // Assert
+            result.Should().HaveCountLessOrEqualTo(countToTake);
+        }
+
+        [Fact]
+        public async Task GetStopsFromRecentJourneysAsync_RecentJourneysNotExist_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var organizer = Fixture.Create<User>();
+            var recentJourneys = new List<Journey>();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(recentJourneys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetStopsFromRecentJourneysAsync(organizer.Id);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
     }
 }
