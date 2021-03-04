@@ -12,6 +12,7 @@ using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -52,7 +53,8 @@ namespace Car.UnitTests.Controllers
         public async Task UpdateUser_WhenUserExists_ReturnsOkObjectResult()
         {
             // Arrange
-            var updateUserModel = Fixture.Create<UpdateUserModel>();
+            var updateUserModel = Fixture.Build<UpdateUserModel>()
+                .With(u => u.Image, (IFormFile)null).Create();
             var expectedUser = Mapper.Map<UpdateUserModel, User>(updateUserModel);
 
             userService.Setup(service => service.UpdateUserAsync(updateUserModel)).ReturnsAsync(expectedUser);

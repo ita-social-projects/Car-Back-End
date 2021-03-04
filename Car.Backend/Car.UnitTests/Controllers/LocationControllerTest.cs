@@ -2,6 +2,7 @@
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Implementation;
+using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
@@ -14,12 +15,12 @@ namespace Car.UnitTests.Controllers
 {
     public class LocationControllerTest : TestBase
     {
-        private readonly Mock<LocationService> locationService;
+        private readonly Mock<ILocationService> locationService;
         private readonly LocationController locationController;
 
         public LocationControllerTest()
         {
-            locationService = new Mock<LocationService>();
+            locationService = new Mock<ILocationService>();
             locationController = new LocationController(locationService.Object);
         }
 

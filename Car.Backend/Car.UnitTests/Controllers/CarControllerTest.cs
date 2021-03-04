@@ -7,6 +7,7 @@ using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -49,7 +50,8 @@ namespace Car.UnitTests.Controllers
         public async Task AddCar_WhenCarIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var createCarModel = Fixture.Create<CreateCarModel>();
+            var createCarModel = Fixture.Build<CreateCarModel>()
+                .With(u => u.Image, (IFormFile)null).Create();
             var expectedCar = Mapper.Map<CreateCarModel, CarEntity>(createCarModel);
 
             carService.Setup(service => service.AddCarAsync(createCarModel)).ReturnsAsync(expectedCar);
@@ -88,7 +90,8 @@ namespace Car.UnitTests.Controllers
         public async Task UpdateCar_WhenCarIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var updateCarModel = Fixture.Create<UpdateCarModel>();
+            var updateCarModel = Fixture.Build<UpdateCarModel>()
+                .With(u => u.Image, (IFormFile)null).Create();
             var expectedCar = Mapper.Map<UpdateCarModel, CarEntity>(updateCarModel);
 
             carService.Setup(service => service.UpdateCarAsync(updateCarModel)).ReturnsAsync(expectedCar);
