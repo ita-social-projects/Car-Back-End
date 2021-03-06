@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Extensions
@@ -35,6 +37,25 @@ namespace Car.Domain.Extensions
 
             return journeys.Where(journey =>
                 journey.DepartureTime > now);
+        }
+
+        public static IQueryable<IEnumerable<StopDto>> SelectStartAndFinishStops(this IQueryable<Journey> journeys)
+        {
+            var result = journeys.Select(journey => journey.Stops.Select(stop => new StopDto
+            {
+                Id = stop.Id,
+                Type = stop.Type,
+                Address = new AddressDto
+                {
+                    Id = stop.Address.Id,
+                    City = stop.Address.City,
+                    Street = stop.Address.Street,
+                    Longitude = stop.Address.Longitude,
+                    Latitude = stop.Address.Latitude,
+                },
+            }));
+
+            return result;
         }
     }
 }

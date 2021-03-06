@@ -18,25 +18,28 @@ namespace Car.Domain.Services.Implementation
         public async Task<Location> GetLocationByIdAsync(int locationId) =>
             await locationRepository.Query().FirstOrDefaultAsync(i => i.Id == locationId);
 
-        public async Task<IEnumerable<Location>> GetAllByUserIdAsync(int userId) =>
-            locationRepository
+        public async Task<IEnumerable<Location>> GetAllByUserIdAsync(int userId)
+        {
+            return await locationRepository
                 .Query(locationAddress => locationAddress.Address, locationType => locationType.Type)
-                .Where(location => location.UserId == userId);
+                .Where(location => location.UserId == userId)
+                .ToListAsync();
+        }
 
         public async Task<Location> AddLocationAsync(Location location)
         {
-            var addedLocation = locationRepository.AddAsync(location);
-            locationRepository.SaveChangesAsync();
+            var addedLocation = await locationRepository.AddAsync(location);
+            await locationRepository.SaveChangesAsync();
 
-            return await addedLocation;
+            return addedLocation;
         }
 
         public async Task<Location> UpdateLocationAsync(Location location)
         {
-            var updatedLocation = locationRepository.UpdateAsync(location);
-            locationRepository.SaveChangesAsync();
+            var updatedLocation = await locationRepository.UpdateAsync(location);
+            await locationRepository.SaveChangesAsync();
 
-            return await updatedLocation;
+            return updatedLocation;
         }
     }
 }

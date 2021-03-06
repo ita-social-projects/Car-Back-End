@@ -46,8 +46,13 @@ namespace Car.Data.Infrastructure
         /// Async add entity into DBContext
         /// </summary>
         /// <param name="entity">entity</param>
+        /// <exception cref="ArgumentNullException">The entity to add cannot be <see langword="null"/>.</exception>
         /// <returns>added entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity) => (await dbEntities.AddAsync(entity)).Entity;
+        public async Task<TEntity> AddAsync(TEntity entity)
+        {
+            CheckEntityForNull(entity);
+            return (await dbEntities.AddAsync(entity)).Entity;
+        }
 
         /// <summary>
         /// Adds a range of entities.
@@ -85,5 +90,13 @@ namespace Car.Data.Infrastructure
         /// </summary>
         /// <returns>Task</returns>
         public Task<int> SaveChangesAsync() => context.SaveChangesAsync();
+
+        private static void CheckEntityForNull(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "The entity to add cannot be null.");
+            }
+        }
     }
 }
