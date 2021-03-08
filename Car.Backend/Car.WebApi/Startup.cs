@@ -54,7 +54,11 @@ namespace Car.WebApi
             services.AddLogging();
             services.AddApplicationInsightsTelemetry();
 
-            services.AddSignalR();
+            services.AddSignalR().AddHubOptions<SignalRHub>(options =>
+            {
+                options.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
+                options.KeepAliveInterval = TimeSpan.FromMinutes(15);
+            });
 
             services.AddSwaggerGen(c =>
             {
