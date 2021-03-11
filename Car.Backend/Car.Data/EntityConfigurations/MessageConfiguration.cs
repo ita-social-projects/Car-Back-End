@@ -11,7 +11,7 @@ namespace Car.Data.EntityConfigurations
             builder.ToTable("Message");
             builder.HasKey(message => message.Id);
 
-            builder.Property(message => message.Text).HasMaxLength(400).IsRequired();
+            builder.Property(message => message.Text).HasMaxLength(500).IsRequired();
 
             builder.HasOne(message => message.Sender)
                 .WithMany(user => user.SentMessages)

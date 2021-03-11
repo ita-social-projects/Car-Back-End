@@ -40,9 +40,9 @@ namespace Car.UnitTests.FluentValidationTests
         }
 
         [Fact]
-        public void Should_have_error_when_Comments_is_longer_than_401()
+        public void Should_have_error_when_Comments_is_longer_than_501()
         {
-            string longText = new string('*', 401);
+            string longText = new string('*', 501);
             validator.ShouldHaveValidationErrorFor(message => message.Text, longText);
         }
 
