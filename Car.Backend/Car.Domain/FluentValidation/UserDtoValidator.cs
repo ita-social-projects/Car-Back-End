@@ -8,14 +8,14 @@ namespace Car.Domain.FluentValidation
     {
         public UserDtoValidator()
         {
-            RuleFor(user => user.Id).GreaterThan(Constants.IDLENGTH);
-            RuleFor(user => user.Name).NotNull().NotEmpty().MaximumLength(Constants.STRINGMAXLENGTH);
-            RuleFor(user => user.Surname).NotNull().NotEmpty().MaximumLength(Constants.STRINGMAXLENGTH);
-            RuleFor(user => user.Position).NotNull().NotEmpty().MaximumLength(Constants.STRINGMAXLENGTH);
-            RuleFor(user => user.Location).NotNull().NotEmpty().MaximumLength(Constants.STRINGMAXLENGTH);
+            RuleFor(user => user.Id).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(user => user.Name).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
+            RuleFor(user => user.Surname).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
+            RuleFor(user => user.Position).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
+            RuleFor(user => user.Location).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
             RuleFor(user => user.HireDate).NotNull().LessThanOrEqualTo(DateTime.Now);
-            RuleFor(user => user.Email).NotNull().MinimumLength(Constants.EMAILMINLENGTH)
-                                                 .MaximumLength(Constants.EMAILMAXLENGTH)
+            RuleFor(user => user.Email).NotNull().MinimumLength(Constants.EMAIL_MIN_LENGTH)
+                                                 .MaximumLength(Constants.EMAIL_MAX_LENGTH)
                                                  .EmailAddress();
         }
     }

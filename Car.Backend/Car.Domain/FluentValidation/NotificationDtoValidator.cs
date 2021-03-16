@@ -7,12 +7,12 @@ namespace Car.Domain.FluentValidation
     {
         public NotificationDtoValidator()
         {
-            RuleFor(notification => notification.ReceiverId).GreaterThan(Constants.IDLENGTH);
-            RuleFor(notification => notification.SenderId).GreaterThan(Constants.IDLENGTH);
+            RuleFor(notification => notification.ReceiverId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(notification => notification.SenderId).GreaterThan(Constants.ID_LENGTH);
             RuleFor(notification => notification.Type).NotNull();
             RuleFor(notification => notification.JsonData).NotNull()
-                                                          .MinimumLength(Constants.JSONMINLENGTH)
-                                                          .MaximumLength(Constants.JSONMAXLENGTH);
+                                                          .MinimumLength(Constants.JSON_MIN_LENGTH)
+                                                          .MaximumLength(Constants.JSON_MAX_LENGTH);
         }
     }
 }

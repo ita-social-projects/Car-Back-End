@@ -18,7 +18,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Should_have_error_when_Id_is_not_valid(int value)
+        public void Id_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(car => car.Id, value);
         }
@@ -26,7 +26,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void Should_not_have_error_when_Id_is_specified(int value)
+        public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(car => car.Id, value);
         }
@@ -34,7 +34,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Should_have_error_when_UserId_is_not_valid(int value)
+        public void UserId_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(car => car.OwnerId, value);
         }
@@ -42,7 +42,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void Should_not_have_error_when_UserId_is_specified(int value)
+        public void UserId_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(car => car.OwnerId, value);
         }

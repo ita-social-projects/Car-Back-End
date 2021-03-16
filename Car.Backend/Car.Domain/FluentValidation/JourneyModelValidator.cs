@@ -9,11 +9,11 @@ namespace Car.Domain.FluentValidation
     {
         public JourneyModelValidator()
         {
-            RuleFor(journey => journey.Id).GreaterThan(Constants.IDLENGTH);
+            RuleFor(journey => journey.Id).GreaterThan(Constants.ID_LENGTH);
             RuleFor(journey => journey.RouteDistance).NotNull().NotEmpty();
             RuleFor(journey => journey.DepartureTime).GreaterThanOrEqualTo(DateTime.Now);
-            RuleFor(journey => journey.CountOfSeats).NotNull().NotEmpty().GreaterThanOrEqualTo(Constants.SEATSMAXLENGTH);
-            RuleFor(journey => journey.Comments).MaximumLength(Constants.COMMENTSMAXLENGTH);
+            RuleFor(journey => journey.CountOfSeats).NotNull().NotEmpty().GreaterThanOrEqualTo(Constants.SEATS_MAX_LENGTH);
+            RuleFor(journey => journey.Comments).MaximumLength(Constants.COMMENTS_MAX_LENGTH);
             RuleFor(journey => journey.IsFree).NotNull();
             RuleFor(journey => journey.Organizer).SetValidator(new UserDtoValidator());
             RuleFor(journey => journey.Car).SetValidator(new CarValidator());

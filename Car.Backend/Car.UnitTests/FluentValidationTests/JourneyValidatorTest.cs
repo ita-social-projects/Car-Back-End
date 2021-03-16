@@ -1,4 +1,5 @@
 ﻿using System;
+using Car.Data;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -19,7 +20,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Should_have_error_when_Id_is_not_valid(int value)
+        public void Id_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(journey => journey.Id, value);
         }
@@ -27,7 +28,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void Should_not_have_error_when_Id_is_specified(int value)
+        public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.Id, value);
         }
@@ -35,7 +36,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Should_have_error_when_RouteDistance_is_not_valid(int value)
+        public void RouteDistance_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(journey => journey.RouteDistance, value);
         }
@@ -43,21 +44,21 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void Should_not_have_error_when_RouteDistance_is_specified(int value)
+        public void RouteDistance_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.RouteDistance, value);
         }
 
         [Xunit.Theory]
         [InlineData("2020-01-01")]
-        public void Should_have_error_when_DepartureTime_is_not_valid(string value)
+        public void DepartureTime_IsNotValid_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(journey => journey.DepartureTime, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
         [InlineData("2090-06-27")]
-        public void Should_not_have_error_when_DepartureTime_is_specified(string value)
+        public void DepartureTime__IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.DepartureTime, DateTime.Parse(value));
         }
@@ -66,23 +67,23 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(0)]
         [InlineData(-1)]
         [InlineData(12)]
-        public void Should_have_error_when_CountOfSeats_is_not_valid(int value)
+        public void CountOfSeats__IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(journey => journey.CountOfSeats, value);
         }
 
         [Xunit.Theory]
         [InlineData(1)]
-        [InlineData(9)]
-        public void Should_not_have_error_when_CountOfSeats_is_specified(int value)
+        [InlineData(8)]
+        public void CountOfSeats_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.CountOfSeats, value);
         }
 
         [Fact]
-        public void Should_have_error_when_Comments_is_longer_than_101()
+        public void Comments__IsNotValid_GeneratesValidationError()
         {
-            string longCommnt = new string('*', 101);
+            string longCommnt = new string('*', Constants.COMMENTS_MAX_LENGTH + 1);
             validator.ShouldHaveValidationErrorFor(journey => journey.Comments, longCommnt);
         }
 
@@ -90,7 +91,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("")]
         [InlineData("comment")]
         [InlineData(null)]
-        public void Should_not_have_error_when_Comments_is_specified(string value)
+        public void Comments_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.Comments, value);
         }
@@ -98,7 +99,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Should_not_have_error_when_IsFree_is_specified(bool value)
+        public void IsFree__IsSpecified_NotGeneratesValidationError(bool value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.IsFree, value);
         }

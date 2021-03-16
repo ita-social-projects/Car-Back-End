@@ -6,11 +6,11 @@ namespace Car.Data.FluentValidation
     {
         public LocationValidator()
         {
-            RuleFor(location => location.Id).GreaterThan(Constants.IDLENGTH);
-            RuleFor(location => location.Name).NotNull().NotEmpty().MaximumLength(Constants.STRINGMAXLENGTH);
-            RuleFor(location => location.TypeId).GreaterThan(Constants.IDLENGTH);
-            RuleFor(location => location.AddressId).GreaterThan(Constants.IDLENGTH);
-            RuleFor(location => location.UserId).GreaterThan(Constants.IDLENGTH);
+            RuleFor(location => location.Id).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(location => location.Name).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
+            RuleFor(location => location.TypeId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(location => location.AddressId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(location => location.UserId).GreaterThan(Constants.ID_LENGTH);
             RuleFor(location => location.Type).SetValidator(new LocationTypeValidator());
             RuleFor(location => location.User).SetValidator(new UserValidator());
         }

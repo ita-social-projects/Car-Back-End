@@ -7,8 +7,8 @@ namespace Car.Domain.FluentValidation
     {
         public ParticipantDtoValidator()
         {
-            RuleFor(participant => participant.JourneyId).GreaterThan(Constants.IDLENGTH);
-            RuleFor(participant => participant.UserId).GreaterThan(Constants.IDLENGTH);
+            RuleFor(participant => participant.JourneyId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(participant => participant.UserId).GreaterThan(Constants.ID_LENGTH);
             RuleFor(participant => participant.HasLuggage).NotNull();
         }
     }

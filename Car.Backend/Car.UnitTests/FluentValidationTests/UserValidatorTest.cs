@@ -19,7 +19,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Should_have_error_when_Id_is_not_valid(int value)
+        public void Id_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Id, value);
         }
@@ -27,7 +27,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void Should_not_have_error_when_Id_is_specified(int value)
+        public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(user => user.Id, value);
         }
@@ -35,14 +35,14 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void Should_have_error_when_Name_is_null(string value)
+        public void Name_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Name, value);
         }
 
         [Xunit.Theory]
         [InlineData("abc")]
-        public void Should_not_have_error_when_Name_is_specified(string value)
+        public void Name_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(user => user.Name, value);
         }
@@ -50,14 +50,14 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void Should_have_error_when_Surname_is_null(string value)
+        public void Surname_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Surname, value);
         }
 
         [Xunit.Theory]
         [InlineData("abc")]
-        public void Should_not_have_error_when_Surname_is_specified(string value)
+        public void Surname_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(user => user.Surname, value);
         }
@@ -65,14 +65,14 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void Should_have_error_when_Position_is_null(string value)
+        public void Position_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Surname, value);
         }
 
         [Xunit.Theory]
         [InlineData("abc")]
-        public void Should_not_have_error_when_Position_is_specified(string value)
+        public void Position_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(user => user.Surname, value);
         }
@@ -80,28 +80,28 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void Should_have_error_when_Location_is_null(string value)
+        public void Location_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Surname, value);
         }
 
         [Xunit.Theory]
         [InlineData("abc")]
-        public void Should_not_have_error_when_Location_is_specified(string value)
+        public void Location_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(user => user.Surname, value);
         }
 
         [Xunit.Theory]
         [InlineData("2090-06-27")]
-        public void Should_have_error_when_HireDate_is_not_valid(string value)
+        public void HireDate_IsNotValid_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.HireDate, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
         [InlineData("2013-06-27")]
-        public void Should_not_have_error_when_HireDate_is_specified(string value)
+        public void HireDate_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(user => user.HireDate, DateTime.Parse(value));
         }
@@ -109,14 +109,14 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void Should_have_error_when_Email_is_null(string value)
+        public void Email_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Email, value);
         }
 
         [Xunit.Theory]
         [InlineData("abc@gmail.com")]
-        public void Should_not_have_error_when_Email_is_specified(string value)
+        public void Email_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(user => user.Email, value);
         }

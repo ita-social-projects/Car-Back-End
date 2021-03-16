@@ -18,7 +18,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Should_have_error_when_Id_is_not_valid(int value)
+        public void Id_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(scheduleValidator => scheduleValidator.Id, value);
         }
@@ -26,7 +26,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void Should_not_have_error_when_Id_is_specified(int value)
+        public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(scheduleValidator => scheduleValidator.Id, value);
         }
@@ -34,14 +34,14 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void Should_have_error_when_Name_is_not_valid(string value)
+        public void Name_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(scheduleValidator => scheduleValidator.Name, value);
         }
 
         [Xunit.Theory]
         [InlineData("Name")]
-        public void Should_not_have_error_when_Name_is_specified(string value)
+        public void Name_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(scheduleValidator => scheduleValidator.Name, value);
         }

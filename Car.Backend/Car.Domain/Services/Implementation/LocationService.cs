@@ -16,7 +16,7 @@ namespace Car.Domain.Services.Implementation
             this.locationRepository = locationRepository;
 
         public async Task<Location> GetLocationByIdAsync(int locationId) =>
-            await locationRepository.Query().FirstOrDefaultAsync(i => i.Id == locationId);
+            await locationRepository.Query().Include(locationAddress => locationAddress.Address).Include(locationType => locationType.Type).FirstOrDefaultAsync(i => i.Id == locationId);
 
         public async Task<IEnumerable<Location>> GetAllByUserIdAsync(int userId) =>
             locationRepository

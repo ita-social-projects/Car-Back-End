@@ -90,33 +90,7 @@ namespace Car.WebApi
                };
            });
 
-            services.AddMvc().AddFluentValidation();
-
-            services.AddTransient<IValidator<Address>, AddressValidator>();
-            services.AddTransient<IValidator<Brand>, BrandValidator>();
-            services.AddTransient<IValidator<Data.Entities.Car>, CarValidator>();
-            services.AddTransient<IValidator<Chat>, ChatValidator>();
-            services.AddTransient<IValidator<Journey>, JourneyValidator>();
-            services.AddTransient<IValidator<LocationType>, LocationTypeValidator>();
-            services.AddTransient<IValidator<Location>, LocationValidator>();
-            services.AddTransient<IValidator<Message>, MessageValidator>();
-            services.AddTransient<IValidator<Model>, ModelValidator>();
-            services.AddTransient<IValidator<Notification>, NotificationValidator>();
-            services.AddTransient<IValidator<Schedule>, ScheduleValidator>();
-            services.AddTransient<IValidator<Stop>, StopValidator>();
-            services.AddTransient<IValidator<UserPreferences>, UserPreferencesValidator>();
-            services.AddTransient<IValidator<User>, UserValidator>();
-
-            services.AddTransient<IValidator<AddressDto>, AddressDtoValidator>();
-            services.AddTransient<IValidator<CarDto>, CarDtoValidator>();
-            services.AddTransient<IValidator<NotificationDto>, NotificationDtoValidator>();
-            services.AddTransient<IValidator<ParticipantDto>, ParticipantDtoValidator>();
-
-            services.AddTransient<IValidator<CreateCarModel>, CreateCarModelValidator>();
-            services.AddTransient<IValidator<UpdateCarModel>, UpdateCarModelValidator>();
-            services.AddTransient<IValidator<JourneyModel>, JourneyModelValidator>();
-            services.AddTransient<IValidator<CreateNotificationModel>, CreateNotificationModelValidator>();
-            services.AddTransient<IValidator<UpdateUserModel>, UpdateUserModelValidator>();
+            services.AddMvc().AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

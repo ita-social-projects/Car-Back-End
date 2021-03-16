@@ -2,25 +2,28 @@
 {
     public static class Constants
     {
-        public const int IDLENGTH = 0;
-        public const int STRINGMAXLENGTH = 64;
+#pragma warning disable SA1310 // Field names should not contain underscore
+        public const int ID_LENGTH = 0;
+        public const int STRING_MAX_LENGTH = 64;
 
-        public const int EMAILMINLENGTH = 2;
-        public const int EMAILMAXLENGTH = 100;
+        public const int EMAIL_MIN_LENGTH = 2;
+        public const int EMAIL_MAX_LENGTH = 100;
 
-        public const int JSONMAXLENGTH = 2;
-        public const int JSONMINLENGTH = 100;
+        public const int JSON_MIN_LENGTH = 2;
+        public const int JSON_MAX_LENGTH = 100;
 
-        public const int POSITIONMAXLENGTH = 2;
-        public const int LOCATIONMAXLENGTH = 100;
+        public const int POSITION_MAX_LENGTH = 2;
+        public const int LOCATION_MAX_LENGTH = 100;
 
-        public const int PLATENUMBERMINLENGTH = 4;
-        public const int PLATENUMBERMAXLENGTH = 10;
+        public const int PLATENUMBER_MIN_LENGTH = 4;
+        public const int PLATENUMBER_MAX_LENGTH = 10;
 
-        public const int SEATSMAXLENGTH = 10;
+        public const int SEATS_MAX_LENGTH = 8;
 
-        public const int COMMENTSMAXLENGTH = 100;
+        public const int COMMENTS_MAX_LENGTH = 100;
 
-        public const int TEXTMAXLENGTH = 100;
+        public const int TEXT_MAX_LENGTH = 500;
+#pragma warning restore SA1310 // Field names should not contain underscore
+
     }
 }
