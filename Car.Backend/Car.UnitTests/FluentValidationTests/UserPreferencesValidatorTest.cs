@@ -33,22 +33,6 @@ namespace Car.UnitTests.FluentValidationTests
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void UserId_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void UserId_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
-        }
-
-        [Xunit.Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void DoAllowSmoking_IsSpecified_NotGeneratesValidationError(bool value)

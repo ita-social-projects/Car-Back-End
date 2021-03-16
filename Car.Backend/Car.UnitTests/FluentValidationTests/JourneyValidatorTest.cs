@@ -103,5 +103,21 @@ namespace Car.UnitTests.FluentValidationTests
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.IsFree, value);
         }
+
+        [Xunit.Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void OrganizerId_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(journey => journey.OrganizerId, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        public void OrganizerId_IsSpecified_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(journey => journey.OrganizerId, value);
+        }
     }
 }

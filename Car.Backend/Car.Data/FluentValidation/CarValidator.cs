@@ -12,8 +12,8 @@ namespace Car.Data.FluentValidation
                                                      .MinimumLength(Constants.PLATENUMBER_MIN_LENGTH)
                                                      .MaximumLength(Constants.PLATENUMBER_MAX_LENGTH);
             RuleFor(car => car.OwnerId).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(car => car.Owner).SetValidator(new UserValidator());
-            RuleFor(car => car.Model).SetValidator(new ModelValidator());
+            RuleFor(car => car.Owner).NotNull().SetValidator(new UserValidator());
+            RuleFor(car => car.Model).NotNull().SetValidator(new ModelValidator());
         }
     }
 }

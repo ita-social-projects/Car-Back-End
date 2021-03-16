@@ -1,4 +1,5 @@
 ﻿using System;
+using Car.Data;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -40,6 +41,13 @@ namespace Car.UnitTests.FluentValidationTests
             validator.ShouldHaveValidationErrorFor(user => user.Name, value);
         }
 
+        [Fact]
+        public void Name_IsNotValid_GeneratesValidationError()
+        {
+            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
+            validator.ShouldHaveValidationErrorFor(user => user.Name, longText);
+        }
+
         [Xunit.Theory]
         [InlineData("abc")]
         public void Name_IsSpecified_NotGeneratesValidationError(string value)
@@ -53,6 +61,13 @@ namespace Car.UnitTests.FluentValidationTests
         public void Surname_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Surname, value);
+        }
+
+        [Fact]
+        public void Surname_IsNotValid_GeneratesValidationError()
+        {
+            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
+            validator.ShouldHaveValidationErrorFor(user => user.Surname, longText);
         }
 
         [Xunit.Theory]
@@ -70,6 +85,13 @@ namespace Car.UnitTests.FluentValidationTests
             validator.ShouldHaveValidationErrorFor(user => user.Surname, value);
         }
 
+        [Fact]
+        public void Position_IsNotValid_GeneratesValidationError()
+        {
+            string longText = new string('*', Constants.POSITION_MAX_LENGTH + 1);
+            validator.ShouldHaveValidationErrorFor(user => user.Position, longText);
+        }
+
         [Xunit.Theory]
         [InlineData("abc")]
         public void Position_IsSpecified_NotGeneratesValidationError(string value)
@@ -83,6 +105,13 @@ namespace Car.UnitTests.FluentValidationTests
         public void Location_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Surname, value);
+        }
+
+        [Fact]
+        public void Location_IsNotValid_GeneratesValidationError()
+        {
+            string longText = new string('*', Constants.LOCATION_MAX_LENGTH + 1);
+            validator.ShouldHaveValidationErrorFor(user => user.Surname, longText);
         }
 
         [Xunit.Theory]
@@ -112,6 +141,13 @@ namespace Car.UnitTests.FluentValidationTests
         public void Email_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(user => user.Email, value);
+        }
+
+        [Fact]
+        public void Email_IsNotValid_GeneratesValidationError()
+        {
+            string longText = new string('*', Constants.EMAIL_MAX_LENGTH + 1);
+            validator.ShouldHaveValidationErrorFor(user => user.Email, longText);
         }
 
         [Xunit.Theory]

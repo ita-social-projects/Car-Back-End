@@ -35,13 +35,14 @@ namespace Car.UnitTests.FluentValidationTests
 
         [Xunit.Theory]
         [InlineData("")]
+        [InlineData(null)]
         public void Text_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(message => message.Text, value);
         }
 
         [Fact]
-        public void Comments_IsNotValid_GeneratesValidationError()
+        public void Text_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.TEXT_MAX_LENGTH + 1);
             validator.ShouldHaveValidationErrorFor(message => message.Text, longText);
@@ -87,7 +88,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void ReceiverId_IsNotValid_GeneratesValidationError(int value)
+        public void ChatId_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(message => message.ChatId, value);
         }
@@ -95,7 +96,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void ReceiverId_IsSpecified_NotGeneratesValidationError(int value)
+        public void ChatId_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(message => message.ChatId, value);
         }
