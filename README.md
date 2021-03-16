@@ -38,7 +38,7 @@ Platform for sharing rides between company employees.
 
 ### Required to install
 * Microsoft SQL Server 2019
-* Asp.Net Core (3.1)
+* Asp.Net 5.0
 
 ### Clone
 

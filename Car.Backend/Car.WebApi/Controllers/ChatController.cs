@@ -11,10 +11,8 @@ namespace Car.WebApi.Controllers
     {
         private readonly IChatService chatService;
 
-        public ChatController(IChatService chatService)
-        {
+        public ChatController(IChatService chatService) =>
             this.chatService = chatService;
-        }
 
         /// <summary>
         /// Get the user chats by Sender Id

@@ -64,7 +64,6 @@ namespace Car.WebApi
             services.InitializeConfigurations(Configuration);
             services.AddLogging();
             services.AddApplicationInsightsTelemetry();
-
             services.AddSignalR();
 
             services.AddSwaggerGen(c =>

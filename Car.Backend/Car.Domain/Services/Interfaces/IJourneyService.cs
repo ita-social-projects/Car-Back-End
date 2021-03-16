@@ -15,6 +15,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task<JourneyModel> GetJourneyByIdAsync(int journeyId);
 
-        Task<List<List<StopDto>>> GetStopsFromRecentJourneysAsync(int userId, int countToTake = 5);
+        Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int userId, int countToTake = 5);
     }
 }
