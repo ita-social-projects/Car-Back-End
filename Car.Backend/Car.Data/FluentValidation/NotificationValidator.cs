@@ -7,11 +7,17 @@ namespace Car.Data.FluentValidation
     {
         public NotificationValidator()
         {
-            RuleFor(notificationValidator => notificationValidator.Id).GreaterThan(0);
-            RuleFor(notificationValidator => notificationValidator.JsonData).NotNull().Length(1, 1000);
-            RuleFor(notificationValidator => notificationValidator.IsRead).NotNull();
-            RuleFor(notificationValidator => notificationValidator.CreatedAt).NotNull().GreaterThanOrEqualTo(DateTime.Now);
-            RuleFor(notificationValidator => notificationValidator.Sender).NotNull().SetValidator(new UserValidator());
+            RuleFor(notification => notification.Id).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(notification => notification.Sender).NotNull().SetValidator(new UserValidator());
+            RuleFor(notification => notification.Receiver).NotNull().SetValidator(new UserValidator());
+            RuleFor(notification => notification.ReceiverId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(notification => notification.SenderId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(notification => notification.Type).NotNull();
+            RuleFor(notification => notification.JsonData).NotNull()
+                                                          .MinimumLength(Constants.JSON_MIN_LENGTH)
+                                                          .MaximumLength(Constants.JSON_MAX_LENGTH);
+            RuleFor(notification => notification.IsRead).NotNull();
+            RuleFor(notification => notification.CreatedAt).NotNull().GreaterThanOrEqualTo(DateTime.Now);
         }
     }
 }

@@ -1,19 +1,17 @@
 ﻿using Car.Data;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests
 {
-    [TestFixture]
-    public class ScheduleValidatorTest
+    public class LocationTypeValidatorTest
     {
-        private readonly ScheduleValidator validator;
+        private readonly LocationTypeValidator validator;
 
-        public ScheduleValidatorTest()
+        public LocationTypeValidatorTest()
         {
-            validator = new ScheduleValidator();
+            validator = new LocationTypeValidator();
         }
 
         [Xunit.Theory]
@@ -21,7 +19,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Id_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(schedule => schedule.Id, value);
+            validator.ShouldHaveValidationErrorFor(locationType => locationType.Id, value);
         }
 
         [Xunit.Theory]
@@ -29,29 +27,29 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(schedule => schedule.Id, value);
+            validator.ShouldNotHaveValidationErrorFor(locationType => locationType.Id, value);
         }
 
         [Xunit.Theory]
-        [InlineData("")]
         [InlineData(null)]
+        [InlineData("")]
         public void Name_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(schedule => schedule.Name, value);
+            validator.ShouldHaveValidationErrorFor(locationType => locationType.Name, value);
         }
 
         [Fact]
         public void Name_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(schedule => schedule.Name, longText);
+            validator.ShouldHaveValidationErrorFor(locationType => locationType.Name, longText);
         }
 
         [Xunit.Theory]
-        [InlineData("Name")]
+        [InlineData("abc")]
         public void Name_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(schedule => schedule.Name, value);
+            validator.ShouldNotHaveValidationErrorFor(locationType => locationType.Name, value);
         }
     }
 }

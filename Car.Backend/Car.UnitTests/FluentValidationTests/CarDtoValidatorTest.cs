@@ -1,6 +1,6 @@
 ﻿using Car.Data;
 using Car.Data.Enums;
-using Car.Data.FluentValidation;
+using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
@@ -8,13 +8,13 @@ using Xunit;
 namespace Car.UnitTests.FluentValidationTests
 {
     [TestFixture]
-    public class CarValidatorTest
+    public class CarDtoValidatorTest
     {
-        private CarValidator validator;
+        private CarDtoValidator validator;
 
-        public CarValidatorTest()
+        public CarDtoValidatorTest()
         {
-            validator = new CarValidator();
+            validator = new CarDtoValidator();
         }
 
         [Xunit.Theory]
@@ -22,7 +22,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Id_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(car => car.Id, value);
+            validator.ShouldHaveValidationErrorFor(carDto => carDto.Id, value);
         }
 
         [Xunit.Theory]
@@ -30,7 +30,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(car => car.Id, value);
+            validator.ShouldNotHaveValidationErrorFor(carDto => carDto.Id, value);
         }
 
         [Xunit.Theory]
@@ -38,7 +38,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void OwnerId_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(car => car.OwnerId, value);
+            validator.ShouldHaveValidationErrorFor(carDto => carDto.OwnerId, value);
         }
 
         [Xunit.Theory]
@@ -46,14 +46,14 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void OwnerId_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(car => car.OwnerId, value);
+            validator.ShouldNotHaveValidationErrorFor(carDto => carDto.OwnerId, value);
         }
 
         [Xunit.Theory]
         [InlineData(Color.Black)]
         public void Color_IsSpecified_NotGeneratesValidationError(Color value)
         {
-            validator.ShouldNotHaveValidationErrorFor(car => car.Color, value);
+            validator.ShouldNotHaveValidationErrorFor(carDto => carDto.Color, value);
         }
 
         [Xunit.Theory]
@@ -62,21 +62,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(null)]
         public void PlateNumber_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(car => car.PlateNumber, value);
+            validator.ShouldHaveValidationErrorFor(carDto => carDto.PlateNumber, value);
         }
 
         [Fact]
         public void PlateNumber__IsNotValid_GeneratesValidationError()
         {
             string longCommnt = new string('*', Constants.PLATENUMBER_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(car => car.PlateNumber, longCommnt);
+            validator.ShouldHaveValidationErrorFor(carDto => carDto.PlateNumber, longCommnt);
         }
 
         [Xunit.Theory]
         [InlineData("12345")]
         public void PlateNumber_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(car => car.PlateNumber, value);
+            validator.ShouldNotHaveValidationErrorFor(carDto => carDto.PlateNumber, value);
         }
     }
 }

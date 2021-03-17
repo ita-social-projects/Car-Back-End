@@ -1,5 +1,5 @@
 ﻿using Car.Data;
-using Car.Data.FluentValidation;
+using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
@@ -7,13 +7,13 @@ using Xunit;
 namespace Car.UnitTests.FluentValidationTests
 {
     [TestFixture]
-    public class AddressValidatorTest
+    public class AddressDtoValidatorTest
     {
-        private readonly AddressValidator validator;
+        private readonly AddressDtoValidator validator;
 
-        public AddressValidatorTest()
+        public AddressDtoValidatorTest()
         {
-            validator = new AddressValidator();
+            validator = new AddressDtoValidator();
         }
 
         [Xunit.Theory]
@@ -21,7 +21,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Id_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(address => address.Id, value);
+            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.Id, value);
         }
 
         [Xunit.Theory]
@@ -29,7 +29,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(address => address.Id, value);
+            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Id, value);
         }
 
         [Xunit.Theory]
@@ -37,21 +37,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(null)]
         public void Street_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(address => address.Street, value);
+            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.Street, value);
         }
 
         [Fact]
         public void Street_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(address => address.Street, longText);
+            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.Street, longText);
         }
 
         [Xunit.Theory]
         [InlineData("StreetName")]
         public void Street_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(address => address.Street, value);
+            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Street, value);
         }
 
         [Xunit.Theory]
@@ -59,21 +59,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(null)]
         public void City_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(address => address.City, value);
+            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.City, value);
         }
 
         [Fact]
         public void City_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(address => address.City, longText);
+            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.City, longText);
         }
 
         [Xunit.Theory]
         [InlineData("CityName")]
         public void City_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(address => address.City, value);
+            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.City, value);
         }
 
         [Xunit.Theory]
@@ -81,7 +81,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(1)]
         public void Latitude_IsSpecified_NotGeneratesValidationError(double value)
         {
-            validator.ShouldNotHaveValidationErrorFor(address => address.Latitude, value);
+            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Latitude, value);
         }
 
         [Xunit.Theory]
@@ -89,7 +89,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(1)]
         public void Longitude_IsSpecified_NotGeneratesValidationError(double value)
         {
-            validator.ShouldNotHaveValidationErrorFor(address => address.Longitude, value);
+            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Longitude, value);
         }
     }
 }

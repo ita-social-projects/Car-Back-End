@@ -6,8 +6,8 @@ namespace Car.Data.FluentValidation
     {
         public ScheduleValidator()
         {
-            RuleFor(schedule => schedule.Id).GreaterThan(0);
-            RuleFor(schedule => schedule.Name).NotNull().Length(2, 50);
+            RuleFor(schedule => schedule.Id).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(schedule => schedule.Name).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
         }
     }
 }

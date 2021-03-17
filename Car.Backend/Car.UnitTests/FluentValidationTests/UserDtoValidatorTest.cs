@@ -1,6 +1,6 @@
 ﻿using System;
 using Car.Data;
-using Car.Data.FluentValidation;
+using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
@@ -8,13 +8,13 @@ using Xunit;
 namespace Car.UnitTests.FluentValidationTests
 {
     [TestFixture]
-    public class UserValidatorTest
+    public class UserDtoValidatorTest
     {
-        private readonly UserValidator validator;
+        private readonly UserDtoValidator validator;
 
-        public UserValidatorTest()
+        public UserDtoValidatorTest()
         {
-            validator = new UserValidator();
+            validator = new UserDtoValidator();
         }
 
         [Xunit.Theory]
@@ -22,7 +22,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Id_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(user => user.Id, value);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Id, value);
         }
 
         [Xunit.Theory]
@@ -30,7 +30,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(user => user.Id, value);
+            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.Id, value);
         }
 
         [Xunit.Theory]
@@ -38,21 +38,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("")]
         public void Name_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(user => user.Name, value);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Name, value);
         }
 
         [Fact]
         public void Name_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(user => user.Name, longText);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Name, longText);
         }
 
         [Xunit.Theory]
         [InlineData("abc")]
         public void Name_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(user => user.Name, value);
+            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.Name, value);
         }
 
         [Xunit.Theory]
@@ -60,21 +60,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("")]
         public void Surname_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(user => user.Surname, value);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Surname, value);
         }
 
         [Fact]
         public void Surname_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(user => user.Surname, longText);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Surname, longText);
         }
 
         [Xunit.Theory]
         [InlineData("abc")]
         public void Surname_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(user => user.Surname, value);
+            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.Surname, value);
         }
 
         [Xunit.Theory]
@@ -82,21 +82,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("")]
         public void Position_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(user => user.Position, value);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Position, value);
         }
 
         [Fact]
         public void Position_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.POSITION_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(user => user.Position, longText);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Position, longText);
         }
 
         [Xunit.Theory]
         [InlineData("abc")]
         public void Position_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(user => user.Position, value);
+            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.Position, value);
         }
 
         [Xunit.Theory]
@@ -104,35 +104,35 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("")]
         public void Location_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(user => user.Location, value);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Location, value);
         }
 
         [Fact]
         public void Location_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.LOCATION_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(user => user.Location, longText);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Location, longText);
         }
 
         [Xunit.Theory]
         [InlineData("abc")]
         public void Location_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(user => user.Location, value);
+            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.Location, value);
         }
 
         [Xunit.Theory]
         [InlineData("2090-06-27")]
         public void HireDate_IsNotValid_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(user => user.HireDate, DateTime.Parse(value));
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.HireDate, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
         [InlineData("2013-06-27")]
         public void HireDate_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(user => user.HireDate, DateTime.Parse(value));
+            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.HireDate, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
@@ -140,21 +140,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("")]
         public void Email_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(user => user.Email, value);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Email, value);
         }
 
         [Fact]
         public void Email_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.EMAIL_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(user => user.Email, longText);
+            validator.ShouldHaveValidationErrorFor(userDto => userDto.Email, longText);
         }
 
         [Xunit.Theory]
         [InlineData("abc@gmail.com")]
         public void Email_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(user => user.Email, value);
+            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.Email, value);
         }
     }
 }

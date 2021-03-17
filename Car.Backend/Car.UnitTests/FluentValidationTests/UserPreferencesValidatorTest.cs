@@ -1,4 +1,5 @@
-﻿using Car.Data.FluentValidation;
+﻿using Car.Data;
+using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
@@ -18,7 +19,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Should_have_error_when_Id_is_not_valid(int value)
+        public void Id_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
         }
@@ -26,23 +27,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void Should_not_have_error_when_Id_is_specified(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void Should_have_error_when_UserId_is_not_valid(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void Should_not_have_error_when_UserId_is_specified(int value)
+        public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.Id, value);
         }
@@ -50,7 +35,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Should_not_have_error_when_DoAllowSmoking_is_specified(bool value)
+        public void DoAllowSmoking_IsSpecified_NotGeneratesValidationError(bool value)
         {
             validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.DoAllowSmoking, value);
         }
@@ -58,15 +43,15 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Should_not_have_error_when_DoAllowEating_is_specified(bool value)
+        public void DoAllowEating_IsSpecified_NotGeneratesValidationError(bool value)
         {
             validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.DoAllowEating, value);
         }
 
         [Fact]
-        public void Should_have_error_when_Comments_is_longer_than_101()
+        public void Comments_IsNotValid_GeneratesValidationError()
         {
-            string longCommnt = new string('*', 101);
+            string longCommnt = new string('*', Constants.COMMENTS_MAX_LENGTH + 1);
             validator.ShouldHaveValidationErrorFor(userPreferences => userPreferences.Comments, longCommnt);
         }
 
@@ -74,7 +59,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData("")]
         [InlineData("comment")]
         [InlineData(null)]
-        public void Should_not_have_error_when_Comments_is_specified(string value)
+        public void Comments_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(userPreferences => userPreferences.Comments, value);
         }

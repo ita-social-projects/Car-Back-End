@@ -1,11 +1,12 @@
 ﻿using System;
+using Car.Data;
 using FluentValidation;
 
-namespace Car.Data.FluentValidation
+namespace Car.Domain.FluentValidation
 {
-    public class UserValidator : AbstractValidator<Entities.User>
+    public class UserDtoValidator : AbstractValidator<Dto.UserDto>
     {
-        public UserValidator()
+        public UserDtoValidator()
         {
             RuleFor(user => user.Id).GreaterThan(Constants.ID_LENGTH);
             RuleFor(user => user.Name).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
