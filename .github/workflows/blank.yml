@@ -54,6 +54,6 @@ jobs:
         sonarProjectName:  Car-Back-End
         # The name of the SonarQube organization in SonarCloud. For hosted SonarQube, skip this setting.
         sonarOrganization: ita-social-projects
-        sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="/github/workspace/Car.Backend/Car.UnitTests/coverage.opencover.xml" /d:sonar.coverage.exclusions=**/Car.Data/**,**/Car.Domain/Dto/**,**/Car.Domain/Extensions/**,**/Car.Domain/Configurations/**,**/Startup.cs,**/Program.cs /d:sonar.exclusions=**/Car.Data/Migrations/**
+        sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="/github/workspace/Car.Backend/Car.UnitTests/coverage.opencover.xml" /d:sonar.coverage.exclusions=**/Car.Data/**,**/Car.Domain/Dto/**,**/Car.Domain/Models/**,**/Car.Domain/Extensions/**,**/Car.Domain/Configurations/**,**/Car.WebApi/ServiceExtension/**,**/Startup.cs,**/Program.cs /d:sonar.exclusions=**/Car.Data/Migrations/**
         dotnetBuildArguments: ./Car.Backend/Car.Backend.sln -c Debug
         dotnetTestArguments: ./Car.Backend/Car.UnitTests/Car.UnitTests.csproj --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover 
