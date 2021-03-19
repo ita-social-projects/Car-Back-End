@@ -138,47 +138,5 @@ namespace Car.UnitTests.Services
             // Assert
             result.ImageId.Should().BeNull();
         }
-
-        [Fact]
-        public void SetImageLink_EntityHasImageId_ReturnsUpdatedEntity()
-        {
-            // Arrange
-            IEntityWithImage entity = Fixture.Create<User>();
-            var expectedLink = Fixture.Create<string>();
-
-            fileService.Setup(f => f.GetFileLink(It.IsAny<string>())).Returns(expectedLink);
-
-            // Act
-            var result = imageService.SetImageLink(entity);
-
-            // Assert
-            result.ImageId.Should().BeSameAs(expectedLink);
-        }
-
-        [Fact]
-        public void SetImageLink_EntityNotHaveImageId_ReturnsSameEntity()
-        {
-            // Arrange
-            IEntityWithImage entity = Fixture.Build<User>().With(u => u.ImageId, (string)null).Create();
-
-            // Act
-            var result = imageService.SetImageLink(entity);
-
-            // Assert
-            result.Should().BeEquivalentTo(entity);
-        }
-
-        [Fact]
-        public void SetImageLink_EntityIsNull_ReturnsNull()
-        {
-            // Arrange
-            IEntityWithImage entity = null;
-
-            // Act
-            var result = imageService.SetImageLink(entity);
-
-            // Assert
-            result.Should().BeNull();
-        }
     }
 }
