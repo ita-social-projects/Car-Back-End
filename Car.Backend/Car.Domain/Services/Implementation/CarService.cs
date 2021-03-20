@@ -41,7 +41,6 @@ namespace Car.Domain.Services.Implementation
                 .Query()
                 .IncludeModelWithBrand()
                 .FirstOrDefaultAsync(c => c.Id == carId);
-            imageService.SetImageLink(car);
 
             return car;
         }
@@ -53,8 +52,6 @@ namespace Car.Domain.Services.Implementation
                 .IncludeModelWithBrand()
                 .Where(car => car.OwnerId == userId)
                 .ToListAsync();
-
-            cars.ForEach((car) => imageService.SetImageLink(car));
 
             return cars;
         }

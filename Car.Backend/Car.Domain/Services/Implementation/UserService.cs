@@ -21,7 +21,6 @@ namespace Car.Domain.Services.Implementation
         public async Task<User> GetUserByIdAsync(int userId)
         {
             var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userId);
-            imageService.SetImageLink(user);
 
             return user;
         }

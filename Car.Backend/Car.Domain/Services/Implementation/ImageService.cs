@@ -59,19 +59,5 @@ namespace Car.Domain.Services.Implementation
 
             return entity;
         }
-
-        /// <summary>
-        /// Replaces an image id to an image link for the input entity.
-        /// </summary>
-        /// <param name="entity">Entity to replace.</param>
-        public IEntityWithImage SetImageLink(IEntityWithImage entity)
-        {
-            if (entity?.ImageId != null)
-            {
-                entity.ImageId = fileService.GetFileLink(entity.ImageId);
-            }
-
-            return entity;
-        }
     }
 }

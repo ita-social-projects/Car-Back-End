@@ -81,14 +81,6 @@ namespace Car.Domain.Services.Implementation
         }
 
         /// <summary>
-        /// Gets a link for a file with the specified id.
-        /// </summary>
-        /// <param name="fileId">Identifier of the required file.</param>
-        /// <returns>Link for a file with the specified id.</returns>
-        public string GetFileLink(string fileId) =>
-            string.Format(googleDriveOptions.Value.LinkTemplate, fileId);
-
-        /// <summary>
         /// Deletes a file with the specified id.
         /// </summary>
         /// <param name="fileId">Identifier of the required file.</param>

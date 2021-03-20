@@ -10,7 +10,5 @@ namespace Car.Domain.Services.Interfaces
         Task<string> DeleteFileAsync(string fileId);
 
         void SetCredentials();
-
-        string GetFileLink(string fileId);
     }
 }
