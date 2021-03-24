@@ -27,23 +27,23 @@ namespace Car.Domain.Services.Implementation
         public async Task<IEnumerable<MessageDto>> GetChatByIdAsync(int chatId, int previousMessageId)
         {
             var chat = await messageRepository.Query()
-                .Include(u => u.Sender)
-                .Where(c => c.ChatId == chatId)
-                .Select(q => new MessageDto()
+                .Include(user => user.Sender)
+                .Where(message => message.ChatId == chatId)
+                .Select(message => new MessageDto()
                 {
-                    Id = q.Id,
-                    ChatId = q.ChatId,
-                    CreatedAt = q.CreatedAt,
-                    Text = q.Text,
-                    SenderId = q.Sender.Id,
-                    SenderName = q.Sender.Name,
-                    SenderSurname = q.Sender.Surname,
-                    ImageId = q.Sender.ImageId,
-                }).OrderByDescending(d => d.CreatedAt)
-                .Where(q => q.Id < (previousMessageId == 0 ? messageRepository
+                    Id = message.Id,
+                    ChatId = message.ChatId,
+                    CreatedAt = message.CreatedAt,
+                    Text = message.Text,
+                    SenderId = message.Sender.Id,
+                    SenderName = message.Sender.Name,
+                    SenderSurname = message.Sender.Surname,
+                    ImageId = message.Sender.ImageId,
+                }).OrderByDescending(messageDto => messageDto.CreatedAt)
+                .Where(messageDto => messageDto.Id < (previousMessageId == 0 ? messageRepository
                     .Query()
-                    .Where(m => m.ChatId == chatId)
-                    .Max(q => q.Id) + 1 : previousMessageId))
+                    .Where(message => message.ChatId == chatId)
+                    .Max(message => message.Id) + 1 : previousMessageId))
                 .Take(50)
                 .ToListAsync();
             return chat;
