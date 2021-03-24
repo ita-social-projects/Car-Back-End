@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -8,7 +9,7 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<IEnumerable<Chat>> GetUserChatsAsync(int userId);
 
-        Task<Chat> GetChatByIdAsync(int chatId);
+        Task<IEnumerable<MessageDto>> GetChatByIdAsync(int chatId, int previousMessageId);
 
         Task<Chat> AddChatAsync(Chat chat);
 
