@@ -24,7 +24,7 @@ namespace Car.Domain.Services.Implementation
             this.messageRepository = messageRepository;
         }
 
-        public async Task<IEnumerable<MessageDto>> GetChatByIdAsync(int chatId, int previousMessageId)
+        public async Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId)
         {
             var chat = await messageRepository.Query()
                 .Include(user => user.Sender)

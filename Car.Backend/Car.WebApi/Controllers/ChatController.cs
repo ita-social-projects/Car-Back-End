@@ -27,11 +27,11 @@ namespace Car.WebApi.Controllers
         /// Get chat by Chat Id
         /// </summary>
         /// <param name="id">Sender identifier</param>
-        /// <param name="previousMessageId">Sender identifier</param>
+        /// <param name="previousMessageId">Oldest message identifier</param>
         /// <returns>Chat</returns>
         [HttpGet("chat/{id}/{previousMessageId}")]
         public async Task<IActionResult> GetChat(int id, int previousMessageId) =>
-            Ok(await chatService.GetChatByIdAsync(id, previousMessageId));
+            Ok(await chatService.GetMessagesByChatIdAsync(id, previousMessageId));
 
         /// <summary>
         /// Add the chat

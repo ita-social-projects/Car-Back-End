@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -32,37 +33,37 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task GetChatByIdAsync_WhenChatExists_ReturnsChatObject()
+        public async Task GetChatByIdAsync_WhenChatExists_ReturnsCorrectType()
         {
             // Arrange
-            var chats = Fixture.CreateMany<Chat>();
+            var chats = Fixture.CreateMany<Message>();
             var chat = chats.First();
 
-            chatRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Chat, object>>[]>()))
+            messageRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Message, object>>[]>()))
                 .Returns(chats.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await chatService.GetChatByIdAsync(chat.Id);
+            var result = await chatService.GetMessagesByChatIdAsync(chat.Id, chat.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(chat);
+            result.Should().BeOfType<List<MessageDto>>();
         }
 
         [Fact]
         public async Task GetChatByIdAsync_WhenChatNotExist_ReturnsNull()
         {
             // Arrange
-            var chats = Fixture.CreateMany<Chat>();
+            var chats = Fixture.CreateMany<Message>();
             var id = chats.Max(chat => chat.Id) + 1;
 
-            chatRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Chat, object>>[]>()))
+            messageRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Message, object>>[]>()))
                 .Returns(chats.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await chatService.GetChatByIdAsync(id);
+            var result = await chatService.GetMessagesByChatIdAsync(id, chats.First().Id);
 
             // Assert
-            result.Should().BeNull();
+            result.Should().BeEmpty();
         }
 
         [Fact]

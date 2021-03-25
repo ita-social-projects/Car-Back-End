@@ -50,7 +50,7 @@
             Get chat by Chat Id
             </summary>
             <param name="id">Sender identifier</param>
-            <param name="previousMessageId">Sender identifier</param>
+            <param name="previousMessageId">Oldest message identifier</param>
             <returns>Chat</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Data.Entities.Chat)">

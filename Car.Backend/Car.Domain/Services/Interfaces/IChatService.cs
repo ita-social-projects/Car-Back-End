@@ -9,7 +9,7 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<IEnumerable<Chat>> GetUserChatsAsync(int userId);
 
-        Task<IEnumerable<MessageDto>> GetChatByIdAsync(int chatId, int previousMessageId);
+        Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId);
 
         Task<Chat> AddChatAsync(Chat chat);
 
