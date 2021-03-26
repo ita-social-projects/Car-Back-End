@@ -45,11 +45,12 @@
             <param name="id">Sender identifier</param>
             <returns>Chats of Sender by Id</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.GetChat(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.ChatController.GetChat(System.Int32,System.Int32)">
             <summary>
             Get chat by Chat Id
             </summary>
             <param name="id">Sender identifier</param>
+            <param name="previousMessageId">Oldest message identifier</param>
             <returns>Chat</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Data.Entities.Chat)">

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -62,13 +64,13 @@ namespace Car.UnitTests.Controllers
         public async Task GetChat_WhenChatExists_ReturnsOkObjectResult()
         {
             // Arrange
-            var chat = Fixture.Create<Chat>();
+            var chat = Fixture.Create<IEnumerable<MessageDto>>();
 
-            chatService.Setup(x => x.GetChatByIdAsync(chat.Id))
+            chatService.Setup(x => x.GetMessagesByChatIdAsync(chat.FirstOrDefault().ChatId, 0))
                 .ReturnsAsync(chat);
 
             // Act
-            var result = await chatController.GetChat(chat.Id);
+            var result = await chatController.GetChat(chat.FirstOrDefault().ChatId, 0);
 
             // Assert
             using (new AssertionScope())
@@ -84,11 +86,11 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var chat = Fixture.Create<Chat>();
 
-            chatService.Setup(x => x.GetChatByIdAsync(chat.Id))
-                .ReturnsAsync((Chat)null);
+            chatService.Setup(x => x.GetMessagesByChatIdAsync(chat.Id, 0))
+                .ReturnsAsync((IEnumerable<MessageDto>)null);
 
             // Act
-            var result = await chatController.GetChat(chat.Id);
+            var result = await chatController.GetChat(chat.Id, 0);
 
             // Assert
             using (new AssertionScope())
