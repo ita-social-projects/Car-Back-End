@@ -12,7 +12,7 @@ namespace Car.WebApi.ServiceExtension
     {
         public static void AddReccuringJobs(this IServiceProvider serviceProvider, IRecurringJobManager recurringJobManager)
         {
-            recurringJobManager.AddOrUpdate("Test",
+            recurringJobManager.AddOrUpdate("DeleteOutdatedChats",
                                             () => serviceProvider.GetService<IChatService>()
                                                                  .DeleteOutdatedChatsAsync(),
                                             Cron.Daily(),
