@@ -76,5 +76,15 @@ namespace Car.Domain.Services.Implementation
             await messageRepository.SaveChangesAsync();
             return addedMessage;
         }
+
+        public async Task DeleteOutdatedChatsAsync()
+        {
+            var chatsToDelete = await chatRepository.Query()
+                .Include(ride => ride.Journey)
+                .Where(chat => (chat.Journey.DepartureTime - DateTime.Now).TotalHours < 24)
+                .ToListAsync();
+            Console.WriteLine(chatsToDelete.Count);
+            //await chatRepository.DeleteRangeAsync(chatsToDelete);
+        }
     }
 }
