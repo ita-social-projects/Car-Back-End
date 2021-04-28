@@ -14,7 +14,5 @@ namespace Car.Domain.Services.Interfaces
         Task<Chat> AddChatAsync(Chat chat);
 
         Task<Message> AddMessageAsync(Message message);
-
-        Task DeleteOutdatedChatsAsync();
     }
 }

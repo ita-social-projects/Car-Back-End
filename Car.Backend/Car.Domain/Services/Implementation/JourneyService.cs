@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -78,6 +79,21 @@ namespace Car.Domain.Services.Implementation
                 .ToListAsync();
 
             return journeys;
+        }
+
+        public async Task DeletePastJourneyAsync()
+        {
+            var now = DateTime.Now;
+            var term = 14;
+
+            var journeysToDelete = journeyRepository
+                .Query()
+                .AsEnumerable()
+                .Where(j => (now - j.DepartureTime).TotalDays >= term)
+                .ToList();
+
+            Console.WriteLine(journeysToDelete.Count);
+            //await journeyRepository.DeleteRangeAsync(journeysToDelete);
         }
     }
 }
