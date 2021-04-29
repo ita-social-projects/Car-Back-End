@@ -84,16 +84,16 @@ namespace Car.Domain.Services.Implementation
         public async Task DeletePastJourneyAsync()
         {
             var now = DateTime.Now;
-            var term = 14;
+            var termInDays = 14;
 
             var journeysToDelete = journeyRepository
                 .Query()
                 .AsEnumerable()
-                .Where(j => (now - j.DepartureTime).TotalDays >= term)
+                .Where(j => (now - j.DepartureTime).TotalDays >= termInDays)
                 .ToList();
 
-            Console.WriteLine(journeysToDelete.Count);
-            //await journeyRepository.DeleteRangeAsync(journeysToDelete);
+            await journeyRepository.DeleteRangeAsync(journeysToDelete);
+            await journeyRepository.SaveChangesAsync();
         }
     }
 }

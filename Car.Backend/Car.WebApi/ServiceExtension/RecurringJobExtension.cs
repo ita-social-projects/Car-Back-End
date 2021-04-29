@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Car.Domain.Services.Interfaces;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +12,7 @@ namespace Car.WebApi.ServiceExtension
             recurringJobManager.AddOrUpdate("DeleteOutdatedJourneys",
                                             () => serviceProvider.GetService<IJourneyService>()
                                                                  .DeletePastJourneyAsync(),
-                                            Cron.Minutely(),
+                                            Cron.Daily(),
                                             TimeZoneInfo.Local);
         }
     }
