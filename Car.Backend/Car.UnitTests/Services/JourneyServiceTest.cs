@@ -364,5 +364,23 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().BeEmpty();
         }
+
+        [Fact]
+        public async Task DeletePastJourneyAsync_DeletesRecordsInDb()
+        {
+            // Arrange
+            var journeysToDelete = new List<Journey>();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeysToDelete.AsQueryable().BuildMock().Object);
+            journeyRepository.Setup(r => r.DeleteRangeAsync(It.IsAny<List<Journey>>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await journeyService.DeletePastJourneyAsync();
+
+            // Assert
+            journeyRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<List<Journey>>()), Times.Once);
+        }
     }
 }
