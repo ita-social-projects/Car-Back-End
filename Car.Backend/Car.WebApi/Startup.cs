@@ -16,6 +16,8 @@ using Car.WebApi.Hubs;
 using Car.WebApi.ServiceExtension;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -65,6 +67,8 @@ namespace Car.WebApi
             services.AddLogging();
             services.AddApplicationInsightsTelemetry();
             services.AddSignalR();
+            services.AddHangFire();
+            services.AddHangfireServer();
 
             services.AddSwaggerGen(c =>
             {
@@ -93,7 +97,10 @@ namespace Car.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app,
+                              IWebHostEnvironment env,
+                              IServiceProvider serviceProvider,
+                              IRecurringJobManager recurringJobManager)
         {
             if (env.IsDevelopment())
             {
@@ -120,6 +127,10 @@ namespace Car.WebApi
                 endpoints.MapControllers();
                 endpoints.MapHub<SignalRHub>("/signalr");
             });
+
+            app.UseHangfireDashboard();
+
+            serviceProvider.AddReccuringJobs(recurringJobManager);
 
             app.UseSwagger();
 

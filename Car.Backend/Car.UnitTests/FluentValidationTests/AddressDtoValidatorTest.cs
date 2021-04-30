@@ -35,45 +35,16 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void Street_IsNull_GeneratesValidationError(string value)
+        public void Name_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.Street, value);
-        }
-
-        [Fact]
-        public void Street_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.Street, longText);
+            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.Name, value);
         }
 
         [Xunit.Theory]
-        [InlineData("StreetName")]
-        public void Street_IsSpecified_NotGeneratesValidationError(string value)
+        [InlineData("Address Name")]
+        public void Name_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Street, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void City_IsNull_GeneratesValidationError(string value)
-        {
-            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.City, value);
-        }
-
-        [Fact]
-        public void City_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.City, longText);
-        }
-
-        [Xunit.Theory]
-        [InlineData("CityName")]
-        public void City_IsSpecified_NotGeneratesValidationError(string value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.City, value);
+            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Name, value);
         }
 
         [Xunit.Theory]

@@ -8,8 +8,7 @@ namespace Car.Domain.FluentValidation
         public AddressDtoValidator()
         {
             RuleFor(address => address.Id).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(address => address.City).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
-            RuleFor(address => address.Street).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
+            RuleFor(address => address.Name).NotNull().NotEmpty();
             RuleFor(address => address.Latitude).NotNull();
             RuleFor(address => address.Longitude).NotNull();
         }
