@@ -91,6 +91,8 @@ namespace Car.Data.Infrastructure
         /// <returns>Task</returns>
         public Task<int> SaveChangesAsync() => context.SaveChangesAsync();
 
+        public void AttachToDelete(TEntity entity) => context.Entry(entity).State = EntityState.Deleted;
+
         private static void CheckEntityForNull(TEntity entity)
         {
             if (entity == null)

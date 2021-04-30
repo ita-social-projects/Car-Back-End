@@ -10,6 +10,7 @@ using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -178,6 +179,27 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task DeleteCarAsync_WhenCarExist_ExecuteOnce()
+        {
+            // Arrange
+            var cars = Fixture
+                .CreateMany<CarEntity>()
+                .ToList();
+            var car = cars.First();
+
+            carRepository
+                .Setup(repo => repo.Query())
+                .Returns(cars
+                    .AsQueryable()
+                    .BuildMock()
+                    .Object);
+
+            // Act
+            // Assert
+            
         }
     }
 }

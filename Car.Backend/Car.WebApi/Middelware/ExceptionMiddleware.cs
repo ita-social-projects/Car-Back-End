@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Car.Domain.Dto;
 using Car.Domain.Exceptions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -53,6 +55,23 @@ namespace Car.WebApi.Middelware
                             appException.StatusCode,
                             appException.Message,
                             appException.Severity,
+                        });
+
+                    logger.LogError(responseContent);
+                    return context.Response.WriteAsync(responseContent);
+                }
+
+                if (exception is DbUpdateConcurrencyException concurrencyException)
+                {
+                    context.Response.ContentType = "application/json";
+                    context.Response.StatusCode = 500;
+
+                    var responseContent = JsonConvert.SerializeObject(
+                        new
+                        {
+                            StatusCode = 500,
+                            Message = "Car with such id does not exist",
+                            Severity = Severity.Error,
                         });
 
                     logger.LogError(responseContent);

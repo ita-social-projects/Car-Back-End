@@ -52,5 +52,12 @@ namespace Car.WebApi.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCar([FromForm] UpdateCarModel updateCarModel) =>
             Ok(await carService.UpdateCarAsync(updateCarModel));
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+           await carService.DeleteAsync(id);
+           return NoContent();
+        }
     }
 }

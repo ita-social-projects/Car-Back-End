@@ -24,5 +24,7 @@ namespace Car.Data.Infrastructure
         Task<int> SaveChangesAsync();
 
         ValueTask<TEntity> GetByIdAsync(params object[] keys);
+
+        void AttachToDelete(TEntity entity);
     }
 }
