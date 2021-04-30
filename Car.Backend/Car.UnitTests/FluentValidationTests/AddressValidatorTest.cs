@@ -35,45 +35,16 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void Street_IsNull_GeneratesValidationError(string value)
+        public void Name_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(address => address.Street, value);
-        }
-
-        [Fact]
-        public void Street_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(address => address.Street, longText);
+            validator.ShouldHaveValidationErrorFor(address => address.Name, value);
         }
 
         [Xunit.Theory]
-        [InlineData("StreetName")]
-        public void Street_IsSpecified_NotGeneratesValidationError(string value)
+        [InlineData("Address Name")]
+        public void Name_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(address => address.Street, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void City_IsNull_GeneratesValidationError(string value)
-        {
-            validator.ShouldHaveValidationErrorFor(address => address.City, value);
-        }
-
-        [Fact]
-        public void City_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
-            validator.ShouldHaveValidationErrorFor(address => address.City, longText);
-        }
-
-        [Xunit.Theory]
-        [InlineData("CityName")]
-        public void City_IsSpecified_NotGeneratesValidationError(string value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(address => address.City, value);
+            validator.ShouldNotHaveValidationErrorFor(address => address.Name, value);
         }
 
         [Xunit.Theory]

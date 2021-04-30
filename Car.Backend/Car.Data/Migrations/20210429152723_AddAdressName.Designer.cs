@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210429152723_AddAdressName")]
+    partial class AddAdressName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +28,11 @@ namespace Car.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
 
@@ -33,8 +40,12 @@ namespace Car.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -8236,7 +8247,7 @@ namespace Car.Data.Migrations
                     b.HasOne("Car.Data.Entities.Car", "Car")
                         .WithMany("Journeys")
                         .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Car.Data.Entities.User", "Organizer")
                         .WithMany("OrganizerJourneys")
