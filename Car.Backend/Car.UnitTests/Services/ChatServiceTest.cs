@@ -29,7 +29,7 @@ namespace Car.UnitTests.Services
             chatRepository = new Mock<IRepository<Chat>>();
             userRepository = new Mock<IRepository<User>>();
             messageRepository = new Mock<IRepository<Message>>();
-            chatService = new ChatService(userRepository.Object, chatRepository.Object, messageRepository.Object);
+            chatService = new ChatService(userRepository.Object, chatRepository.Object, messageRepository.Object, Mapper);
         }
 
         [Fact]

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
+using Car.Domain.Models.Chat;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,12 +17,18 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<User> userRepository;
         private readonly IRepository<Chat> chatRepository;
         private readonly IRepository<Message> messageRepository;
+        private readonly IMapper mapper;
 
-        public ChatService(IRepository<User> userRepository, IRepository<Chat> chatRepository, IRepository<Message> messageRepository)
+        public ChatService(
+            IRepository<User> userRepository,
+            IRepository<Chat> chatRepository,
+            IRepository<Message> messageRepository,
+            IMapper mapper)
         {
             this.userRepository = userRepository;
             this.chatRepository = chatRepository;
             this.messageRepository = messageRepository;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId)
@@ -57,7 +64,7 @@ namespace Car.Domain.Services.Implementation
             return addedChat;
         }
 
-        public async Task<IEnumerable<Chat>> GetUserChatsAsync(int userId)
+        public async Task<IEnumerable<ChatModel>> GetUserChatsAsync(int userId)
         {
             var user = await userRepository.Query()
                 .IncludeChats()
@@ -67,7 +74,7 @@ namespace Car.Domain.Services.Implementation
                 .Union(user.ParticipantJourneys.Select(journey => journey.Chat))
                 .Except(new List<Chat>() { null });
 
-            return chats;
+            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatModel>>(chats);
         }
 
         public async Task<Message> AddMessageAsync(Message message)
