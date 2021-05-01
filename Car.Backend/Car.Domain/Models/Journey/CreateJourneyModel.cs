@@ -18,7 +18,7 @@ namespace Car.Domain.Models.Journey
 
         public int CarId { get; set; }
 
-        // public bool IsOnOwnCar { get; set; }
+        public bool IsOnOwnCar { get; set; }
 
         // public ICollection<Coordinates> RoutePoints { get; set; } = new List<Coordinates>();
 

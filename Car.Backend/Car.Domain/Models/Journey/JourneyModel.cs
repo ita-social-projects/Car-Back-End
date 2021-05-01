@@ -21,6 +21,8 @@ namespace Car.Domain.Models.Journey
 
         public bool IsFree { get; set; }
 
+        public bool IsOnOwnCar { get; set; }
+
         public Schedule Schedule { get; set; }
 
         public UserDto Organizer { get; set; }

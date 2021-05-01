@@ -97,7 +97,7 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
-        public async Task<Journey> AddJourneyAsync(CreateJourneyModel journeyModel)
+        public async Task<JourneyModel> AddJourneyAsync(CreateJourneyModel journeyModel)
         {
             journeyModel.Stops.ForAll(stop => stop.UserId = journeyModel.OrganizerId);
 
@@ -106,7 +106,7 @@ namespace Car.Domain.Services.Implementation
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            return addedJourney;
+            return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Car.Domain.FluentValidation
             RuleFor(journey => journey.CountOfSeats).NotNull().NotEmpty().GreaterThan(Constants.NUMBER_MIN).LessThanOrEqualTo(Constants.SEATS_MAX_LENGTH);
             RuleFor(journey => journey.Comments).MaximumLength(Constants.COMMENTS_MAX_LENGTH);
             RuleFor(journey => journey.IsFree).NotNull();
+            RuleFor(journey => journey.IsOnOwnCar).NotNull();
             RuleFor(journey => journey.Organizer).SetValidator(new UserDtoValidator());
             RuleFor(journey => journey.Car).SetValidator(new CarValidator());
             RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator());

@@ -103,5 +103,13 @@ namespace Car.UnitTests.FluentValidationTests
         {
             validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.IsFree, value);
         }
+
+        [Xunit.Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void IsOnOwnCar__IsSpecified_NotGeneratesValidationError(bool value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.IsOnOwnCar, value);
+        }
     }
 }

@@ -20,6 +20,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeletePastJourneyAsync();
 
-        Task<Journey> AddJourneyAsync(CreateJourneyModel journeyModel);
+        Task<JourneyModel> AddJourneyAsync(CreateJourneyModel journeyModel);
     }
 }

@@ -20,6 +20,8 @@ namespace Car.Data.Entities
 
         public bool IsFree { get; set; }
 
+        public bool IsOnOwnCar { get; set; }
+
         public int OrganizerId { get; set; }
 
         public int? CarId { get; set; }
