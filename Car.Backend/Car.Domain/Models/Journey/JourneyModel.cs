@@ -31,6 +31,8 @@ namespace Car.Domain.Models.Journey
 
         public ICollection<UserDto> Participants { get; set; } = new List<UserDto>();
 
+        public ICollection<JourneyPointDto> JourneyPoints { get; set; } = new List<JourneyPointDto>();
+
         public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
     }
 }
