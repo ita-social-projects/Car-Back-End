@@ -182,24 +182,17 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteCarAsync_WhenCarExist_ExecuteOnce()
+        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException()
         {
             // Arrange
-            var cars = Fixture
-                .CreateMany<CarEntity>()
-                .ToList();
-            var car = cars.First();
-
-            carRepository
-                .Setup(repo => repo.Query())
-                .Returns(cars
-                    .AsQueryable()
-                    .BuildMock()
-                    .Object);
+            var idCarToDelete = Fixture.Create<int>();
+            carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
+            var result = carService.Invoking(service => service.DeleteAsync(idCarToDelete));
+
             // Assert
-            
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
     }
 }

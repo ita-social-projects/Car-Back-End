@@ -61,7 +61,7 @@ namespace Car.WebApi.Middelware
                     return context.Response.WriteAsync(responseContent);
                 }
 
-                if (exception is DbUpdateConcurrencyException concurrencyException)
+                if (exception is DbUpdateException)
                 {
                     context.Response.ContentType = "application/json";
                     context.Response.StatusCode = 500;
@@ -70,7 +70,7 @@ namespace Car.WebApi.Middelware
                         new
                         {
                             StatusCode = 500,
-                            Message = "Car with such id does not exist",
+                            Message = "Database updating failed",
                             Severity = Severity.Error,
                         });
 

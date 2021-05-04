@@ -140,5 +140,19 @@ namespace Car.UnitTests.Controllers
             // Assert
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException()
+        {
+            // Arrange
+            var car = Fixture.Create<CarEntity>();
+            carService.Setup(service => service.DeleteAsync(car.Id)).Throws<DbUpdateException>();
+
+            // Act
+            var result = carService.Invoking(service => service.Object.DeleteAsync(car.Id));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateException>();
+        }
     }
 }
