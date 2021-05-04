@@ -11,7 +11,7 @@ namespace Car.Data.FluentValidation
 
             RuleFor(point => point.Latitude)
                 .GreaterThanOrEqualTo(Constants.MIN_LATITUDE)
-                .LessThanOrEqualTo(360);
+                .LessThanOrEqualTo(Constants.MAX_LATITUDE);
             RuleFor(point => point.Longitude)
                 .GreaterThanOrEqualTo(Constants.MIN_LONGITUDE)
                 .LessThanOrEqualTo(Constants.MAX_LONGITUDE);
