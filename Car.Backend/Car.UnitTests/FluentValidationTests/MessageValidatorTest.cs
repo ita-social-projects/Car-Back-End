@@ -1,5 +1,6 @@
 ﻿using System;
 using Car.Data;
+using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -44,7 +45,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void Text_IsNotValid_GeneratesValidationError()
         {
-            string longText = new string('*', Constants.TEXT_MAX_LENGTH + 1);
+            string longText = new string('*', Constants.TextMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(message => message.Text, longText);
         }
 
