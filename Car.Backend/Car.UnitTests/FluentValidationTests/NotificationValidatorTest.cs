@@ -1,5 +1,6 @@
 ﻿using System;
 using Car.Data;
+using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
@@ -84,7 +85,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void JsonData_IsNotValid_GeneratesValidationError()
         {
-            string longText = new string('*', Constants.JSON_MAX_LENGTH + 1);
+            string longText = new string('*', Constants.JsonMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(notification => notification.JsonData, longText);
         }
 

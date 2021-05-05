@@ -1,5 +1,6 @@
 ﻿using System;
 using Car.Data;
+using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -44,7 +45,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void Name_IsNotValid_GeneratesValidationError()
         {
-            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
+            string longText = new string('*', Constants.StringMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(user => user.Name, longText);
         }
 
@@ -66,7 +67,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void Surname_IsNotValid_GeneratesValidationError()
         {
-            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
+            string longText = new string('*', Constants.StringMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(user => user.Surname, longText);
         }
 
@@ -88,7 +89,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void Position_IsNotValid_GeneratesValidationError()
         {
-            string longText = new string('*', Constants.POSITION_MAX_LENGTH + 1);
+            string longText = new string('*', Constants.PositionMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(user => user.Position, longText);
         }
 
@@ -110,7 +111,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void Location_IsNotValid_GeneratesValidationError()
         {
-            string longText = new string('*', Constants.LOCATION_MAX_LENGTH + 1);
+            string longText = new string('*', Constants.LocationMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(user => user.Location, longText);
         }
 
@@ -146,7 +147,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void Email_IsNotValid_GeneratesValidationError()
         {
-            string longText = new string('*', Constants.EMAIL_MAX_LENGTH + 1);
+            string longText = new string('*', Constants.EmailMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(user => user.Email, longText);
         }
 

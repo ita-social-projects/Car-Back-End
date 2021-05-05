@@ -1,5 +1,6 @@
 using System;
 using Car.Data;
+using Car.Data.Constants;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -51,7 +52,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void Comments_IsNotValid_GeneratesValidationError()
         {
-            var longComment = new string('*', Constants.COMMENTS_MAX_LENGTH + 1);
+            var longComment = new string('*', Constants.CommentsMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.Comments, longComment);
         }
 

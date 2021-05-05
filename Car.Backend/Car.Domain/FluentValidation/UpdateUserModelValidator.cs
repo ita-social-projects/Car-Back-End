@@ -1,4 +1,5 @@
 ﻿using Car.Data;
+using Car.Data.Constants;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
@@ -7,7 +8,7 @@ namespace Car.Domain.FluentValidation
     {
         public UpdateUserModelValidator()
         {
-            RuleFor(user => user.Id).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(user => user.Id).GreaterThan(Constants.IdLength);
         }
     }
 }
