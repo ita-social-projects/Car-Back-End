@@ -170,5 +170,26 @@ namespace Car.UnitTests.Controllers
                 (result as OkObjectResult)?.Value.Should().Be(stops);
             }
         }
+
+        [Fact]
+        public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
+            var expectedJourney = Mapper.Map<CreateJourneyModel, JourneyModel>(createJourneyModel);
+
+            journeyService.Setup(j => j.AddJourneyAsync(createJourneyModel))
+                .ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.AddJourney(createJourneyModel);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
+            }
+        }
     }
 }

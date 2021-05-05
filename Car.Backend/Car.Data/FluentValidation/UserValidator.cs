@@ -7,14 +7,14 @@ namespace Car.Data.FluentValidation
     {
         public UserValidator()
         {
-            RuleFor(user => user.Id).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(user => user.Name).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
-            RuleFor(user => user.Surname).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
-            RuleFor(user => user.Position).NotNull().NotEmpty().MaximumLength(Constants.POSITION_MAX_LENGTH);
-            RuleFor(user => user.Location).NotNull().NotEmpty().MaximumLength(Constants.LOCATION_MAX_LENGTH);
+            RuleFor(user => user.Id).GreaterThan(Constants.Constants.IdLength);
+            RuleFor(user => user.Name).NotNull().NotEmpty().MaximumLength(Constants.Constants.StringMaxLength);
+            RuleFor(user => user.Surname).NotNull().NotEmpty().MaximumLength(Constants.Constants.StringMaxLength);
+            RuleFor(user => user.Position).NotNull().NotEmpty().MaximumLength(Constants.Constants.PositionMaxLength);
+            RuleFor(user => user.Location).NotNull().NotEmpty().MaximumLength(Constants.Constants.LocationMaxLength);
             RuleFor(user => user.HireDate).NotNull().LessThanOrEqualTo(DateTime.Now);
-            RuleFor(user => user.Email).NotNull().MinimumLength(Constants.EMAIL_MIN_LENGTH)
-                                                 .MaximumLength(Constants.EMAIL_MAX_LENGTH)
+            RuleFor(user => user.Email).NotNull().MinimumLength(Constants.Constants.EmailMinLength)
+                                                 .MaximumLength(Constants.Constants.EmailMaxLength)
                                                  .EmailAddress();
         }
     }

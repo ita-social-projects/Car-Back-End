@@ -1,4 +1,5 @@
 ﻿using Car.Data;
+using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -43,7 +44,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void Name_IsNotValid_GeneratesValidationError()
         {
-            string longText = new string('*', Constants.STRING_MAX_LENGTH + 1);
+            string longText = new string('*', Constants.StringMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(chat => chat.Name, longText);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,5 +58,14 @@ namespace Car.WebApi.Controllers
         [HttpGet("recent/{id}")]
         public async Task<IActionResult> GetRecentAddresses(int id) =>
             Ok(await journeyService.GetStopsFromRecentJourneysAsync(id));
+
+        /// <summary>
+        /// Adds the journey asynchronously.
+        /// </summary>
+        /// <param name="journeyModel">The journey model.</param>
+        /// <returns>Added journey.</returns>
+        [HttpPost]
+        public async Task<IActionResult> AddJourney([FromBody] CreateJourneyModel journeyModel) =>
+            Ok(await journeyService.AddJourneyAsync(journeyModel));
     }
 }

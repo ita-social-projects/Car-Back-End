@@ -6,9 +6,9 @@ namespace Car.Data.FluentValidation
     {
         public ModelValidator()
         {
-            RuleFor(model => model.Id).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(model => model.BrandId).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(model => model.Name).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
+            RuleFor(model => model.Id).GreaterThan(Constants.Constants.IdLength);
+            RuleFor(model => model.BrandId).GreaterThan(Constants.Constants.IdLength);
+            RuleFor(model => model.Name).NotNull().NotEmpty().MaximumLength(Constants.Constants.StringMaxLength);
             RuleFor(model => model.Brand).SetValidator(new BrandValidator());
         }
     }

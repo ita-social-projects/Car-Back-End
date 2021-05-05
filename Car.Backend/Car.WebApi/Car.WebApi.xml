@@ -102,6 +102,13 @@
             <param name="id">Journey identifier</param>
             <returns>recent addresses</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddJourney(Car.Domain.Models.Journey.CreateJourneyModel)">
+            <summary>
+            Adds the journey asynchronously.
+            </summary>
+            <param name="journeyModel">The journey model.</param>
+            <returns>Added journey.</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
             Gets all the locations by user id

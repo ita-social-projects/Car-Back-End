@@ -1,4 +1,5 @@
 ﻿using Car.Data;
+using Car.Data.Constants;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
@@ -7,12 +8,12 @@ namespace Car.Domain.FluentValidation
     {
         public UpdateCarModelValidator()
         {
-            RuleFor(car => car.Id).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(car => car.Id).GreaterThan(Constants.IdLength);
             RuleFor(car => car.Color).NotNull();
-            RuleFor(car => car.ModelId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(car => car.ModelId).GreaterThan(Constants.IdLength);
             RuleFor(car => car.PlateNumber).NotNull().NotEmpty()
-                                                     .MinimumLength(Constants.PLATENUMBER_MIN_LENGTH)
-                                                     .MaximumLength(Constants.PLATENUMBER_MAX_LENGTH);
+                                                     .MinimumLength(Constants.PlateNumberMinLength)
+                                                     .MaximumLength(Constants.PlateNumberMaxLength);
         }
     }
 }

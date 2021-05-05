@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Car.Data;
 using Car.Data.Constants;
 using Car.Domain.FluentValidation;
@@ -9,45 +9,13 @@ using Xunit;
 namespace Car.UnitTests.FluentValidationTests
 {
     [TestFixture]
-    public class JourneyModelValidatorTest
+    public class CreateJourneyModelValidatorTest
     {
-        private readonly JourneyModelValidator validator;
+        private readonly CreateJourneyModelValidator validator;
 
-        public JourneyModelValidatorTest()
+        public CreateJourneyModelValidatorTest()
         {
-            validator = new JourneyModelValidator();
-        }
-
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void Id_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void Id_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void RouteDistance_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.RouteDistance, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void RouteDistance_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.RouteDistance, value);
+            validator = new CreateJourneyModelValidator();
         }
 
         [Xunit.Theory]
@@ -59,7 +27,7 @@ namespace Car.UnitTests.FluentValidationTests
 
         [Xunit.Theory]
         [InlineData("2090-06-27")]
-        public void DepartureTime__IsSpecified_NotGeneratesValidationError(string value)
+        public void DepartureTime_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.DepartureTime, DateTime.Parse(value));
         }
@@ -67,8 +35,8 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        [InlineData(12)]
-        public void CountOfSeats__IsNotValid_GeneratesValidationError(int value)
+        [InlineData(5)]
+        public void CountOfSeats_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.CountOfSeats, value);
         }
@@ -82,10 +50,10 @@ namespace Car.UnitTests.FluentValidationTests
         }
 
         [Fact]
-        public void Comments__IsNotValid_GeneratesValidationError()
+        public void Comments_IsNotValid_GeneratesValidationError()
         {
-            string longCommnt = new string('*', Constants.CommentsMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.Comments, longCommnt);
+            var longComment = new string('*', Constants.CommentsMaxLength + 1);
+            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.Comments, longComment);
         }
 
         [Xunit.Theory]
@@ -100,7 +68,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void IsFree__IsSpecified_NotGeneratesValidationError(bool value)
+        public void IsFree_IsSpecified_NotGeneratesValidationError(bool value)
         {
             validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.IsFree, value);
         }
@@ -108,9 +76,41 @@ namespace Car.UnitTests.FluentValidationTests
         [Xunit.Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void IsOnOwnCar__IsSpecified_NotGeneratesValidationError(bool value)
+        public void IsOnOwnCar_IsSpecified_NotGeneratesValidationError(bool value)
         {
             validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.IsOnOwnCar, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void OrganizerId_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.OrganizerId, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        public void OrganizerId_IsSpecified_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.OrganizerId, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void CarId_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.CarId, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        public void CarId_IsSpecified_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.CarId, value);
         }
     }
 }
