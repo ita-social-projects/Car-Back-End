@@ -111,7 +111,7 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenCarExists_ReturnsNoContentResult()
+        public async Task DeleteAsync_WhenIsNotInJourney_ReturnsNoContentResult()
         {
             // Arrange
             var car = Fixture.Create<CarEntity>();
