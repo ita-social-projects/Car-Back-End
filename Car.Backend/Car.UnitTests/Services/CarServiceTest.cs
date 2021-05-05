@@ -194,5 +194,18 @@ namespace Car.UnitTests.Services
             // Assert
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarExist_ExecuteOnce()
+        {
+            // Arrange
+            var idCarToDelete = Fixture.Create<int>();
+
+            // Act
+            await carService.DeleteAsync(idCarToDelete);
+
+            // Assert
+            carRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
     }
 }

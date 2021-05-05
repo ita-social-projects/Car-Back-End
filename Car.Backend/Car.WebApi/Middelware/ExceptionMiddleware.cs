@@ -61,6 +61,19 @@ namespace Car.WebApi.Middelware
                     return context.Response.WriteAsync(responseContent);
                 }
 
+                if (exception is DbUpdateConcurrencyException)
+                {
+                    context.Response.StatusCode = 204;
+
+                    var responseContent = JsonConvert.SerializeObject(
+                        new
+                        {
+                            StatusCode = 204,
+                        });
+
+                    return context.Response.WriteAsync(responseContent);
+                }
+
                 if (exception is DbUpdateException)
                 {
                     context.Response.ContentType = "application/json";
@@ -70,7 +83,7 @@ namespace Car.WebApi.Middelware
                         new
                         {
                             StatusCode = 500,
-                            Message = "Database updating failed",
+                            Message = exception.InnerException.Message,
                             Severity = Severity.Error,
                         });
 
