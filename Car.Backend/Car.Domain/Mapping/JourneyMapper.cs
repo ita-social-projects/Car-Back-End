@@ -13,6 +13,7 @@ namespace Car.Domain.Mapping
             CreateMap<AddressDto, Address>().ReverseMap();
             CreateMap<JourneyModel, Journey>().ReverseMap();
             CreateMap<CreateJourneyModel, Journey>().ReverseMap();
+            CreateMap<CreateJourneyModel, JourneyModel>().ReverseMap();
             CreateMap<JourneyPoint, JourneyPointDto>().ReverseMap();
         }
     }
