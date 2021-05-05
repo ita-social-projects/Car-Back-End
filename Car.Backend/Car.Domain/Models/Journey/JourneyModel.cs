@@ -21,6 +21,8 @@ namespace Car.Domain.Models.Journey
 
         public bool IsFree { get; set; }
 
+        public bool IsOnOwnCar { get; set; }
+
         public Schedule Schedule { get; set; }
 
         public UserDto Organizer { get; set; }
@@ -28,6 +30,8 @@ namespace Car.Domain.Models.Journey
         public Data.Entities.Car Car { get; set; }
 
         public ICollection<UserDto> Participants { get; set; } = new List<UserDto>();
+
+        public ICollection<JourneyPointDto> JourneyPoints { get; set; } = new List<JourneyPointDto>();
 
         public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
     }

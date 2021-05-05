@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210501101827_AddIsOnOwnCar")]
+    partial class AddIsOnOwnCar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -461,32 +463,6 @@ namespace Car.Data.Migrations
                     b.HasIndex("OrganizerId");
 
                     b.ToTable("Journey");
-                });
-
-            modelBuilder.Entity("Car.Data.Entities.JourneyPoint", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Index")
-                        .HasColumnType("int");
-
-                    b.Property<int>("JourneyId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JourneyId");
-
-                    b.ToTable("JourneyPoints");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Location", b =>
@@ -8278,17 +8254,6 @@ namespace Car.Data.Migrations
                     b.Navigation("Organizer");
                 });
 
-            modelBuilder.Entity("Car.Data.Entities.JourneyPoint", b =>
-                {
-                    b.HasOne("Car.Data.Entities.Journey", "Journey")
-                        .WithMany("JourneyPoints")
-                        .HasForeignKey("JourneyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Journey");
-                });
-
             modelBuilder.Entity("Car.Data.Entities.Location", b =>
                 {
                     b.HasOne("Car.Data.Entities.Address", "Address")
@@ -8454,8 +8419,6 @@ namespace Car.Data.Migrations
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
                 {
                     b.Navigation("Chat");
-
-                    b.Navigation("JourneyPoints");
 
                     b.Navigation("Schedule");
 
