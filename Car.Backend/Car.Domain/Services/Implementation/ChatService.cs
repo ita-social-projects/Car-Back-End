@@ -74,7 +74,8 @@ namespace Car.Domain.Services.Implementation
                 .Union(user.ParticipantJourneys.Select(journey => journey.Chat))
                 .Except(new List<Chat>() { null });
 
-            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatModel>>(chats);
+            var result = mapper.Map<IEnumerable<Chat>, IEnumerable<ChatModel>>(chats);
+            return result.Count() == 0 ? null : result;
         }
 
         public async Task<Message> AddMessageAsync(Message message)

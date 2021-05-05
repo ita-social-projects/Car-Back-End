@@ -7,6 +7,7 @@ using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Models.Chat;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -110,10 +111,10 @@ namespace Car.UnitTests.Services
             user.OrganizerJourneys = organizerJourneys.ToList();
             user.ParticipantJourneys = participantJourneys.ToList();
 
-            var expectedChats = organizerJourneys.Select(j => j.Chat)
+            var chats = organizerJourneys.Select(j => j.Chat)
                 .Union(participantJourneys.Select(j => j.Chat))
                 .Except(new List<Chat>() { null });
-
+            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatModel>>(chats);
             userRepository.Setup(repo => repo.Query())
                 .Returns(users.AsQueryable().BuildMock().Object);
 

@@ -8,7 +8,7 @@ namespace Car.Domain.Mapping
     {
         public ChatMapper()
         {
-            CreateMap<Chat, ChatModel>();
+            CreateMap<Chat, ChatModel>().ReverseMap();
         }
     }
 }
