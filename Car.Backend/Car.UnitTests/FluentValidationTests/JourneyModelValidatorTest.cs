@@ -74,7 +74,7 @@ namespace Car.UnitTests.FluentValidationTests
 
         [Xunit.Theory]
         [InlineData(1)]
-        [InlineData(8)]
+        [InlineData(4)]
         public void CountOfSeats_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.CountOfSeats, value);
