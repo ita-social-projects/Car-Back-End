@@ -11,8 +11,7 @@ namespace Car.Data.EntityConfigurations
             builder.ToTable("Address");
 
             builder.HasKey(address => address.Id);
-            builder.Property(address => address.City).HasMaxLength(50).IsRequired();
-            builder.Property(address => address.Street).HasMaxLength(50).IsRequired();
+            builder.Property(address => address.Name).IsRequired();
         }
     }
 }
