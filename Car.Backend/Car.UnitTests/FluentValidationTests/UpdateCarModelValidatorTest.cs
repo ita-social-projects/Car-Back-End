@@ -1,4 +1,5 @@
 ﻿using Car.Data;
+using Car.Data.Constants;
 using Car.Data.Enums;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
@@ -68,7 +69,7 @@ namespace Car.UnitTests.FluentValidationTests
         [Fact]
         public void PlateNumber__IsNotValid_GeneratesValidationError()
         {
-            string longCommnt = new string('*', Constants.PLATENUMBER_MAX_LENGTH + 1);
+            string longCommnt = new string('*', Constants.PlateNumberMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(carModel => carModel.PlateNumber, longCommnt);
         }
 

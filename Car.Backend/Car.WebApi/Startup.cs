@@ -2,22 +2,13 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Car.Data.Entities;
 using Car.Data.FluentValidation;
 using Car.Domain.Configurations;
-using Car.Domain.Dto;
 using Car.Domain.FluentValidation;
-using Car.Domain.Models;
-using Car.Domain.Models.Car;
-using Car.Domain.Models.Journey;
-using Car.Domain.Models.Notification;
-using Car.Domain.Models.User;
 using Car.WebApi.Hubs;
 using Car.WebApi.ServiceExtension;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hangfire;
-using Hangfire.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -95,7 +86,10 @@ namespace Car.WebApi
                });
 
             services.AddMvc().AddFluentValidation(fvc =>
-                fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
+            {
+                fvc.RegisterValidatorsFromAssemblyContaining<AddressValidator>();
+                fvc.RegisterValidatorsFromAssemblyContaining<AddressDtoValidator>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
