@@ -12,7 +12,7 @@ namespace Car.Domain.FluentValidation
             RuleFor(journey => journey.Id).GreaterThan(Constants.ID_LENGTH);
             RuleFor(journey => journey.RouteDistance).NotNull().NotEmpty().GreaterThan(Constants.NUMBER_MIN);
             RuleFor(journey => journey.DepartureTime).GreaterThanOrEqualTo(DateTime.Now);
-            RuleFor(journey => journey.CountOfSeats).NotNull().NotEmpty().GreaterThan(Constants.NUMBER_MIN).LessThanOrEqualTo(Constants.SEATS_MAX_LENGTH);
+            RuleFor(journey => journey.CountOfSeats).NotNull().NotEmpty().GreaterThan(Constants.NUMBER_MIN).LessThanOrEqualTo(Constants.SEATS_MAX_COUNT);
             RuleFor(journey => journey.Comments).MaximumLength(Constants.COMMENTS_MAX_LENGTH);
             RuleFor(journey => journey.IsFree).NotNull();
             RuleFor(journey => journey.IsOnOwnCar).NotNull();

@@ -19,7 +19,7 @@
         public const int PLATENUMBER_MIN_LENGTH = 4;
         public const int PLATENUMBER_MAX_LENGTH = 10;
 
-        public const int SEATS_MAX_LENGTH = 8;
+        public const int SEATS_MAX_COUNT = 4;
 
         public const int COMMENTS_MAX_LENGTH = 100;
 
