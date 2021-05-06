@@ -1,20 +1,19 @@
-﻿using Car.Data;
-using Car.Data.Constants;
+﻿using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
 
-namespace Car.UnitTests.FluentValidationTests
+namespace Car.UnitTests.FluentValidationTests.Journey
 {
     [TestFixture]
-    public class BrandValidatorTest
+    public class ScheduleValidatorTest
     {
-        private readonly BrandValidator validator;
+        private readonly ScheduleValidator validator;
 
-        public BrandValidatorTest()
+        public ScheduleValidatorTest()
         {
-            validator = new BrandValidator();
+            validator = new ScheduleValidator();
         }
 
         [Xunit.Theory]
@@ -22,7 +21,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(-1)]
         public void Id_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(brand => brand.Id, value);
+            validator.ShouldHaveValidationErrorFor(schedule => schedule.Id, value);
         }
 
         [Xunit.Theory]
@@ -30,7 +29,7 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(10)]
         public void Id_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(brand => brand.Id, value);
+            validator.ShouldNotHaveValidationErrorFor(schedule => schedule.Id, value);
         }
 
         [Xunit.Theory]
@@ -38,21 +37,21 @@ namespace Car.UnitTests.FluentValidationTests
         [InlineData(null)]
         public void Name_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(brand => brand.Name, value);
+            validator.ShouldHaveValidationErrorFor(schedule => schedule.Name, value);
         }
 
         [Fact]
         public void Name_IsNotValid_GeneratesValidationError()
         {
             string longText = new string('*', Constants.StringMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(brand => brand.Name, longText);
+            validator.ShouldHaveValidationErrorFor(schedule => schedule.Name, longText);
         }
 
         [Xunit.Theory]
-        [InlineData("BrandName")]
+        [InlineData("Name")]
         public void Name_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(brand => brand.Name, value);
+            validator.ShouldNotHaveValidationErrorFor(schedule => schedule.Name, value);
         }
     }
 }

@@ -1,10 +1,9 @@
-﻿using Car.Data;
-using Car.Domain.FluentValidation;
+﻿using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
 
-namespace Car.UnitTests.FluentValidationTests
+namespace Car.UnitTests.FluentValidationTests.Address
 {
     [TestFixture]
     public class AddressDtoValidatorTest

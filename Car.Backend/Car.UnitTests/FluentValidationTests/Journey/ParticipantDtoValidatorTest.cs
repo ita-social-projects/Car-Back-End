@@ -3,7 +3,7 @@ using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
 
-namespace Car.UnitTests.FluentValidationTests
+namespace Car.UnitTests.FluentValidationTests.Journey
 {
     [TestFixture]
     public class ParticipantDtoValidatorTest
