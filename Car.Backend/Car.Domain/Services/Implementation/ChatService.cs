@@ -69,9 +69,9 @@ namespace Car.Domain.Services.Implementation
             var user = await userRepository.Query()
                 .IncludeChats()
                 .FirstOrDefaultAsync(u => u.Id == userId);
-            if (user is null) 
-            { 
-                return null; 
+            if (user is null)
+            {
+                return null;
             }
 
             var chats = user?.OrganizerJourneys.Select(journey => journey.Chat)
