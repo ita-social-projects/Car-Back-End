@@ -22,6 +22,6 @@ namespace Car.Domain.Models.Journey
 
         public ICollection<CreateJourneyPointModel> JourneyPoints { get; set; } = new List<CreateJourneyPointModel>();
 
-        public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
+        public ICollection<CreateStopModel> Stops { get; set; } = new List<CreateStopModel>();
     }
 }
