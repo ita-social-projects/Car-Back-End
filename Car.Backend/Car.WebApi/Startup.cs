@@ -83,8 +83,8 @@ namespace Car.WebApi
                    };
                });
 
-            services.AddMvc().AddFluentValidation(fvc =>
-                fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
+            services.AddMvc().AddFluentValidation();
+            services.AddFluentValidators();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
