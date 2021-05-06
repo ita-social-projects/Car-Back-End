@@ -69,13 +69,13 @@ namespace Car.Domain.Services.Implementation
             var user = await userRepository.Query()
                 .IncludeChats()
                 .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user is null) { return null; }
 
             var chats = user?.OrganizerJourneys.Select(journey => journey.Chat)
                 .Union(user.ParticipantJourneys.Select(journey => journey.Chat))
                 .Except(new List<Chat>() { null });
 
-            var result = mapper.Map<IEnumerable<Chat>, IEnumerable<ChatModel>>(chats);
-            return result.Count() == 0 ? null : result;
+            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatModel>>(chats);
         }
 
         public async Task<Message> AddMessageAsync(Message message)
