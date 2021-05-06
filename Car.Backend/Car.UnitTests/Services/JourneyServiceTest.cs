@@ -431,7 +431,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetFilteredJourneys(filter);
 
             // Assert
-            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedJourneys);
         }
     }
 }

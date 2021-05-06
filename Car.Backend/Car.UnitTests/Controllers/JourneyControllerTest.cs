@@ -200,17 +200,14 @@ namespace Car.UnitTests.Controllers
             var journeys = Fixture.Create<IEnumerable<Journey>>();
             var expectedResult = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
 
-            journeyService.Setup(j => j.GetFilteredJourneys(filterModel));
+            journeyService.Setup(j => j.GetFilteredJourneys(filterModel)).ReturnsAsync(expectedResult);
 
             // Act
             var result = await journeyController.GetFiltered(filterModel);
 
             // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().NotBeNull();
-            }
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().Be(expectedResult);
         }
     }
 }
