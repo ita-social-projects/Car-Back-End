@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Domain.Models.Car;
 using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;

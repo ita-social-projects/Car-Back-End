@@ -1,5 +1,4 @@
 using System;
-using Car.Data;
 using Car.Data.Constants;
 using Car.Domain.Models.Journey;
 using FluentValidation;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Car.Domain.Dto;
 
 namespace Car.Domain.Models.Journey
 {
