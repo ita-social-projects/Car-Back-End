@@ -10,7 +10,7 @@ namespace Car.Domain.FluentValidation
     {
         public CreateJourneyModelValidator()
         {
-            RuleFor(model => model.DepartureTime).GreaterThan(DateTime.Now);
+            RuleFor(model => model.DepartureTime).GreaterThan(DateTime.UtcNow);
             RuleFor(model => model.CountOfSeats)
                 .GreaterThan(Constants.NumberMin)
                 .LessThanOrEqualTo(Constants.SeatsMaxCount);
