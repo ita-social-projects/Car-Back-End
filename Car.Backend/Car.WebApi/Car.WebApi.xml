@@ -109,6 +109,13 @@
             <param name="journeyModel">The journey model.</param>
             <returns>Added journey.</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetFiltered(Car.Domain.Models.Journey.JourneyFilterModel)">
+            <summary>
+            Returns journeys filtered by given conditions.
+            </summary>
+            <param name="journeyFilterModel">Model that contains needed parameters to filter by</param>
+            <returns>Collection of filtered journeys.</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
             Gets all the locations by user id
