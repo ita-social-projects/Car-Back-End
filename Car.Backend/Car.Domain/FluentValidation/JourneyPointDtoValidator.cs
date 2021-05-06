@@ -1,4 +1,3 @@
-using Car.Data;
 using Car.Data.Constants;
 using FluentValidation;
 

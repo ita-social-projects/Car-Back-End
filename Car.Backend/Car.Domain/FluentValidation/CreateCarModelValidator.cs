@@ -1,5 +1,4 @@
-﻿using Car.Data;
-using Car.Data.Constants;
+﻿using Car.Data.Constants;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
