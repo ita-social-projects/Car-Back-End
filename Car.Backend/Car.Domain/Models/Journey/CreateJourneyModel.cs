@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Car.Domain.Dto;
 
 namespace Car.Domain.Models.Journey
 {
@@ -20,8 +19,8 @@ namespace Car.Domain.Models.Journey
 
         public bool IsOnOwnCar { get; set; }
 
-        public ICollection<JourneyPointDto> JourneyPoints { get; set; } = new List<JourneyPointDto>();
+        public ICollection<CreateJourneyPointModel> JourneyPoints { get; set; } = new List<CreateJourneyPointModel>();
 
-        public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
+        public ICollection<CreateStopModel> Stops { get; set; } = new List<CreateStopModel>();
     }
 }

@@ -2,9 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Car.Data.FluentValidation;
 using Car.Domain.Configurations;
-using Car.Domain.FluentValidation;
 using Car.WebApi.Hubs;
 using Car.WebApi.ServiceExtension;
 using FluentValidation.AspNetCore;
@@ -85,11 +83,8 @@ namespace Car.WebApi
                    };
                });
 
-            services.AddMvc().AddFluentValidation(fvc =>
-            {
-                fvc.RegisterValidatorsFromAssemblyContaining<AddressValidator>();
-                fvc.RegisterValidatorsFromAssemblyContaining<AddressDtoValidator>();
-            });
+            services.AddMvc().AddFluentValidation();
+            services.AddFluentValidators();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

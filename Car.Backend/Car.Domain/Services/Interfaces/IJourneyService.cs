@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Models.Journey;
 

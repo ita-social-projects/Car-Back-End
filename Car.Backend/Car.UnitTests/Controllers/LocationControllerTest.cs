@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
