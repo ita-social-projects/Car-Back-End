@@ -15,5 +15,7 @@ namespace Car.Domain.Models.Journey
         public bool HasLuggage { get; set; }
 
         public FeeType Fee { get; set; }
+
+        public int PassengersCount { get; set; }
     }
 }
