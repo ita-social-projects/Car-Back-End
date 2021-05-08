@@ -416,5 +416,22 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().BeNull();
         }
+
+        [Fact]
+        public async Task GetFilteredJourneys_ReturnsJourneyCollection()
+        {
+            // Arrange
+            var filter = Fixture.Create<JourneyFilterModel>();
+            var expectedJourneys = new List<Journey>();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(expectedJourneys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetFilteredJourneys(filter);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedJourneys);
+        }
     }
 }

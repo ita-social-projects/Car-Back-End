@@ -108,5 +108,17 @@ namespace Car.Domain.Services.Implementation
 
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
+
+        public async Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter)
+        {
+            // filtering algorithm implementation is in progress
+            var journeys = await journeyRepository
+                .Query()
+                .IncludeAllParticipants()
+                .IncludeStopsWithAddresses()
+                .ToListAsync();
+
+            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
+        }
     }
 }
