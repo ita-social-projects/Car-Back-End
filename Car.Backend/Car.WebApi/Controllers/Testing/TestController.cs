@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
