@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
 using Car.Domain.Exceptions;
@@ -42,61 +43,94 @@ namespace Car.WebApi.Middelware
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             logger.LogInformation("Handle error!");
+
+            string responseMessage = "Internal server error";
+            string logMessage = exception.Message;
+            Dictionary<Type, ResponseInformation> exceptions = GenerateExceptionsDictionary(exception);
+
             if (env.IsDevelopment())
             {
-                if (exception is DefaultApplicationException appException)
+                ResponseInformation responseInformation = new ResponseInformation();
+                if (exceptions.TryGetValue(exception.GetType(), out responseInformation))
                 {
-                    context.Response.ContentType = "application/json";
-                    context.Response.StatusCode = appException.StatusCode;
-
-                    var responseContent = JsonConvert.SerializeObject(
-                        new
-                        {
-                            appException.StatusCode,
-                            appException.Message,
-                            appException.Severity,
-                        });
-
-                    logger.LogError(responseContent);
-                    return context.Response.WriteAsync(responseContent);
+                    logMessage = responseInformation.LogMessage;
+                    responseMessage = responseInformation.ResponseMessage;
+                    context.Response.ContentType = responseInformation.ContentType;
+                    context.Response.StatusCode = responseInformation.StatusCode;
                 }
-
-                if (exception is DbUpdateConcurrencyException)
-                {
-                    context.Response.StatusCode = 204;
-
-                    var responseContent = JsonConvert.SerializeObject(
-                        new
-                        {
-                            StatusCode = 204,
-                        });
-
-                    return context.Response.WriteAsync(responseContent);
-                }
-
-                if (exception is DbUpdateException)
-                {
-                    context.Response.ContentType = "application/json";
-                    context.Response.StatusCode = 500;
-
-                    var responseContent = JsonConvert.SerializeObject(
-                        new
-                        {
-                            StatusCode = 500,
-                            Message = exception.InnerException.Message,
-                            Severity = Severity.Error,
-                        });
-
-                    logger.LogError(responseContent);
-                    return context.Response.WriteAsync(responseContent);
-                }
-
-                logger.LogError(exception.Message);
-                return context.Response.WriteAsync(JsonConvert.SerializeObject(exception));
             }
 
-            logger.LogError(exception.Message);
-            return context.Response.WriteAsync("Internal server error");
+            logger.LogError(logMessage);
+            return context.Response.WriteAsync(responseMessage);
+        }
+
+        private Dictionary<Type, ResponseInformation> GenerateExceptionsDictionary(Exception exception)
+        {
+            DefaultApplicationException defaultApplicationException = exception as DefaultApplicationException;
+            return new Dictionary<Type, ResponseInformation>
+            {
+                {
+                    typeof(DbUpdateConcurrencyException),
+                    new ResponseInformation()
+                    {
+                        LogMessage = JsonConvert.SerializeObject(
+                            new
+                            {
+                                StatusCode = 204,
+                            }),
+                        ResponseMessage = JsonConvert.SerializeObject(
+                            new
+                            {
+                                StatusCode = 204,
+                            }),
+                        StatusCode = 204,
+                    }
+                },
+                {
+                    typeof(DbUpdateException),
+                    new ResponseInformation()
+                    {
+                        LogMessage = JsonConvert.SerializeObject(
+                            new
+                            {
+                                StatusCode = 500,
+                                exception.InnerException?.Message,
+                                Severity = Severity.Error,
+                            }),
+                        ResponseMessage = JsonConvert.SerializeObject(
+                            new
+                            {
+                                StatusCode = 500,
+                                exception.InnerException?.Message,
+                                Severity = Severity.Error,
+                            }),
+                        StatusCode = 500,
+                        ContentType = "application/json",
+                    }
+                },
+                {
+                    typeof(DefaultApplicationException),
+                    new ResponseInformation()
+                    {
+                        LogMessage = JsonConvert.SerializeObject(
+                            new
+                            {
+                                defaultApplicationException?.StatusCode,
+                                defaultApplicationException?.Message,
+                                defaultApplicationException?.Severity,
+                            }),
+                        ResponseMessage = JsonConvert.SerializeObject(
+                            new
+                            {
+                                defaultApplicationException?.StatusCode,
+                                defaultApplicationException?.Message,
+                                defaultApplicationException?.Severity,
+                            }),
+                        StatusCode = (exception is DefaultApplicationException ex) ? ex.StatusCode : 200,
+                        ContentType = "application/json",
+                    }
+                },
+            };
         }
     }
 }

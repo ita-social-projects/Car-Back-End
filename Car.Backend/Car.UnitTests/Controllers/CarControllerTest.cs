@@ -120,11 +120,8 @@ namespace Car.UnitTests.Controllers
             var result = await carController.DeleteAsync(car.Id);
 
             // Assert
-            using (new AssertionScope())
-            {
-                carService.Verify(service => service.DeleteAsync(car.Id), Times.Once());
-                result.Should().BeOfType<NoContentResult>();
-            }
+            carService.Verify(service => service.DeleteAsync(car.Id), Times.Once());
+            result.Should().BeOfType<NoContentResult>();
         }
 
         [Fact]
