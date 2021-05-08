@@ -14,5 +14,7 @@ namespace Car.Domain.Services.Interfaces
         Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId);
 
         Task<CarEntity> UpdateCarAsync(UpdateCarModel updateCarModel);
+
+        Task DeleteAsync(int carId);
     }
 }
