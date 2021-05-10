@@ -17,9 +17,9 @@ namespace Car.UnitTests.Base
             Fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             Fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            Mapper = new Mapper(new MapperConfiguration(
-                (options) => options.AddProfiles(
-                    new List<Profile>() { new JourneyMapper(), new CarMapper(), new UserMapper(), new NotificationMapper(), new LocationMapper() })));
+            Mapper = new Mapper(new MapperConfiguration(options =>
+                options.AddProfiles(new List<Profile>
+                    { new JourneyMapper(), new CarMapper(), new UserMapper(), new NotificationMapper(), new ChatMapper(), new MessageMapper(), new LocationMapper() })));
         }
     }
 }

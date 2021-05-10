@@ -382,5 +382,56 @@ namespace Car.UnitTests.Services
             // Assert
             journeyRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<List<Journey>>()), Times.Once);
         }
+
+        [Fact]
+        public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject()
+        {
+            // Arrange
+            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
+            var addedJourney = Mapper.Map<CreateJourneyModel, Journey>(createJourneyModel);
+            var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
+
+            journeyRepository.Setup(r =>
+                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
+
+            // Act
+            var result = await journeyService.AddJourneyAsync(createJourneyModel);
+
+            // Assert
+            result.Should().BeEquivalentTo(journeyModel, options => options.ExcludingMissingMembers());
+        }
+
+        [Fact]
+        public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject()
+        {
+            // Arrange
+            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
+
+            journeyRepository.Setup(r =>
+                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
+
+            // Act
+            var result = await journeyService.AddJourneyAsync(createJourneyModel);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task GetFilteredJourneys_ReturnsJourneyCollection()
+        {
+            // Arrange
+            var filter = Fixture.Create<JourneyFilterModel>();
+            var expectedJourneys = new List<Journey>();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(expectedJourneys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetFilteredJourneys(filter);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedJourneys);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Car.Data;
+﻿using Car.Data.Constants;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
@@ -7,8 +7,8 @@ namespace Car.Domain.FluentValidation
     {
         public ParticipantDtoValidator()
         {
-            RuleFor(participant => participant.JourneyId).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(participant => participant.UserId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(participant => participant.JourneyId).GreaterThan(Constants.IdLength);
+            RuleFor(participant => participant.UserId).GreaterThan(Constants.IdLength);
             RuleFor(participant => participant.HasLuggage).NotNull();
         }
     }

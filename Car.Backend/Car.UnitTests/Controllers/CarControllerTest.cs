@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Exceptions;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -9,6 +11,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using CarEntity = Car.Data.Entities.Car;
@@ -105,6 +108,48 @@ namespace Car.UnitTests.Controllers
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(expectedCar);
             }
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarIsNotInJourney_ReturnsNoContentResult()
+        {
+            // Arrange
+            var car = Fixture.Create<CarEntity>();
+
+            // Act
+            var result = await carController.DeleteAsync(car.Id);
+
+            // Assert
+            carService.Verify(service => service.DeleteAsync(car.Id), Times.Once());
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarNotExists_ThrowDbUpdateConcurrencyException()
+        {
+            // Arrange
+            var car = Fixture.Create<CarEntity>();
+            carService.Setup(service => service.DeleteAsync(car.Id)).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = carService.Invoking(service => service.Object.DeleteAsync(car.Id));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException()
+        {
+            // Arrange
+            var car = Fixture.Create<CarEntity>();
+            carService.Setup(service => service.DeleteAsync(car.Id)).Throws<DbUpdateException>();
+
+            // Act
+            var result = carService.Invoking(service => service.Object.DeleteAsync(car.Id));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateException>();
         }
     }
 }

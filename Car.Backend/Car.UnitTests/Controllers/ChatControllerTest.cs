@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Models.Chat;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -31,7 +32,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = Fixture.Create<User>();
-            var chats = Fixture.Create<List<Chat>>();
+            var chats = Fixture.Create<List<ChatModel>>();
 
             chatService.Setup(x => x.GetUserChatsAsync(It.IsAny<int>()))
                 .ReturnsAsync(chats);
@@ -50,7 +51,7 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var user = Fixture.Create<User>();
             chatService.Setup(x => x.GetUserChatsAsync(It.IsAny<int>()))
-                .ReturnsAsync((List<Chat>)null);
+                .ReturnsAsync((List<ChatModel>)null);
 
             // Act
             var result = await chatController.GetUserChats(user.Id);

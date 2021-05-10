@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.Internal;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
@@ -94,6 +95,30 @@ namespace Car.Domain.Services.Implementation
 
             await journeyRepository.DeleteRangeAsync(journeysToDelete);
             await journeyRepository.SaveChangesAsync();
+        }
+
+        public async Task<JourneyModel> AddJourneyAsync(CreateJourneyModel journeyModel)
+        {
+            journeyModel.Stops.ForAll(stop => stop.UserId = journeyModel.OrganizerId);
+
+            var journey = mapper.Map<CreateJourneyModel, Journey>(journeyModel);
+
+            var addedJourney = await journeyRepository.AddAsync(journey);
+            await journeyRepository.SaveChangesAsync();
+
+            return mapper.Map<Journey, JourneyModel>(addedJourney);
+        }
+
+        public async Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter)
+        {
+            // filtering algorithm implementation is in progress
+            var journeys = await journeyRepository
+                .Query()
+                .IncludeAllParticipants()
+                .IncludeStopsWithAddresses()
+                .ToListAsync();
+
+            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
     }
 }

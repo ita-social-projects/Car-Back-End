@@ -7,13 +7,14 @@ namespace Car.Data.FluentValidation
     {
         public JourneyValidator()
         {
-            RuleFor(journey => journey.Id).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(journey => journey.RouteDistance).NotNull().GreaterThan(Constants.NUMBER_MIN);
+            RuleFor(journey => journey.Id).GreaterThan(Constants.Constants.IdLength);
+            RuleFor(journey => journey.RouteDistance).NotNull().GreaterThan(Constants.Constants.NumberMin);
             RuleFor(journey => journey.DepartureTime).GreaterThanOrEqualTo(DateTime.Now);
-            RuleFor(journey => journey.CountOfSeats).NotNull().GreaterThan(Constants.NUMBER_MIN).LessThanOrEqualTo(Constants.SEATS_MAX_LENGTH);
-            RuleFor(journey => journey.Comments).MaximumLength(Constants.COMMENTS_MAX_LENGTH);
+            RuleFor(journey => journey.CountOfSeats).NotNull().GreaterThan(Constants.Constants.NumberMin).LessThanOrEqualTo(Constants.Constants.SeatsMaxCount);
+            RuleFor(journey => journey.Comments).MaximumLength(Constants.Constants.CommentsMaxLength);
             RuleFor(journey => journey.IsFree).NotNull();
-            RuleFor(journey => journey.OrganizerId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(journey => journey.IsOnOwnCar).NotNull();
+            RuleFor(journey => journey.OrganizerId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(journey => journey.Car).NotNull().SetValidator(new CarValidator());
             RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator());
             RuleFor(journey => journey.Organizer).NotNull().SetValidator(new UserValidator());
