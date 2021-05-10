@@ -1,7 +1,7 @@
 # ASP.NET CORE
 
 trigger:
-- master
+- azure_test_feature
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -21,7 +21,12 @@ steps:
     command: 'test'
     projects: 'Car.Backend/Car.UnitTests/Car.UnitTests.csproj'
     publishTestResults: false
-    
+
+- task: DownloadSecureFile@1
+  name: appSettings
+  inputs:
+    secureFile: 'appSettings.appsettings.Development.json'
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
