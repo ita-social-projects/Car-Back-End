@@ -24,6 +24,8 @@
         public const int COMMENTS_MAX_LENGTH = 100;
 
         public const int TEXT_MAX_LENGTH = 500;
+
+        public const int LocationNameMaxLength = 15;
 #pragma warning restore SA1310 // Field names should not contain underscore
 
     }

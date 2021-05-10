@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Models.Location;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -24,7 +25,7 @@ namespace Car.UnitTests.Services
         public LocationServiceTest()
         {
             locationRepository = new Mock<IRepository<Location>>();
-            locationService = new LocationService(locationRepository.Object);
+            locationService = new LocationService(locationRepository.Object, Mapper);
         }
 
         [Fact]
@@ -103,29 +104,30 @@ namespace Car.UnitTests.Services
         public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject()
         {
             // Arrange
-            var location = Fixture.Create<Location>();
+            var createLocationModel = Fixture.Create<CreateLocationModel>();
+            var location = Mapper.Map<CreateLocationModel, Location>(createLocationModel);
 
-            locationRepository.Setup(repo => repo.AddAsync(location))
+            locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync(location);
 
             // Act
-            var result = await locationService.AddLocationAsync(location);
+            var result = await locationService.AddLocationAsync(createLocationModel);
 
             // Assert
-            result.Should().BeEquivalentTo(location);
+            result.Should().BeEquivalentTo(createLocationModel, options => options.ExcludingMissingMembers());
         }
 
         [Fact]
         public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull()
         {
             // Arrange
-            var location = Fixture.Create<Location>();
+            var createLocationModel = Fixture.Create<CreateLocationModel>();
 
-            locationRepository.Setup(repo => repo.AddAsync(location))
+            locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync((Location)null);
 
             // Act
-            var result = await locationService.AddLocationAsync(location);
+            var result = await locationService.AddLocationAsync(createLocationModel);
 
             // Assert
             result.Should().BeNull();
