@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.Internal;
 using Car.Data.Entities;
+using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
+using Geolocation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
@@ -111,14 +113,38 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter)
         {
-            // filtering algorithm implementation is in progress
             var journeys = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
+                .IncludeJourneyPoints()
                 .ToListAsync();
 
-            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
+            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys.Where(j => IsSuitable(j, filter)));
+        }
+
+        private bool IsSuitable(Journey journey, JourneyFilterModel filter)
+        {
+            bool isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
+
+            bool isDepartureTimeSuitable = journey.DepartureTime < filter.DepartureTime.AddHours(1)
+                                       && journey.DepartureTime > filter.DepartureTime.AddHours(-1);
+
+            bool isFeeSuitable = (journey.IsFree && filter.Fee == FeeType.Free)
+                              || (!journey.IsFree && filter.Fee == FeeType.Paid)
+                              || (filter.Fee == FeeType.All);
+
+            if (!isEnoughSeats || !isDepartureTimeSuitable || !isFeeSuitable)
+            {
+                return false;
+            }
+
+            Func<JourneyPoint, AddressDto, double> distance = (JourneyPoint address1, AddressDto address2) =>
+                GeoCalculator.GetDistance(address1.Latitude, address2.Longitude, address2.Latitude, address2.Longitude, 1, DistanceUnit.Kilometers);
+
+            var pointsFromStart = journey.JourneyPoints.OrderBy(p => p.Index).SkipWhile(p => distance(p, filter.FromStop.Address) < 1);
+
+            return pointsFromStart.Count() > 0 && pointsFromStart.Any(p => distance(p, filter.ToStop.Address) < 1);
         }
     }
 }
