@@ -26,7 +26,7 @@ steps:
 - task: DownloadSecureFile@1
   name: appSettings
   inputs:
-    secureFile: 'appSettings.appsettings.Development.json'
+    secureFile: 'appsettings.Development.json'
 
 - task: DotNetCoreCLI@2
   inputs:
