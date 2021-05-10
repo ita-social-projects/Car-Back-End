@@ -22,12 +22,21 @@ steps:
     command: 'test'
     projects: 'Car.Backend/Car.UnitTests/Car.UnitTests.csproj'
     publishTestResults: false
-
+    
 - task: DownloadSecureFile@1
   name: appSettings
   inputs:
+    secureFile: 'appsettings.json'
+
+- task: DownloadSecureFile@1
+  name: appSettingsDev
+  inputs:
     secureFile: 'appsettings.Development.json'
 
+- task: DownloadSecureFile@1
+  name: appSettingsProd
+  inputs:
+    secureFile: 'appsettings.Production.json'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
