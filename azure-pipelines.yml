@@ -96,7 +96,7 @@ steps:
   inputs:
     SourceFolder: '$(Build.StagingDirectory)'
     Contents: |
-      *.zip
+      Car.WebApi.zip
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
     OverWrite: false
     flattenFolders: true
@@ -108,5 +108,5 @@ steps:
    
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/Car.WebApi.zip'
     artifactName: 'Car.BackEnd'
