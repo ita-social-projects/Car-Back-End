@@ -39,13 +39,13 @@ steps:
     secureFile: 'appsettings.Production.json'
     
 - task: CopyFiles@2
-  displayName: 'Copy Files to: $(root_file_path)'
+  displayName: 'Copy Files to: root directory'
   inputs:
     Contents: |
       appsettings.json
       appsettings.Development.json
       appsettings.Production.json
-    TargetFolder: '$(root_file_path)'    
+    TargetFolder: '**/'    
     
 - task: DotNetCoreCLI@2
   inputs:
