@@ -57,7 +57,7 @@ steps:
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
-      CarWebApi.zip
+      *
     TargetFolder: '$(Build.SourcesDirectory)/'    
     OverWrite: true
     flattenFolders: true
