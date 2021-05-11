@@ -77,9 +77,10 @@ steps:
 - task: PowerShell@2 #Delete PrescQIPPWebApp folder
   inputs:
     targetType: 'inline'
-    script: 'Remove-Item -path ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'' 
+    script: 'Remove-Item -path ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Publish'
   inputs:
     command: publish
     publishWebProjects: True
