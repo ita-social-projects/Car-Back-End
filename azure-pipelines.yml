@@ -101,10 +101,10 @@ steps:
     OverWrite: false
     flattenFolders: true
 
-# #Deleting CarTemp
-# - task: DeleteFiles@1
-#   inputs:
-#     SourceFolder: '$(Build.ArtifactStagingDirectory)/CarTemp'  
+#Deleting CarTemp
+- task: DeleteFiles@1
+  inputs:
+    SourceFolder: '$(Build.StagingDirectory)/Car.WebApi'  
    
 - task: PublishBuildArtifacts@1
   inputs:
