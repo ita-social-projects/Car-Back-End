@@ -91,7 +91,7 @@ steps:
     archiveFile: '$(Build.StagingDirectory).zip'
     replaceExistingArchive: true
 
- task: CopyFiles@2
+- task: CopyFiles@2
   displayName: 'Copy Files to: root directory'
   inputs:
     SourceFolder: '$(Build.StagingDirectory)'
