@@ -11,6 +11,9 @@ variables:
   buildConfiguration: 'Release'
   
 steps:
+
+- task: NuGetToolInstaller@1
+
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
@@ -18,41 +21,73 @@ steps:
     feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Running tests'
   inputs:
     command: 'test'
     projects: 'Car.Backend/Car.UnitTests/Car.UnitTests.csproj'
     publishTestResults: false
-    
-- task: DownloadSecureFile@1
-  name: appSettings
-  inputs:
-    secureFile: 'appsettings.json'
 
-- task: DownloadSecureFile@1
-  name: appSettingsDev
-  inputs:
-    secureFile: 'appsettings.Development.json'
-
-- task: DownloadSecureFile@1
-  name: appSettingsProd
-  inputs:
-    secureFile: 'appsettings.Production.json'
-    
-- task: CopyFiles@2
-  displayName: 'Copy Files to: root directory'
-  inputs:
-    Contents: |
-      appsettings.json
-      appsettings.Development.json
-      appsettings.Production.json
-    TargetFolder: '**/'    
-    
 - task: DotNetCoreCLI@2
+  displayName: 'Building'
   inputs:
     command: 'build'
     projects: 'Car.Backend/Car.WebApi/Car.WebApi.csproj'
 
+#Extract PrescQIPPWebApp.zip file to $(Build.ArtifactStagingDirectory)/PrescQIPPWebApp folder
+- task: ExtractFiles@1
+  inputs:
+    archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'
+    destinationFolder: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'
+    cleanDestinationFolder: false
+    overwriteExistingFiles: false
+
+#Delete PrescQIPPWebApp.zip file
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'Remove-Item ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'''
+
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'appsettings.json'
+
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'appsettings.Development.json'
+
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'appsettings.Production.json'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: root directory'
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: |
+      appsettings.json
+      appsettings.Development.json
+      appsettings.Production.json
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp/config/secret'    
+    OverWrite: true
+    flattenFolders: true
+    
+#Archive file to PrescQIPPWebApp.zip
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'
+    replaceExistingArchive: true
+    
+#Delete PrescQIPPWebApp folder
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'Remove-Item -path ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'' 
+
 - task: DotNetCoreCLI@2
+  displayName: 'Publishing'
   inputs:
     command: publish
     publishWebProjects: True
