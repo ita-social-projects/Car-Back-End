@@ -36,14 +36,14 @@ steps:
     Contents: |
       CarWebApi.zip
     TargetFolder: '$(Build.SourcesDirectory)/'    
-    OverWrite: true
+    OverWrite: false
     flattenFolders: true
     
 - task: ExtractFiles@1
   inputs:
     archiveFilePatterns: '**/*.zip'
     cleanDestinationFolder: false
-    overwriteExistingFiles: true
+    overwriteExistingFiles: false
     
 - task: DeleteFiles@1
   inputs:
@@ -58,7 +58,7 @@ steps:
       appsettings.Development.json
       appsettings.Production.json
     TargetFolder: '$(Build.StagingDirectory)/'    
-    OverWrite: true
+    OverWrite: false
     flattenFolders: true
 
     
