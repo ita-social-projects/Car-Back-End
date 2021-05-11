@@ -99,9 +99,8 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<JourneyModel> AddJourneyAsync(CreateJourneyModel journeyModel)
         {
-            journeyModel.Stops.ForAll(stop => stop.UserId = journeyModel.OrganizerId);
-
             var journey = mapper.Map<CreateJourneyModel, Journey>(journeyModel);
+            journey.Duration = TimeSpan.FromMinutes(journeyModel.DurationInMinutes);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
