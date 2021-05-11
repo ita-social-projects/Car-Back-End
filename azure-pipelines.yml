@@ -80,7 +80,6 @@ steps:
     script: 'Remove-Item -path ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'' 
 
 - task: DotNetCoreCLI@2
-  displayName: 'Publishing'
   inputs:
     command: publish
     publishWebProjects: True
