@@ -24,20 +24,6 @@ steps:
     msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\\"'
     platform: 'Any CPU'
     configuration: 'Release'
-    
-#Extract PrescQIPPWebApp.zip file to $(Build.ArtifactStagingDirectory)/PrescQIPPWebApp folder
-- task: ExtractFiles@1 
-  inputs:
-    archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/Car.WebApi.zip'
-    destinationFolder: '$(Build.ArtifactStagingDirectory)/Car.BackEnd'
-    cleanDestinationFolder: false
-    overwriteExistingFiles: false
-    
-#Delete PrescQIPPWebApp.zip file
-- task: PowerShell@2 
-  inputs:
-    targetType: 'inline'
-    script: 'Remove-Item ''$(Build.ArtifactStagingDirectory)/Car.WebApi.zip'''
 
 - task: DownloadSecureFile@1
   inputs:
