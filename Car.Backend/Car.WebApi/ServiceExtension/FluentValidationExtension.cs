@@ -1,5 +1,6 @@
 using Car.Domain.FluentValidation;
 using Car.Domain.Models.Journey;
+using Car.Domain.Models.Location;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 

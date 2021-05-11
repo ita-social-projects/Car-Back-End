@@ -1,16 +1,15 @@
 ﻿using Car.Data.Entities;
+using Car.Domain.Dto;
 
-namespace Car.Domain.Dto
+namespace Car.Domain.Models.Location
 {
-    public class LocationDto
+    public class CreateLocationModel
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
-        public LocationType Type { get; set; }
-
         public AddressDto Address { get; set; }
+
+        public int TypeId { get; set; }
 
         public int UserId { get; set; }
     }

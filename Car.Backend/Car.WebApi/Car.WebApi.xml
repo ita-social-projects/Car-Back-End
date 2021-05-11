@@ -123,14 +123,14 @@
             <param name="id">The location identifier.</param>
             <returns>All user's locations</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.AddLocation(Car.Data.Entities.Location)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Models.Location.CreateLocationModel)">
             <summary>
             Adds the location.
             </summary>
             <param name="location">The location.</param>
             <returns>New location</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.GetLocationById(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Get(System.Int32)">
             <summary>
             Gets the location by identifier.
             </summary>
