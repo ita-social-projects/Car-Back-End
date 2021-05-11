@@ -9,21 +9,21 @@ variables:
   
 steps:
 
-- task: NuGetToolInstaller@1
+# - task: NuGetToolInstaller@1
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '**/*.sln'
-    feedsToUse: 'select'
+# - task: NuGetCommand@2
+#   inputs:
+#     command: 'restore'
+#     restoreSolution: '**/*.sln'
+#     feedsToUse: 'select'
 
-- task: VSBuild@1
-  displayName: 'Building'
-  inputs:
-    solution: '**/*.sln'
-    msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\\"'
-    platform: 'Any CPU'
-    configuration: 'Release'
+# - task: VSBuild@1
+#   displayName: 'Building'
+#   inputs:
+#     solution: '**/*.sln'
+#     msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\\"'
+#     platform: 'Any CPU'
+#     configuration: 'Release'
 
 - task: DownloadSecureFile@1
   inputs:
