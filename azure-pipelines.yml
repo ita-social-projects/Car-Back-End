@@ -57,7 +57,9 @@ steps:
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
-      *
+      appsettings.json
+      appsettings.Development.json
+      appsettings.Production.json
     TargetFolder: '$(Build.StagingDirectory)/'    
     OverWrite: true
     flattenFolders: true
