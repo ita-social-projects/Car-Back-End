@@ -1,4 +1,5 @@
 ﻿using Car.Data;
+using Car.Data.Constants;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
@@ -9,8 +10,8 @@ namespace Car.Domain.FluentValidation
         {
             RuleFor(location => location.Address).SetValidator(new AddressDtoValidator());
             RuleFor(location => location.Name).MaximumLength(Constants.LocationNameMaxLength);
-            RuleFor(location => location.TypeId).NotNull();
-            RuleFor(location => location.UserId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(location => location.TypeId).GreaterThan(Constants.IdLength);
+            RuleFor(location => location.UserId).GreaterThan(Constants.IdLength);
         }
     }
 }

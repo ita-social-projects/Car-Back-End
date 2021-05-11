@@ -75,7 +75,7 @@ namespace Car.UnitTests.Controllers
             locationService.Setup(service => service.GetLocationByIdAsync(location.Id)).ReturnsAsync(location);
 
             // Act
-            var result = await locationController.GetLocationById(location.Id);
+            var result = await locationController.Get(location.Id);
 
             // Assert
             using (new AssertionScope())

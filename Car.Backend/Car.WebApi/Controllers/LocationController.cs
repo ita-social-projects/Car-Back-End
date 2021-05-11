@@ -41,7 +41,7 @@ namespace Car.WebApi.Controllers
         /// <param name="id">The location identifier.</param>
         /// <returns>The location entity</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetLocationById(int id) =>
+        public async Task<IActionResult> Get(int id) =>
             Ok(await locationService.GetLocationByIdAsync(id));
     }
 }
