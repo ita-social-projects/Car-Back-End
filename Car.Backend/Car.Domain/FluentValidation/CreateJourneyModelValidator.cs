@@ -20,6 +20,8 @@ namespace Car.Domain.FluentValidation
             RuleFor(model => model.IsOnOwnCar).NotNull();
             RuleForEach(model => model.JourneyPoints).SetValidator(new CreateJourneyPointModelValidator());
             RuleForEach(model => model.Stops).SetValidator(new CreateStopModelValidator());
+            RuleFor(model => model.DurationInMinutes).GreaterThan(Constants.NumberMin);
+            RuleFor(model => model.RouteDistance).GreaterThan(Constants.NumberMin);
         }
     }
 }
