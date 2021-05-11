@@ -1,6 +1,3 @@
-# ASP.NET CORE
-#a
-
 trigger:
 - azure_test_feature
 
@@ -33,16 +30,14 @@ steps:
     command: 'build'
     projects: 'Car.Backend/Car.WebApi/Car.WebApi.csproj'
 
-#Extract PrescQIPPWebApp.zip file to $(Build.ArtifactStagingDirectory)/PrescQIPPWebApp folder
-- task: ExtractFiles@1
+- task: ExtractFiles@1 #Extract PrescQIPPWebApp.zip file to $(Build.ArtifactStagingDirectory)/PrescQIPPWebApp folder
   inputs:
     archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'
     destinationFolder: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'
     cleanDestinationFolder: false
     overwriteExistingFiles: false
 
-#Delete PrescQIPPWebApp.zip file
-- task: PowerShell@2
+- task: PowerShell@2 #Delete PrescQIPPWebApp.zip file
   inputs:
     targetType: 'inline'
     script: 'Remove-Item ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'''
@@ -71,8 +66,7 @@ steps:
     OverWrite: true
     flattenFolders: true
     
-#Archive file to PrescQIPPWebApp.zip
-- task: ArchiveFiles@2
+- task: ArchiveFiles@2 #Archive file to PrescQIPPWebApp.zip
   inputs:
     rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'
     includeRootFolder: true
@@ -80,8 +74,7 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'
     replaceExistingArchive: true
     
-#Delete PrescQIPPWebApp folder
-- task: PowerShell@2
+- task: PowerShell@2 #Delete PrescQIPPWebApp folder
   inputs:
     targetType: 'inline'
     script: 'Remove-Item -path ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'' 
