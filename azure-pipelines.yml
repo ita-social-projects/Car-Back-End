@@ -2,20 +2,12 @@ trigger:
 - azure_test_feature
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
   buildConfiguration: 'Release'
   
 steps:
-
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '**/*.sln'
-    feedsToUse: 'select'
 
 - task: DownloadSecureFile@1
   inputs:
@@ -53,13 +45,29 @@ steps:
     OverWrite: false
     flattenFolders: true
 
-- task: VSBuild@1
-  displayName: 'Building'
+- task: NuGetCommand@2
   inputs:
-    solution: '**/*.sln'
-    msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\\"'
-    platform: 'Any CPU'
-    configuration: 'Release'
+    command: 'restore'
+    restoreSolution: '/*.sln'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: 'Car.Backend/Car.UnitTests/Car.UnitTests.csproj'
+    publishTestResults: false
+    
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'Car.Backend/Car.WebApi/Car.WebApi.csproj'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: publish
+    publishWebProjects: True
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
     
 - task: PublishBuildArtifacts@1
   inputs:
