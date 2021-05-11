@@ -8,28 +8,51 @@ variables:
   buildConfiguration: 'Release'
   
 steps:
-    
+
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+
+- task: VSBuild@1
+  displayName: 'Building'
+  inputs:
+    solution: '**/*.sln'
+    msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\\"'
+    platform: 'Any CPU'
+    configuration: 'Release'
+
 - task: DownloadSecureFile@1
   inputs:
     secureFile: 'CarWebApi.zip'
 
+- task: CopyFiles@2
+  displayName: 'Copy Files to: root directory'
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: |
+      CarWebApi.zip
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/'    
+    OverWrite: true
+    flattenFolders: true
+    
 - task: ExtractFiles@1
   inputs:
     archiveFilePatterns: '**/*.zip'
     cleanDestinationFolder: false
     overwriteExistingFiles: true
-
-- task: DotNetCoreCLI@2
-  displayName: 'Publish'
+    
+#Delete PrescQIPPWebApp folder
+- task: PowerShell@2 
   inputs:
-    command: publish
-    publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: True
+    targetType: 'inline'
+    script: 'Remove-Item -path ''$(Build.ArtifactStagingDirectory)/CarWebApi.zip'
+
     
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
     artifactName: 'Car.BackEnd'
-
-
