@@ -41,7 +41,7 @@ steps:
       appsettings.json
       appsettings.Development.json
       appsettings.Production.json
-    TargetFolder: '$(Build.StagingDirectory)/Car.temp'    
+    TargetFolder: '$(Build.StagingDirectory)/CarTemp'    
     OverWrite: false
     flattenFolders: true
 
@@ -73,7 +73,7 @@ steps:
 - task: ExtractFiles@1
   inputs:
     archiveFilePatterns: '$(Build.StagingDirectory)/Car.WebApi.zip'
-    destinationFolder: '$(Build.StagingDirectory)/Car.temp'
+    destinationFolder: '$(Build.StagingDirectory)/CarTemp'
     cleanDestinationFolder: false
     overwriteExistingFiles: false
     
@@ -85,16 +85,16 @@ steps:
 #Archive file to Car.WebApi.zip
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(Build.StagingDirectory)/Car.temp'
+    rootFolderOrFile: '$(Build.StagingDirectory)/CarTemp'
     includeRootFolder: true
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Car.WebApi.zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory).zip'
     replaceExistingArchive: true
     
 #Deleting Car.temp folder
 - task: DeleteFiles@1
   inputs:
-    SourceFolder: '$(Build.StagingDirectory)/Car.temp' 
+    SourceFolder: '$(Build.StagingDirectory)/CarTemp' 
     
 - task: PublishBuildArtifacts@1
   inputs:
