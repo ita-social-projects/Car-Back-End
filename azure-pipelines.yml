@@ -29,18 +29,20 @@ steps:
   inputs:
     command: 'build'
     projects: 'Car.Backend/Car.WebApi/Car.WebApi.csproj'
-
-- task: ExtractFiles@1 #Extract PrescQIPPWebApp.zip file to $(Build.ArtifactStagingDirectory)/PrescQIPPWebApp folder
+    
+#Extract PrescQIPPWebApp.zip file to $(Build.ArtifactStagingDirectory)/PrescQIPPWebApp folder
+- task: ExtractFiles@1 
   inputs:
-    archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'
-    destinationFolder: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'
+    archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/Car.WebApi.zip'
+    destinationFolder: '$(Build.ArtifactStagingDirectory)/Car.WebApi'
     cleanDestinationFolder: false
     overwriteExistingFiles: false
-
-- task: PowerShell@2 #Delete PrescQIPPWebApp.zip file
+    
+#Delete PrescQIPPWebApp.zip file
+- task: PowerShell@2 
   inputs:
     targetType: 'inline'
-    script: 'Remove-Item ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'''
+    script: 'Remove-Item ''$(Build.ArtifactStagingDirectory)/Car.WebApi.zip'''
 
 - task: DownloadSecureFile@1
   inputs:
@@ -62,22 +64,24 @@ steps:
       appsettings.json
       appsettings.Development.json
       appsettings.Production.json
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp/config/secret'    
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/Car.WebApi/root'    
     OverWrite: true
     flattenFolders: true
-    
-- task: ArchiveFiles@2 #Archive file to PrescQIPPWebApp.zip
+
+#Archive file to PrescQIPPWebApp.zip
+- task: ArchiveFiles@2 
   inputs:
-    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'
-    includeRootFolder: true
+    rootFolderOrFile: 'root'
+    includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp.zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Car.WebApi.zip'
     replaceExistingArchive: true
-    
-- task: PowerShell@2 #Delete PrescQIPPWebApp folder
+
+#Delete PrescQIPPWebApp folder
+- task: PowerShell@2 
   inputs:
     targetType: 'inline'
-    script: 'Remove-Item -path ''$(Build.ArtifactStagingDirectory)/PrescQIPPWebApp'
+    script: 'Remove-Item -path ''$(Build.ArtifactStagingDirectory)/Car.WebApi'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish'
