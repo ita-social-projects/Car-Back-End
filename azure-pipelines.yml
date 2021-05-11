@@ -2,7 +2,7 @@ trigger:
 - azure_test_feature
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
@@ -14,27 +14,22 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: '/*.sln'
+    restoreSolution: '**/*.sln'
     feedsToUse: 'select'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Running tests'
-  inputs:
-    command: 'test'
-    projects: 'Car.Backend/Car.UnitTests/Car.UnitTests.csproj'
-    publishTestResults: false
-
-- task: DotNetCoreCLI@2
+- task: VSBuild@1
   displayName: 'Building'
   inputs:
-    command: 'build'
-    projects: 'Car.Backend/Car.WebApi/Car.WebApi.csproj'
+    solution: '**/*.sln'
+    msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\\"'
+    platform: 'Any CPU'
+    configuration: 'Release'
     
 #Extract PrescQIPPWebApp.zip file to $(Build.ArtifactStagingDirectory)/PrescQIPPWebApp folder
 - task: ExtractFiles@1 
   inputs:
     archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/Car.WebApi.zip'
-    destinationFolder: '$(Build.ArtifactStagingDirectory)/Car.WebApi'
+    destinationFolder: '$(Build.ArtifactStagingDirectory)/Car.BackEnd'
     cleanDestinationFolder: false
     overwriteExistingFiles: false
     
@@ -64,7 +59,7 @@ steps:
       appsettings.json
       appsettings.Development.json
       appsettings.Production.json
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/Car.WebApi/root'    
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/Car.WebApi'    
     OverWrite: true
     flattenFolders: true
 
