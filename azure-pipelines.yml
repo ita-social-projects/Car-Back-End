@@ -58,7 +58,7 @@ steps:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
       *
-    TargetFolder: '$(Build.SourcesDirectory)/'    
+    TargetFolder: '$(Build.StagingDirectory)/'    
     OverWrite: true
     flattenFolders: true
 
