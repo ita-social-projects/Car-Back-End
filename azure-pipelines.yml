@@ -17,14 +17,6 @@ steps:
     restoreSolution: '**/*.sln'
     feedsToUse: 'select'
 
-- task: VSBuild@1
-  displayName: 'Building'
-  inputs:
-    solution: '**/*.sln'
-    msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\\"'
-    platform: 'Any CPU'
-    configuration: 'Release'
-
 - task: DownloadSecureFile@1
   inputs:
     secureFile: 'CarWebApi.zip'
@@ -61,6 +53,13 @@ steps:
     OverWrite: false
     flattenFolders: true
 
+- task: VSBuild@1
+  displayName: 'Building'
+  inputs:
+    solution: '**/*.sln'
+    msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)\\"'
+    platform: 'Any CPU'
+    configuration: 'Release'
     
 - task: PublishBuildArtifacts@1
   inputs:
