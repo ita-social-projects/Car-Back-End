@@ -32,7 +32,7 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Files to: root directory'
   inputs:
-    SourceFolder: '$(Agent.TempDirectory)'
+    SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
       CarWebApi.zip
     TargetFolder: '$(Build.ArtifactStagingDirectory)/'    
