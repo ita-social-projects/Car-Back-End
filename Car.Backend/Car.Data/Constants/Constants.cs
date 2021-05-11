@@ -28,7 +28,6 @@
         public const double MaxLatitude = 90;
         public const double MinLongitude = -180;
         public const double MaxLongitude = 180;
-
         public const int LocationNameMaxLength = 15;
     }
 }

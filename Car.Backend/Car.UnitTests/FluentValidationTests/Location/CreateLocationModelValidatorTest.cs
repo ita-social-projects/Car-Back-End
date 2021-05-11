@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Car.Data.Constants;
+﻿using Car.Data.Constants;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
+using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.Location
 {
@@ -21,7 +17,7 @@ namespace Car.UnitTests.FluentValidationTests.Location
             validator = new CreateLocationModelValidator();
         }
 
-        [Xunit.Theory]
+        [Theory]
         [InlineData(0)]
         [InlineData(-1)]
         public void UserId_IsNotValid_GeneratesValidationError(int value)
@@ -29,7 +25,7 @@ namespace Car.UnitTests.FluentValidationTests.Location
             validator.ShouldHaveValidationErrorFor(locationModel => locationModel.UserId, value);
         }
 
-        [Xunit.Theory]
+        [Theory]
         [InlineData(1)]
         [InlineData(10)]
         public void UserId_IsSpecified_NotGeneratesValidationError(int value)
@@ -44,7 +40,7 @@ namespace Car.UnitTests.FluentValidationTests.Location
             validator.ShouldHaveValidationErrorFor(locationModel => locationModel.Name, longName);
         }
 
-        [Xunit.Theory]
+        [Theory]
         [InlineData("")]
         [InlineData("work1")]
         public void LocationName_IsSpecified_NotGeneratesValidationError(string value)
@@ -52,7 +48,7 @@ namespace Car.UnitTests.FluentValidationTests.Location
             validator.ShouldNotHaveValidationErrorFor(locationModel => locationModel.Name, value);
         }
 
-        [Xunit.Theory]
+        [Theory]
         [InlineData(0)]
         [InlineData(-1)]
         public void TypeId_IsNotValid_GeneratesValidationError(int value)
@@ -60,7 +56,7 @@ namespace Car.UnitTests.FluentValidationTests.Location
             validator.ShouldHaveValidationErrorFor(locationModel => locationModel.TypeId, value);
         }
 
-        [Xunit.Theory]
+        [Theory]
         [InlineData(1)]
         [InlineData(10)]
         public void TypeId_IsSpecified_NotGeneratesValidationError(int value)
