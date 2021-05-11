@@ -45,11 +45,11 @@ steps:
     cleanDestinationFolder: false
     overwriteExistingFiles: true
     
-#Delete PrescQIPPWebApp folder
-- task: PowerShell@2 
-  inputs:
-    targetType: 'inline'
-    script: 'Remove-Item -path ''$(Build.SourcesDirectory)/CarWebApi.zip'
+# #Delete PrescQIPPWebApp folder
+# - task: PowerShell@2 
+#   inputs:
+#     targetType: 'inline'
+#     script: 'Remove-Item -path ''$(Build.SourcesDirectory)/CarWebApi.zip'
 
     
 - task: PublishBuildArtifacts@1
