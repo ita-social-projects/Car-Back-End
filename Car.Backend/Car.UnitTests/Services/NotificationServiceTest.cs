@@ -10,6 +10,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -170,26 +171,30 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteNotificationAsync_WhenNotificationExist_ReturnsNull()
+        public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException()
         {
             // Arrange
-            var notifications = Fixture
-                .CreateMany<Notification>()
-                .ToList();
-            var notification = notifications.First();
-
-            notificationRepository
-                .Setup(repo => repo.Query())
-                .Returns(notifications
-                    .AsQueryable()
-                    .BuildMock()
-                    .Object);
+            var idNotificationToDelete = Fixture.Create<int>();
+            notificationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
-            var result = await notificationService.DeleteNotificationAsync(notification.Id);
+            var result = notificationService.Invoking(service => service.DeleteAsync(idNotificationToDelete));
 
             // Assert
-            result.Should().BeEquivalentTo(notification);
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenNotificationExist_ExecuteOnce()
+        {
+            // Arrange
+            var idNotificationToDelete = Fixture.Create<int>();
+
+            // Act
+            await notificationService.DeleteAsync(idNotificationToDelete);
+
+            // Assert
+            notificationRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
         }
 
         [Fact]
