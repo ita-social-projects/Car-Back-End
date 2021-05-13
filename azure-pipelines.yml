@@ -1,4 +1,6 @@
-trigger: none
+on:
+  pull_request:
+    types: [ closed ]
 
 pool:
   vmImage: 'ubuntu-latest'
