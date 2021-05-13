@@ -70,26 +70,24 @@ namespace Car.Data.Infrastructure
             await Task.Run(() => dbEntities.Update(entity).Entity);
 
         /// <summary>
-        /// Removes entity from DBContext Asynchronously
-        /// </summary>
-        /// <param name="entity">entity</param>
-        /// <returns>true if entity was successfully deleted, and false in other way</returns>
-        public async Task<bool> DeleteAsync(TEntity entity) =>
-            (await Task.Run(() => dbEntities.Remove(entity))).Entity != null;
-
-        /// <summary>
         /// Deletes range.
         /// </summary>
         /// <param name="entities">Entities to delete.</param>
         /// <returns>Task.</returns>
-        public Task DeleteRangeAsync(IEnumerable<TEntity> entities) =>
-            Task.Run(() => dbEntities.RemoveRange());
+        public async Task DeleteRangeAsync(IEnumerable<TEntity> entities) =>
+            await Task.Run(() => dbEntities.RemoveRange(entities));
 
         /// <summary>
         /// Saves changes in the database asynchronously.
         /// </summary>
         /// <returns>Task</returns>
         public Task<int> SaveChangesAsync() => context.SaveChangesAsync();
+
+        /// <summary>
+        /// Removes entity from DBContext
+        /// </summary>
+        /// <param name="entity">entity</param>
+        public void Delete(TEntity entity) => context.Entry(entity).State = EntityState.Deleted;
 
         private static void CheckEntityForNull(TEntity entity)
         {

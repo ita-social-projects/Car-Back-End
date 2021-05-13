@@ -7,6 +7,7 @@
 Car.Backend/Car.WebApi/appsettings.json
 Car.Backend/Car.WebApi/appsettings.Development.json
 Car.Backend/Car.WebApi/appsettings.Production.json
+Car.Backend/Car.WebApi/credential-google-drive.json
 Car.Backend/Car.WebApi/wwwroot/Credentials/
 Car.Backend/Car.WebApi/wwwroot/Credentials/credential-avatar-drive.json
 Car.Backend/Car.WebApi/wwwroot/Credentials/credential-car-drive.json
@@ -147,6 +148,9 @@ _TeamCity*
 # Visual Studio code coverage results
 *.coverage
 *.coveragexml
+
+# Visual Studio code
+.vscode
 
 # NCrunch
 _NCrunch_*

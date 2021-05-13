@@ -1,4 +1,4 @@
-﻿using Car.Data;
+﻿using Car.Data.Constants;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
@@ -7,12 +7,12 @@ namespace Car.Domain.FluentValidation
     {
         public NotificationDtoValidator()
         {
-            RuleFor(notification => notification.ReceiverId).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(notification => notification.SenderId).GreaterThan(Constants.ID_LENGTH);
+            RuleFor(notification => notification.ReceiverId).GreaterThan(Constants.IdLength);
+            RuleFor(notification => notification.SenderId).GreaterThan(Constants.IdLength);
             RuleFor(notification => notification.Type).NotNull();
             RuleFor(notification => notification.JsonData).NotNull()
-                                                          .MinimumLength(Constants.JSON_MIN_LENGTH)
-                                                          .MaximumLength(Constants.JSON_MAX_LENGTH);
+                                                          .MinimumLength(Constants.JsonMinLength)
+                                                          .MaximumLength(Constants.JsonMaxLength);
         }
     }
 }

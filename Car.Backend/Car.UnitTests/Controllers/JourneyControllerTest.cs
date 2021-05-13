@@ -170,5 +170,44 @@ namespace Car.UnitTests.Controllers
                 (result as OkObjectResult)?.Value.Should().Be(stops);
             }
         }
+
+        [Fact]
+        public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
+            var expectedJourney = Mapper.Map<CreateJourneyModel, JourneyModel>(createJourneyModel);
+
+            journeyService.Setup(j => j.AddJourneyAsync(createJourneyModel))
+                .ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.AddJourney(createJourneyModel);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
+            }
+        }
+
+        [Fact]
+        public async Task GetFiltered_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var filterModel = Fixture.Create<JourneyFilterModel>();
+            var journeys = Fixture.Create<IEnumerable<Journey>>();
+            var expectedResult = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
+
+            journeyService.Setup(j => j.GetFilteredJourneys(filterModel)).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await journeyController.GetFiltered(filterModel);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().Be(expectedResult);
+        }
     }
 }

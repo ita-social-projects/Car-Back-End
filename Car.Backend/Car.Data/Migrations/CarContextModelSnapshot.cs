@@ -4,7 +4,6 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
@@ -26,21 +25,15 @@ namespace Car.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
 
                     b.Property<double>("Longitude")
                         .HasColumnType("float");
 
-                    b.Property<string>("Street")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -451,6 +444,9 @@ namespace Car.Data.Migrations
                     b.Property<bool>("IsFree")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOnOwnCar")
+                        .HasColumnType("bit");
+
                     b.Property<int>("OrganizerId")
                         .HasColumnType("int");
 
@@ -464,6 +460,32 @@ namespace Car.Data.Migrations
                     b.HasIndex("OrganizerId");
 
                     b.ToTable("Journey");
+                });
+
+            modelBuilder.Entity("Car.Data.Entities.JourneyPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Index")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JourneyId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JourneyId");
+
+                    b.ToTable("JourneyPoints");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Location", b =>
@@ -8242,7 +8264,7 @@ namespace Car.Data.Migrations
                     b.HasOne("Car.Data.Entities.Car", "Car")
                         .WithMany("Journeys")
                         .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Car.Data.Entities.User", "Organizer")
                         .WithMany("OrganizerJourneys")
@@ -8253,6 +8275,17 @@ namespace Car.Data.Migrations
                     b.Navigation("Car");
 
                     b.Navigation("Organizer");
+                });
+
+            modelBuilder.Entity("Car.Data.Entities.JourneyPoint", b =>
+                {
+                    b.HasOne("Car.Data.Entities.Journey", "Journey")
+                        .WithMany("JourneyPoints")
+                        .HasForeignKey("JourneyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Journey");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Location", b =>
@@ -8420,6 +8453,8 @@ namespace Car.Data.Migrations
             modelBuilder.Entity("Car.Data.Entities.Journey", b =>
                 {
                     b.Navigation("Chat");
+
+                    b.Navigation("JourneyPoints");
 
                     b.Navigation("Schedule");
 

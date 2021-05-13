@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Models.Location;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -48,18 +49,20 @@ namespace Car.UnitTests.Controllers
         public async Task AddLocation_WhenLocationIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var location = Fixture.Create<Location>();
+            var createLocationModel = Fixture.Create<CreateLocationModel>();
 
-            locationService.Setup(service => service.AddLocationAsync(location)).ReturnsAsync(location);
+            var expectedLocation = Mapper.Map<CreateLocationModel, Location>(createLocationModel);
+
+            locationService.Setup(service => service.AddLocationAsync(createLocationModel)).ReturnsAsync(expectedLocation);
 
             // Act
-            var result = await locationController.AddLocation(location);
+            var result = await locationController.Add(createLocationModel);
 
             // Assert
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(location);
+                (result as OkObjectResult)?.Value.Should().Be(expectedLocation);
             }
         }
 
@@ -72,7 +75,7 @@ namespace Car.UnitTests.Controllers
             locationService.Setup(service => service.GetLocationByIdAsync(location.Id)).ReturnsAsync(location);
 
             // Act
-            var result = await locationController.GetLocationById(location.Id);
+            var result = await locationController.Get(location.Id);
 
             // Assert
             using (new AssertionScope())

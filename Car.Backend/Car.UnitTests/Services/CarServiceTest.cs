@@ -10,6 +10,7 @@ using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -178,6 +179,33 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException()
+        {
+            // Arrange
+            var idCarToDelete = Fixture.Create<int>();
+            carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = carService.Invoking(service => service.DeleteAsync(idCarToDelete));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarExist_ExecuteOnce()
+        {
+            // Arrange
+            var idCarToDelete = Fixture.Create<int>();
+
+            // Act
+            await carService.DeleteAsync(idCarToDelete);
+
+            // Assert
+            carRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
         }
     }
 }

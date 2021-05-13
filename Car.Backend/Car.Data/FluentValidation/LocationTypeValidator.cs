@@ -6,8 +6,8 @@ namespace Car.Data.FluentValidation
     {
         public LocationTypeValidator()
         {
-            RuleFor(locationType => locationType.Id).GreaterThan(Constants.ID_LENGTH);
-            RuleFor(locationType => locationType.Name).NotNull().NotEmpty().MaximumLength(Constants.STRING_MAX_LENGTH);
+            RuleFor(locationType => locationType.Id).GreaterThan(Constants.Constants.IdLength);
+            RuleFor(locationType => locationType.Name).NotNull().NotEmpty().MaximumLength(Constants.Constants.StringMaxLength);
         }
     }
 }

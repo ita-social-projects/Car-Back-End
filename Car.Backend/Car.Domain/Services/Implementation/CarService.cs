@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Infrastructure;
+using Car.Domain.Exceptions;
 using Car.Domain.Extensions;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
@@ -71,6 +72,12 @@ namespace Car.Domain.Services.Implementation
             await carRepository.SaveChangesAsync();
 
             return car;
+        }
+
+        public async Task DeleteAsync(int carId)
+        {
+            carRepository.Delete(new CarEntity() { Id = carId });
+            await carRepository.SaveChangesAsync();
         }
     }
 }

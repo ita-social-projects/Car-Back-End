@@ -9,12 +9,14 @@ namespace Car.Domain.Extensions
         public static IQueryable<User> IncludeChats(this IQueryable<User> user)
         {
             return user
-                .Include(organizer => organizer.OrganizerJourneys)
-                .ThenInclude(chat => chat.Chat)
-                .Include(participant => participant.ParticipantJourneys)
-                .ThenInclude(chat => chat.Chat)
-                .Include(participant => participant.ParticipantJourneys)
-                .ThenInclude(o => o.Organizer);
+                .Include(user => user.OrganizerJourneys)
+                    .ThenInclude(journey => journey.Chat)
+                        .ThenInclude(chat => chat.Messages)
+                .Include(user => user.ParticipantJourneys)
+                    .ThenInclude(journey => journey.Chat)
+                        .ThenInclude(chat => chat.Messages)
+                .Include(user => user.ParticipantJourneys)
+                    .ThenInclude(journey => journey.Organizer);
         }
     }
 }

@@ -38,6 +38,13 @@
             <param name="updateCarModel">The car.</param>
             <returns>The updated car.</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.CarController.DeleteAsync(System.Int32)">
+            <summary>
+            deletes car by identifier
+            </summary>
+            <param name="id">car Id</param>
+            <returns>no content</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
             <summary>
             Get the user chats by Sender Id
@@ -102,6 +109,20 @@
             <param name="id">Journey identifier</param>
             <returns>recent addresses</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddJourney(Car.Domain.Models.Journey.CreateJourneyModel)">
+            <summary>
+            Adds the journey asynchronously.
+            </summary>
+            <param name="journeyModel">The journey model.</param>
+            <returns>Added journey.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetFiltered(Car.Domain.Models.Journey.JourneyFilterModel)">
+            <summary>
+            Returns journeys filtered by given conditions.
+            </summary>
+            <param name="journeyFilterModel">Model that contains needed parameters to filter by</param>
+            <returns>Collection of filtered journeys.</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
             Gets all the locations by user id
@@ -109,14 +130,14 @@
             <param name="id">The location identifier.</param>
             <returns>All user's locations</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.AddLocation(Car.Data.Entities.Location)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Models.Location.CreateLocationModel)">
             <summary>
             Adds the location.
             </summary>
             <param name="location">The location.</param>
             <returns>New location</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.GetLocationById(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Get(System.Int32)">
             <summary>
             Gets the location by identifier.
             </summary>
@@ -210,12 +231,12 @@
             // }
             <returns>added notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.DeleteNotificationAsync(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.DeleteAsync(System.Int32)">
             <summary>
-            deletes notification Asynchronously
+            deletes notification by identifier
             </summary>
-            <param name="notificationId">notification Id</param>
-            <returns>deleted notification</returns>
+            <param name="id">notification Id</param>
+            <returns>no content</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.MarkNotificationAsReadAsync(System.Int32)">
             <summary>
