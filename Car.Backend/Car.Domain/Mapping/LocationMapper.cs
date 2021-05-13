@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Car.Data.Entities;
-using Car.Domain.Dto;
+using Car.Domain.Models.Journey;
 using Car.Domain.Models.Location;
 
 namespace Car.Domain.Mapping
@@ -10,8 +10,7 @@ namespace Car.Domain.Mapping
         public LocationMapper()
         {
             CreateMap<CreateLocationModel, Location>();
-            CreateMap<AddressDto, Address>().ReverseMap();
-            CreateMap<Location, LocationDto>().ReverseMap();
+            CreateMap<CreateAddressModel, Address>().ReverseMap();
         }
     }
 }
