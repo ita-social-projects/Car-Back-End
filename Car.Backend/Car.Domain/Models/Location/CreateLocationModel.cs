@@ -1,5 +1,4 @@
-﻿using Car.Data.Entities;
-using Car.Domain.Dto;
+﻿using Car.Domain.Models.Journey;
 
 namespace Car.Domain.Models.Location
 {
@@ -7,7 +6,7 @@ namespace Car.Domain.Models.Location
     {
         public string Name { get; set; }
 
-        public AddressDto Address { get; set; }
+        public CreateAddressModel Address { get; set; }
 
         public int TypeId { get; set; }
 
