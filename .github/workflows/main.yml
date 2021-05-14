@@ -14,7 +14,10 @@ jobs:
 
       runs-on: windows-latest
 
-#       steps:
+      steps:
+      
+        - name: nothing
+          run: ls
 #         - uses: actions/checkout@v2
 #           with:
 #             fetch-depth: 0
