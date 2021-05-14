@@ -31,6 +31,7 @@ namespace Car.Domain.Services.Implementation
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
+                .IncludeJourneyPoints()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             return mapper.Map<Journey, JourneyModel>(journey);
