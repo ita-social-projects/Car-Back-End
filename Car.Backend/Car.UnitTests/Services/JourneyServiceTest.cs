@@ -4,14 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Dsl;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
+using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -432,6 +435,171 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeEquivalentTo(expectedJourneys);
+        }
+
+        [Theory]
+        [InlineData(true, 3)]
+        [InlineData(false, 0)]
+        public async Task GetFilteredJourneys_FilteringFreeJourneys_ReturnsJourneysCollection(bool isFree, int expectedCount)
+        {
+            // Arrange
+            (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
+
+            var journeys = journeyComposer
+                .With(j => j.IsFree, isFree)
+                .CreateMany(3);
+
+            var freeFilter = filterComposer
+                .With(f => f.Fee, FeeType.Free)
+                .Create();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var freeResult = await journeyService.GetFilteredJourneys(freeFilter);
+
+            // Assert
+            freeResult.Should().HaveCount(expectedCount);
+        }
+
+        [Theory]
+        [InlineData(true, 0)]
+        [InlineData(false, 3)]
+        public async Task GetFilteredJourneys_FilteringPaidJourneys_ReturnsJourneysCollection(bool isFree, int expectedCount)
+        {
+            // Arrange
+            (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
+
+            var journeys = journeyComposer
+                .With(j => j.IsFree, isFree)
+                .CreateMany(3);
+
+            var paidFilter = filterComposer
+                .With(f => f.Fee, FeeType.Paid)
+                .Create();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var paidResult = await journeyService.GetFilteredJourneys(paidFilter);
+
+            // Assert
+            paidResult.Should().HaveCount(expectedCount);
+        }
+
+        [Theory]
+        [InlineData(true, 3)]
+        [InlineData(false, 3)]
+        public async Task GetFilteredJourneys_FilteringAllFeeJourneys_ReturnsJourneysCollection(bool isFree, int expectedCount)
+        {
+            // Arrange
+            (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
+
+            var journeys = journeyComposer
+                .With(j => j.IsFree, isFree)
+                .CreateMany(3);
+
+            var allFilter = filterComposer
+                .With(f => f.Fee, FeeType.All)
+                .Create();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var allResult = await journeyService.GetFilteredJourneys(allFilter);
+
+            // Assert
+            allResult.Should().HaveCount(expectedCount);
+        }
+
+        [Theory]
+        [InlineData("2021-1-1T12:00:00", "2021-1-1T12:00:00", 1)]
+        [InlineData("2021-1-1T12:00:00", "2021-1-1T14:00:00", 1)]
+        [InlineData("2021-1-1T12:00:00", "2021-1-1T10:00:00", 1)]
+        [InlineData("2021-1-1T12:00:00", "2021-1-1T15:00:00", 0)]
+        [InlineData("2021-1-1T12:00:00", "2021-1-1T09:00:00", 0)]
+        public async Task GetFilteredJourneys_FilteringByDepartureTime_ReturnsJourneysCollection(string journeyTime, string filterTime, int expectedCount)
+        {
+            // Arrange
+            (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
+
+            var journeys = journeyComposer
+                .With(j => j.DepartureTime, DateTime.Parse(journeyTime))
+                .CreateMany(1);
+
+            var filter = filterComposer
+                .With(f => f.DepartureTime, DateTime.Parse(filterTime))
+                .Create();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetFilteredJourneys(filter);
+
+            // Assert
+            result.Should().HaveCount(expectedCount);
+        }
+
+        [Theory]
+        [InlineData(3, 4, 1, 1)]
+        [InlineData(4, 4, 1, 0)]
+        [InlineData(2, 4, 4, 0)]
+        public async Task GetFilteredJourneys_FilteringIsEnoughSeats_ReturnsJourneysCollection(int participantsCountJourney, int countOfSeats, int passengersCountFilter, int expectedCountOfJourneys)
+        {
+            // Arrange
+            (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
+
+            var participants = Fixture.Build<User>().CreateMany(participantsCountJourney).ToList();
+
+            var journeys = journeyComposer
+                .With(j => j.Participants, participants)
+                .With(j => j.CountOfSeats, countOfSeats)
+                .CreateMany(1);
+
+            var allFilter = filterComposer
+                .With(f => f.PassengersCount, passengersCountFilter)
+                .Create();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var allResult = await journeyService.GetFilteredJourneys(allFilter);
+
+            // Assert
+            allResult.Should().HaveCount(expectedCountOfJourneys);
+        }
+
+        private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()
+        {
+            var departureTime = DateTime.Now;
+
+            var journeyPoints = new List<JourneyPoint>
+                {
+                    new JourneyPoint { Latitude = 30, Longitude = 30 },
+                    new JourneyPoint { Latitude = 35, Longitude = 35 },
+                };
+
+            var journey = Fixture.Build<Journey>()
+                .With(j => j.CountOfSeats, 4)
+                .With(j => j.IsFree, true)
+                .With(j => j.DepartureTime, departureTime)
+                .With(j => j.JourneyPoints, journeyPoints);
+
+            var filter = Fixture.Build<JourneyFilterModel>()
+                .With(f => f.DepartureTime, departureTime)
+                .With(f => f.PassengersCount, 1)
+                .With(f => f.FromLatitude, 30)
+                .With(f => f.FromLongitude, 30)
+                .With(f => f.ToLatitude, 35)
+                .With(f => f.ToLongitude, 35)
+                .With(f => f.Fee, FeeType.All);
+
+            return (journey, filter);
         }
     }
 }
