@@ -26,9 +26,6 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> IncludeJourneyInfo(this IQueryable<Journey> journeys, int userId) =>
             journeys.IncludeAllParticipants().IncludeStopsWithAddresses().FilterByUser(userId);
 
-        public static IQueryable<Journey> IncludeJourneyPoints(this IQueryable<Journey> journeys) =>
-            journeys.Include(journey => journey.JourneyPoints);
-
         public static IQueryable<Journey> FilterPast(this IQueryable<Journey> journeys)
         {
             DateTime now = DateTime.UtcNow;

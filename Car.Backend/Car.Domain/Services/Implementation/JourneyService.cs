@@ -127,8 +127,8 @@ namespace Car.Domain.Services.Implementation
         {
             bool isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
-            bool isDepartureTimeSuitable = journey.DepartureTime < filter.DepartureTime.AddHours(1)
-                                       && journey.DepartureTime > filter.DepartureTime.AddHours(-1);
+            bool isDepartureTimeSuitable = journey.DepartureTime <= filter.DepartureTime.AddHours(2)
+                                       && journey.DepartureTime >= filter.DepartureTime.AddHours(-2);
 
             bool isFeeSuitable = (journey.IsFree && filter.Fee == FeeType.Free)
                               || (!journey.IsFree && filter.Fee == FeeType.Paid)
@@ -139,12 +139,12 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
-            Func<JourneyPoint, AddressDto, double> distance = (JourneyPoint address1, AddressDto address2) =>
-                GeoCalculator.GetDistance(address1.Latitude, address2.Longitude, address2.Latitude, address2.Longitude, 1, DistanceUnit.Kilometers);
+            Func<JourneyPoint, double, double, double> distance = (JourneyPoint address1, double lattitude, double longitude) =>
+                GeoCalculator.GetDistance(address1.Latitude, address1.Longitude, lattitude, longitude, 1, DistanceUnit.Kilometers);
 
-            var pointsFromStart = journey.JourneyPoints.OrderBy(p => p.Index).SkipWhile(p => distance(p, filter.FromStop.Address) < 1);
+            var pointsFromStart = journey.JourneyPoints.SkipWhile(p => distance(p, filter.FromLatitude, filter.FromLongitude) < 1);
 
-            return pointsFromStart.Count() > 0 && pointsFromStart.Any(p => distance(p, filter.ToStop.Address) < 1);
+            return pointsFromStart.Count() > 0 && pointsFromStart.Any(p => distance(p, filter.ToLatitude, filter.ToLongitude) < 1);
         }
     }
 }
