@@ -33,6 +33,7 @@ namespace Car.Domain.Services.Implementation
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
+                .IncludeJourneyPoints()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             return mapper.Map<Journey, JourneyModel>(journey);
@@ -101,9 +102,8 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<JourneyModel> AddJourneyAsync(CreateJourneyModel journeyModel)
         {
-            journeyModel.Stops.ForAll(stop => stop.UserId = journeyModel.OrganizerId);
-
             var journey = mapper.Map<CreateJourneyModel, Journey>(journeyModel);
+            journey.Duration = TimeSpan.FromMinutes(journeyModel.DurationInMinutes);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();

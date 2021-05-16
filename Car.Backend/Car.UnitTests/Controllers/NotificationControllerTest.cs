@@ -11,6 +11,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -133,23 +134,31 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task DeleteNotificationAsync_WhenNotificationExists_ReturnsOkObjectResult()
+        public async Task DeleteAsync_WhenNotificationExist_ReturnsNoContentResult()
         {
             // Arrange
             var notification = Fixture.Create<Notification>();
 
-            notificationService.Setup(service => service.DeleteNotificationAsync(notification.Id))
-                .ReturnsAsync(notification);
-
             // Act
-            var result = await notificationController.DeleteNotificationAsync(notification.Id);
+            var result = await notificationController.DeleteAsync(notification.Id);
 
             // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(notification);
-            }
+            notificationService.Verify(service => service.DeleteAsync(notification.Id), Times.Once());
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenNotificationNotExist_ThrowDbUpdateConcurrencyException()
+        {
+            // Arrange
+            var notification = Fixture.Create<Notification>();
+            notificationService.Setup(service => service.DeleteAsync(notification.Id)).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = notificationService.Invoking(service => service.Object.DeleteAsync(notification.Id));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
     }
 }

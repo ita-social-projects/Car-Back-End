@@ -48,6 +48,38 @@ namespace Car.UnitTests.FluentValidationTests.Journey
             validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.CountOfSeats, value);
         }
 
+        [Xunit.Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void DurationInMinutes_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.DurationInMinutes, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        public void DurationInMinutes_IsSpecified_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.DurationInMinutes, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void RouteDistance_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.RouteDistance, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        public void RouteDistance_IsSpecified_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.RouteDistance, value);
+        }
+
         [Fact]
         public void Comments_IsNotValid_GeneratesValidationError()
         {
