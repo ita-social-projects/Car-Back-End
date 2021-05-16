@@ -9,7 +9,7 @@ namespace Car.WebApi.Controllers
         [HttpGet("{text}")]
         public string Do(string text)
         {
-            return text + " it just works";
+            return text + " it works?";
         }
     }
 }
