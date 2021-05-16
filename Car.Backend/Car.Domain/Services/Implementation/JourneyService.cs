@@ -123,7 +123,7 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys.Where(j => IsSuitable(j, filter)));
         }
 
-        private bool IsSuitable(Journey journey, JourneyFilterModel filter)
+        private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
         {
             bool isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
@@ -144,7 +144,7 @@ namespace Car.Domain.Services.Implementation
 
             var pointsFromStart = journey.JourneyPoints.SkipWhile(p => distance(p, filter.FromLatitude, filter.FromLongitude) < 1);
 
-            return pointsFromStart.Count() > 0 && pointsFromStart.Any(p => distance(p, filter.ToLatitude, filter.ToLongitude) < 1);
+            return pointsFromStart.Any() && pointsFromStart.Any(p => distance(p, filter.ToLatitude, filter.ToLongitude) < 1);
         }
     }
 }
