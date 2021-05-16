@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
 using Car.Domain.Exceptions;
@@ -32,11 +33,11 @@ namespace Car.WebApi.Middelware
         {
             try
             {
-               await next(httpContext);
+                await next(httpContext);
             }
             catch (Exception ex)
             {
-               await HandleExceptionAsync(httpContext, ex);
+                await HandleExceptionAsync(httpContext, ex);
             }
         }
 
@@ -44,19 +45,22 @@ namespace Car.WebApi.Middelware
         {
             logger.LogInformation("Handle error!");
 
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             string responseMessage = "Internal server error";
             string logMessage = exception.Message;
-            Dictionary<Type, ResponseInformation> exceptions = GenerateExceptionsDictionary(exception);
 
-            if (env.IsDevelopment())
+            Dictionary<Type, ResponseInformation> exceptions = GenerateExceptionsDictionary(exception);
+            ResponseInformation responseInformation = new ResponseInformation();
+
+            if (exceptions.TryGetValue(exception.GetType(), out responseInformation))
             {
-                ResponseInformation responseInformation = new ResponseInformation();
-                if (exceptions.TryGetValue(exception.GetType(), out responseInformation))
+                logMessage = responseInformation.LogMessage;
+
+                context.Response.ContentType = responseInformation.ContentType;
+                context.Response.StatusCode = responseInformation.StatusCode;
+                if (env.IsDevelopment())
                 {
-                    logMessage = responseInformation.LogMessage;
                     responseMessage = responseInformation.ResponseMessage;
-                    context.Response.ContentType = responseInformation.ContentType;
-                    context.Response.StatusCode = responseInformation.StatusCode;
                 }
             }
 
@@ -66,71 +70,13 @@ namespace Car.WebApi.Middelware
 
         private Dictionary<Type, ResponseInformation> GenerateExceptionsDictionary(Exception exception)
         {
-            DefaultApplicationException defaultApplicationException = exception as DefaultApplicationException;
-            return new Dictionary<Type, ResponseInformation>
-            {
-                {
-                    typeof(DbUpdateConcurrencyException),
-                    new ResponseInformation()
-                    {
-                        LogMessage = JsonConvert.SerializeObject(
-                            new
-                            {
-                                StatusCode = 204,
-                            }),
-                        ResponseMessage = JsonConvert.SerializeObject(
-                            new
-                            {
-                                StatusCode = 204,
-                            }),
-                        StatusCode = 204,
-                    }
-                },
-                {
-                    typeof(DbUpdateException),
-                    new ResponseInformation()
-                    {
-                        LogMessage = JsonConvert.SerializeObject(
-                            new
-                            {
-                                StatusCode = 500,
-                                exception.InnerException?.Message,
-                                Severity = Severity.Error,
-                            }),
-                        ResponseMessage = JsonConvert.SerializeObject(
-                            new
-                            {
-                                StatusCode = 500,
-                                exception.InnerException?.Message,
-                                Severity = Severity.Error,
-                            }),
-                        StatusCode = 500,
-                        ContentType = "application/json",
-                    }
-                },
-                {
-                    typeof(DefaultApplicationException),
-                    new ResponseInformation()
-                    {
-                        LogMessage = JsonConvert.SerializeObject(
-                            new
-                            {
-                                defaultApplicationException?.StatusCode,
-                                defaultApplicationException?.Message,
-                                defaultApplicationException?.Severity,
-                            }),
-                        ResponseMessage = JsonConvert.SerializeObject(
-                            new
-                            {
-                                defaultApplicationException?.StatusCode,
-                                defaultApplicationException?.Message,
-                                defaultApplicationException?.Severity,
-                            }),
-                        StatusCode = (exception is DefaultApplicationException ex) ? ex.StatusCode : 200,
-                        ContentType = "application/json",
-                    }
-                },
-            };
+            var exceptionDictionary = new Dictionary<Type, ResponseInformation>();
+
+            var result = exceptionDictionary
+            .Union(DbExceptions.GetExceptions(exception))
+            .ToDictionary(k => k.Key, v => v.Value);
+
+            return result;
         }
     }
 }
