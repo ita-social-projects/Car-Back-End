@@ -50,14 +50,10 @@ namespace Car.Domain.Services.Implementation
             return addedNotification;
         }
 
-        public async Task<Notification> DeleteNotificationAsync(int notificationId)
+        public async Task DeleteAsync(int notificationId)
         {
-            var notificationToDelete = await notificationRepository.Query()
-                .FirstOrDefaultAsync(notification => notification.Id == notificationId);
-            await notificationRepository.DeleteAsync(notificationToDelete);
+            notificationRepository.Delete(new Notification() { Id = notificationId });
             await notificationRepository.SaveChangesAsync();
-
-            return notificationToDelete;
         }
 
         public async Task<Notification> MarkNotificationAsReadAsync(int notificationId)

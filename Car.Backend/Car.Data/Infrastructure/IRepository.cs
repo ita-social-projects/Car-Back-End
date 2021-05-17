@@ -15,8 +15,6 @@ namespace Car.Data.Infrastructure
 
         Task AddRangeAsync(IEnumerable<TEntity> entities);
 
-        Task<bool> DeleteAsync(TEntity entity);
-
         Task DeleteRangeAsync(IEnumerable<TEntity> entities);
 
         Task<TEntity> UpdateAsync(TEntity entity);
@@ -25,6 +23,6 @@ namespace Car.Data.Infrastructure
 
         ValueTask<TEntity> GetByIdAsync(params object[] keys);
 
-        void AttachToDelete(TEntity entity);
+        void Delete(TEntity entity);
     }
 }
