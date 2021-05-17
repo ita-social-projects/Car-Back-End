@@ -1,12 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.IO.Pipelines;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using Car.Data.Context;
-using Car.Data.Entities;
-using Car.Data.Infrastructure;
 using Car.Domain.Exceptions;
 using Car.UnitTests.Base;
 using Car.WebApi.Middelware;
@@ -62,25 +56,10 @@ namespace Car.UnitTests.Exceptions
         }
 
         [Fact]
-        public async Task InvokeAsync_WhenIsNotDevelopmentEnviroment_DoNotChangeStatusCode()
+        public async Task InvokeAsync_WhenNotSuitableExceptionThrown_InternalServerErrorStatusCode()
         {
             // Arrange
-            int expectedStatusCode = context.Response.StatusCode;
-            Exception exception = new Fixture().Create<Exception>();
-            next.Setup(n => n.Invoke(context)).Throws(exception);
-
-            // Act
-            await exceptionMiddleware.InvokeAsync(context);
-
-            // Assert
-            context.Response.StatusCode.Should().Be(expectedStatusCode);
-        }
-
-        [Fact]
-        public async Task InvokeAsync_WhenNotSuitableExceptionThrown_DoNotChangeStatusCode()
-        {
-            // Arrange
-            int expectedStatusCode = context.Response.StatusCode;
+            int expectedStatusCode = StatusCodes.Status500InternalServerError;
             Exception exception = new Fixture().Create<Exception>();
             env.SetupGet(e => e.EnvironmentName).Returns("Development");
             next.Setup(n => n.Invoke(context)).Throws(exception);
