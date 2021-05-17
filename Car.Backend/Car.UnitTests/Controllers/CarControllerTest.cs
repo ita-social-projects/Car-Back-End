@@ -111,7 +111,7 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenCarIsNotInJourney_ReturnsNoContentResult()
+        public async Task DeleteAsync_WhenCarIsNotInJourney_ReturnsOkResult()
         {
             // Arrange
             var car = Fixture.Create<CarEntity>();
@@ -121,7 +121,7 @@ namespace Car.UnitTests.Controllers
 
             // Assert
             carService.Verify(service => service.DeleteAsync(car.Id), Times.Once());
-            result.Should().BeOfType<NoContentResult>();
+            result.Should().BeOfType<OkResult>();
         }
 
         [Fact]
