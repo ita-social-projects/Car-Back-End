@@ -39,6 +39,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<Notification>, Repository<Notification>>();
             services.AddScoped<IRepository<Location>, Repository<Location>>();
             services.AddScoped<IRepository<LocationType>, Repository<LocationType>>();
+            services.AddScoped<IRepository<Request>, Repository<Request>>();
         }
 
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)
