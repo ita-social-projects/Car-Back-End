@@ -12,7 +12,7 @@ namespace Car.Domain.FluentValidation
             RuleFor(request => request.DepartureTime).GreaterThanOrEqualTo(DateTime.Now);
             RuleFor(request => request.PassengersCount).GreaterThan(Constants.NumberMin);
             RuleFor(request => request.UserId).GreaterThan(Constants.IdLength);
-            RuleFor(request => request.Fee).NotNull();
+            RuleFor(request => request.Fee).IsInEnum();
 
             RuleFor(request => request.From.Latitude)
                 .GreaterThanOrEqualTo(Constants.MinLatitude)
