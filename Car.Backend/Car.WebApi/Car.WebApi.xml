@@ -245,6 +245,34 @@
             <param name="notificationId">notification Id</param>
             <returns>amended notification</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.RequestController.Get(System.Int32)">
+            <summary>
+            Gets the request by identifier.
+            </summary>
+            <param name="id">Unique identifier.</param>
+            <returns>Request.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.RequestController.Add(Car.Domain.Dto.RequestDto)">
+            <summary>
+            Adds new request.
+            </summary>
+            <param name="request">Request that will be added.</param>
+            <returns>Added request.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.RequestController.Delete(System.Int32)">
+            <summary>
+            Removes request by its identifier.
+            </summary>
+            <param name="id">Unique identifier.</param>
+            <returns>Ok result.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.RequestController.GetByUserId(System.Int32)">
+            <summary>
+            Gets requests by user identifier.
+            </summary>
+            <param name="id">User's unique identifier.</param>
+            <returns>Collection of requests</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
             Gets the user by identifier asynchronously.
