@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Models.Chat;
+using Car.Domain.Dto.ChatDto;
+using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -32,7 +33,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var user = Fixture.Create<User>();
-            var chats = Fixture.Create<List<ChatModel>>();
+            var chats = Fixture.Create<List<ChatDto>>();
 
             chatService.Setup(x => x.GetUserChatsAsync(It.IsAny<int>()))
                 .ReturnsAsync(chats);
@@ -51,7 +52,7 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var user = Fixture.Create<User>();
             chatService.Setup(x => x.GetUserChatsAsync(It.IsAny<int>()))
-                .ReturnsAsync((List<ChatModel>)null);
+                .ReturnsAsync((List<ChatDto>)null);
 
             // Act
             var result = await chatController.GetUserChats(user.Id);
@@ -106,12 +107,11 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var chat = Fixture.Create<Chat>();
-
-            chatService.Setup(x => x.AddChatAsync(chat))
-                .ReturnsAsync(chat);
+            var createChatDto = Mapper.Map<Chat, CreateChatDto>(chat);
+            chatService.Setup(x => x.AddChatAsync(createChatDto)).ReturnsAsync(chat);
 
             // Act
-            var result = await chatController.AddChat(chat);
+            var result = await chatController.AddChat(createChatDto);
 
             // Assert
             using (new AssertionScope())
@@ -138,6 +138,50 @@ namespace Car.UnitTests.Controllers
             {
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(message);
+            }
+        }
+
+        [Fact]
+        public async Task GetFiltered_WhenMessagesExist_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var filter = Fixture.Create<ChatFilter>();
+            var chats = Fixture.CreateMany<ChatDto>();
+
+            chatService.Setup(x => x.GetFilteredChatsAsync(filter))
+                .ReturnsAsync(chats);
+
+            // Act
+
+            var result = await chatController.GetFiltered(filter);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(chats);
+            }
+        }
+
+        [Fact]
+        public async Task GetFiltered_WhenMessagesNotExist_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var filter = Fixture.Create<ChatFilter>();
+            var chats = new List<ChatDto>();
+
+            chatService.Setup(x => x.GetFilteredChatsAsync(filter))
+                .ReturnsAsync(chats);
+
+            // Act
+
+            var result = await chatController.GetFiltered(filter);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(chats);
             }
         }
     }

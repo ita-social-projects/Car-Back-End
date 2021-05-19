@@ -11,12 +11,11 @@ namespace Car.Domain.Extensions
             return user
                 .Include(user => user.OrganizerJourneys)
                     .ThenInclude(journey => journey.Chat)
-                        .ThenInclude(chat => chat.Messages)
                 .Include(user => user.ParticipantJourneys)
                     .ThenInclude(journey => journey.Chat)
-                        .ThenInclude(chat => chat.Messages)
                 .Include(user => user.ParticipantJourneys)
-                    .ThenInclude(journey => journey.Organizer);
+                    .ThenInclude(journey => journey.Organizer)
+                .AsSplitQuery();
         }
     }
 }
