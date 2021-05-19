@@ -24,10 +24,11 @@
 
         public const int TextMaxLength = 500;
 
+        public const int LocationNameMaxLength = 30;
+
         public const double MinLatitude = -90;
         public const double MaxLatitude = 90;
         public const double MinLongitude = -180;
         public const double MaxLongitude = 180;
-        public const int LocationNameMaxLength = 15;
     }
 }

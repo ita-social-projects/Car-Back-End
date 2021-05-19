@@ -16,22 +16,6 @@ namespace Car.UnitTests.FluentValidationTests.Address
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void Id_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(addressDto => addressDto.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void Id_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Id, value);
-        }
-
-        [Xunit.Theory]
         [InlineData("")]
         [InlineData(null)]
         public void Name_IsNull_GeneratesValidationError(string value)
@@ -48,18 +32,26 @@ namespace Car.UnitTests.FluentValidationTests.Address
 
         [Xunit.Theory]
         [InlineData(0)]
-        [InlineData(1)]
-        public void Latitude_IsSpecified_NotGeneratesValidationError(double value)
+        [InlineData(90)]
+        public void Latitude_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Latitude, value);
+            validator.ShouldNotHaveValidationErrorFor(address => address.Latitude, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(-200)]
+        [InlineData(200)]
+        public void Longitude_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(address => address.Longitude, value);
         }
 
         [Xunit.Theory]
         [InlineData(0)]
-        [InlineData(1)]
-        public void Longitude_IsSpecified_NotGeneratesValidationError(double value)
+        [InlineData(180)]
+        public void Longitude_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(addressDto => addressDto.Longitude, value);
+            validator.ShouldNotHaveValidationErrorFor(address => address.Longitude, value);
         }
     }
 }
