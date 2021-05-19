@@ -9,7 +9,7 @@ namespace Car.Domain.Mapping
         public LocationMapper()
         {
             CreateMap<LocationDTO, Location>();
-            CreateMap<LocationDTO, Address>().ReverseMap();
+            CreateMap<AddressDto, Address>().ReverseMap();
         }
     }
 }
