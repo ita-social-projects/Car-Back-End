@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Hubs;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -21,14 +23,19 @@ namespace Car.UnitTests.Services
     public class NotificationServiceTest : TestBase
     {
         private readonly INotificationService notificationService;
+        private readonly Mock<IHubContext<SignalRHub>> hubContext;
         private readonly Mock<IRepository<Notification>> notificationRepository;
         private readonly Mock<IRepository<User>> userRepository;
 
         public NotificationServiceTest()
         {
+            hubContext = new Mock<IHubContext<SignalRHub>>();
             notificationRepository = new Mock<IRepository<Notification>>();
             userRepository = new Mock<IRepository<User>>();
-            notificationService = new NotificationService(notificationRepository.Object, Mapper);
+            notificationService = new NotificationService(
+                notificationRepository.Object,
+                hubContext.Object,
+                Mapper);
         }
 
         [Fact]

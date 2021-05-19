@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
-using Car.WebApi.Hubs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Car.WebApi.Controllers
 {
@@ -12,15 +10,11 @@ namespace Car.WebApi.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly IHubContext<SignalRHub> notificationHub;
         private readonly INotificationService notificationService;
 
-        public NotificationController(
-            INotificationService notificationService,
-            [NotNull] IHubContext<SignalRHub> notificationHub)
+        public NotificationController(INotificationService notificationService)
         {
             this.notificationService = notificationService;
-            this.notificationHub = notificationHub;
         }
 
         /// <summary>
@@ -60,10 +54,6 @@ namespace Car.WebApi.Controllers
         {
             var notification = await notificationService.CreateNewNotificationAsync(createNotificationModel);
             await notificationService.UpdateNotificationAsync(notification);
-            await notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await notificationHub.Clients.All.SendAsync(
-                "updateUnreadNotificationsNumber",
-                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
             return Ok(notification);
         }
 
@@ -108,10 +98,6 @@ namespace Car.WebApi.Controllers
         {
             var notification = await notificationService.CreateNewNotificationAsync(createNotificationModel);
             await notificationService.AddNotificationAsync(notification);
-            await notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await notificationHub.Clients.All.SendAsync(
-                "updateUnreadNotificationsNumber",
-                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
             return Ok(notification);
         }
 
@@ -136,10 +122,6 @@ namespace Car.WebApi.Controllers
         public async Task<IActionResult> MarkNotificationAsReadAsync(int notificationId)
         {
             var notification = await notificationService.MarkNotificationAsReadAsync(notificationId);
-            await notificationHub.Clients.All.SendAsync("sendToReact", notification);
-            await notificationHub.Clients.All.SendAsync(
-                "updateUnreadNotificationsNumber",
-                await notificationService.GetUnreadNotificationsNumberAsync(notification.ReceiverId));
 
             return Ok(notification);
         }

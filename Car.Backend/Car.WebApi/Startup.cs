@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Car.Domain.Configurations;
-using Car.WebApi.Hubs;
+using Car.Domain.Hubs;
 using Car.WebApi.ServiceExtension;
 using FluentValidation.AspNetCore;
 using Hangfire;
