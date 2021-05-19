@@ -19,6 +19,10 @@ namespace Car.Domain.Models.Journey
 
         public bool IsOnOwnCar { get; set; }
 
+        public int RouteDistance { get; set; }
+
+        public int DurationInMinutes { get; set; }
+
         public ICollection<CreateJourneyPointModel> JourneyPoints { get; set; } = new List<CreateJourneyPointModel>();
 
         public ICollection<CreateStopModel> Stops { get; set; } = new List<CreateStopModel>();

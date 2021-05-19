@@ -74,7 +74,7 @@ namespace Car.WebApi.Controllers
         /// <param name="journeyFilterModel">Model that contains needed parameters to filter by</param>
         /// <returns>Collection of filtered journeys.</returns>
         [HttpGet("filter/")]
-        public async Task<IActionResult> GetFiltered([FromQuery]JourneyFilterModel journeyFilterModel) =>
+        public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilterModel journeyFilterModel) =>
             Ok(await journeyService.GetFilteredJourneys(journeyFilterModel));
     }
 }

@@ -1,14 +1,17 @@
 ﻿using System;
 using Car.Data.Enums;
-using Car.Domain.Dto;
 
 namespace Car.Domain.Models.Journey
 {
     public class JourneyFilterModel
     {
-        public StopDto FromStop { get; set; }
+        public double FromLatitude { get; set; }
 
-        public StopDto ToStop { get; set; }
+        public double FromLongitude { get; set; }
+
+        public double ToLatitude { get; set; }
+
+        public double ToLongitude { get; set; }
 
         public DateTime DepartureTime { get; set; }
 
