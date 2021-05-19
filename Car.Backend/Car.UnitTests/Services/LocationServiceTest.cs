@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
-using Car.Domain.Models.Location;
+using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -104,30 +104,30 @@ namespace Car.UnitTests.Services
         public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject()
         {
             // Arrange
-            var createLocationModel = Fixture.Create<CreateLocationModel>();
-            var location = Mapper.Map<CreateLocationModel, Location>(createLocationModel);
+            var locationDto = Fixture.Create<LocationDTO>();
+            var location = Mapper.Map<LocationDTO, Location>(locationDto);
 
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync(location);
 
             // Act
-            var result = await locationService.AddLocationAsync(createLocationModel);
+            var result = await locationService.AddLocationAsync(locationDto);
 
             // Assert
-            result.Should().BeEquivalentTo(createLocationModel, options => options.ExcludingMissingMembers());
+            result.Should().BeEquivalentTo(locationDto, options => options.ExcludingMissingMembers());
         }
 
         [Fact]
         public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull()
         {
             // Arrange
-            var createLocationModel = Fixture.Create<CreateLocationModel>();
+            var locationDto = Fixture.Create<LocationDTO>();
 
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync((Location)null);
 
             // Act
-            var result = await locationService.AddLocationAsync(createLocationModel);
+            var result = await locationService.AddLocationAsync(locationDto);
 
             // Assert
             result.Should().BeNull();

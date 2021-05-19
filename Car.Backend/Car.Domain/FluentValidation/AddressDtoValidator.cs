@@ -7,10 +7,13 @@ namespace Car.Domain.FluentValidation
     {
         public AddressDtoValidator()
         {
-            RuleFor(address => address.Id).GreaterThan(Constants.IdLength);
             RuleFor(address => address.Name).NotNull().NotEmpty();
-            RuleFor(address => address.Latitude).NotNull();
-            RuleFor(address => address.Longitude).NotNull();
+            RuleFor(address => address.Latitude)
+                .GreaterThanOrEqualTo(Constants.MinLatitude)
+                .LessThanOrEqualTo(Constants.MaxLatitude);
+            RuleFor(address => address.Longitude)
+                .GreaterThanOrEqualTo(Constants.MinLongitude)
+                .LessThanOrEqualTo(Constants.MaxLongitude);
         }
     }
 }

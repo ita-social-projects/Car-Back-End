@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
-using Car.Domain.Models.Location;
+using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -49,14 +49,14 @@ namespace Car.UnitTests.Controllers
         public async Task AddLocation_WhenLocationIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var createLocationModel = Fixture.Create<CreateLocationModel>();
+            var locationDto = Fixture.Create<LocationDTO>();
 
-            var expectedLocation = Mapper.Map<CreateLocationModel, Location>(createLocationModel);
+            var expectedLocation = Mapper.Map<LocationDTO, Location>(locationDto);
 
-            locationService.Setup(service => service.AddLocationAsync(createLocationModel)).ReturnsAsync(expectedLocation);
+            locationService.Setup(service => service.AddLocationAsync(locationDto)).ReturnsAsync(expectedLocation);
 
             // Act
-            var result = await locationController.Add(createLocationModel);
+            var result = await locationController.Add(locationDto);
 
             // Assert
             using (new AssertionScope())

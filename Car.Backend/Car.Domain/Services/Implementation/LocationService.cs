@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
-using Car.Domain.Models.Location;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,9 +32,9 @@ namespace Car.Domain.Services.Implementation
                 .ToListAsync();
         }
 
-        public async Task<Location> AddLocationAsync(CreateLocationModel createLocationModel)
+        public async Task<Location> AddLocationAsync(LocationDTO locationDTO)
         {
-            var location = mapper.Map<CreateLocationModel, Location>(createLocationModel);
+            var location = mapper.Map<LocationDTO, Location>(locationDTO);
 
             var newLocation = await locationRepository.AddAsync(location);
             await locationRepository.SaveChangesAsync();

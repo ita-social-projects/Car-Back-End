@@ -12,28 +12,30 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: disabling-CD
+        run: ls
       # Checkout the repo
-      - uses: actions/checkout@main
-        with:
-              fetch-depth: 0
+#       - uses: actions/checkout@main
+#         with:
+#               fetch-depth: 0
       
-      # Setup .NET Core SDK
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '5.0.x'
+#       # Setup .NET Core SDK
+#       - name: Setup .NET Core
+#         uses: actions/setup-dotnet@v1
+#         with:
+#           dotnet-version: '5.0.x'
       
-      # Run dotnet realated actions
-      - name: Restore, Build and Publish
-        run: |
-          dotnet restore ./Car.Backend 
-          dotnet build ./Car.Backend/Car.WebApi -c Release
-          dotnet publish ./Car.Backend/Car.WebApi/Car.WebApi.csproj -c Release -o carAPI --no-restore --no-build   
+#       # Run dotnet realated actions
+#       - name: Restore, Build and Publish
+#         run: |
+#           dotnet restore ./Car.Backend 
+#           dotnet build ./Car.Backend/Car.WebApi -c Release
+#           dotnet publish ./Car.Backend/Car.WebApi/Car.WebApi.csproj -c Release -o carAPI --no-restore --no-build   
           
-      # Deploy to Azure Web apps
-      - name: 'Run Azure webapp deploy action using publish profile credentials'
-        uses: azure/webapps-deploy@v2
-        with: 
-           app-name: ${{ env.AZURE_WEBAPP_NAME }} 
-           publish-profile: ${{ secrets.PUBLISH_PROFILE }} 
-           package: './carAPI'
+#       # Deploy to Azure Web apps
+#       - name: 'Run Azure webapp deploy action using publish profile credentials'
+#         uses: azure/webapps-deploy@v2
+#         with: 
+#            app-name: ${{ env.AZURE_WEBAPP_NAME }} 
+#            publish-profile: ${{ secrets.PUBLISH_PROFILE }} 
+#            package: './carAPI'

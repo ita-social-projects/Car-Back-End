@@ -28,6 +28,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IWebTokenGenerator, JsonWebTokenGenerator>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IRequestService, RequestService>();
+            services.AddScoped<ILocationTypeService, LocationTypeService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Data.Entities.Car>, Repository<Data.Entities.Car>>();

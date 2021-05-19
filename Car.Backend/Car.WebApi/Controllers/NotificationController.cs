@@ -110,7 +110,7 @@ namespace Car.WebApi.Controllers
         public async Task<IActionResult> DeleteAsync(int id)
         {
             await notificationService.DeleteAsync(id);
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
