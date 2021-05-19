@@ -151,8 +151,12 @@ namespace Car.Domain.Services.Implementation
                 .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < 1);
 
             static double Distance(JourneyPoint point, double latitude, double longitude) =>
-                GeoCalculator.GetDistance(point.Latitude, point.Longitude,
-                    latitude, longitude, distanceUnit: DistanceUnit.Kilometers);
+                GeoCalculator.GetDistance(
+                    point.Latitude,
+                    point.Longitude,
+                    latitude,
+                    longitude,
+                    distanceUnit: DistanceUnit.Kilometers);
         }
     }
 }

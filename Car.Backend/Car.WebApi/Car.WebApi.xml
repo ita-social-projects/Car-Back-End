@@ -128,7 +128,7 @@
             deletes journey by identifier
             </summary>
             <param name="id">journey Id</param>
-            <returns>no content</returns>
+            <returns>OkResult</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
