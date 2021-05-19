@@ -41,8 +41,13 @@ namespace Car.WebApi.Controllers
         /// <param name="chat">Sender identifier</param>
         /// <returns>New chat</returns>
         [HttpPost]
-        public async Task<IActionResult> AddChat([FromBody] CreateChatDto chat) =>
-            Ok(await chatService.AddChatAsync(chat));
+        public async Task<IActionResult> AddChat([FromBody] CreateChatDto chat)
+        {
+            var result = await chatService.GetChatByIdAsync(chat.Id);
+            result ??= await chatService.AddChatAsync(chat);
+
+            return Ok(result);
+        }
 
         /// <summary>
         /// Add new message

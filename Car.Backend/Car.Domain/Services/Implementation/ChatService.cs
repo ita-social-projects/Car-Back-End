@@ -111,5 +111,10 @@ namespace Car.Domain.Services.Implementation
             await messageRepository.SaveChangesAsync();
             return addedMessage;
         }
+
+        public async Task<Chat> GetChatByIdAsync(int chatId)
+        {
+            return await chatRepository.GetByIdAsync(chatId);
+        }
     }
 }
