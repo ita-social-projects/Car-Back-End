@@ -76,5 +76,17 @@ namespace Car.WebApi.Controllers
         [HttpGet("filter/")]
         public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilterModel journeyFilterModel) =>
             Ok(await journeyService.GetFilteredJourneys(journeyFilterModel));
+
+        /// <summary>
+        /// deletes journey by identifier
+        /// </summary>
+        /// <param name="id">journey Id</param>
+        /// <returns>OkResult</returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await journeyService.DeleteAsync(id);
+            return Ok();
+        }
     }
 }
