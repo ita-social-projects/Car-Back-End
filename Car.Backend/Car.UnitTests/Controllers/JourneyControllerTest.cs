@@ -215,13 +215,13 @@ namespace Car.UnitTests.Controllers
         public async Task DeleteAsync_WhenJourneyIdIsValid_ReturnsOkResult()
         {
             // Arrange
-            var journey = Fixture.Create<Journey>();
+            var journeyIdToDelete = Fixture.Create<int>();
 
             // Act
-            var result = await journeyController.Delete(journey.Id);
+            var result = await journeyController.Delete(journeyIdToDelete);
 
             // Assert
-            journeyService.Verify(service => service.DeleteAsync(journey.Id), Times.Once());
+            journeyService.Verify(service => service.DeleteAsync(journeyIdToDelete), Times.Once());
             result.Should().BeOfType<OkResult>();
         }
 
@@ -229,13 +229,13 @@ namespace Car.UnitTests.Controllers
         public async Task DeleteAsync_WhenJourneyNotExists_ThrowDbUpdateConcurrencyException()
         {
             // Arrange
-            var journey = Fixture.Create<Journey>();
+            var journeyIdToDelete = Fixture.Create<int>();
             journeyService.Setup(service =>
-                service.DeleteAsync(journey.Id)).Throws<DbUpdateConcurrencyException>();
+                service.DeleteAsync(journeyIdToDelete)).Throws<DbUpdateConcurrencyException>();
 
             // Act
             var result = journeyService.Invoking(service =>
-                service.Object.DeleteAsync(journey.Id));
+                service.Object.DeleteAsync(journeyIdToDelete));
 
             // Assert
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();

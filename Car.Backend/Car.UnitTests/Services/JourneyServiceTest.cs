@@ -15,6 +15,7 @@ using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -572,6 +573,34 @@ namespace Car.UnitTests.Services
 
             // Assert
             allResult.Should().HaveCount(expectedCountOfJourneys);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException()
+        {
+            // Arrange
+            var journeyIdToDelete = Fixture.Create<int>();
+            journeyRepository.Setup(repo =>
+                repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = journeyService.Invoking(service => service.DeleteAsync(journeyIdToDelete));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarExist_ExecuteOnce()
+        {
+            // Arrange
+            var idCarToDelete = Fixture.Create<int>();
+
+            // Act
+            await journeyService.DeleteAsync(idCarToDelete);
+
+            // Assert
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
         }
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()
