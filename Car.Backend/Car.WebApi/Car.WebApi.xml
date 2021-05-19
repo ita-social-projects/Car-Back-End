@@ -49,11 +49,11 @@
             <summary>
             Get chat by Chat Id
             </summary>
-            <param name="id">Sender identifier</param>
+            <param name="id">Chat identifier</param>
             <param name="previousMessageId">Oldest message identifier</param>
             <returns>Chat</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Data.Entities.Chat)">
+        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Domain.Dto.ChatDto.CreateChatDto)">
             <summary>
             Add the chat
             </summary>
@@ -66,6 +66,13 @@
             </summary>
             <param name="message">Message entity</param>
             <returns>Added Message</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ChatController.GetMessages(Car.Domain.Filters.ChatFilter)">
+            <summary>
+            Filters chats by conditions
+            </summary>
+            <param name="filter">Chat filter parameters</param>
+            <returns>Messages</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
             <summary>
