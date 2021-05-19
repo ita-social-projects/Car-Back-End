@@ -53,7 +53,7 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Gets recent addresses by identifier.
         /// </summary>
-        /// <param name="id">Journey identifier</param>
+        /// <param name="id">User identifier</param>
         /// <returns>recent addresses</returns>
         [HttpGet("recent/{id}")]
         public async Task<IActionResult> GetRecentAddresses(int id) =>
