@@ -134,7 +134,7 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenNotificationExist_ReturnsNoContentResult()
+        public async Task DeleteAsync_WhenNotificationExist_ReturnsOkResult()
         {
             // Arrange
             var notification = Fixture.Create<Notification>();
@@ -144,7 +144,7 @@ namespace Car.UnitTests.Controllers
 
             // Assert
             notificationService.Verify(service => service.DeleteAsync(notification.Id), Times.Once());
-            result.Should().BeOfType<NoContentResult>();
+            result.Should().BeOfType<OkResult>();
         }
 
         [Fact]
