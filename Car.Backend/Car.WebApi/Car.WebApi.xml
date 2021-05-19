@@ -74,7 +74,7 @@
             <param name="message">Message entity</param>
             <returns>Added Message</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.GetMessages(Car.Domain.Filters.ChatFilter)">
+        <member name="M:Car.WebApi.Controllers.ChatController.GetFiltered(Car.Domain.Filters.ChatFilter)">
             <summary>
             Filters chats by conditions
             </summary>

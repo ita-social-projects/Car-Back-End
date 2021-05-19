@@ -59,7 +59,7 @@ namespace Car.WebApi.Controllers
         /// <param name="filter">Chat filter parameters</param>
         /// <returns>Messages</returns>
         [HttpPost("filter/")]
-        public async Task<IActionResult> GetMessages([FromBody] ChatFilter filter) =>
+        public async Task<IActionResult> GetFiltered([FromBody] ChatFilter filter) =>
             Ok(await chatService.GetFilteredChatsAsync(filter));
     }
 }

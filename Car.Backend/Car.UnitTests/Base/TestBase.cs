@@ -19,7 +19,7 @@ namespace Car.UnitTests.Base
 
             Mapper = new Mapper(new MapperConfiguration(options =>
                 options.AddProfiles(new List<Profile>
-                    { new JourneyMapper(), new CarMapper(), new UserMapper(), new NotificationMapper(), new ChatMapper(), new MessageMapper(), new LocationMapper() })));
+                    { new JourneyMapper(), new CarMapper(), new UserMapper(), new NotificationMapper(), new ChatMapper(), new LocationMapper() })));
         }
     }
 }

@@ -5,6 +5,7 @@ using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Dto.ChatDto;
+using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -137,6 +138,50 @@ namespace Car.UnitTests.Controllers
             {
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(message);
+            }
+        }
+
+        [Fact]
+        public async Task GetFiltered_WhenMessagesExist_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var filter = Fixture.Create<ChatFilter>();
+            var chats = Fixture.CreateMany<ChatDto>();
+
+            chatService.Setup(x => x.GetFilteredChatsAsync(filter))
+                .ReturnsAsync(chats);
+
+            // Act
+
+            var result = await chatController.GetFiltered(filter);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(chats);
+            }
+        }
+
+        [Fact]
+        public async Task GetFiltered_WhenMessagesNotExist_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var filter = Fixture.Create<ChatFilter>();
+            var chats = new List<ChatDto>();
+
+            chatService.Setup(x => x.GetFilteredChatsAsync(filter))
+                .ReturnsAsync(chats);
+
+            // Act
+
+            var result = await chatController.GetFiltered(filter);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(chats);
             }
         }
     }

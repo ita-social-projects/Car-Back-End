@@ -4,8 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
@@ -184,34 +182,77 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task GetFilteredChatsAsync_WhenChatsExist_ReturnChats()
+        [Theory]
+        [InlineData("test message", "test")]
+        [InlineData("we@ther", "@th")]
+        public async Task GetFilteredChatsAsync_MessagesContainSearchText_ReturnsChats(string message, string searchText)
         {
             // Arrange
-            var configuration = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Chat, ChatDto>();
-                cfg.CreateMap<Journey, ChatJourneyDto>();
-                cfg.CreateMap<User, ChatUserDto>();
-            });
+            IEnumerable<Message> messages = null;
+            ChatFilter filter = null;
+            IEnumerable<ChatDto> expectedResult = null;
+            GetInitializedChatsData(out messages, out filter, out expectedResult);
 
-            var message = Fixture.CreateMany<Message>();
-            var chats = message.Select(msg => msg.Chat)
-            .AsQueryable()
-            .ProjectTo<ChatDto>(configuration)
-            .AsEnumerable();
+            messages.First().Text = message;
+            filter.SearchText = searchText;
+            expectedResult.First().MessageText = message;
 
-            var filter = Fixture.Build<ChatFilter>()
-            .With(x => x.SearchText, message.First().Text)
-            .With(x => x.Chats, chats)
-            .Create();
-
-            messageRepository.Setup(repo => repo.Query()).Returns(message.AsQueryable().BuildMock().Object);
+            messageRepository.Setup(repo => repo.Query())
+                .Returns(messages.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.GetFilteredChatsAsync(filter);
 
             // Assert
-            result.Should().BeEquivalentTo(message);
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("test message", "msg")]
+        [InlineData("we@ther", "ath")]
+        public async Task GetFilteredChatsAsync_MessagesNotContainSearchText_ReturnsEmptyCollection(string message, string searchText)
+        {
+            // Arrange
+            IEnumerable<Message> messages = null;
+            ChatFilter filter = null;
+            IEnumerable<ChatDto> expectedResult = null;
+            GetInitializedChatsData(out messages, out filter, out expectedResult);
+
+            messages.First().Text = message;
+            filter.SearchText = searchText;
+            expectedResult = new List<ChatDto>();
+
+            messageRepository.Setup(repo => repo.Query())
+                .Returns(messages.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await chatService.GetFilteredChatsAsync(filter);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        private void GetInitializedChatsData(out IEnumerable<Message> messages, out ChatFilter filter, out IEnumerable<ChatDto> expectedResult)
+        {
+            var chat = Fixture.Create<Chat>();
+            var chatDto = Mapper.Map<ChatDto>(chat);
+            var chatDtoList = new List<ChatDto>()
+            {
+                chatDto,
+            };
+
+            messages = Fixture.Build<Message>()
+            .With(x => x.ChatId, chat.Id)
+            .With(x => x.Chat, chat)
+            .CreateMany();
+
+            filter = Fixture.Build<ChatFilter>()
+            .With(x => x.SearchText, messages.First().Text)
+            .With(x => x.Chats, chatDtoList)
+            .Create();
+
+            expectedResult = chatDtoList;
+            expectedResult.First().MessageText = messages.First().Text;
         }
     }
 }
