@@ -14,7 +14,6 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -576,7 +575,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException()
+        public async Task DeleteAsync_WhenJourneyIsNotExist_ThrowDbUpdateConcurrencyException()
         {
             // Arrange
             var journeyIdToDelete = Fixture.Create<int>();
@@ -591,13 +590,13 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenCarExist_ExecuteOnce()
+        public async Task DeleteAsync_WhenJourneyExist_ExecuteOnce()
         {
             // Arrange
-            var idCarToDelete = Fixture.Create<int>();
+            var journeyIdToDelete = Fixture.Create<int>();
 
             // Act
-            await journeyService.DeleteAsync(idCarToDelete);
+            await journeyService.DeleteAsync(journeyIdToDelete);
 
             // Assert
             journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
