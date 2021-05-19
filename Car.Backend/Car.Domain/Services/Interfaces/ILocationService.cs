@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Car.Data.Entities;
-using Car.Domain.Models.Location;
+using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -9,7 +9,7 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<Location> GetLocationByIdAsync(int locationId);
 
-        Task<Location> AddLocationAsync(CreateLocationModel createLocationModel);
+        Task<Location> AddLocationAsync(LocationDTO locationDTO);
 
         Task<IEnumerable<Location>> GetAllByUserIdAsync(int userId);
 

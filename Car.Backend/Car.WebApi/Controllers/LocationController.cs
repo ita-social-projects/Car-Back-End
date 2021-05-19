@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Car.Data.Entities;
-using Car.Domain.Models.Location;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +31,7 @@ namespace Car.WebApi.Controllers
         /// <param name="location">The location.</param>
         /// <returns>New location</returns>
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CreateLocationModel location) =>
+        public async Task<IActionResult> Add([FromBody] LocationDTO location) =>
             Ok(await locationService.AddLocationAsync(location));
 
         /// <summary>

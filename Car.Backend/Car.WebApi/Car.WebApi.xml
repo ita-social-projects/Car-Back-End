@@ -130,7 +130,7 @@
             <param name="id">The location identifier.</param>
             <returns>All user's locations</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Models.Location.CreateLocationModel)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.LocationDTO)">
             <summary>
             Adds the location.
             </summary>
