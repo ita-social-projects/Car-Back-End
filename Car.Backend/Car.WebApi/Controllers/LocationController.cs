@@ -19,7 +19,7 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Gets all the locations by user id
         /// </summary>
-        /// <param name="id">The location identifier.</param>
+        /// <param name="id">The user identifier.</param>
         /// <returns>All user's locations</returns>
         [HttpGet("by-user/{id}")]
         public async Task<IActionResult> GetAllByUserId(int id) =>
