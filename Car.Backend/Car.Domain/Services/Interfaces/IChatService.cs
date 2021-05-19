@@ -2,18 +2,21 @@
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Models.Chat;
+using Car.Domain.Dto.ChatDto;
+using Car.Domain.Filters;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface IChatService
     {
-        Task<IEnumerable<ChatModel>> GetUserChatsAsync(int userId);
+        Task<IEnumerable<ChatDto>> GetUserChatsAsync(int userId);
 
         Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId);
 
-        Task<Chat> AddChatAsync(Chat chat);
+        Task<Chat> AddChatAsync(CreateChatDto chat);
 
         Task<Message> AddMessageAsync(Message message);
+
+        Task<IEnumerable<ChatDto>> GetFilteredChatsAsync(ChatFilter filter);
     }
 }

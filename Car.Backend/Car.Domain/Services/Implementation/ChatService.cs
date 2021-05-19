@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Dto.ChatDto;
 using Car.Domain.Extensions;
-using Car.Domain.Models.Chat;
+using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,29 +58,51 @@ namespace Car.Domain.Services.Implementation
             return chat;
         }
 
-        public async Task<Chat> AddChatAsync(Chat chat)
+        public async Task<Chat> AddChatAsync(CreateChatDto chat)
         {
-            var addedChat = await chatRepository.AddAsync(chat);
-            await userRepository.SaveChangesAsync();
+            var addedChat = await chatRepository.AddAsync(mapper.Map<Chat>(chat));
+            await chatRepository.SaveChangesAsync();
 
             return addedChat;
         }
 
-        public async Task<IEnumerable<ChatModel>> GetUserChatsAsync(int userId)
+        public async Task<IEnumerable<ChatDto>> GetUserChatsAsync(int userId)
         {
             var user = await userRepository.Query()
                 .IncludeChats()
                 .FirstOrDefaultAsync(u => u.Id == userId);
-            if (user is null)
-            {
-                return null;
-            }
 
             var chats = user?.OrganizerJourneys.Select(journey => journey.Chat)
                 .Union(user.ParticipantJourneys.Select(journey => journey.Chat))
                 .Except(new List<Chat>() { null });
 
-            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatModel>>(chats);
+            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats);
+        }
+
+        public async Task<IEnumerable<ChatDto>> GetFilteredChatsAsync(ChatFilter filter)
+        {
+            var messages = await messageRepository.Query()
+            .Where(msg => filter.Chats
+                .Select(chat => chat.Id)
+                .Contains(msg.ChatId))
+            .Where(msg => msg.Text
+                .Contains(filter.SearchText))
+            .ToListAsync();
+
+            var result = messages
+            .SelectMany(msg => filter.Chats
+                .Where(chat => msg.ChatId == chat.Id)
+                .Select(chat => new ChatDto()
+                {
+                    Id = chat.Id,
+                    Journey = chat.Journey,
+                    JourneyOrganizer = chat.JourneyOrganizer,
+                    MessageText = msg.Text,
+                    Name = chat.Name,
+                }))
+            .ToList();
+
+            return result;
         }
 
         public async Task<Message> AddMessageAsync(Message message)

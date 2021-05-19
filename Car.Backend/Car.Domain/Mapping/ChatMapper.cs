@@ -1,6 +1,6 @@
 using AutoMapper;
 using Car.Data.Entities;
-using Car.Domain.Models.Chat;
+using Car.Domain.Dto.ChatDto;
 
 namespace Car.Domain.Mapping
 {
@@ -8,7 +8,10 @@ namespace Car.Domain.Mapping
     {
         public ChatMapper()
         {
-            CreateMap<Chat, ChatModel>().ReverseMap();
+            CreateMap<Chat, ChatDto>().ReverseMap();
+            CreateMap<User, ChatUserDto>().ReverseMap();
+            CreateMap<Journey, ChatJourneyDto>().ReverseMap();
+            CreateMap<Chat, CreateChatDto>().ReverseMap();
         }
     }
 }

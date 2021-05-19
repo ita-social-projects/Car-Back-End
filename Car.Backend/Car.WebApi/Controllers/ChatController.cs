@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Car.Data.Entities;
+using Car.Domain.Dto.ChatDto;
+using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +28,7 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Get chat by Chat Id
         /// </summary>
-        /// <param name="id">Sender identifier</param>
+        /// <param name="id">Chat identifier</param>
         /// <param name="previousMessageId">Oldest message identifier</param>
         /// <returns>Chat</returns>
         [HttpGet("chat/{id}/{previousMessageId}")]
@@ -39,7 +41,7 @@ namespace Car.WebApi.Controllers
         /// <param name="chat">Sender identifier</param>
         /// <returns>New chat</returns>
         [HttpPost]
-        public async Task<IActionResult> AddChat([FromBody] Chat chat) =>
+        public async Task<IActionResult> AddChat([FromBody] CreateChatDto chat) =>
             Ok(await chatService.AddChatAsync(chat));
 
         /// <summary>
@@ -50,5 +52,14 @@ namespace Car.WebApi.Controllers
         [HttpPost("message")]
         public async Task<IActionResult> AddMessage([FromBody] Message message) =>
             Ok(await chatService.AddMessageAsync(message));
+
+        /// <summary>
+        /// Filters chats by conditions
+        /// </summary>
+        /// <param name="filter">Chat filter parameters</param>
+        /// <returns>Messages</returns>
+        [HttpPost("filter/")]
+        public async Task<IActionResult> GetFiltered([FromBody] ChatFilter filter) =>
+            Ok(await chatService.GetFilteredChatsAsync(filter));
     }
 }
