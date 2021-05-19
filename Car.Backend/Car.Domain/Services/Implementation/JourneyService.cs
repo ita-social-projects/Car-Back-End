@@ -122,6 +122,12 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys.Where(j => IsSuitable(j, filter)));
         }
 
+        public async Task DeleteAsync(int journeyId)
+        {
+            journeyRepository.Delete(new Journey { Id = journeyId });
+            await journeyRepository.SaveChangesAsync();
+        }
+
         private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
