@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Car.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/notifications")]
     [ApiController]
     public class NotificationController : ControllerBase
     {
@@ -116,13 +116,16 @@ namespace Car.WebApi.Controllers
         }
 
         /// <summary>
-        /// deletes notification Asynchronously
+        /// deletes notification by identifier
         /// </summary>
-        /// <param name="notificationId">notification Id</param>
-        /// <returns>deleted notification</returns>
-        [HttpDelete]
-        public async Task<IActionResult> DeleteNotificationAsync([FromBody] int notificationId) =>
-            Ok(await notificationService.DeleteNotificationAsync(notificationId));
+        /// <param name="id">notification Id</param>
+        /// <returns>no content</returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            await notificationService.DeleteAsync(id);
+            return NoContent();
+        }
 
         /// <summary>
         /// Marks notification as read Asynchronously

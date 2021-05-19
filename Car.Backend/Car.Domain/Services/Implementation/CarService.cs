@@ -76,7 +76,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task DeleteAsync(int carId)
         {
-            carRepository.AttachToDelete(new CarEntity() { Id = carId });
+            carRepository.Delete(new CarEntity() { Id = carId });
             await carRepository.SaveChangesAsync();
         }
     }

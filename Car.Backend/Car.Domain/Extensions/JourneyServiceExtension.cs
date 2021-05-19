@@ -16,6 +16,9 @@ namespace Car.Domain.Extensions
             journeys.Include(journey => journey.Stops.OrderBy(stop => stop.Type))
                 .ThenInclude(stop => stop.Address);
 
+        public static IQueryable<Journey> IncludeJourneyPoints(this IQueryable<Journey> journeys) =>
+            journeys.Include(journey => journey.JourneyPoints.OrderBy(point => point.Index));
+
         public static IQueryable<Journey> IncludeAllParticipants(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.Organizer)
                 .Include(journey => journey.Participants);
