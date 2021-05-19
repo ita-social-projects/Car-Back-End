@@ -81,9 +81,9 @@ namespace Car.WebApi.Controllers
         /// deletes journey by identifier
         /// </summary>
         /// <param name="id">journey Id</param>
-        /// <returns>no content</returns>
+        /// <returns>OkResult</returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromQuery] int id)
+        public async Task<IActionResult> Delete(int id)
         {
             await journeyService.DeleteAsync(id);
             return Ok();
