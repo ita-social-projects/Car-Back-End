@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
+using Car.Domain.Models.Journey;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -18,6 +19,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeleteOutdatedAsync();
 
-        Task NotifyUserAsync(RequestDto request, int hourneyId);
+        Task NotifyUserAsync(RequestDto request, JourneyModel journey);
     }
 }

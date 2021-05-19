@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -82,9 +84,17 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(userRequests);
         }
 
-        public async Task NotifyUserAsync(RequestDto request, int hourneyId)
+        public async Task NotifyUserAsync(RequestDto request, JourneyModel journey)
         {
-            var notification = new Notification();
+            var notification = new Notification()
+            {
+                SenderId = journey.Organizer.Id,
+                ReceiverId = request.UserId,
+                Type = NotificationType.RequestedJourneyCreated,
+                IsRead = false,
+                JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id }),
+            };
+
             await notificationService.AddNotificationAsync(notification);
         }
     }

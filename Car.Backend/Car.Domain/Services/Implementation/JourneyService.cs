@@ -124,7 +124,9 @@ namespace Car.Domain.Services.Implementation
 
             foreach (var request in requests)
             {
-                Console.WriteLine($"Suitable for you journey has been just created, {addedJourney.Id}\n Request # {request.Id}");
+                await requestService.NotifyUserAsync(
+                    mapper.Map<Request, RequestDto>(request),
+                    mapper.Map<Journey, JourneyModel>(addedJourney));
             }
 
             return mapper.Map<Journey, JourneyModel>(addedJourney);
