@@ -1,6 +1,6 @@
+using Car.Domain.Dto;
 using Car.Domain.FluentValidation;
 using Car.Domain.Models.Journey;
-using Car.Domain.Models.Location;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +13,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddTransient<IValidator<CreateJourneyModel>, CreateJourneyModelValidator>();
             services.AddTransient<IValidator<CreateJourneyPointModel>, CreateJourneyPointModelValidator>();
             services.AddTransient<IValidator<CreateStopModel>, CreateStopModelValidator>();
-            services.AddTransient<IValidator<CreateLocationModel>, CreateLocationModelValidator>();
+            services.AddTransient<IValidator<LocationDTO>, LocationDtoValidator>();
         }
     }
 }

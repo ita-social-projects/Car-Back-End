@@ -8,13 +8,13 @@ using TheoryAttribute = Xunit.TheoryAttribute;
 namespace Car.UnitTests.FluentValidationTests.Location
 {
     [TestFixture]
-    public class CreateLocationModelValidatorTest
+    public class LocationDtoValidatorTest
     {
-        private CreateLocationModelValidator validator;
+        private LocationDtoValidator validator;
 
-        public CreateLocationModelValidatorTest()
+        public LocationDtoValidatorTest()
         {
-            validator = new CreateLocationModelValidator();
+            validator = new LocationDtoValidator();
         }
 
         [Theory]
