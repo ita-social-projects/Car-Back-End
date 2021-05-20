@@ -119,7 +119,7 @@ namespace Car.WebApi.Controllers
         /// deletes notification by identifier
         /// </summary>
         /// <param name="id">notification Id</param>
-        /// <returns>no content</returns>
+        /// <returns>ok</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
