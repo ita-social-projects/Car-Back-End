@@ -42,5 +42,17 @@ namespace Car.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id) =>
             Ok(await locationService.GetLocationByIdAsync(id));
+
+        /// <summary>
+        /// deletes location by identifier
+        /// </summary>
+        /// <param name="id">location Id</param>
+        /// <returns>ok</returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            await locationService.DeleteAsync(id);
+            return Ok();
+        }
     }
 }
