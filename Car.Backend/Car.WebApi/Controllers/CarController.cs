@@ -57,7 +57,7 @@ namespace Car.WebApi.Controllers
         /// deletes car by identifier
         /// </summary>
         /// <param name="id">car Id</param>
-        /// <returns>no content</returns>
+        /// <returns>ok</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {

@@ -9,6 +9,7 @@ using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -83,6 +84,34 @@ namespace Car.UnitTests.Controllers
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(location);
             }
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenLocationExists_ReturnsOkResult()
+        {
+            // Arrange
+            var location = Fixture.Create<Location>();
+
+            // Act
+            var result = await locationController.DeleteAsync(location.Id);
+
+            // Assert
+            locationService.Verify(service => service.DeleteAsync(location.Id), Times.Once());
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenLocationNotExists_ThrowDbUpdateConcurrencyException()
+        {
+            // Arrange
+            var location = Fixture.Create<Location>();
+            locationService.Setup(service => service.DeleteAsync(location.Id)).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = locationService.Invoking(service => service.Object.DeleteAsync(location.Id));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
     }
 }
