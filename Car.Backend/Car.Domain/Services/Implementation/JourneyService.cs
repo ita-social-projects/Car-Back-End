@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
@@ -132,8 +133,8 @@ namespace Car.Domain.Services.Implementation
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
-            var isDepartureTimeSuitable = journey.DepartureTime <= filter.DepartureTime.AddHours(2)
-                                          && journey.DepartureTime >= filter.DepartureTime.AddHours(-2);
+            var isDepartureTimeSuitable = journey.DepartureTime <= filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
+                                          && journey.DepartureTime >= filter.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours);
 
             var isFeeSuitable = (journey.IsFree && filter.Fee == FeeType.Free)
                                 || (!journey.IsFree && filter.Fee == FeeType.Paid)
@@ -145,10 +146,10 @@ namespace Car.Domain.Services.Implementation
             }
 
             var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(p => Distance(p, filter.FromLatitude, filter.FromLongitude) < 1);
+                .SkipWhile(p => Distance(p, filter.FromLatitude, filter.FromLongitude) < Constants.JourneySearchRadiusKm);
 
             return pointsFromStart.Any() && pointsFromStart
-                .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < 1);
+                .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
 
             static double Distance(JourneyPoint point, double latitude, double longitude) =>
                 GeoCalculator.GetDistance(
