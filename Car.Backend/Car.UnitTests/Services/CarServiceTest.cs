@@ -207,5 +207,19 @@ namespace Car.UnitTests.Services
             // Assert
             carRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
         }
+
+        [Fact]
+        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException()
+        {
+            // Arrange
+            var idCarToDelete = Fixture.Create<int>();
+            carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateException>();
+
+            // Act
+            var result = carService.Invoking(service => service.DeleteAsync(idCarToDelete));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateException>();
+        }
     }
 }
