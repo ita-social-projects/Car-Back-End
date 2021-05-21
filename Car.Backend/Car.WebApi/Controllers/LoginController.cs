@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace Car.WebApi.Controllers
         /// <returns>User for a client app</returns>
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] User user) =>
+        public async Task<IActionResult> Login([FromBody] UserDto user) =>
             Ok(await loginService.LoginAsync(user));
     }
 }
