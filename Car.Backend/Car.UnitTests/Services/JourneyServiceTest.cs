@@ -604,7 +604,7 @@ namespace Car.UnitTests.Services
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()
         {
-            var departureTime = DateTime.Now;
+            var departureTime = DateTime.UtcNow.AddHours(1);
 
             var journeyPoints = new List<JourneyPoint>
                 {
