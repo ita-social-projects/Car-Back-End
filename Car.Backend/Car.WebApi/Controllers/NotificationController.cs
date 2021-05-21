@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Hubs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/notifications")]
     [ApiController]
     public class NotificationController : ControllerBase
