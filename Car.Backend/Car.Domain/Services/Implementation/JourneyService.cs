@@ -133,7 +133,8 @@ namespace Car.Domain.Services.Implementation
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
-            var isDepartureTimeSuitable = journey.DepartureTime <= filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
+            var isDepartureTimeSuitable = journey.DepartureTime > DateTime.UtcNow
+                                          && journey.DepartureTime <= filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
                                           && journey.DepartureTime >= filter.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours);
 
             var isFeeSuitable = (journey.IsFree && filter.Fee == FeeType.Free)

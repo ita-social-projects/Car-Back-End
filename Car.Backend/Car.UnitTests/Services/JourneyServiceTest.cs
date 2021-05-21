@@ -516,11 +516,11 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T12:00:00", 1, 1)]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T14:00:00", 1, 1)]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T10:00:00", 1, 1)]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T15:00:00", 1, 0)]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T09:00:00", 1, 0)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T12:00:00", 1, 1)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T14:00:00", 1, 1)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T10:00:00", 1, 1)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T15:00:00", 1, 0)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T09:00:00", 1, 0)]
         public async Task GetFilteredJourneys_FilteringByDepartureTime_ReturnsJourneysCollection(string journeyTime, string filterTime, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
@@ -604,7 +604,7 @@ namespace Car.UnitTests.Services
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()
         {
-            var departureTime = DateTime.Now;
+            var departureTime = DateTime.UtcNow.AddHours(1);
 
             var journeyPoints = new List<JourneyPoint>
                 {
