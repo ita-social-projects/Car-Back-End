@@ -438,16 +438,16 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineData(true, 3)]
-        [InlineData(false, 0)]
-        public async Task GetFilteredJourneys_FilteringFreeJourneys_ReturnsJourneysCollection(bool isFree, int expectedCount)
+        [InlineData(true, 3, 3)]
+        [InlineData(false, 3, 0)]
+        public async Task GetFilteredJourneys_FilteringFreeJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
 
             var journeys = journeyComposer
                 .With(j => j.IsFree, isFree)
-                .CreateMany(3);
+                .CreateMany(journeysToCreateCount);
 
             var freeFilter = filterComposer
                 .With(f => f.Fee, FeeType.Free)
@@ -464,16 +464,16 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineData(true, 0)]
-        [InlineData(false, 3)]
-        public async Task GetFilteredJourneys_FilteringPaidJourneys_ReturnsJourneysCollection(bool isFree, int expectedCount)
+        [InlineData(true, 3, 0)]
+        [InlineData(false, 3, 3)]
+        public async Task GetFilteredJourneys_FilteringPaidJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
 
             var journeys = journeyComposer
                 .With(j => j.IsFree, isFree)
-                .CreateMany(3);
+                .CreateMany(journeysToCreateCount);
 
             var paidFilter = filterComposer
                 .With(f => f.Fee, FeeType.Paid)
@@ -490,16 +490,16 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineData(true, 3)]
-        [InlineData(false, 3)]
-        public async Task GetFilteredJourneys_FilteringAllFeeJourneys_ReturnsJourneysCollection(bool isFree, int expectedCount)
+        [InlineData(true, 3, 3)]
+        [InlineData(false, 3, 3)]
+        public async Task GetFilteredJourneys_FilteringAllFeeJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
 
             var journeys = journeyComposer
                 .With(j => j.IsFree, isFree)
-                .CreateMany(3);
+                .CreateMany(journeysToCreateCount);
 
             var allFilter = filterComposer
                 .With(f => f.Fee, FeeType.All)
@@ -516,19 +516,19 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T12:00:00", 1)]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T14:00:00", 1)]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T10:00:00", 1)]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T15:00:00", 0)]
-        [InlineData("2021-1-1T12:00:00", "2021-1-1T09:00:00", 0)]
-        public async Task GetFilteredJourneys_FilteringByDepartureTime_ReturnsJourneysCollection(string journeyTime, string filterTime, int expectedCount)
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T12:00:00", 1, 1)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T14:00:00", 1, 1)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T10:00:00", 1, 1)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T15:00:00", 1, 0)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T09:00:00", 1, 0)]
+        public async Task GetFilteredJourneys_FilteringByDepartureTime_ReturnsJourneysCollection(string journeyTime, string filterTime, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
 
             var journeys = journeyComposer
                 .With(j => j.DepartureTime, DateTime.Parse(journeyTime))
-                .CreateMany(1);
+                .CreateMany(journeysToCreateCount);
 
             var filter = filterComposer
                 .With(f => f.DepartureTime, DateTime.Parse(filterTime))
@@ -545,10 +545,10 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineData(3, 4, 1, 1)]
-        [InlineData(4, 4, 1, 0)]
-        [InlineData(2, 4, 4, 0)]
-        public async Task GetFilteredJourneys_FilteringIsEnoughSeats_ReturnsJourneysCollection(int participantsCountJourney, int countOfSeats, int passengersCountFilter, int expectedCountOfJourneys)
+        [InlineData(3, 4, 1, 1, 1)]
+        [InlineData(4, 4, 1, 1, 0)]
+        [InlineData(2, 4, 4, 1, 0)]
+        public async Task GetFilteredJourneys_FilteringIsEnoughSeats_ReturnsJourneysCollection(int participantsCountJourney, int countOfSeats, int passengersCountFilter, int journeysToCreateCount, int expectedCountOfJourneys)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
@@ -558,7 +558,7 @@ namespace Car.UnitTests.Services
             var journeys = journeyComposer
                 .With(j => j.Participants, participants)
                 .With(j => j.CountOfSeats, countOfSeats)
-                .CreateMany(1);
+                .CreateMany(journeysToCreateCount);
 
             var allFilter = filterComposer
                 .With(f => f.PassengersCount, passengersCountFilter)
@@ -604,7 +604,7 @@ namespace Car.UnitTests.Services
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()
         {
-            var departureTime = DateTime.Now;
+            var departureTime = DateTime.UtcNow.AddHours(1);
 
             var journeyPoints = new List<JourneyPoint>
                 {
