@@ -171,7 +171,7 @@
             </summary>
             <returns>All the models</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Data.Entities.User)">
+        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>
             ensures the user and returns a User for client app,
             if user doesn't exist in DB it creates a user and saves them to DB

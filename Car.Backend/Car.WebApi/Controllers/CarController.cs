@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/cars")]
     [ApiController]
     public class CarController : ControllerBase
