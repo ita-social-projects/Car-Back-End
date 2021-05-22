@@ -7,7 +7,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Car.WebApi.ServiceExtension
 {
-    public static class Swagger
+    public static class SwaggerExtension
     {
         public static void AddSwagger(this IServiceCollection services)
         {
@@ -29,14 +29,14 @@ namespace Car.WebApi.ServiceExtension
                     Reference = new OpenApiReference
                     {
                         Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
+                        Type = ReferenceType.SecurityScheme,
+                    },
                 };
 
                 cfg.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
                 cfg.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    { securityScheme, new string[] { } }
+                    { securityScheme, Array.Empty<string>() },
                 });
             });
         }

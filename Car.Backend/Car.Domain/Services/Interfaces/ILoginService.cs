@@ -6,10 +6,10 @@ namespace Car.Domain.Services.Interfaces
 {
    public interface ILoginService
    {
-        Task<User> GetUserAsync(string email);
+      Task<User> GetUserAsync(string email);
 
-        Task<User> AddUserAsync(User user);
+      Task<User> AddUserAsync(User user);
 
-        Task<UserDto> LoginAsync(UserDto user);
+      Task<UserDto> LoginAsync(UserDto userDto);
    }
 }
