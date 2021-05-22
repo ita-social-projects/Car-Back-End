@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -27,7 +28,7 @@ namespace Car.UnitTests.Controllers
         public async Task Login_WhenUserExists_ReturnsOkObjectResult()
         {
             // Arrange
-            var user = Fixture.Create<User>();
+            var user = Fixture.Create<UserDto>();
 
             loginService.Setup(service => service.LoginAsync(user))
                 .ReturnsAsync(user);
@@ -39,9 +40,9 @@ namespace Car.UnitTests.Controllers
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<User>();
-                ((result as OkObjectResult)?.Value as User)?.Id.Should().Be(user.Id);
-                ((result as OkObjectResult)?.Value as User)?.Name.Should().Be(user.Name);
+                (result as OkObjectResult)?.Value.Should().BeOfType<UserDto>();
+                ((result as OkObjectResult)?.Value as UserDto)?.Id.Should().Be(user.Id);
+                ((result as OkObjectResult)?.Value as UserDto)?.Name.Should().Be(user.Name);
             }
         }
     }

@@ -3,10 +3,12 @@ using Car.Data.Entities;
 using Car.Domain.Dto.ChatDto;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/user-chats")]
     [ApiController]
     public class ChatController : ControllerBase

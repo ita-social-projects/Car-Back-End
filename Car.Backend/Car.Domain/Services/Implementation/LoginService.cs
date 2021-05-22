@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +12,13 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<User> userRepository;
         private readonly IWebTokenGenerator webTokenGenerator;
+        private readonly IMapper mapper;
 
-        public LoginService(IRepository<User> userRepository, IWebTokenGenerator webTokenGenerator)
+        public LoginService(IRepository<User> userRepository, IWebTokenGenerator webTokenGenerator, IMapper mapper)
         {
             this.userRepository = userRepository;
             this.webTokenGenerator = webTokenGenerator;
+            this.mapper = mapper;
         }
 
         public Task<User> GetUserAsync(string email) =>
@@ -34,15 +38,18 @@ namespace Car.Domain.Services.Implementation
             return newUser;
         }
 
-        public async Task<User> LoginAsync(User user)
+        public async Task<UserDto> LoginAsync(UserDto userDto)
         {
+            var user = mapper.Map<UserDto, User>(userDto);
             var loginUser = await GetUserAsync(user?.Email) ?? await AddUserAsync(user);
             if (loginUser != null)
             {
                 loginUser.Token = webTokenGenerator.GenerateWebToken(loginUser);
             }
 
-            return loginUser;
+            var result = mapper.Map<User, UserDto>(loginUser);
+
+            return result;
         }
     }
 }
