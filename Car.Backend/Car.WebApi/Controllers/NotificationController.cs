@@ -47,19 +47,6 @@ namespace Car.WebApi.Controllers
              Ok(await notificationService.GetUnreadNotificationsNumberAsync(userId));
 
         /// <summary>
-        /// updates user notification Asynchronously
-        /// </summary>
-        /// <param name="createNotificationModel">notification itself to be updated</param>
-        /// <returns>updated notification</returns>
-        [HttpPut]
-        public async Task<IActionResult> UpdateNotificationAsync([FromBody] CreateNotificationModel createNotificationModel)
-        {
-            var notification = await notificationService.CreateNewNotificationAsync(createNotificationModel);
-            await notificationService.UpdateNotificationAsync(notification);
-            return Ok(notification);
-        }
-
-        /// <summary>
         /// adds new user notification Asynchronously
         /// </summary>
         /// <param name="createNotificationModel">notification itself to be updated</param>

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/requests")]
     [ApiController]
     public class RequestController : ControllerBase

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;

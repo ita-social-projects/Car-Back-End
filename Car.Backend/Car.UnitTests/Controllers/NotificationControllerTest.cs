@@ -87,27 +87,6 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult()
-        {
-            // Arrange
-            var createNotificationModel = Fixture.Create<CreateNotificationModel>();
-            var expectedNotification = Mapper.Map<CreateNotificationModel, Notification>(createNotificationModel);
-
-            notificationService.Setup(service => service.CreateNewNotificationAsync(createNotificationModel))
-                .ReturnsAsync(expectedNotification);
-
-            // Act
-            var result = await notificationController.UpdateNotificationAsync(createNotificationModel);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(expectedNotification);
-            }
-        }
-
-        [Fact]
         public async Task AddNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult()
         {
             // Arrange

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Car.Data.Constants;
+using Car.Data.Entities;
 using Car.Data.Enums;
-using Car.Data.FluentValidation;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
@@ -116,9 +114,17 @@ namespace Car.UnitTests.FluentValidationTests.Request
         [Xunit.Theory]
         [InlineData(-44)]
         [InlineData(44)]
-        public void ToLatitude_IValid_GeneratesValidationError(int value)
+        public void ToLatitude_IsValid_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(request => request.To.Latitude, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(-3)]
+        [InlineData(0)]
+        public void ToLongitude_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(request => request.To.Longitude, value);
         }
 
         [Xunit.Theory]
