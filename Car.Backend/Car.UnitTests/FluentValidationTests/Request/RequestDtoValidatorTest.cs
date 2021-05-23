@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Domain.FluentValidation;
@@ -33,19 +34,19 @@ namespace Car.UnitTests.FluentValidationTests.Request
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void PassengersCount_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(request => request.PassengersCount, value);
-        }
-
-        [Xunit.Theory]
         [InlineData(3)]
         [InlineData(1)]
         public void PassengersCount_IsValid_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(request => request.PassengersCount, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(-5)]
+        [InlineData(100)]
+        public void PassengersCount_IsNotValid_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(request => request.PassengersCount, value);
         }
 
         [Xunit.Theory]
@@ -69,70 +70,6 @@ namespace Car.UnitTests.FluentValidationTests.Request
         public void UserId_IsValid_GeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(request => request.UserId, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(-100)]
-        [InlineData(100)]
-        public void FromLatitude_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(request => request.From.Latitude, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(-44)]
-        [InlineData(44)]
-        public void FromLatitude_IValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(request => request.From.Latitude, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(-222)]
-        [InlineData(222)]
-        public void FromLongitude_IsNotValid_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(request => request.From.Longitude, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(-88)]
-        [InlineData(44)]
-        public void FromLongitude_IsValid_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(request => request.From.Longitude, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(-100)]
-        [InlineData(100)]
-        public void ToLatitude_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(request => request.To.Latitude, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(-44)]
-        [InlineData(44)]
-        public void ToLatitude_IsValid_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(request => request.To.Latitude, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(-3)]
-        [InlineData(0)]
-        public void ToLongitude_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(request => request.To.Longitude, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(-3)]
-        [InlineData(0)]
-        public void ToLongitude_IsValid_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(request => request.To.Longitude, value);
         }
     }
 }
