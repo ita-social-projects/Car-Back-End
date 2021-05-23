@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Internal;
+using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
@@ -144,28 +144,42 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys.Where(j => IsSuitable(j, filter)));
         }
 
+        public async Task DeleteAsync(int journeyId)
+        {
+            journeyRepository.Delete(new Journey { Id = journeyId });
+            await journeyRepository.SaveChangesAsync();
+        }
+
         private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
         {
-            bool isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
+            var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
-            bool isDepartureTimeSuitable = journey.DepartureTime <= filter.DepartureTime.AddHours(2)
-                                       && journey.DepartureTime >= filter.DepartureTime.AddHours(-2);
+            var isDepartureTimeSuitable = journey.DepartureTime > DateTime.UtcNow
+                                          && journey.DepartureTime <= filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
+                                          && journey.DepartureTime >= filter.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours);
 
-            bool isFeeSuitable = (journey.IsFree && filter.Fee == FeeType.Free)
-                              || (!journey.IsFree && filter.Fee == FeeType.Paid)
-                              || (filter.Fee == FeeType.All);
+            var isFeeSuitable = (journey.IsFree && filter.Fee == FeeType.Free)
+                                || (!journey.IsFree && filter.Fee == FeeType.Paid)
+                                || (filter.Fee == FeeType.All);
 
             if (!isEnoughSeats || !isDepartureTimeSuitable || !isFeeSuitable)
             {
                 return false;
             }
 
-            Func<JourneyPoint, double, double, double> distance = (JourneyPoint address1, double lattitude, double longitude) =>
-                GeoCalculator.GetDistance(address1.Latitude, address1.Longitude, lattitude, longitude, 1, DistanceUnit.Kilometers);
+            var pointsFromStart = journey.JourneyPoints
+                .SkipWhile(p => Distance(p, filter.FromLatitude, filter.FromLongitude) < Constants.JourneySearchRadiusKm);
 
-            var pointsFromStart = journey.JourneyPoints.SkipWhile(p => distance(p, filter.FromLatitude, filter.FromLongitude) < 1);
+            return pointsFromStart.Any() && pointsFromStart
+                .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
 
-            return pointsFromStart.Any() && pointsFromStart.Any(p => distance(p, filter.ToLatitude, filter.ToLongitude) < 1);
+            static double Distance(JourneyPoint point, double latitude, double longitude) =>
+                GeoCalculator.GetDistance(
+                    point.Latitude,
+                    point.Longitude,
+                    latitude,
+                    longitude,
+                    distanceUnit: DistanceUnit.Kilometers);
         }
     }
 }

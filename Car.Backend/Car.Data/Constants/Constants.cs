@@ -31,6 +31,9 @@
         public const double MinLongitude = -180;
         public const double MaxLongitude = 180;
 
+        public const double JourneySearchRadiusKm = 1;
+        public const double JourneySearchTimeScopeHours = 2;
+
         public const int OkStatusCode = 200;
     }
 }

@@ -74,27 +74,51 @@ namespace Car.UnitTests.FluentValidationTests.Request
         }
 
         [Xunit.Theory]
-        [InlineData(-3)]
-        [InlineData(0)]
+        [InlineData(-100)]
+        [InlineData(100)]
         public void FromLatitude_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(request => request.From.Latitude, value);
         }
 
         [Xunit.Theory]
-        [InlineData(-3)]
-        [InlineData(0)]
+        [InlineData(-44)]
+        [InlineData(44)]
+        public void FromLatitude_IValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(request => request.From.Latitude, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(-222)]
+        [InlineData(222)]
+        public void FromLongitude_IsNotValid_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(request => request.From.Longitude, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(-88)]
+        [InlineData(44)]
         public void FromLongitude_IsValid_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(request => request.From.Longitude, value);
         }
 
         [Xunit.Theory]
-        [InlineData(-3)]
-        [InlineData(0)]
+        [InlineData(-100)]
+        [InlineData(100)]
         public void ToLatitude_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(request => request.To.Latitude, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(-44)]
+        [InlineData(44)]
+        public void ToLatitude_IValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(request => request.To.Latitude, value);
         }
 
         [Xunit.Theory]

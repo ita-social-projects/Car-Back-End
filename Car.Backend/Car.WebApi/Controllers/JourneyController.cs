@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/journeys")]
     [ApiController]
     public class JourneyController : ControllerBase
@@ -76,5 +78,17 @@ namespace Car.WebApi.Controllers
         [HttpGet("filter/")]
         public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilterModel journeyFilterModel) =>
             Ok(await journeyService.GetFilteredJourneys(journeyFilterModel));
+
+        /// <summary>
+        /// deletes journey by identifier
+        /// </summary>
+        /// <param name="id">journey Id</param>
+        /// <returns>OkResult</returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await journeyService.DeleteAsync(id);
+            return Ok();
+        }
     }
 }

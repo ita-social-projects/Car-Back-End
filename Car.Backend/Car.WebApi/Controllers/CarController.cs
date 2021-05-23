@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/cars")]
     [ApiController]
     public class CarController : ControllerBase
@@ -32,7 +34,7 @@ namespace Car.WebApi.Controllers
         /// <param name="car">The car.</param>
         /// <returns>New car.</returns>
         [HttpPost]
-        public async Task<IActionResult> AddCar([FromBody] CreateCarModel car) =>
+        public async Task<IActionResult> AddCar([FromForm] CreateCarModel car) =>
             Ok(await carService.AddCarAsync(car));
 
         /// <summary>
@@ -50,14 +52,14 @@ namespace Car.WebApi.Controllers
         /// <param name="updateCarModel">The car.</param>
         /// <returns>The updated car.</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateCar([FromBody] UpdateCarModel updateCarModel) =>
+        public async Task<IActionResult> UpdateCar([FromForm] UpdateCarModel updateCarModel) =>
             Ok(await carService.UpdateCarAsync(updateCarModel));
 
         /// <summary>
         /// deletes car by identifier
         /// </summary>
         /// <param name="id">car Id</param>
-        /// <returns>no content</returns>
+        /// <returns>ok</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {

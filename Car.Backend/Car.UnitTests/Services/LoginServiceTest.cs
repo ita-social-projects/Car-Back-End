@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -24,7 +25,7 @@ namespace Car.UnitTests.Services
         {
             userRepository = new Mock<IRepository<User>>();
             webTokenGenerator = new Mock<IWebTokenGenerator>();
-            loginService = new LoginService(userRepository.Object, webTokenGenerator.Object);
+            loginService = new LoginService(userRepository.Object, webTokenGenerator.Object, Mapper);
         }
 
         [Fact]
@@ -98,12 +99,13 @@ namespace Car.UnitTests.Services
             var users = Fixture.CreateMany<User>();
             var user = users.First();
             var token = Fixture.Create<string>();
+            var userDto = Mapper.Map<UserDto>(user);
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
             webTokenGenerator.Setup(w => w.GenerateWebToken(user)).Returns(token);
 
             // Act
-            var result = await loginService.LoginAsync(user);
+            var result = await loginService.LoginAsync(userDto);
 
             // Assert
             result.Token.Should().BeSameAs(token);
@@ -116,13 +118,14 @@ namespace Car.UnitTests.Services
             var users = new List<User>();
             var user = Fixture.Create<User>();
             var token = Fixture.Create<string>();
+            var userDto = Mapper.Map<UserDto>(user);
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
             webTokenGenerator.Setup(w => w.GenerateWebToken(user)).Returns(token);
-            userRepository.Setup(repo => repo.AddAsync(user)).ReturnsAsync(user);
+            userRepository.Setup(repo => repo.AddAsync(It.IsAny<User>())).ReturnsAsync(user);
 
             // Act
-            var result = await loginService.LoginAsync(user);
+            var result = await loginService.LoginAsync(userDto);
 
             // Assert
             result.Token.Should().BeSameAs(token);
@@ -134,12 +137,13 @@ namespace Car.UnitTests.Services
             // Arrange
             var users = Fixture.CreateMany<User>();
             User user = null;
+            var userDto = Mapper.Map<UserDto>(user);
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
             userRepository.Setup(repo => repo.AddAsync(user)).ReturnsAsync(user);
 
             // Act
-            var result = await loginService.LoginAsync(user);
+            var result = await loginService.LoginAsync(userDto);
 
             // Assert
             result.Should().BeNull();

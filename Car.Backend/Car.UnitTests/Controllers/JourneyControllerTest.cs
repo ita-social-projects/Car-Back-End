@@ -10,6 +10,7 @@ using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -208,6 +209,36 @@ namespace Car.UnitTests.Controllers
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             (result as OkObjectResult)?.Value.Should().Be(expectedResult);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenJourneyIdIsValid_ReturnsOkResult()
+        {
+            // Arrange
+            var journeyIdToDelete = Fixture.Create<int>();
+
+            // Act
+            var result = await journeyController.Delete(journeyIdToDelete);
+
+            // Assert
+            journeyService.Verify(service => service.DeleteAsync(journeyIdToDelete), Times.Once());
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WhenJourneyNotExists_ThrowDbUpdateConcurrencyException()
+        {
+            // Arrange
+            var journeyIdToDelete = Fixture.Create<int>();
+            journeyService.Setup(service =>
+                service.DeleteAsync(journeyIdToDelete)).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = journeyService.Invoking(service =>
+                service.Object.DeleteAsync(journeyIdToDelete));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
     }
 }
