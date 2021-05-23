@@ -9,7 +9,7 @@ namespace Car.Domain.FluentValidation
     {
         public RequestDtoValidator()
         {
-            RuleFor(request => request.DepartureTime).GreaterThanOrEqualTo(DateTime.Now);
+            RuleFor(request => request.DepartureTime).GreaterThanOrEqualTo(DateTime.UtcNow);
             RuleFor(request => request.PassengersCount).GreaterThan(Constants.NumberMin);
             RuleFor(request => request.UserId).GreaterThan(Constants.IdLength);
             RuleFor(request => request.Fee).IsInEnum();

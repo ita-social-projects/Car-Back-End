@@ -47,8 +47,6 @@ namespace Car.Domain.Services.Implementation
             await notificationRepository.UpdateAsync(notification);
             await notificationRepository.SaveChangesAsync();
 
-            await NotifyClientAsync(notification);
-
             return notification;
         }
 

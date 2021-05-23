@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
@@ -24,6 +26,8 @@ namespace Car.UnitTests.Services
     {
         private readonly INotificationService notificationService;
         private readonly Mock<IHubContext<SignalRHub>> hubContext;
+        private readonly Mock<IHubCallerClients> hubClients;
+        private readonly Mock<IClientProxy> clientProxy;
         private readonly Mock<IRepository<Notification>> notificationRepository;
         private readonly Mock<IRepository<User>> userRepository;
 
@@ -32,6 +36,8 @@ namespace Car.UnitTests.Services
             hubContext = new Mock<IHubContext<SignalRHub>>();
             notificationRepository = new Mock<IRepository<Notification>>();
             userRepository = new Mock<IRepository<User>>();
+            hubClients = new Mock<IHubCallerClients>();
+            clientProxy = new Mock<IClientProxy>();
             notificationService = new NotificationService(
                 notificationRepository.Object,
                 hubContext.Object,
@@ -149,8 +155,11 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var notification = Fixture.Create<Notification>();
+            var notifications = Fixture.CreateMany<Notification>();
 
             notificationRepository.Setup(repo => repo.AddAsync(notification)).ReturnsAsync(notification);
+            notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
             // Act
             var result = await notificationService.AddNotificationAsync(notification);
@@ -250,6 +259,7 @@ namespace Car.UnitTests.Services
                 .CreateMany<Notification>()
                 .ToList();
             var notification = notifications.First();
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
             notificationRepository
                 .Setup(repo => repo.Query())
