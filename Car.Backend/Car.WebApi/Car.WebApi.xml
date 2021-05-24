@@ -287,7 +287,7 @@
             <param name ="id">User identifier</param>
             <returns>user preferences</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Data.Entities.UserPreferences)">
+        <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Domain.Dto.UserPreferencesDTO)">
             <summary>
             updates preferences
             </summary>
