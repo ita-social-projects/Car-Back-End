@@ -49,5 +49,11 @@ namespace Car.Domain.Services.Implementation
 
             return updatedLocation;
         }
+
+        public async Task DeleteAsync(int locationId)
+        {
+            locationRepository.Delete(new Location() { Id = locationId });
+            await locationRepository.SaveChangesAsync();
+        }
     }
 }

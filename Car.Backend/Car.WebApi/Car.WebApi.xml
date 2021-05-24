@@ -43,7 +43,7 @@
             deletes car by identifier
             </summary>
             <param name="id">car Id</param>
-            <returns>no content</returns>
+            <returns>ok</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
             <summary>
@@ -151,13 +151,20 @@
             <param name="id">The location identifier.</param>
             <returns>The location entity</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.DeleteAsync(System.Int32)">
+            <summary>
+            deletes location by identifier
+            </summary>
+            <param name="id">location Id</param>
+            <returns>ok</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationTypeController.GetAll">
             <summary>
             Gets all location types.
             </summary>
             <returns>All the models</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Data.Entities.User)">
+        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>
             ensures the user and returns a User for client app,
             if user doesn't exist in DB it creates a user and saves them to DB
@@ -243,7 +250,7 @@
             deletes notification by identifier
             </summary>
             <param name="id">notification Id</param>
-            <returns>no content</returns>
+            <returns>ok</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.MarkNotificationAsReadAsync(System.Int32)">
             <summary>

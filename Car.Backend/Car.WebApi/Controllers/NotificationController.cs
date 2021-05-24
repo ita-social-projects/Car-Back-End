@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.Hubs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/notifications")]
     [ApiController]
     public class NotificationController : ControllerBase
@@ -119,7 +121,7 @@ namespace Car.WebApi.Controllers
         /// deletes notification by identifier
         /// </summary>
         /// <param name="id">notification Id</param>
-        /// <returns>no content</returns>
+        /// <returns>ok</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
