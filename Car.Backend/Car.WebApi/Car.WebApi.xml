@@ -67,13 +67,6 @@
             <param name="chat">Sender identifier</param>
             <returns>New chat</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.AddMessage(Car.Data.Entities.Message)">
-            <summary>
-            Add new message
-            </summary>
-            <param name="message">Message entity</param>
-            <returns>Added Message</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetFiltered(Car.Domain.Filters.ChatFilter)">
             <summary>
             Filters chats by conditions
