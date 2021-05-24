@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Car.Data.Entities;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +31,7 @@ namespace Car.WebApi.Controllers
         /// <param name="preferences">preferences to be updated</param>
         /// <returns>updated preference</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdatePreferences([FromBody] UserPreferences preferences) =>
+        public async Task<IActionResult> UpdatePreferences([FromBody] UserPreferencesDTO preferences) =>
             Ok(await preferencesService.UpdatePreferencesAsync(preferences));
     }
 }
