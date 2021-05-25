@@ -130,6 +130,13 @@
             <param name="id">journey Id</param>
             <returns>OkResult</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.Update(Car.Domain.Dto.JourneyDto)">
+            <summary>
+            Update the journey asynchronously.
+            </summary>
+            <param name="journey">The journey dto.</param>
+            <returns>OkResult</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
             Gets all the locations by user id
