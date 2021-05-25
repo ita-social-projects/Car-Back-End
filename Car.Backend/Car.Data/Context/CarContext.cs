@@ -36,6 +36,8 @@ namespace Car.Data.Context
 
         public DbSet<LocationType> LocationTypes { get; set; }
 
+        public DbSet<Request> Requests { get; set; }
+
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {
@@ -57,6 +59,7 @@ namespace Car.Data.Context
             modelBuilder.ApplyConfiguration(new ChatConfiguration());
             modelBuilder.ApplyConfiguration(new LocationConfiguration());
             modelBuilder.ApplyConfiguration(new LocationTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RequestConfiguration());
 
             modelBuilder.Seed();
         }

@@ -33,5 +33,7 @@
 
         public const double JourneySearchRadiusKm = 1;
         public const double JourneySearchTimeScopeHours = 2;
+
+        public const int OkStatusCode = 200;
     }
 }
