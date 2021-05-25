@@ -150,6 +150,13 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
+        public async Task UpdateAsync(JourneyDto journey)
+        {
+            var updatedJourney = mapper.Map<JourneyDto, Journey>(journey);
+            await journeyRepository.UpdateAsync(updatedJourney);
+            await journeyRepository.SaveChangesAsync();
+        }
+
         private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;

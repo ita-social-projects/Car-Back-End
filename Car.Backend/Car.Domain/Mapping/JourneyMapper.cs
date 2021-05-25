@@ -18,6 +18,7 @@ namespace Car.Domain.Mapping
             CreateMap<JourneyModel, Journey>().ReverseMap();
             CreateMap<CreateJourneyModel, Journey>().ReverseMap();
             CreateMap<CreateJourneyModel, JourneyModel>().ReverseMap();
+            CreateMap<JourneyDto, Journey>().ReverseMap();
             CreateMap<JourneyPoint, JourneyPointDto>().ReverseMap();
             CreateMap<CreateJourneyPointModel, JourneyPoint>().ReverseMap();
             CreateMap<CreateJourneyPointModel, JourneyPointDto>().ReverseMap();

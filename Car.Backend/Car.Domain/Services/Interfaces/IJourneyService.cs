@@ -24,5 +24,7 @@ namespace Car.Domain.Services.Interfaces
         Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter);
 
         Task DeleteAsync(int journeyId);
+
+        Task UpdateAsync(JourneyDto journey);
     }
 }
