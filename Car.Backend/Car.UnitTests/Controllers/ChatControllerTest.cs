@@ -122,26 +122,6 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task AddMessage_WhenMessageIsValid_ReturnsOkObjectResult()
-        {
-            // Arrange
-            var message = Fixture.Create<Message>();
-
-            chatService.Setup(x => x.AddMessageAsync(message))
-                .ReturnsAsync(message);
-
-            // Act
-            var result = await chatController.AddMessage(message);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(message);
-            }
-        }
-
-        [Fact]
         public async Task GetFiltered_WhenMessagesExist_ReturnsOkObjectResult()
         {
             // Arrange

@@ -1,12 +1,13 @@
 ﻿using System.Threading.Tasks;
-using Car.Data.Entities;
 using Car.Domain.Dto.ChatDto;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/user-chats")]
     [ApiController]
     public class ChatController : ControllerBase
@@ -48,15 +49,6 @@ namespace Car.WebApi.Controllers
 
             return Ok(result);
         }
-
-        /// <summary>
-        /// Add new message
-        /// </summary>
-        /// <param name="message">Message entity</param>
-        /// <returns>Added Message</returns>
-        [HttpPost("message")]
-        public async Task<IActionResult> AddMessage([FromBody] Message message) =>
-            Ok(await chatService.AddMessageAsync(message));
 
         /// <summary>
         /// Filters chats by conditions

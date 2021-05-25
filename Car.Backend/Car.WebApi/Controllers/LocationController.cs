@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/locations")]
     [ApiController]
     public class LocationController : ControllerBase

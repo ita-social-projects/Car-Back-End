@@ -27,6 +27,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IWebTokenGenerator, JsonWebTokenGenerator>();
             services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IRequestService, RequestService>();
             services.AddScoped<ILocationTypeService, LocationTypeService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
@@ -40,6 +41,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<Notification>, Repository<Notification>>();
             services.AddScoped<IRepository<Location>, Repository<Location>>();
             services.AddScoped<IRepository<LocationType>, Repository<LocationType>>();
+            services.AddScoped<IRepository<Request>, Repository<Request>>();
         }
 
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)

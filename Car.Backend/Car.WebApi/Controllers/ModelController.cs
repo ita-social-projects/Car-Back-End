@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/models")]
     [ApiController]
     public class ModelController : ControllerBase

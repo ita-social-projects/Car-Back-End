@@ -19,11 +19,19 @@ namespace Car.Domain.Services.Implementation
     public class JourneyService : IJourneyService
     {
         private readonly IRepository<Journey> journeyRepository;
+        private readonly IRepository<Request> requestRepository;
+        private readonly IRequestService requestService;
         private readonly IMapper mapper;
 
-        public JourneyService(IRepository<Journey> journeyRepository, IMapper mapper)
+        public JourneyService(
+            IRepository<Journey> journeyRepository,
+            IRepository<Request> requestRepository,
+            IRequestService requestService,
+            IMapper mapper)
         {
             this.journeyRepository = journeyRepository;
+            this.requestRepository = requestRepository;
+            this.requestService = requestService;
             this.mapper = mapper;
         }
 
@@ -107,6 +115,19 @@ namespace Car.Domain.Services.Implementation
 
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
+
+            var requests = requestRepository
+                .Query()
+                .AsEnumerable()
+                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilterModel>(r)))
+                .ToList();
+
+            foreach (var request in requests)
+            {
+                await requestService.NotifyUserAsync(
+                    mapper.Map<Request, RequestDto>(request),
+                    mapper.Map<Journey, JourneyModel>(addedJourney));
+            }
 
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
