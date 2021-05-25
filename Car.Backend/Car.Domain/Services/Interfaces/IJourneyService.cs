@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Models.Journey;
 
@@ -25,6 +26,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeleteAsync(int journeyId);
 
-        Task UpdateAsync(JourneyDto journey);
+        Task<JourneyModel> UpdateAsync(JourneyDto journey);
     }
 }

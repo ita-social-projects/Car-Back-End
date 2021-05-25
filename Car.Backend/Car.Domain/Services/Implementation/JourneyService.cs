@@ -150,11 +150,14 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(JourneyDto journey)
+        public async Task<JourneyModel> UpdateAsync(JourneyDto journeyDto)
         {
-            var updatedJourney = mapper.Map<JourneyDto, Journey>(journey);
-            await journeyRepository.UpdateAsync(updatedJourney);
+            var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
+
+            var updatedJourney = await journeyRepository.UpdateAsync(journey);
             await journeyRepository.SaveChangesAsync();
+
+            return mapper.Map<Journey, JourneyModel>(updatedJourney);
         }
 
         private static bool IsSuitable(Journey journey, JourneyFilterModel filter)

@@ -13,6 +13,7 @@ namespace Car.WebApi.ServiceExtension
         public static void AddFluentValidators(this IServiceCollection services)
         {
             services.AddTransient<IValidator<CreateJourneyModel>, CreateJourneyModelValidator>();
+            services.AddTransient<IValidator<JourneyDto>, JourneyDtoValidator>();
             services.AddTransient<IValidator<CreateJourneyPointModel>, CreateJourneyPointModelValidator>();
             services.AddTransient<IValidator<CreateStopModel>, CreateStopModelValidator>();
             services.AddTransient<IValidator<RequestDto>, RequestDtoValidator>();

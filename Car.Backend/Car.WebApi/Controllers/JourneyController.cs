@@ -98,10 +98,7 @@ namespace Car.WebApi.Controllers
         /// <param name="journey">The journey dto.</param>
         /// <returns>OkResult</returns>
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] JourneyDto journey)
-        {
-            await journeyService.UpdateAsync(journey);
-            return Ok();
-        }
+        public async Task<IActionResult> Update([FromBody] JourneyDto journey) =>
+            Ok(await journeyService.UpdateAsync(journey));
     }
 }
