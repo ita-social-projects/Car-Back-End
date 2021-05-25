@@ -168,7 +168,7 @@ namespace Car.Domain.Services.Implementation
             }
 
             var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(p => Distance(p, filter.FromLatitude, filter.FromLongitude) < Constants.JourneySearchRadiusKm);
+                .SkipWhile(point => Distance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
 
             return pointsFromStart.Any() && pointsFromStart
                 .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
