@@ -2,15 +2,14 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Hubs;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
-using Car.WebApi.Hubs;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
@@ -21,13 +20,11 @@ namespace Car.UnitTests.Controllers
     {
         private readonly Mock<INotificationService> notificationService;
         private readonly NotificationController notificationController;
-        private readonly Mock<IHubContext<SignalRHub>> hubContext;
 
         public NotificationControllerTest()
         {
             notificationService = new Mock<INotificationService>();
-            hubContext = new Mock<IHubContext<SignalRHub>>();
-            notificationController = new NotificationController(notificationService.Object, hubContext.Object);
+            notificationController = new NotificationController(notificationService.Object);
         }
 
         [Fact]
@@ -90,28 +87,6 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult()
-        {
-            // Arrange
-            var createNotificationModel = Fixture.Create<CreateNotificationModel>();
-            var expectedNotification = Mapper.Map<CreateNotificationModel, Notification>(createNotificationModel);
-
-            notificationService.Setup(service => service.CreateNewNotificationAsync(createNotificationModel))
-                .ReturnsAsync(expectedNotification);
-            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
-
-            // Act
-            var result = await notificationController.UpdateNotificationAsync(createNotificationModel);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(expectedNotification);
-            }
-        }
-
-        [Fact]
         public async Task AddNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult()
         {
             // Arrange
@@ -120,7 +95,6 @@ namespace Car.UnitTests.Controllers
 
             notificationService.Setup(service => service.CreateNewNotificationAsync(createNotificationModel))
                 .ReturnsAsync(expectedNotification);
-            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
             // Act
             var result = await notificationController.AddNotificationAsync(createNotificationModel);

@@ -12,5 +12,6 @@
         PassengerWithdrawal = 8,
         HRMarketingMessage = 9,
         HRMarketingSurvey = 10,
+        RequestedJourneyCreated = 11,
     }
 }

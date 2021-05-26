@@ -43,7 +43,7 @@
             deletes car by identifier
             </summary>
             <param name="id">car Id</param>
-            <returns>no content</returns>
+            <returns>ok</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
             <summary>
@@ -130,6 +130,13 @@
             <param name="id">journey Id</param>
             <returns>OkResult</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.Update(Car.Domain.Dto.JourneyDto)">
+            <summary>
+            Update the journey asynchronously.
+            </summary>
+            <param name="journey">The journey dto.</param>
+            <returns>OkResult</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
             Gets all the locations by user id
@@ -151,13 +158,20 @@
             <param name="id">The location identifier.</param>
             <returns>The location entity</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.DeleteAsync(System.Int32)">
+            <summary>
+            deletes location by identifier
+            </summary>
+            <param name="id">location Id</param>
+            <returns>ok</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationTypeController.GetAll">
             <summary>
             Gets all location types.
             </summary>
             <returns>All the models</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Data.Entities.User)">
+        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
             <summary>
             ensures the user and returns a User for client app,
             if user doesn't exist in DB it creates a user and saves them to DB
@@ -192,13 +206,6 @@
             </summary>
             <param name="userId">user Id</param>
             <returns>int number</returns>
-        </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.UpdateNotificationAsync(Car.Domain.Models.Notification.CreateNotificationModel)">
-            <summary>
-            updates user notification Asynchronously
-            </summary>
-            <param name="createNotificationModel">notification itself to be updated</param>
-            <returns>updated notification</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Models.Notification.CreateNotificationModel)">
             <summary>
@@ -243,7 +250,7 @@
             deletes notification by identifier
             </summary>
             <param name="id">notification Id</param>
-            <returns>no content</returns>
+            <returns>ok</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.MarkNotificationAsReadAsync(System.Int32)">
             <summary>
@@ -251,6 +258,34 @@
             </summary>
             <param name="notificationId">notification Id</param>
             <returns>amended notification</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.RequestController.Get(System.Int32)">
+            <summary>
+            Gets the request by identifier.
+            </summary>
+            <param name="id">Unique identifier.</param>
+            <returns>Request.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.RequestController.Add(Car.Domain.Dto.RequestDto)">
+            <summary>
+            Adds new request.
+            </summary>
+            <param name="request">Request that will be added.</param>
+            <returns>Added request.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.RequestController.Delete(System.Int32)">
+            <summary>
+            Removes request by its identifier.
+            </summary>
+            <param name="id">Unique identifier.</param>
+            <returns>Ok result.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.RequestController.GetByUserId(System.Int32)">
+            <summary>
+            Gets requests by user identifier.
+            </summary>
+            <param name="id">User's unique identifier.</param>
+            <returns>Collection of requests</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
             <summary>
@@ -273,7 +308,7 @@
             <param name ="id">User identifier</param>
             <returns>user preferences</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Data.Entities.UserPreferences)">
+        <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Domain.Dto.UserPreferencesDTO)">
             <summary>
             updates preferences
             </summary>

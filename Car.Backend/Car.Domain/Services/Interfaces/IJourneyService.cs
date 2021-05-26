@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Models.Journey;
 
@@ -24,5 +25,7 @@ namespace Car.Domain.Services.Interfaces
         Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter);
 
         Task DeleteAsync(int journeyId);
+
+        Task<JourneyModel> UpdateAsync(JourneyDto journeyDto);
     }
 }

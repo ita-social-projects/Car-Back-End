@@ -127,21 +127,5 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         {
             validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.OrganizerId, value);
         }
-
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void CarId_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.CarId, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void CarId_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.CarId, value);
-        }
     }
 }

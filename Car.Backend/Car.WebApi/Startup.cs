@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Car.Domain.Configurations;
-using Car.WebApi.Hubs;
+using Car.Domain.Hubs;
 using Car.WebApi.ServiceExtension;
 using FluentValidation.AspNetCore;
 using Hangfire;
@@ -58,14 +58,7 @@ namespace Car.WebApi
             services.AddSignalR();
             services.AddHangFire();
             services.AddHangfireServer();
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SoftServe Car-API", Version = "v1" });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
+            services.AddSwagger();
 
             var jwtOptions = Configuration.GetSection(nameof(Jwt)).Get<Jwt>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

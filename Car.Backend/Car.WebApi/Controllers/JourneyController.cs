@@ -1,10 +1,13 @@
 ﻿using System.Threading.Tasks;
+using Car.Domain.Dto;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/journeys")]
     [ApiController]
     public class JourneyController : ControllerBase
@@ -88,5 +91,14 @@ namespace Car.WebApi.Controllers
             await journeyService.DeleteAsync(id);
             return Ok();
         }
+
+        /// <summary>
+        /// Update the journey asynchronously.
+        /// </summary>
+        /// <param name="journey">The journey dto.</param>
+        /// <returns>OkResult</returns>
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] JourneyDto journey) =>
+            Ok(await journeyService.UpdateAsync(journey));
     }
 }

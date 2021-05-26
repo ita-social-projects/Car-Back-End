@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
@@ -18,11 +19,19 @@ namespace Car.Domain.Services.Implementation
     public class JourneyService : IJourneyService
     {
         private readonly IRepository<Journey> journeyRepository;
+        private readonly IRepository<Request> requestRepository;
+        private readonly IRequestService requestService;
         private readonly IMapper mapper;
 
-        public JourneyService(IRepository<Journey> journeyRepository, IMapper mapper)
+        public JourneyService(
+            IRepository<Journey> journeyRepository,
+            IRepository<Request> requestRepository,
+            IRequestService requestService,
+            IMapper mapper)
         {
             this.journeyRepository = journeyRepository;
+            this.requestRepository = requestRepository;
+            this.requestService = requestService;
             this.mapper = mapper;
         }
 
@@ -107,6 +116,19 @@ namespace Car.Domain.Services.Implementation
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
+            var requests = requestRepository
+                .Query()
+                .AsEnumerable()
+                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilterModel>(r)))
+                .ToList();
+
+            foreach (var request in requests)
+            {
+                await requestService.NotifyUserAsync(
+                    mapper.Map<Request, RequestDto>(request),
+                    mapper.Map<Journey, JourneyModel>(addedJourney));
+            }
+
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
 
@@ -128,12 +150,23 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
+        public async Task<JourneyModel> UpdateAsync(JourneyDto journeyDto)
+        {
+            var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
+
+            var updatedJourney = await journeyRepository.UpdateAsync(journey);
+            await journeyRepository.SaveChangesAsync();
+
+            return mapper.Map<Journey, JourneyModel>(updatedJourney);
+        }
+
         private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
-            var isDepartureTimeSuitable = journey.DepartureTime <= filter.DepartureTime.AddHours(2)
-                                          && journey.DepartureTime >= filter.DepartureTime.AddHours(-2);
+            var isDepartureTimeSuitable = journey.DepartureTime > DateTime.UtcNow
+                                          && journey.DepartureTime <= filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
+                                          && journey.DepartureTime >= filter.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours);
 
             var isFeeSuitable = (journey.IsFree && filter.Fee == FeeType.Free)
                                 || (!journey.IsFree && filter.Fee == FeeType.Paid)
@@ -145,10 +178,10 @@ namespace Car.Domain.Services.Implementation
             }
 
             var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(p => Distance(p, filter.FromLatitude, filter.FromLongitude) < 1);
+                .SkipWhile(point => Distance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
 
             return pointsFromStart.Any() && pointsFromStart
-                .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < 1);
+                .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
 
             static double Distance(JourneyPoint point, double latitude, double longitude) =>
                 GeoCalculator.GetDistance(

@@ -182,6 +182,35 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
+        [Fact]
+        public async Task GetChatByIdAsync_ChatExist_ReturnsChat()
+        {
+            // Arrange
+            var chat = Fixture.Create<Chat>();
+
+            chatRepository.Setup(repo => repo.GetByIdAsync(chat.Id)).ReturnsAsync(chat);
+
+            // Act
+            var result = await chatService.GetChatByIdAsync(chat.Id);
+
+            // Assert
+            result.Should().Be(chat);
+        }
+
+        [Fact]
+        public async Task GetChatByIdAsync_IdNotMatchesChat_ReturnsNull()
+        {
+            // Arrange
+            var chat = Fixture.Create<Chat>();
+            chatRepository.Setup(repo => repo.GetByIdAsync(chat.Id)).ReturnsAsync(chat);
+
+            // Act
+            var result = await chatService.GetChatByIdAsync(chat.Id + 1);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
         [Theory]
         [InlineData("test message", "test")]
         [InlineData("we@ther", "@th")]

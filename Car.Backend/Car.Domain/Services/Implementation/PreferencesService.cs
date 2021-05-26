@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,12 +17,20 @@ namespace Car.Domain.Services.Implementation
         public Task<UserPreferences> GetPreferencesAsync(int userId) =>
             preferencesRepository.Query().FirstOrDefaultAsync(p => p.Id == userId);
 
-        public async Task<UserPreferences> UpdatePreferencesAsync(UserPreferences preferences)
+        public async Task<UserPreferences> UpdatePreferencesAsync(UserPreferencesDTO preferencesDTO)
         {
-            var updatedPreferences = await preferencesRepository.UpdateAsync(preferences);
+            var preferences = await preferencesRepository.GetByIdAsync(preferencesDTO.Id);
+
+            if (preferences != null)
+            {
+                preferences.DoAllowSmoking = preferencesDTO.DoAllowSmoking;
+                preferences.DoAllowEating = preferencesDTO.DoAllowEating;
+                preferences.Comments = preferencesDTO.Comments;
+            }
+
             await preferencesRepository.SaveChangesAsync();
 
-            return updatedPreferences;
+            return preferences;
         }
     }
 }

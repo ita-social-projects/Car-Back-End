@@ -16,7 +16,6 @@ namespace Car.Domain.FluentValidation
             RuleFor(model => model.Comments).MaximumLength(Constants.CommentsMaxLength);
             RuleFor(model => model.IsFree).NotNull();
             RuleFor(model => model.OrganizerId).GreaterThan(Constants.IdLength);
-            RuleFor(model => model.CarId).GreaterThan(Constants.IdLength);
             RuleFor(model => model.IsOnOwnCar).NotNull();
             RuleForEach(model => model.JourneyPoints).SetValidator(new CreateJourneyPointModelValidator());
             RuleForEach(model => model.Stops).SetValidator(new CreateStopModelValidator());

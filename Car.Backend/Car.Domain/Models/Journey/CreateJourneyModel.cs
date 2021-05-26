@@ -15,7 +15,7 @@ namespace Car.Domain.Models.Journey
 
         public int OrganizerId { get; set; }
 
-        public int CarId { get; set; }
+        public int? CarId { get; set; }
 
         public bool IsOnOwnCar { get; set; }
 
