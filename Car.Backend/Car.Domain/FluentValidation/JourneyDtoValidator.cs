@@ -1,13 +1,13 @@
 using System;
 using Car.Data.Constants;
-using Car.Domain.Models.Journey;
+using Car.Domain.Dto;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class CreateJourneyModelValidator : AbstractValidator<CreateJourneyModel>
+    public class JourneyDtoValidator : AbstractValidator<JourneyDto>
     {
-        public CreateJourneyModelValidator()
+        public JourneyDtoValidator()
         {
             RuleFor(model => model.DepartureTime).GreaterThan(DateTime.UtcNow);
             RuleFor(model => model.CountOfSeats)
@@ -17,10 +17,10 @@ namespace Car.Domain.FluentValidation
             RuleFor(model => model.IsFree).NotNull();
             RuleFor(model => model.OrganizerId).GreaterThan(Constants.IdLength);
             RuleFor(model => model.IsOnOwnCar).NotNull();
-            RuleForEach(model => model.JourneyPoints).SetValidator(new CreateJourneyPointModelValidator());
-            RuleForEach(model => model.Stops).SetValidator(new CreateStopModelValidator());
-            RuleFor(model => model.DurationInMinutes).GreaterThan(Constants.NumberMin);
+            RuleForEach(model => model.JourneyPoints).SetValidator(new JourneyPointDtoValidator());
+            RuleForEach(model => model.Stops).SetValidator(new StopDtoValidator());
             RuleFor(model => model.RouteDistance).GreaterThan(Constants.NumberMin);
+            RuleFor(model => model.Duration).GreaterThan(TimeSpan.Zero);
         }
     }
 }

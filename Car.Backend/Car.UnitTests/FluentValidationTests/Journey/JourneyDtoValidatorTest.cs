@@ -8,27 +8,27 @@ using Xunit;
 namespace Car.UnitTests.FluentValidationTests.Journey
 {
     [TestFixture]
-    public class CreateJourneyModelValidatorTest
+    public class JourneyDtoValidatorTest
     {
-        private readonly CreateJourneyModelValidator validator;
+        private readonly JourneyDtoValidator validator;
 
-        public CreateJourneyModelValidatorTest()
+        public JourneyDtoValidatorTest()
         {
-            validator = new CreateJourneyModelValidator();
+            validator = new JourneyDtoValidator();
         }
 
         [Xunit.Theory]
         [InlineData("2020-01-01")]
         public void DepartureTime_IsNotValid_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.DepartureTime, DateTime.Parse(value));
+            validator.ShouldHaveValidationErrorFor(journeyDto => journeyDto.DepartureTime, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
         [InlineData("2090-06-27")]
         public void DepartureTime_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.DepartureTime, DateTime.Parse(value));
+            validator.ShouldNotHaveValidationErrorFor(journeyDto => journeyDto.DepartureTime, DateTime.Parse(value));
         }
 
         [Xunit.Theory]
@@ -37,7 +37,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(5)]
         public void CountOfSeats_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.CountOfSeats, value);
+            validator.ShouldHaveValidationErrorFor(journeyDto => journeyDto.CountOfSeats, value);
         }
 
         [Xunit.Theory]
@@ -45,23 +45,23 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(4)]
         public void CountOfSeats_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.CountOfSeats, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyDto => journeyDto.CountOfSeats, value);
         }
 
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void DurationInMinutes_IsNotValid_GeneratesValidationError(int value)
+        [Fact]
+        public void Duration_IsNotValid_GeneratesValidationError()
         {
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.DurationInMinutes, value);
+            var incorrectDuration = TimeSpan.MinValue;
+
+            validator.ShouldHaveValidationErrorFor(journeyDto => journeyDto.Duration, incorrectDuration);
         }
 
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void DurationInMinutes_IsSpecified_NotGeneratesValidationError(int value)
+        [Fact]
+        public void DurationInMinutes_IsSpecified_NotGeneratesValidationError()
         {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.DurationInMinutes, value);
+            var correctDuration = TimeSpan.MaxValue;
+
+            validator.ShouldNotHaveValidationErrorFor(journeyDto => journeyDto.Duration, correctDuration);
         }
 
         [Xunit.Theory]
@@ -69,7 +69,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(-1)]
         public void RouteDistance_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.RouteDistance, value);
+            validator.ShouldHaveValidationErrorFor(journeyDto => journeyDto.RouteDistance, value);
         }
 
         [Xunit.Theory]
@@ -77,14 +77,14 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(10)]
         public void RouteDistance_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.RouteDistance, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyDto => journeyDto.RouteDistance, value);
         }
 
         [Fact]
         public void Comments_IsNotValid_GeneratesValidationError()
         {
             var longComment = new string('*', Constants.CommentsMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.Comments, longComment);
+            validator.ShouldHaveValidationErrorFor(journeyDto => journeyDto.Comments, longComment);
         }
 
         [Xunit.Theory]
@@ -93,7 +93,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(null)]
         public void Comments_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.Comments, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyDto => journeyDto.Comments, value);
         }
 
         [Xunit.Theory]
@@ -101,7 +101,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(false)]
         public void IsFree_IsSpecified_NotGeneratesValidationError(bool value)
         {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.IsFree, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyDto => journeyDto.IsFree, value);
         }
 
         [Xunit.Theory]
@@ -109,7 +109,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(false)]
         public void IsOnOwnCar_IsSpecified_NotGeneratesValidationError(bool value)
         {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.IsOnOwnCar, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyDto => journeyDto.IsOnOwnCar, value);
         }
 
         [Xunit.Theory]
@@ -117,7 +117,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(-1)]
         public void OrganizerId_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(journeyModel => journeyModel.OrganizerId, value);
+            validator.ShouldHaveValidationErrorFor(journeyDto => journeyDto.OrganizerId, value);
         }
 
         [Xunit.Theory]
@@ -125,7 +125,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(10)]
         public void OrganizerId_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(journeyModel => journeyModel.OrganizerId, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyDto => journeyDto.OrganizerId, value);
         }
     }
 }

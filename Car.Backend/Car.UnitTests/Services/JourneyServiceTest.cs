@@ -9,6 +9,7 @@ using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -607,6 +608,40 @@ namespace Car.UnitTests.Services
 
             // Assert
             journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenJourneyIsValid_ReturnsJourneyObject()
+        {
+            // Arrange
+            var updatedJourneyDto = Fixture.Create<JourneyDto>();
+            var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
+            var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
+
+            journeyRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync(journey);
+
+            // Act
+            var result = await journeyService.UpdateAsync(updatedJourneyDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedJourney);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenJourneyIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var updatedJourneyDto = Fixture.Create<JourneyDto>();
+
+            journeyRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
+
+            // Act
+            var result = await journeyService.UpdateAsync(updatedJourneyDto);
+
+            // Assert
+            result.Should().BeNull();
         }
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()

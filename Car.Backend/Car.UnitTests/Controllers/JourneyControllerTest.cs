@@ -240,5 +240,22 @@ namespace Car.UnitTests.Controllers
             // Assert
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
+
+        [Fact]
+        public async Task UpdateCar_WhenCarIsValid_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var journeyDto = Fixture.Create<JourneyDto>();
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+            journeyService.Setup(service =>
+                service.UpdateAsync(journeyDto)).ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.Update(journeyDto);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
+        }
     }
 }
