@@ -8,10 +8,7 @@ Car.Backend/Car.WebApi/appsettings.json
 Car.Backend/Car.WebApi/appsettings.Development.json
 Car.Backend/Car.WebApi/appsettings.Production.json
 Car.Backend/Car.WebApi/credential-google-drive.json
-Car.Backend/Car.WebApi/wwwroot/Credentials/
-Car.Backend/Car.WebApi/wwwroot/Credentials/credential-avatar-drive.json
-Car.Backend/Car.WebApi/wwwroot/Credentials/credential-car-drive.json
-Car.Backend/Car.WebApi/wwwroot/Credentials/credential-test-drive.json
+Car.Backend/Car.WebApi/wwwroot/Credentials/*.json
 *.rsuser
 *.suo
 *.user
@@ -350,7 +347,7 @@ ASALocalRun/
 .localhistory/
 
 # BeatPulse healthcheck temp database
-healthchecksdb 
+healthchecksdb
 /CarBackEnd/CarBackEnd/appsettings.Development.json
 /CarBackEnd/CarBackEnd/appsettings.Production.json
 /CarBackEnd/CarBackEnd/wwwroot/Credentials/credential-avatar-drive.json
