@@ -15,8 +15,6 @@ namespace Car.Domain.FluentValidation
             RuleFor(point => point.Longitude)
                 .GreaterThanOrEqualTo(Constants.MinLongitude)
                 .LessThanOrEqualTo(Constants.MaxLongitude);
-
-            RuleFor(point => point.JourneyId).GreaterThan(Constants.NumberMin);
         }
     }
 }

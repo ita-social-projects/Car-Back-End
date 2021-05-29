@@ -176,14 +176,14 @@ namespace Car.UnitTests.Controllers
         public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
-            var expectedJourney = Mapper.Map<CreateJourneyModel, JourneyModel>(createJourneyModel);
+            var journeyDto = Fixture.Create<JourneyDto>();
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
 
-            journeyService.Setup(j => j.AddJourneyAsync(createJourneyModel))
+            journeyService.Setup(j => j.AddJourneyAsync(journeyDto))
                 .ReturnsAsync(expectedJourney);
 
             // Act
-            var result = await journeyController.AddJourney(createJourneyModel);
+            var result = await journeyController.AddJourney(journeyDto);
 
             // Assert
             using (new AssertionScope())

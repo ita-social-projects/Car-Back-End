@@ -65,11 +65,11 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Adds the journey asynchronously.
         /// </summary>
-        /// <param name="journeyModel">The journey model.</param>
+        /// <param name="journeyDto">The journey model.</param>
         /// <returns>Added journey.</returns>
         [HttpPost]
-        public async Task<IActionResult> AddJourney([FromBody] CreateJourneyModel journeyModel) =>
-            Ok(await journeyService.AddJourneyAsync(journeyModel));
+        public async Task<IActionResult> AddJourney([FromBody] JourneyDto journeyDto) =>
+            Ok(await journeyService.AddJourneyAsync(journeyDto));
 
         /// <summary>
         /// Returns journeys filtered by given conditions.

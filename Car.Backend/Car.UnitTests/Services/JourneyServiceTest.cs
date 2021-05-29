@@ -398,15 +398,15 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject()
         {
             // Arrange
-            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
-            var addedJourney = Mapper.Map<CreateJourneyModel, Journey>(createJourneyModel);
+            var journeyDto = Fixture.Create<JourneyDto>();
+            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
             var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
 
             // Act
-            var result = await journeyService.AddJourneyAsync(createJourneyModel);
+            var result = await journeyService.AddJourneyAsync(journeyDto);
 
             // Assert
             result.Should().BeEquivalentTo(journeyModel, options => options.ExcludingMissingMembers());
@@ -416,13 +416,13 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject()
         {
             // Arrange
-            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
+            var journeyDto = Fixture.Create<JourneyDto>();
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
 
             // Act
-            var result = await journeyService.AddJourneyAsync(createJourneyModel);
+            var result = await journeyService.AddJourneyAsync(journeyDto);
 
             // Assert
             result.Should().BeNull();

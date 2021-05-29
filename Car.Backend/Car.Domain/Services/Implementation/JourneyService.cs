@@ -108,10 +108,9 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
-        public async Task<JourneyModel> AddJourneyAsync(CreateJourneyModel journeyModel)
+        public async Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel)
         {
-            var journey = mapper.Map<CreateJourneyModel, Journey>(journeyModel);
-            journey.Duration = TimeSpan.FromMinutes(journeyModel.DurationInMinutes);
+            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
