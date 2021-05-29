@@ -7,7 +7,6 @@ namespace Car.Domain.FluentValidation
     {
         public JourneyPointDtoValidator()
         {
-            RuleFor(point => point.Id).GreaterThan(Constants.IdLength);
             RuleFor(point => point.Index).GreaterThanOrEqualTo(Constants.NumberMin);
 
             RuleFor(point => point.Latitude)
