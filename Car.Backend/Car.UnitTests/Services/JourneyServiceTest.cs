@@ -419,7 +419,6 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject()
         {
             // Arrange
-            var requests = Fixture.Create<List<Request>>();
             var createJourneyModel = Fixture.Create<CreateJourneyModel>();
 
             journeyRepository.Setup(r =>
