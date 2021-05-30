@@ -398,12 +398,15 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject()
         {
             // Arrange
+            var requests = Fixture.Create<List<Request>>();
             var createJourneyModel = Fixture.Create<CreateJourneyModel>();
             var addedJourney = Mapper.Map<CreateJourneyModel, Journey>(createJourneyModel);
             var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
+            requestRepository.Setup(r => r.Query())
+                .Returns(requests.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await journeyService.AddJourneyAsync(createJourneyModel);

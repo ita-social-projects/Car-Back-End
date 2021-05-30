@@ -119,7 +119,7 @@ namespace Car.Domain.Services.Implementation
             var requests = requestRepository
                 .Query()
                 .AsEnumerable()
-                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilterModel>(r)))
+                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilterModel>(r)) && addedJourney.OrganizerId != r.UserId)
                 .ToList();
 
             foreach (var request in requests)
