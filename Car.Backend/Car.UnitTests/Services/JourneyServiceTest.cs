@@ -9,6 +9,7 @@ using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -24,12 +25,19 @@ namespace Car.UnitTests.Services
     public class JourneyServiceTest : TestBase
     {
         private readonly IJourneyService journeyService;
+        private readonly IRequestService requestService;
+        private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
 
         public JourneyServiceTest()
         {
             journeyRepository = new Mock<IRepository<Journey>>();
-            journeyService = new JourneyService(journeyRepository.Object, Mapper);
+            requestRepository = new Mock<IRepository<Request>>();
+            journeyService = new JourneyService(
+                journeyRepository.Object,
+                requestRepository.Object,
+                requestService,
+                Mapper);
         }
 
         [Fact]
@@ -390,12 +398,15 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject()
         {
             // Arrange
+            var requests = Fixture.Create<List<Request>>();
             var createJourneyModel = Fixture.Create<CreateJourneyModel>();
             var addedJourney = Mapper.Map<CreateJourneyModel, Journey>(createJourneyModel);
             var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
+            requestRepository.Setup(r => r.Query())
+                .Returns(requests.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await journeyService.AddJourneyAsync(createJourneyModel);
@@ -600,6 +611,40 @@ namespace Car.UnitTests.Services
 
             // Assert
             journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenJourneyIsValid_ReturnsJourneyObject()
+        {
+            // Arrange
+            var updatedJourneyDto = Fixture.Create<JourneyDto>();
+            var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
+            var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
+
+            journeyRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync(journey);
+
+            // Act
+            var result = await journeyService.UpdateAsync(updatedJourneyDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedJourney);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenJourneyIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var updatedJourneyDto = Fixture.Create<JourneyDto>();
+
+            journeyRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
+
+            // Act
+            var result = await journeyService.UpdateAsync(updatedJourneyDto);
+
+            // Assert
+            result.Should().BeNull();
         }
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()

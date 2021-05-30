@@ -13,7 +13,12 @@ namespace Car.WebApi.ServiceExtension
                                             () => serviceProvider.GetService<IJourneyService>()
                                                                  .DeletePastJourneyAsync(),
                                             Cron.Daily(),
-                                            TimeZoneInfo.Local);
+                                            TimeZoneInfo.Utc);
+            recurringJobManager.AddOrUpdate("DeleteOutdatedRequests",
+                                            () => serviceProvider.GetService<IRequestService>()
+                                                                 .DeleteOutdatedAsync(),
+                                            Cron.Daily(),
+                                            TimeZoneInfo.Utc);
         }
     }
 }

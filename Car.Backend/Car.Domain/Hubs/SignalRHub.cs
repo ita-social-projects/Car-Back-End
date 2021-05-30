@@ -4,7 +4,7 @@ using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Car.WebApi.Hubs
+namespace Car.Domain.Hubs
 {
     public class SignalRHub : Hub
     {

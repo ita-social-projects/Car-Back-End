@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -64,16 +65,19 @@ namespace Car.UnitTests.Services
         public async Task UpdatePreferences_WhenPreferencesIsValid_ReturnsPreferencesObject()
         {
             // Arrange
-            var preferences = Fixture.Create<UserPreferences>();
+            var preferencesDTO = Fixture.Build<UserPreferencesDTO>().Create();
+            var inputPreferences = Fixture.Build<UserPreferences>()
+                .With(p => p.Id, preferencesDTO.Id)
+                .Create();
 
-            preferencesRepository.Setup(r => r.UpdateAsync(preferences))
-               .ReturnsAsync(preferences);
+            preferencesRepository.Setup(repo => repo.GetByIdAsync(preferencesDTO.Id))
+                .ReturnsAsync(inputPreferences);
 
             // Act
-            var result = await preferencesService.UpdatePreferencesAsync(preferences);
+            var result = await preferencesService.UpdatePreferencesAsync(preferencesDTO);
 
             // Assert
-            result.Should().BeEquivalentTo(preferences);
+            result.Should().BeEquivalentTo(preferencesDTO, options => options.ExcludingMissingMembers());
         }
 
         [Fact]
@@ -81,12 +85,13 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var preferences = Fixture.Create<UserPreferences>();
+            var preferencesDTO = Fixture.Create<UserPreferencesDTO>();
 
             preferencesRepository.Setup(r => r.UpdateAsync(preferences))
                 .ReturnsAsync((UserPreferences)null);
 
             // Act
-            var result = await preferencesService.UpdatePreferencesAsync(preferences);
+            var result = await preferencesService.UpdatePreferencesAsync(preferencesDTO);
 
             // Assert
             result.Should().BeNull();

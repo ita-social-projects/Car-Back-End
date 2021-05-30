@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Car.WebApi.ServiceExtension
+namespace Car.Domain.Extensions
 {
     public static class DbContextExtension
     {

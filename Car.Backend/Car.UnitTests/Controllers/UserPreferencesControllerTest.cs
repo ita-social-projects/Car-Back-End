@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -58,13 +59,14 @@ namespace Car.UnitTests.Controllers
         public async Task UpdatePreferences_WhenUserPreferencesExists_ReturnsUserPreferences()
         {
             // Arrange
+            var userPreferencesDTO = Fixture.Create<UserPreferencesDTO>();
             var userPreferences = Fixture.Create<UserPreferences>();
 
-            preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))
+            preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferencesDTO))
                 .ReturnsAsync(userPreferences);
 
             // Act
-            var result = await userPreferencesController.UpdatePreferences(userPreferences);
+            var result = await userPreferencesController.UpdatePreferences(userPreferencesDTO);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -75,7 +77,7 @@ namespace Car.UnitTests.Controllers
         public async Task UpdatePreferences_WhenUserPreferencesNotExist_ReturnsNull()
         {
             // Arrange
-            var userPreferences = new UserPreferences();
+            var userPreferences = new UserPreferencesDTO();
 
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))
                 .ReturnsAsync((UserPreferences)null);

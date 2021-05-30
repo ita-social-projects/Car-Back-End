@@ -4,6 +4,7 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
@@ -8098,6 +8099,32 @@ namespace Car.Data.Migrations
                     b.ToTable("Notification");
                 });
 
+            modelBuilder.Entity("Car.Data.Entities.Request", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DepartureTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Fee")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PassengersCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Request");
+                });
+
             modelBuilder.Entity("Car.Data.Entities.Schedule", b =>
                 {
                     b.Property<int>("Id")
@@ -8364,6 +8391,67 @@ namespace Car.Data.Migrations
                     b.Navigation("Sender");
                 });
 
+            modelBuilder.Entity("Car.Data.Entities.Request", b =>
+                {
+                    b.HasOne("Car.Data.Entities.User", "User")
+                        .WithMany("Requests")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Car.Data.Entities.Point", "From", b1 =>
+                        {
+                            b1.Property<int>("RequestId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                            b1.Property<double>("Latitude")
+                                .HasColumnType("float")
+                                .HasColumnName("FromLatitude");
+
+                            b1.Property<double>("Longitude")
+                                .HasColumnType("float")
+                                .HasColumnName("FromLongitude");
+
+                            b1.HasKey("RequestId");
+
+                            b1.ToTable("Request");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RequestId");
+                        });
+
+                    b.OwnsOne("Car.Data.Entities.Point", "To", b1 =>
+                        {
+                            b1.Property<int>("RequestId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                            b1.Property<double>("Latitude")
+                                .HasColumnType("float")
+                                .HasColumnName("ToLatitude");
+
+                            b1.Property<double>("Longitude")
+                                .HasColumnType("float")
+                                .HasColumnName("ToLongitude");
+
+                            b1.HasKey("RequestId");
+
+                            b1.ToTable("Request");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RequestId");
+                        });
+
+                    b.Navigation("From");
+
+                    b.Navigation("To");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Car.Data.Entities.Schedule", b =>
                 {
                     b.HasOne("Car.Data.Entities.Journey", "Journey")
@@ -8480,6 +8568,8 @@ namespace Car.Data.Migrations
                     b.Navigation("OrganizerJourneys");
 
                     b.Navigation("ReceivedNotifications");
+
+                    b.Navigation("Requests");
 
                     b.Navigation("SentMessages");
 

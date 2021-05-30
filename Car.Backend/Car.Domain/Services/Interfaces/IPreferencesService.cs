@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -7,6 +8,6 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<UserPreferences> GetPreferencesAsync(int userId);
 
-        Task<UserPreferences> UpdatePreferencesAsync(UserPreferences preferences);
+        Task<UserPreferences> UpdatePreferencesAsync(UserPreferencesDTO preferencesDTO);
     }
 }
