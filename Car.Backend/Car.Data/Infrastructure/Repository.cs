@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Car.Data.Context;
 using Car.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Car.Data.Infrastructure
 {
@@ -88,6 +89,12 @@ namespace Car.Data.Infrastructure
         /// </summary>
         /// <param name="entity">entity</param>
         public void Delete(TEntity entity) => context.Entry(entity).State = EntityState.Deleted;
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync() =>
+            await context.Database.BeginTransactionAsync();
+
+        public void Detach(TEntity entity) =>
+            context.Entry(entity).State = EntityState.Detached;
 
         private static void CheckEntityForNull(TEntity entity)
         {

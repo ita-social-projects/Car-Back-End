@@ -130,9 +130,16 @@
             <param name="id">journey Id</param>
             <returns>OkResult</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.Update(Car.Domain.Dto.JourneyDto)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.UpdateRoute(Car.Domain.Dto.JourneyDto)">
             <summary>
-            Update the journey asynchronously.
+            Update the journey route asynchronously.
+            </summary>
+            <param name="journey">The journey dto.</param>
+            <returns>OkResult</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.UpdateDetails(Car.Domain.Dto.JourneyDto)">
+            <summary>
+            Update the journey details asynchronously.
             </summary>
             <param name="journey">The journey dto.</param>
             <returns>OkResult</returns>

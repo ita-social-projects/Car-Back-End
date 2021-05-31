@@ -26,6 +26,8 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeleteAsync(int journeyId);
 
-        Task<JourneyModel> UpdateAsync(JourneyDto journeyDto);
+        Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto);
+
+        Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto);
     }
 }

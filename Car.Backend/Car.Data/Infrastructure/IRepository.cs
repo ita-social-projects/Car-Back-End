@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Car.Data.Infrastructure
 {
@@ -24,5 +25,9 @@ namespace Car.Data.Infrastructure
         ValueTask<TEntity> GetByIdAsync(params object[] keys);
 
         void Delete(TEntity entity);
+
+        Task<IDbContextTransaction> BeginTransactionAsync();
+
+        public void Detach(TEntity entity);
     }
 }
