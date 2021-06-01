@@ -152,11 +152,15 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
         {
-            var journey = await journeyRepository
-                    .Query()
+            var journey = await journeyRepository.Query()
                     .IncludeStopsWithAddresses()
                     .IncludeJourneyPoints()
                     .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
+
+            if (journey is null)
+            {
+                return null;
+            }
 
             var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
 
