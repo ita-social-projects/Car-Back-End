@@ -36,7 +36,7 @@ namespace Car.Domain.Services.Implementation
                 jwtOptions.Value.Issuer,
                 jwtOptions.Value.Issuer,
                 claims,
-                expires: DateTime.UtcNow.AddHours(24),
+                expires: DateTime.UtcNow.AddMonths(1),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
