@@ -1,4 +1,6 @@
 using Car.Data.FluentValidation;
+using Car.Domain.Dto;
+using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
@@ -8,27 +10,11 @@ namespace Car.UnitTests.FluentValidationTests.JourneyPoint
     [TestFixture]
     public class JourneyPointDtoValidatorTest
     {
-        private readonly JourneyPointValidator validator;
+        private readonly JourneyPointDtoValidator validator;
 
         public JourneyPointDtoValidatorTest()
         {
-            validator = new JourneyPointValidator();
-        }
-
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void Id_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(journeyPointDto => journeyPointDto.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void Id_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(journeyPointDto => journeyPointDto.Id, value);
+            validator = new JourneyPointDtoValidator();
         }
 
         [Xunit.Theory]
@@ -77,22 +63,6 @@ namespace Car.UnitTests.FluentValidationTests.JourneyPoint
         public void Longitude_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(journeyPointDto => journeyPointDto.Longitude, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void JourneyId_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(journeyPointDto => journeyPointDto.JourneyId, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void JourneyId_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(journeyPointDto => journeyPointDto.JourneyId, value);
         }
     }
 }

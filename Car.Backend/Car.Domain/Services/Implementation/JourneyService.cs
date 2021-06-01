@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.Internal;
 using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.Enums;
@@ -108,10 +109,9 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
-        public async Task<JourneyModel> AddJourneyAsync(CreateJourneyModel journeyModel)
+        public async Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel)
         {
-            var journey = mapper.Map<CreateJourneyModel, Journey>(journeyModel);
-            journey.Duration = TimeSpan.FromMinutes(journeyModel.DurationInMinutes);
+            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
@@ -150,14 +150,38 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
-        public async Task<JourneyModel> UpdateAsync(JourneyDto journeyDto)
+        public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
+        {
+            var journey = await journeyRepository.Query()
+                    .IncludeStopsWithAddresses()
+                    .IncludeJourneyPoints()
+                    .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
+
+            if (journey is null)
+            {
+                return null;
+            }
+
+            var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
+
+            journey.Duration = updatedJourney.Duration;
+            journey.Stops = updatedJourney.Stops;
+            journey.JourneyPoints = updatedJourney.JourneyPoints;
+            journey.RouteDistance = updatedJourney.RouteDistance;
+
+            await journeyRepository.SaveChangesAsync();
+
+            return mapper.Map<Journey, JourneyModel>(journey);
+        }
+
+        public async Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto)
         {
             var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
 
-            var updatedJourney = await journeyRepository.UpdateAsync(journey);
+            journey = await journeyRepository.UpdateAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            return mapper.Map<Journey, JourneyModel>(updatedJourney);
+            return mapper.Map<Journey, JourneyModel>(journey);
         }
 
         private static bool IsSuitable(Journey journey, JourneyFilterModel filter)

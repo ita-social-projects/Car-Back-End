@@ -176,14 +176,14 @@ namespace Car.UnitTests.Controllers
         public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
-            var expectedJourney = Mapper.Map<CreateJourneyModel, JourneyModel>(createJourneyModel);
+            var journeyDto = Fixture.Create<JourneyDto>();
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
 
-            journeyService.Setup(j => j.AddJourneyAsync(createJourneyModel))
+            journeyService.Setup(j => j.AddJourneyAsync(journeyDto))
                 .ReturnsAsync(expectedJourney);
 
             // Act
-            var result = await journeyController.AddJourney(createJourneyModel);
+            var result = await journeyController.AddJourney(journeyDto);
 
             // Assert
             using (new AssertionScope())
@@ -242,16 +242,33 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateCar_WhenCarIsValid_ReturnsOkObjectResult()
+        public async Task UpdateRoute_WhenJourneyIsValid_ReturnsOkObjectResult()
         {
             // Arrange
             var journeyDto = Fixture.Create<JourneyDto>();
             var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
             journeyService.Setup(service =>
-                service.UpdateAsync(journeyDto)).ReturnsAsync(expectedJourney);
+                service.UpdateRouteAsync(journeyDto)).ReturnsAsync(expectedJourney);
 
             // Act
-            var result = await journeyController.Update(journeyDto);
+            var result = await journeyController.UpdateRoute(journeyDto);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
+        }
+
+        [Fact]
+        public async Task UpdateDetails_WhenJourneyIsValid_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var journeyDto = Fixture.Create<JourneyDto>();
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+            journeyService.Setup(service =>
+                service.UpdateDetailsAsync(journeyDto)).ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.UpdateDetails(journeyDto);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();

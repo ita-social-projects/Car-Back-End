@@ -19,22 +19,6 @@ namespace Car.UnitTests.FluentValidationTests.Stop
         [Xunit.Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void Id_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(stopDto => stopDto.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void Id_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(stopDto => stopDto.Id, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
         public void UserId_IsNotValid_GeneratesValidationError(int value)
         {
             validator.ShouldHaveValidationErrorFor(stopDto => stopDto.UserId, value);
