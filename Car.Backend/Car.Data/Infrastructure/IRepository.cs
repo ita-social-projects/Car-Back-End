@@ -25,9 +25,5 @@ namespace Car.Data.Infrastructure
         ValueTask<TEntity> GetByIdAsync(params object[] keys);
 
         void Delete(TEntity entity);
-
-        Task<IDbContextTransaction> BeginTransactionAsync();
-
-        public void Detach(TEntity entity);
     }
 }

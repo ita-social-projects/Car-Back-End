@@ -28,20 +28,14 @@ namespace Car.UnitTests.Services
         private readonly IRequestService requestService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
-        private readonly Mock<IRepository<JourneyPoint>> journeyPointRopository;
-        private readonly Mock<IRepository<Stop>> stopRepository;
 
         public JourneyServiceTest()
         {
             journeyRepository = new Mock<IRepository<Journey>>();
             requestRepository = new Mock<IRepository<Request>>();
-            journeyPointRopository = new Mock<IRepository<JourneyPoint>>();
-            stopRepository = new Mock<IRepository<Stop>>();
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
-                stopRepository.Object,
-                journeyPointRopository.Object,
                 requestService,
                 Mapper);
         }

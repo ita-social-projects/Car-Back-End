@@ -21,23 +21,17 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
-        private readonly IRepository<Stop> stopRepository;
-        private readonly IRepository<JourneyPoint> journeyPointRepository;
         private readonly IRequestService requestService;
         private readonly IMapper mapper;
 
         public JourneyService(
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
-            IRepository<Stop> stopRepository,
-            IRepository<JourneyPoint> journeyPointRepository,
             IRequestService requestService,
             IMapper mapper)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
-            this.stopRepository = stopRepository;
-            this.journeyPointRepository = journeyPointRepository;
             this.requestService = requestService;
             this.mapper = mapper;
         }
@@ -156,47 +150,6 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
-        // public async Task<JourneyModel> UpdateAsync(JourneyDto journeyDto)
-        // {
-        //     // ..........................
-        //     // ..........................
-        //     // ..........................
-        //     // ..........................
-        //     Journey updatedJourney;
-        //     await using var transaction = await journeyRepository.BeginTransactionAsync();
-        //     try
-        //     {
-        //         updatedJourney = await journeyRepository
-        //             .Query()
-        //             .IncludeStopsWithAddresses()
-        //             .IncludeJourneyPoints()
-        //             .AsNoTrackingWithIdentityResolution()
-        //             .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
-        //
-        //         await stopRepository.DeleteRangeAsync(updatedJourney.Stops);
-        //         await stopRepository.SaveChangesAsync();
-        //
-        //         await journeyPointRepository.DeleteRangeAsync(updatedJourney.JourneyPoints);
-        //         await journeyPointRepository.SaveChangesAsync();
-        //
-        //         var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
-        //
-        //         journeyRepository.Detach(journey);
-        //
-        //         await journeyRepository.UpdateAsync(journey);
-        //
-        //         await journeyRepository.SaveChangesAsync();
-        //         await transaction.CommitAsync();
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Console.WriteLine(e);
-        //         throw;
-        //     }
-        //
-        //     return mapper.Map<Journey, JourneyModel>(updatedJourney);
-        // }
-
         public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
         {
             var journey = await journeyRepository
@@ -219,11 +172,6 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto)
         {
-            // ..........................
-            // ..........................
-            // ..........................
-            // ..........................
-
             var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
 
             journey = await journeyRepository.UpdateAsync(journey);
