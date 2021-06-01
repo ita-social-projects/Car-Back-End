@@ -398,15 +398,15 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject()
         {
             // Arrange
-            var journeyDto = Fixture.Create<JourneyDto>();
-            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
+            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
+            var addedJourney = Mapper.Map<CreateJourneyModel, Journey>(createJourneyModel);
             var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
 
             // Act
-            var result = await journeyService.AddJourneyAsync(journeyDto);
+            var result = await journeyService.AddJourneyAsync(createJourneyModel);
 
             // Assert
             result.Should().BeEquivalentTo(journeyModel, options => options.ExcludingMissingMembers());
@@ -416,13 +416,13 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject()
         {
             // Arrange
-            var journeyDto = Fixture.Create<JourneyDto>();
+            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
 
             // Act
-            var result = await journeyService.AddJourneyAsync(journeyDto);
+            var result = await journeyService.AddJourneyAsync(createJourneyModel);
 
             // Assert
             result.Should().BeNull();
@@ -610,7 +610,6 @@ namespace Car.UnitTests.Services
             journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
         }
 
-        /*
         [Fact]
         public async Task UpdateAsync_WhenJourneyIsValid_ReturnsJourneyObject()
         {
@@ -643,7 +642,7 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeNull();
-        } */
+        }
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()
         {

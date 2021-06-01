@@ -1,8 +1,7 @@
 using System;
-using System.IO;
-using System.Reflection;
 using System.Text;
 using Car.Domain.Configurations;
+using Car.Domain.Extensions;
 using Car.Domain.Hubs;
 using Car.WebApi.ServiceExtension;
 using FluentValidation.AspNetCore;
@@ -10,12 +9,12 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 
 namespace Car.WebApi
 {
@@ -60,6 +59,17 @@ namespace Car.WebApi
             services.AddHangfireServer();
             services.AddSwagger();
 
+            // Configure this as suited for your case
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+              // Processing all forward headers (the default is None)
+              options.ForwardedHeaders = ForwardedHeaders.All;
+
+              // Clearing known networks and proxies collections
+              options.KnownNetworks.Clear();
+              options.KnownProxies.Clear();
+            });
+
             var jwtOptions = Configuration.GetSection(nameof(Jwt)).Get<Jwt>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                .AddJwtBearer(options =>
@@ -97,7 +107,18 @@ namespace Car.WebApi
                 logger.LogInformation("Configuring for Production environment");
             }
 
+            app.UseForwardedHeaders();
+
+            app.UseHttpMethodOverride();
+
             app.UseMiddlewareHandler();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SoftServe Car-API");
+            });
 
             app.UseRouting();
 
@@ -116,13 +137,6 @@ namespace Car.WebApi
             app.UseHangfireDashboard();
 
             serviceProvider.AddReccuringJobs(recurringJobManager);
-
-            app.UseSwagger();
-
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SoftServe Car-API");
-            });
         }
     }
 }

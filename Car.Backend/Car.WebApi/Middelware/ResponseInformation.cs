@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Car.WebApi.Middelware
+﻿namespace Car.WebApi.Middelware
 {
     public class ResponseInformation
     {
