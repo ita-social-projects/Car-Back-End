@@ -6,6 +6,8 @@ namespace Car.Data.Entities
     {
         public int Id { get; set; }
 
+        public int Index { get; set; }
+
         public int JourneyId { get; set; }
 
         public int AddressId { get; set; }

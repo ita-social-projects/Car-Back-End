@@ -6,6 +6,8 @@ namespace Car.Domain.Dto
     {
         public int Id { get; set; }
 
+        public int Index { get; set; }
+
         public StopType Type { get; set; }
 
         public AddressDto Address { get; set; }
