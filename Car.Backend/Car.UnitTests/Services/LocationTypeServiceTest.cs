@@ -25,12 +25,11 @@ namespace Car.UnitTests.Services
             locationTypeService = new LocationTypeService(locationTypeRepository.Object);
         }
 
-        [Fact]
-        public async Task GetAllLocationTypesAsync_WhenLocationsExist_ReturnsLocationTypeCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllLocationTypesAsync_WhenLocationsExist_ReturnsLocationTypeCollection(IEnumerable<LocationType> locationTypes)
         {
             // Arrange
-            var locationTypes = Fixture.CreateMany<LocationType>();
-
             locationTypeRepository.Setup(repo => repo.Query())
                 .Returns(locationTypes.AsQueryable().BuildMock().Object);
 

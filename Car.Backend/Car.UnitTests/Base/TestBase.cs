@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Xunit2;
 using AutoMapper;
 using Car.Domain.Mapping;
 

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
-using Car.Domain.Hubs;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -27,12 +27,11 @@ namespace Car.UnitTests.Controllers
             notificationController = new NotificationController(notificationService.Object);
         }
 
-        [Fact]
-        public async Task GetNotificationAsync_WhenNotificationExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetNotificationAsync_WhenNotificationExists_ReturnsOkObjectResult(Notification notification)
         {
             // Arrange
-            var notification = Fixture.Create<Notification>();
-
             notificationService.Setup(service => service.GetNotificationAsync(notification.Id)).ReturnsAsync(notification);
 
             // Act
@@ -46,13 +45,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetNotificationsAsync_WhenNotificationsExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetNotificationsAsync_WhenNotificationsExist_ReturnsOkObjectResult(List<Notification> notifications, User user)
         {
             // Arrange
-            var notifications = Fixture.Create<List<Notification>>();
-            var user = Fixture.Create<User>();
-
             notificationService.Setup(service => service.GetNotificationsAsync(user.Id)).ReturnsAsync(notifications);
 
             // Act
@@ -66,13 +63,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetUnreadNotificationsNumberAsync_WhenNotificationsExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUnreadNotificationsNumberAsync_WhenNotificationsExist_ReturnsOkObjectResult(List<Notification> notifications, User user)
         {
             // Arrange
-            var notifications = Fixture.Create<List<Notification>>();
-            var user = Fixture.Create<User>();
-
             notificationService.Setup(service => service.GetUnreadNotificationsNumberAsync(user.Id)).ReturnsAsync(notifications.Count);
 
             // Act
@@ -86,11 +81,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task AddNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult(CreateNotificationModel createNotificationModel)
         {
             // Arrange
-            var createNotificationModel = Fixture.Create<CreateNotificationModel>();
             var expectedNotification = Mapper.Map<CreateNotificationModel, Notification>(createNotificationModel);
 
             notificationService.Setup(service => service.CreateNewNotificationAsync(createNotificationModel))
@@ -107,12 +102,10 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenNotificationExist_ReturnsOkResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenNotificationExist_ReturnsOkResult(Notification notification)
         {
-            // Arrange
-            var notification = Fixture.Create<Notification>();
-
             // Act
             var result = await notificationController.DeleteAsync(notification.Id);
 
@@ -121,11 +114,12 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenNotificationNotExist_ThrowDbUpdateConcurrencyException()
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenNotificationNotExist_ThrowDbUpdateConcurrencyException(
+            Notification notification, [Frozen] Mock<INotificationService> notificationService)
         {
             // Arrange
-            var notification = Fixture.Create<Notification>();
             notificationService.Setup(service => service.DeleteAsync(notification.Id)).Throws<DbUpdateConcurrencyException>();
 
             // Act

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Models.Car;
@@ -68,12 +69,11 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task GetCarByIdAsync_WhenCarExists_ReturnsCarObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetCarByIdAsync_WhenCarExists_ReturnsCarObject(CarEntity car, List<CarEntity> cars)
         {
-            // Arrange
-            var car = Fixture.Create<CarEntity>();
-            var cars = Fixture.Create<List<CarEntity>>();
+            // Arrange);
             cars.Add(car);
 
             carRepository.Setup(repo => repo.Query())
@@ -86,12 +86,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(car);
         }
 
-        [Fact]
-        public async Task GetCarByIdAsync_WhenCarNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetCarByIdAsync_WhenCarNotExist_ReturnsNull(List<CarEntity> cars)
         {
             // Arrange
-            var cars = Fixture.Create<List<CarEntity>>();
-
             carRepository.Setup(repo => repo.Query())
                 .Returns(cars.AsQueryable().BuildMock().Object);
 
@@ -102,12 +101,11 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task GetAllByUserIdAsync_WhenCarsExist_ReturnsCarsCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllByUserIdAsync_WhenCarsExist_ReturnsCarsCollection(User owner, List<CarEntity> cars)
         {
             // Arrange
-            var owner = Fixture.Create<User>();
-            var cars = Fixture.Create<List<CarEntity>>();
             var ownCars = Fixture.Build<CarEntity>()
                 .With(c => c.OwnerId, owner.Id)
                 .CreateMany();
@@ -123,11 +121,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(ownCars);
         }
 
-        [Fact]
-        public async Task GetAllByUserIdAsync_WhenCarsNotExist_ReturnsEmptyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllByUserIdAsync_WhenCarsNotExist_ReturnsEmptyCollection(User owner)
         {
             // Arrange
-            var owner = Fixture.Create<User>();
             var cars = Fixture.Build<CarEntity>()
                 .With(c => c.OwnerId, owner.Id + 1)
                 .CreateMany();
@@ -181,11 +179,11 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException(int idCarToDelete)
         {
             // Arrange
-            var idCarToDelete = Fixture.Create<int>();
             carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
@@ -195,12 +193,10 @@ namespace Car.UnitTests.Services
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenCarExist_ExecuteOnce()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenCarExist_ExecuteOnce(int idCarToDelete)
         {
-            // Arrange
-            var idCarToDelete = Fixture.Create<int>();
-
             // Act
             await carService.DeleteAsync(idCarToDelete);
 
@@ -208,11 +204,11 @@ namespace Car.UnitTests.Services
             carRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException(int idCarToDelete)
         {
             // Arrange
-            var idCarToDelete = Fixture.Create<int>();
             carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateException>();
 
             // Act

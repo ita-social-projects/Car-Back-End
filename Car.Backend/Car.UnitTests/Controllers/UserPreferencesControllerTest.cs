@@ -23,11 +23,11 @@ namespace Car.UnitTests.Controllers
             userPreferencesController = new UserPreferencesController(preferencesService.Object);
         }
 
-        [Fact]
-        public async Task GetPreferences_WhenUserExists_ReturnsPreferencesObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetPreferences_WhenUserExists_ReturnsPreferencesObject(User user)
         {
             // Arrange
-            var user = Fixture.Create<User>();
             preferencesService.Setup(x => x.GetPreferencesAsync(It.IsAny<int>()))
                 .ReturnsAsync(user.UserPreferences);
 
@@ -39,11 +39,11 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().BeOfType<UserPreferences>();
         }
 
-        [Fact]
-        public async Task GetPreferences_WhenUserNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetPreferences_WhenUserNotExist_ReturnsNull(User user)
         {
             // Arrange
-            var user = Fixture.Create<User>();
             preferencesService.Setup(x => x.GetPreferencesAsync(It.IsAny<int>()))
                 .ReturnsAsync((UserPreferences)null);
 
@@ -55,13 +55,12 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().BeNull();
         }
 
-        [Fact]
-        public async Task UpdatePreferences_WhenUserPreferencesExists_ReturnsUserPreferences()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdatePreferences_WhenUserPreferencesExists_ReturnsUserPreferences(
+            UserPreferencesDTO userPreferencesDTO, UserPreferences userPreferences)
         {
             // Arrange
-            var userPreferencesDTO = Fixture.Create<UserPreferencesDTO>();
-            var userPreferences = Fixture.Create<UserPreferences>();
-
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferencesDTO))
                 .ReturnsAsync(userPreferences);
 
@@ -73,12 +72,11 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().BeOfType<UserPreferences>();
         }
 
-        [Fact]
-        public async Task UpdatePreferences_WhenUserPreferencesNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdatePreferences_WhenUserPreferencesNotExist_ReturnsNull(UserPreferencesDTO userPreferences)
         {
             // Arrange
-            var userPreferences = new UserPreferencesDTO();
-
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))
                 .ReturnsAsync((UserPreferences)null);
 

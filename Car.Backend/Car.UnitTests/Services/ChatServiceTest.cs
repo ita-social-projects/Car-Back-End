@@ -34,11 +34,11 @@ namespace Car.UnitTests.Services
             chatService = new ChatService(userRepository.Object, chatRepository.Object, messageRepository.Object, Mapper);
         }
 
-        [Fact]
-        public async Task GetChatByIdAsync_WhenChatExists_ReturnsCorrectType()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetChatByIdAsync_WhenChatExists_ReturnsCorrectType(IEnumerable<Message> chats)
         {
             // Arrange
-            var chats = Fixture.CreateMany<Message>();
             var chat = chats.First();
 
             messageRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Message, object>>[]>()))
@@ -51,11 +51,11 @@ namespace Car.UnitTests.Services
             result.Should().BeOfType<List<MessageDto>>();
         }
 
-        [Fact]
-        public async Task GetChatByIdAsync_WhenChatNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetChatByIdAsync_WhenChatNotExist_ReturnsNull(IEnumerable<Message> chats)
         {
             // Arrange
-            var chats = Fixture.CreateMany<Message>();
             var id = chats.Max(chat => chat.Id) + 1;
 
             messageRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Message, object>>[]>()))
@@ -68,11 +68,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEmpty();
         }
 
-        [Fact]
-        public async Task AddChatAsync_WhenChatIsValid_ReturnsChatObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddChatAsync_WhenChatIsValid_ReturnsChatObject(CreateChatDto chat)
         {
             // Arrange
-            var chat = Fixture.Create<CreateChatDto>();
             var chatEntity = Mapper.Map<CreateChatDto, Chat>(chat);
             chatRepository.Setup(repo => repo.AddAsync(It.IsAny<Chat>())).ReturnsAsync(chatEntity);
 
@@ -83,11 +83,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(chatEntity);
         }
 
-        [Fact]
-        public async Task AddChatAsync_WhenChatIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddChatAsync_WhenChatIsNotValid_ReturnsNull(CreateChatDto chat)
         {
             // Arrange
-            var chat = Fixture.Create<CreateChatDto>();
             var chatEntity = Mapper.Map<CreateChatDto, Chat>(chat);
             chatRepository.Setup(repo => repo.AddAsync(chatEntity)).ReturnsAsync((Chat)null);
 
@@ -98,11 +98,11 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task GetUserChatsAsync_WhenChatsExist_ReturnsChatCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserChatsAsync_WhenChatsExist_ReturnsChatCollection(IEnumerable<User> users)
         {
             // Arrange
-            var users = Fixture.CreateMany<User>();
             var user = users.First();
             var organizerJourneys = Fixture.Build<Journey>()
                 .With(j => j.Organizer, user)
@@ -126,11 +126,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(expectedChats);
         }
 
-        [Fact]
-        public async Task GetUserChatsAsync_WhenChatsNotExist_ReturnsEmptyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserChatsAsync_WhenChatsNotExist_ReturnsEmptyCollection(IEnumerable<User> users)
         {
             // Arrange
-            var users = Fixture.CreateMany<User>();
             var user = users.First();
             var organizerJourneys = Fixture.Build<Journey>()
                 .With(j => j.Organizer, user)
@@ -152,12 +152,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEmpty();
         }
 
-        [Fact]
-        public async Task AddMessageAsync_WhenMessageIsValid_ReturnsMessageObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddMessageAsync_WhenMessageIsValid_ReturnsMessageObject(Message message)
         {
             // Arrange
-            var message = Fixture.Create<Message>();
-
             messageRepository.Setup(repo => repo.AddAsync(message)).ReturnsAsync(message);
 
             // Act
@@ -167,12 +166,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(message);
         }
 
-        [Fact]
-        public async Task AddMessageAsync_WhenMessageIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddMessageAsync_WhenMessageIsNotValid_ReturnsNull(Message message)
         {
             // Arrange
-            var message = Fixture.Create<Message>();
-
             messageRepository.Setup(repo => repo.AddAsync(message)).ReturnsAsync((Message)null);
 
             // Act
@@ -182,12 +180,11 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task GetChatByIdAsync_ChatExist_ReturnsChat()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetChatByIdAsync_ChatExist_ReturnsChat(Chat chat)
         {
             // Arrange
-            var chat = Fixture.Create<Chat>();
-
             chatRepository.Setup(repo => repo.GetByIdAsync(chat.Id)).ReturnsAsync(chat);
 
             // Act
@@ -197,11 +194,11 @@ namespace Car.UnitTests.Services
             result.Should().Be(chat);
         }
 
-        [Fact]
-        public async Task GetChatByIdAsync_IdNotMatchesChat_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetChatByIdAsync_IdNotMatchesChat_ReturnsNull(Chat chat)
         {
             // Arrange
-            var chat = Fixture.Create<Chat>();
             chatRepository.Setup(repo => repo.GetByIdAsync(chat.Id)).ReturnsAsync(chat);
 
             // Act

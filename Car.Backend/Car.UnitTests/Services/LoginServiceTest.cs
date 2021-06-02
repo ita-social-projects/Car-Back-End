@@ -28,12 +28,11 @@ namespace Car.UnitTests.Services
             loginService = new LoginService(userRepository.Object, webTokenGenerator.Object, Mapper);
         }
 
-        [Fact]
-        public async Task GetUserAsync_WhenUserExists_ReturnsUserObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserAsync_WhenUserExists_ReturnsUserObject(User user, List<User> users)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var users = Fixture.Create<List<User>>();
             users.Add(user);
 
             userRepository.Setup(r => r.Query())
@@ -46,12 +45,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(user);
         }
 
-        [Fact]
-        public async Task GetUserAsync_WhenUserNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserAsync_WhenUserNotExist_ReturnsNull(List<User> users)
         {
             // Arrange
-            var users = Fixture.Create<List<User>>();
-
             userRepository.Setup(r => r.Query())
                 .Returns(users.AsQueryable().BuildMock().Object);
 
@@ -62,11 +60,11 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task AddUserAsync_WhenUserIsValid_ReturnsUserObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserAsync_WhenUserIsValid_ReturnsUserObject(User user)
         {
             // Arrange
-            var user = Fixture.Create<User>();
             userRepository.Setup(r => r.AddAsync(user))
                .ReturnsAsync(user);
 
@@ -77,11 +75,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(user);
         }
 
-        [Fact]
-        public async Task AddUserAsync_WhenUserIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserAsync_WhenUserIsNotValid_ReturnsNull(User user)
         {
             // Arrange
-            var user = Fixture.Create<User>();
             userRepository.Setup(r => r.AddAsync(user))
                 .ReturnsAsync((User)null);
 
@@ -92,13 +90,12 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task LoginAsync_WhenUserExists_ReturnsUserWithToken()
+        [Theory]
+        [AutoEntityData]
+        public async Task LoginAsync_WhenUserExists_ReturnsUserWithToken(IEnumerable<User> users, string token)
         {
             // Arrange
-            var users = Fixture.CreateMany<User>();
             var user = users.First();
-            var token = Fixture.Create<string>();
             var userDto = Mapper.Map<UserDto>(user);
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
@@ -111,13 +108,12 @@ namespace Car.UnitTests.Services
             result.Token.Should().BeSameAs(token);
         }
 
-        [Fact]
-        public async Task LoginAsync_WhenUserNotExist_ReturnsUserWithToken()
+        [Theory]
+        [AutoEntityData]
+        public async Task LoginAsync_WhenUserNotExist_ReturnsUserWithToken(User user, string token)
         {
             // Arrange
             var users = new List<User>();
-            var user = Fixture.Create<User>();
-            var token = Fixture.Create<string>();
             var userDto = Mapper.Map<UserDto>(user);
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
@@ -131,11 +127,11 @@ namespace Car.UnitTests.Services
             result.Token.Should().BeSameAs(token);
         }
 
-        [Fact]
-        public async Task LoginAsync_WhenUserIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task LoginAsync_WhenUserIsNotValid_ReturnsNull(IEnumerable<User> users)
         {
             // Arrange
-            var users = Fixture.CreateMany<User>();
             User user = null;
             var userDto = Mapper.Map<UserDto>(user);
 
