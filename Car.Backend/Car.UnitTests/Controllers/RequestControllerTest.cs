@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Domain.Dto;
@@ -28,11 +29,11 @@ namespace Car.UnitTests.Controllers
             requestController = new RequestController(requestService.Object);
         }
 
-        [Fact]
-        public async Task Get_WhenRequestExists_ReturnsRequestObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task Get_WhenRequestExists_ReturnsRequestObject(Request requestEntity)
         {
             // Arrange
-            var requestEntity = Fixture.Create<Request>();
             var expectedResult = Mapper.Map<Request, RequestDto>(requestEntity);
 
             requestService.Setup(r => r.GetRequestByIdAsync(It.IsAny<int>())).ReturnsAsync(expectedResult);
@@ -45,11 +46,11 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().Be(expectedResult);
         }
 
-        [Fact]
-        public async Task Get_WhenRequestDoesntExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task Get_WhenRequestDoesntExist_ReturnsNull(Request requestEntity)
         {
             // Arrange
-            var requestEntity = Fixture.Create<Request>();
             var expectedResult = Mapper.Map<Request, RequestDto>(requestEntity);
 
             requestService.Setup(r => r.GetRequestByIdAsync(It.IsAny<int>()))
@@ -63,12 +64,11 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().BeNull();
         }
 
-        [Fact]
-        public async Task Add_WhenRequestIsValid_ReturnsAddedRequest()
+        [Theory]
+        [AutoEntityData]
+        public async Task Add_WhenRequestIsValid_ReturnsAddedRequest(RequestDto expectedResult)
         {
             // Arrange
-            var expectedResult = Fixture.Create<RequestDto>();
-
             requestService.Setup(r => r.AddRequestAsync(It.IsAny<RequestDto>()))
                 .ReturnsAsync(expectedResult);
 
@@ -80,12 +80,11 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().Be(expectedResult);
         }
 
-        [Fact]
-        public async Task Delete_WhenRequestExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task Delete_WhenRequestExists_ReturnsOkObjectResult(Request request)
         {
             // Arrange
-            var request = Fixture.Create<Request>();
-
             requestService.Setup(r => r.DeleteAsync(It.IsAny<int>()));
 
             // Act
@@ -96,13 +95,11 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async Task Delete_WhenRequestDoesntExist_ThrowsDbUpdateConcurrencyException()
+        [Theory]
+        [AutoData]
+        public async Task Delete_WhenRequestDoesntExist_ThrowsDbUpdateConcurrencyException(int requestIdToDelete)
         {
             // Arrange
-            var request = Fixture.Create<Request>();
-            var requestIdToDelete = request.Id;
-
             requestService.Setup(r => r.DeleteAsync(requestIdToDelete))
                 .Throws<DbUpdateConcurrencyException>();
 
@@ -113,13 +110,11 @@ namespace Car.UnitTests.Controllers
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
-        [Fact]
-        public async Task GetByUserId_WhenRequestsExist_ReturnsRequestsCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetByUserId_WhenRequestsExist_ReturnsRequestsCollection(User user, List<RequestDto> requests)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var requests = Fixture.Create<List<RequestDto>>();
-
             requestService.Setup(r => r.GetRequestsByUserIdAsync(user.Id))
                 .ReturnsAsync(requests);
 
@@ -131,13 +126,11 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().Be(requests);
         }
 
-        [Fact]
-        public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection(User user, IEnumerable<RequestDto> requests)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var requests = Fixture.Create<IEnumerable<RequestDto>>();
-
             requestService.Setup(r => r.GetRequestsByUserIdAsync(user.Id))
                 .ReturnsAsync(requests);
 

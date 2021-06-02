@@ -24,12 +24,11 @@ namespace Car.UnitTests.Controllers
             loginController = new LoginController(loginService.Object);
         }
 
-        [Fact]
-        public async Task Login_WhenUserExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task Login_WhenUserExists_ReturnsOkObjectResult(UserDto user)
         {
             // Arrange
-            var user = Fixture.Create<UserDto>();
-
             loginService.Setup(service => service.LoginAsync(user))
                 .ReturnsAsync(user);
 

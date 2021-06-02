@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Hubs;
@@ -44,11 +45,12 @@ namespace Car.UnitTests.Services
                 Mapper);
         }
 
-        [Fact]
-        public async Task GetNotificationAsync_WhenNotificationExist_ReturnsNotification()
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task GetNotificationAsync_WhenNotificationExist_ReturnsNotification(
+            List<Notification> notifications)
         {
             // Arrange
-            var notifications = Fixture.CreateMany<Notification>().ToList();
             var notification = notifications.First();
 
             notificationRepository.Setup(
@@ -96,11 +98,11 @@ namespace Car.UnitTests.Services
             CollectionAssert.AreEquivalent(result, expectedNotifications);
         }
 
-        [Fact]
-        public async Task GetUnreadNotificationsAsync_WhenUserExist_ReturnsUnreadNotificationNumber()
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task GetUnreadNotificationsAsync_WhenUserExist_ReturnsUnreadNotificationNumber(List<User> users)
         {
             // Arrange
-            var users = Fixture.CreateMany<User>().ToList();
             var user = users.First();
             var notifications = Fixture
                 .Build<Notification>()
@@ -126,11 +128,11 @@ namespace Car.UnitTests.Services
             result.Should().Be(expectedNotificationsNumber);
         }
 
-        [Fact]
-        public async Task UpdateNotificationAsync_WhenNotificationExist_ReturnsUpdatedNotification()
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task UpdateNotificationAsync_WhenNotificationExist_ReturnsUpdatedNotification(Notification notification)
         {
             // Arrange
-            var notification = Fixture.Create<Notification>();
             var notifications = Fixture
                 .Build<Notification>()
                 .With(n => n.Id, notification.Id)
@@ -150,13 +152,12 @@ namespace Car.UnitTests.Services
             result.Should().Be(updatedNotification);
         }
 
-        [Fact]
-        public async Task AddNotificationAsync_WhenNotificationExist_ReturnsAddedNotification()
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task AddNotificationAsync_WhenNotificationExist_ReturnsAddedNotification(
+            Notification notification, IEnumerable<Notification> notifications)
         {
             // Arrange
-            var notification = Fixture.Create<Notification>();
-            var notifications = Fixture.CreateMany<Notification>();
-
             notificationRepository.Setup(repo => repo.AddAsync(notification)).ReturnsAsync(notification);
             notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
@@ -186,11 +187,11 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException()
+        [Xunit.Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException(int idNotificationToDelete)
         {
             // Arrange
-            var idNotificationToDelete = Fixture.Create<int>();
             notificationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
@@ -200,12 +201,10 @@ namespace Car.UnitTests.Services
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenNotificationExist_ExecuteOnce()
+        [Xunit.Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenNotificationExist_ExecuteOnce(int idNotificationToDelete)
         {
-            // Arrange
-            var idNotificationToDelete = Fixture.Create<int>();
-
             // Act
             await notificationService.DeleteAsync(idNotificationToDelete);
 
@@ -213,13 +212,11 @@ namespace Car.UnitTests.Services
             notificationRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
         }
 
-        [Fact]
-        public async Task CreateNewNotificationAsync_WhenNotificationExist_ReturnsNull()
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task CreateNewNotificationAsync_WhenNotificationExist_ReturnsNull(List<Notification> notifications)
         {
             // Arrange
-            var notifications = Fixture
-                .CreateMany<Notification>()
-                .ToList();
             var notification = notifications.First();
             var notificationModel = Fixture.Build<CreateNotificationModel>()
                 .With(n => n.Type, notification.Type)
@@ -251,13 +248,11 @@ namespace Car.UnitTests.Services
                         .Excluding(o => o.IsRead));
         }
 
-        [Fact]
-        public async Task MarkNotificationAsReadAsync_WhenNotificationExist_ReturnsReadNotification()
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task MarkNotificationAsReadAsync_WhenNotificationExist_ReturnsReadNotification(List<Notification> notifications)
         {
             // Arrange
-            var notifications = Fixture
-                .CreateMany<Notification>()
-                .ToList();
             var notification = notifications.First();
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
