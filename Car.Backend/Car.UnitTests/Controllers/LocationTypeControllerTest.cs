@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
@@ -23,12 +24,11 @@ namespace Car.UnitTests.Controllers
             locationTypeController = new LocationTypeController(locationTypeService.Object);
         }
 
-        [Fact]
-        public async Task GetAll_WhenLocationTypesExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAll_WhenLocationTypesExist_ReturnsOkObjectResult(IEnumerable<LocationType> locationTypes)
         {
             // Arrange
-            var locationTypes = Fixture.CreateMany<LocationType>();
-
             locationTypeService.Setup(service => service.GetAllLocationTypesAsync()).ReturnsAsync(locationTypes);
 
             // Act
