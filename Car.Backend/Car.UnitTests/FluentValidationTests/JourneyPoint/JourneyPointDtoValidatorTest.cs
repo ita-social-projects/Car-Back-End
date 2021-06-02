@@ -1,9 +1,11 @@
+using AutoFixture.Xunit2;
 using Car.Data.FluentValidation;
 using Car.Domain.Dto;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
+using RangeAttr = System.ComponentModel.DataAnnotations.RangeAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.JourneyPoint
 {
@@ -42,9 +44,8 @@ namespace Car.UnitTests.FluentValidationTests.JourneyPoint
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(90)]
-        public void Latitude_IsSpecified_NotGeneratesValidationError(int value)
+        [AutoData]
+        public void Latitude_IsSpecified_NotGeneratesValidationError([RangeAttr(-90, 90)] int value)
         {
             validator.ShouldNotHaveValidationErrorFor(journeyPointDto => journeyPointDto.Latitude, value);
         }
@@ -58,9 +59,8 @@ namespace Car.UnitTests.FluentValidationTests.JourneyPoint
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(180)]
-        public void Longitude_IsSpecified_NotGeneratesValidationError(int value)
+        [AutoData]
+        public void Longitude_IsSpecified_NotGeneratesValidationError([RangeAttr(-180, 180)] int value)
         {
             validator.ShouldNotHaveValidationErrorFor(journeyPointDto => journeyPointDto.Longitude, value);
         }

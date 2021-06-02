@@ -24,12 +24,11 @@ namespace Car.UnitTests.Controllers
             brandController = new BrandController(brandService.Object);
         }
 
-        [Fact]
-        public async Task GetBrands_BrandsExist_ReturnsBrandCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetBrands_BrandsExist_ReturnsBrandCollection(List<Brand> brands)
         {
             // Arrange
-            var brands = Fixture.Create<List<Brand>>();
-
             brandService.Setup(service => service.GetAllAsync()).ReturnsAsync(brands);
 
             // Act

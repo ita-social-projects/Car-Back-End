@@ -26,12 +26,12 @@ namespace Car.UnitTests.Services
             preferencesService = new PreferencesService(preferencesRepository.Object);
         }
 
-        [Fact]
-        public async Task GetPreferencesAsync_WhenPreferencesExist_ReturnsPreferencesObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetPreferencesAsync_WhenPreferencesExist_ReturnsPreferencesObject(
+            List<UserPreferences> preferences, UserPreferences userPreferences)
         {
             // Arrange
-            var preferences = Fixture.Create<List<UserPreferences>>();
-            var userPreferences = Fixture.Create<UserPreferences>();
             preferences.Add(userPreferences);
 
             preferencesRepository.Setup(r => r.Query())
@@ -44,13 +44,12 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(userPreferences);
         }
 
-        [Fact]
-        public async Task GetPreferencesAsync_WhenPreferencesNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetPreferencesAsync_WhenPreferencesNotExist_ReturnsNull(
+             List<UserPreferences> preferences, UserPreferences userPreferences)
         {
             // Arrange
-            var preferences = Fixture.Create<List<UserPreferences>>();
-            var userPreferences = Fixture.Create<UserPreferences>();
-
             preferencesRepository.Setup(r => r.Query())
                 .Returns(preferences.AsQueryable().BuildMock().Object);
 
@@ -61,11 +60,11 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task UpdatePreferences_WhenPreferencesIsValid_ReturnsPreferencesObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdatePreferences_WhenPreferencesIsValid_ReturnsPreferencesObject(UserPreferencesDTO preferencesDTO)
         {
             // Arrange
-            var preferencesDTO = Fixture.Build<UserPreferencesDTO>().Create();
             var inputPreferences = Fixture.Build<UserPreferences>()
                 .With(p => p.Id, preferencesDTO.Id)
                 .Create();
@@ -80,13 +79,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(preferencesDTO, options => options.ExcludingMissingMembers());
         }
 
-        [Fact]
-        public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull(UserPreferences preferences, UserPreferencesDTO preferencesDTO)
         {
             // Arrange
-            var preferences = Fixture.Create<UserPreferences>();
-            var preferencesDTO = Fixture.Create<UserPreferencesDTO>();
-
             preferencesRepository.Setup(r => r.UpdateAsync(preferences))
                 .ReturnsAsync((UserPreferences)null);
 

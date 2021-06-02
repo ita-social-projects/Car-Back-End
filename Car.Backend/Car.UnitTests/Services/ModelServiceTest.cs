@@ -25,11 +25,11 @@ namespace Car.UnitTests.Services
             modelService = new ModelService(modelRepository.Object);
         }
 
-        [Fact]
-        public async Task GetModelsByBrandIdAsync_WhenModelsExist_ReturnsModelCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetModelsByBrandIdAsync_WhenModelsExist_ReturnsModelCollection(List<Model> models)
         {
             // Arrange
-            var models = Fixture.Create<List<Model>>();
             var brand = Fixture.Build<Brand>()
                 .With(b => b.Id, models.Max(m => m.BrandId) + 1)
                 .Create();
@@ -48,11 +48,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(specificModels);
         }
 
-        [Fact]
-        public async Task GetModelsByBrandIdAsync_WhenModelsNotExist_ReturnsEmptyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetModelsByBrandIdAsync_WhenModelsNotExist_ReturnsEmptyCollection(List<Model> models)
         {
             // Arrange
-            var models = Fixture.Create<List<Model>>();
             var brand = Fixture.Build<Brand>()
                 .With(b => b.Id, models.Max(m => m.BrandId) + 1)
                 .Create();

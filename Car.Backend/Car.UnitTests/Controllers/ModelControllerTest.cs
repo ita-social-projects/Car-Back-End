@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -24,13 +23,11 @@ namespace Car.UnitTests.Controllers
             modelController = new ModelController(modelService.Object);
         }
 
-        [Fact]
-        public async Task GetAll_WhenModelsExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAll_WhenModelsExist_ReturnsOkObjectResult(List<Model> models, Brand brand)
         {
             // Arrange
-            var models = Fixture.Create<List<Model>>();
-            var brand = Fixture.Create<Brand>();
-
             modelService.Setup(service => service.GetModelsByBrandIdAsync(It.IsAny<int>()))
                 .ReturnsAsync(models);
 

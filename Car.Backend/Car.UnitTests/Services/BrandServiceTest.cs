@@ -25,12 +25,11 @@ namespace Car.UnitTests.Services
             brandService = new BrandService(brandRepository.Object);
         }
 
-        [Fact]
-        public async Task GetAllBrands_WhenBrandsExist_ReturnsBrandCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllBrands_WhenBrandsExist_ReturnsBrandCollection(List<Brand> brands)
         {
             // Arrange
-            var brands = Fixture.Create<List<Brand>>();
-
             brandRepository.Setup(r => r.Query())
                 .Returns(brands.AsQueryable().BuildMock().Object);
 

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -24,13 +25,12 @@ namespace Car.UnitTests.Services
             imageService = new ImageService(fileService.Object);
         }
 
-        [Fact]
-        public async Task UploadImageAsync_EntityAndFileNotNull_ReturnsUpdatedEntity()
+        [Theory]
+        [AutoData]
+        public async Task UploadImageAsync_EntityAndFileNotNull_ReturnsUpdatedEntity(string imageId)
         {
             // Arrange
             IEntityWithImage entity = Fixture.Create<Data.Entities.User>();
-            var imageId = Fixture.Create<string>();
-
             fileService
                 .Setup(f => f.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(imageId);
@@ -108,13 +108,12 @@ namespace Car.UnitTests.Services
             result.ImageId.Should().BeNull();
         }
 
-        [Fact]
-        public async Task UpdateImageAsync_ImageAndEntityValid_ReturnsUpdatedEntity()
+        [Theory]
+        [AutoData]
+        public async Task UpdateImageAsync_ImageAndEntityValid_ReturnsUpdatedEntity(string imageId)
         {
             // Arrange
             IEntityWithImage entity = Fixture.Create<User>();
-            var imageId = Fixture.Create<string>();
-
             fileService
                 .Setup(f => f.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(imageId);

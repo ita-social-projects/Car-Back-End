@@ -1,7 +1,10 @@
-﻿using Car.Domain.FluentValidation;
+﻿using AutoFixture.Xunit2;
+using Car.Data.Constants;
+using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
+using RangeAttr = System.ComponentModel.DataAnnotations.RangeAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.Address
 {
@@ -31,9 +34,8 @@ namespace Car.UnitTests.FluentValidationTests.Address
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(90)]
-        public void Latitude_IsSpecified_NotGeneratesValidationError(int value)
+        [AutoData]
+        public void Latitude_IsSpecified_NotGeneratesValidationError([RangeAttr(Constants.MinLatitude, Constants.MaxLatitude)] int value)
         {
             validator.ShouldNotHaveValidationErrorFor(address => address.Latitude, value);
         }
@@ -47,9 +49,8 @@ namespace Car.UnitTests.FluentValidationTests.Address
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(180)]
-        public void Longitude_IsSpecified_NotGeneratesValidationError(int value)
+        [AutoData]
+        public void Longitude_IsSpecified_NotGeneratesValidationError([RangeAttr(Constants.MinLongitude, Constants.MaxLongitude)] int value)
         {
             validator.ShouldNotHaveValidationErrorFor(address => address.Longitude, value);
         }

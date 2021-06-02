@@ -25,12 +25,11 @@ namespace Car.UnitTests.Controllers
             userController = new UserController(userService.Object);
         }
 
-        [Fact]
-        public async Task GetUserById_WhenUserExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserById_WhenUserExists_ReturnsOkObjectResult(User user)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-
             userService.Setup(service => service.GetUserByIdAsync(user.Id)).ReturnsAsync(user);
 
             // Act

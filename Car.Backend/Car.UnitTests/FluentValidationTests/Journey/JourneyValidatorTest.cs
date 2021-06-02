@@ -1,9 +1,11 @@
 ﻿using System;
+using AutoFixture.Xunit2;
 using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Xunit;
+using RangeAttr = System.ComponentModel.DataAnnotations.RangeAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.Journey
 {
@@ -73,9 +75,8 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         }
 
         [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(4)]
-        public void CountOfSeats_IsSpecified_NotGeneratesValidationError(int value)
+        [AutoData]
+        public void CountOfSeats_IsSpecified_NotGeneratesValidationError([RangeAttr(1, 4)] int value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.CountOfSeats, value);
         }
@@ -97,16 +98,14 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         }
 
         [Xunit.Theory]
-        [InlineData(true)]
-        [InlineData(false)]
+        [AutoData]
         public void IsFree_IsSpecified_NotGeneratesValidationError(bool value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.IsFree, value);
         }
 
         [Xunit.Theory]
-        [InlineData(true)]
-        [InlineData(false)]
+        [AutoData]
         public void IsOnOwnCar_IsSpecified_NotGeneratesValidationError(bool value)
         {
             validator.ShouldNotHaveValidationErrorFor(journey => journey.IsOnOwnCar, value);
