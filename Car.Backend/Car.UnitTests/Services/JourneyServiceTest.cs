@@ -398,18 +398,15 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject()
         {
             // Arrange
-            var requests = Fixture.Create<List<Request>>();
-            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
-            var addedJourney = Mapper.Map<CreateJourneyModel, Journey>(createJourneyModel);
+            var journeyDto = Fixture.Create<JourneyDto>();
+            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
             var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
-            requestRepository.Setup(r => r.Query())
-                .Returns(requests.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.AddJourneyAsync(createJourneyModel);
+            var result = await journeyService.AddJourneyAsync(journeyDto);
 
             // Assert
             result.Should().BeEquivalentTo(journeyModel, options => options.ExcludingMissingMembers());
@@ -419,13 +416,13 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject()
         {
             // Arrange
-            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
+            var journeyDto = Fixture.Create<JourneyDto>();
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
 
             // Act
-            var result = await journeyService.AddJourneyAsync(createJourneyModel);
+            var result = await journeyService.AddJourneyAsync(journeyDto);
 
             // Assert
             result.Should().BeNull();
@@ -614,7 +611,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_WhenJourneyIsValid_ReturnsJourneyObject()
+        public async Task UpdateDetailsAsync_WhenJourneyIsValid_ReturnsJourneyObject()
         {
             // Arrange
             var updatedJourneyDto = Fixture.Create<JourneyDto>();
@@ -625,14 +622,14 @@ namespace Car.UnitTests.Services
                     repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync(journey);
 
             // Act
-            var result = await journeyService.UpdateAsync(updatedJourneyDto);
+            var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
 
             // Assert
             result.Should().BeEquivalentTo(expectedJourney);
         }
 
         [Fact]
-        public async Task UpdateAsync_WhenJourneyIsNotValid_ReturnsNull()
+        public async Task UpdateDetailsAsync_WhenJourneyIsNotValid_ReturnsNull()
         {
             // Arrange
             var updatedJourneyDto = Fixture.Create<JourneyDto>();
@@ -641,7 +638,49 @@ namespace Car.UnitTests.Services
                     repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
 
             // Act
-            var result = await journeyService.UpdateAsync(updatedJourneyDto);
+            var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task UpdateRouteAsync_WhenJourneyIsValid_ReturnsJourneyObject()
+        {
+            // Arrange
+            var journeys = Fixture.Create<Journey[]>();
+            var updatedJourneyDto = Fixture.Build<JourneyDto>()
+                .With(dto => dto.Id, journeys.First().Id).Create();
+            var expectedJourney = Mapper.Map<Journey, JourneyModel>(journeys.First());
+            expectedJourney.Duration = updatedJourneyDto.Duration;
+            expectedJourney.Stops = updatedJourneyDto.Stops;
+            expectedJourney.JourneyPoints = updatedJourneyDto.JourneyPoints;
+            expectedJourney.RouteDistance = updatedJourneyDto.RouteDistance;
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.UpdateRouteAsync(updatedJourneyDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedJourney);
+        }
+
+        [Fact]
+        public async Task UpdateRouteAsync_WhenJourneyIsNotValid_ReturnsNull()
+        {
+            // Arrange
+            var journeys = Fixture.Create<Journey[]>();
+            var updatedJourneyDto = Fixture.Build<JourneyDto>()
+                .With(dto => dto.Id, journeys.Max(journey => journey.Id) + 1)
+                .Create();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.UpdateRouteAsync(updatedJourneyDto);
 
             // Assert
             result.Should().BeNull();

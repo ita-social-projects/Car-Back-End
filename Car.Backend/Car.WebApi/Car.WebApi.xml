@@ -109,11 +109,11 @@
             <param name="id">User identifier</param>
             <returns>recent addresses</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.AddJourney(Car.Domain.Models.Journey.CreateJourneyModel)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddJourney(Car.Domain.Dto.JourneyDto)">
             <summary>
             Adds the journey asynchronously.
             </summary>
-            <param name="journeyModel">The journey model.</param>
+            <param name="journeyDto">The journey model.</param>
             <returns>Added journey.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetFiltered(Car.Domain.Models.Journey.JourneyFilterModel)">
@@ -130,9 +130,16 @@
             <param name="id">journey Id</param>
             <returns>OkResult</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.Update(Car.Domain.Dto.JourneyDto)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.UpdateRoute(Car.Domain.Dto.JourneyDto)">
             <summary>
-            Update the journey asynchronously.
+            Update the journey route asynchronously.
+            </summary>
+            <param name="journey">The journey dto.</param>
+            <returns>OkResult</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.UpdateDetails(Car.Domain.Dto.JourneyDto)">
+            <summary>
+            Update the journey details asynchronously.
             </summary>
             <param name="journey">The journey dto.</param>
             <returns>OkResult</returns>

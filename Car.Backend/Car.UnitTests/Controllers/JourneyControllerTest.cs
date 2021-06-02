@@ -163,16 +163,16 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult(CreateJourneyModel createJourneyModel)
+        public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
         {
             // Arrange
-            var expectedJourney = Mapper.Map<CreateJourneyModel, JourneyModel>(createJourneyModel);
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
 
-            journeyService.Setup(j => j.AddJourneyAsync(createJourneyModel))
+            journeyService.Setup(j => j.AddJourneyAsync(journeyDto))
                 .ReturnsAsync(expectedJourney);
 
             // Act
-            var result = await journeyController.AddJourney(createJourneyModel);
+            var result = await journeyController.AddJourney(journeyDto);
 
             // Assert
             using (new AssertionScope())
@@ -229,15 +229,32 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateCar_WhenCarIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
+        public async Task UpdateRoute_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
         {
             // Arrange
             var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
             journeyService.Setup(service =>
-                service.UpdateAsync(journeyDto)).ReturnsAsync(expectedJourney);
+                service.UpdateRouteAsync(journeyDto)).ReturnsAsync(expectedJourney);
 
             // Act
-            var result = await journeyController.Update(journeyDto);
+            var result = await journeyController.UpdateRoute(journeyDto);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateDetails_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
+        {
+            // Arrange
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+            journeyService.Setup(service =>
+                service.UpdateDetailsAsync(journeyDto)).ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.UpdateDetails(journeyDto);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();

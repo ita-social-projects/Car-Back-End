@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Car.Data.Context;
 using Car.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Car.Data.Infrastructure
 {

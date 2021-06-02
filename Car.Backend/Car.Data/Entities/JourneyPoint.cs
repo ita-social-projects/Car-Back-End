@@ -1,6 +1,6 @@
 namespace Car.Data.Entities
 {
-    public class JourneyPoint
+    public class JourneyPoint : IEntity
     {
         public int Id { get; set; }
 
