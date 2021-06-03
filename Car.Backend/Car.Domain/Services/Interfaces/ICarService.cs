@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Car.Domain.Dto;
 using Car.Domain.Models.Car;
 using CarEntity = Car.Data.Entities.Car;
 
@@ -9,7 +10,7 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<CarEntity> GetCarByIdAsync(int carId);
 
-        Task<CarEntity> AddCarAsync(CreateCarModel createCarModel);
+        Task<CreateCarDto> AddCarAsync(CreateCarDto createCarModel);
 
         Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId);
 

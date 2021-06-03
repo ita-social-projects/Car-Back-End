@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Car.Domain.Dto;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +34,7 @@ namespace Car.WebApi.Controllers
         /// <param name="car">The car.</param>
         /// <returns>New car.</returns>
         [HttpPost]
-        public async Task<IActionResult> AddCar([FromForm] CreateCarModel car) =>
+        public async Task<IActionResult> AddCar([FromForm] CreateCarDto car) =>
             Ok(await carService.AddCarAsync(car));
 
         /// <summary>

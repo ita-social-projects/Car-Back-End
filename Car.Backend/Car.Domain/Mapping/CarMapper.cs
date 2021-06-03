@@ -9,7 +9,7 @@ namespace Car.Domain.Mapping
     {
         public CarMapper()
         {
-            CreateMap<CreateCarModel, CarEntity>();
+            CreateMap<CreateCarDto, CarEntity>().ReverseMap();
             CreateMap<UpdateCarModel, CarEntity>();
             CreateMap<CarEntity, CarDto>().ReverseMap();
         }
