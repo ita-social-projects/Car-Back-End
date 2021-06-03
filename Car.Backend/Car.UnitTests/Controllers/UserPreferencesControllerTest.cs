@@ -58,7 +58,7 @@ namespace Car.UnitTests.Controllers
         [Theory]
         [AutoEntityData]
         public async Task UpdatePreferences_WhenUserPreferencesExists_ReturnsUserPreferences(
-            UserPreferencesDTO userPreferencesDTO, UserPreferences userPreferences)
+            UserPreferencesDto userPreferencesDTO, UserPreferences userPreferences)
         {
             // Arrange
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferencesDTO))
@@ -74,7 +74,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdatePreferences_WhenUserPreferencesNotExist_ReturnsNull(UserPreferencesDTO userPreferences)
+        public async Task UpdatePreferences_WhenUserPreferencesNotExist_ReturnsNull(UserPreferencesDto userPreferences)
         {
             // Arrange
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Car.Domain.Dto
 {
-    public class LocationDTO
+    public class LocationDto
     {
         public int Id { get; set; }
 

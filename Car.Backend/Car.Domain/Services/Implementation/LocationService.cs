@@ -32,9 +32,9 @@ namespace Car.Domain.Services.Implementation
                 .ToListAsync();
         }
 
-        public async Task<Location> AddLocationAsync(LocationDTO locationDTO)
+        public async Task<Location> AddLocationAsync(LocationDto locationDTO)
         {
-            var location = mapper.Map<LocationDTO, Location>(locationDTO);
+            var location = mapper.Map<LocationDto, Location>(locationDTO);
 
             var newLocation = await locationRepository.AddAsync(location);
             await locationRepository.SaveChangesAsync();

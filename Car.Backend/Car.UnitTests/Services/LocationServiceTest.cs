@@ -100,10 +100,10 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject(LocationDTO locationDto)
+        public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject(LocationDto locationDto)
         {
             // Arrange
-            var location = Mapper.Map<LocationDTO, Location>(locationDto);
+            var location = Mapper.Map<LocationDto, Location>(locationDto);
 
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync(location);
@@ -117,7 +117,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull(LocationDTO locationDto)
+        public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull(LocationDto locationDto)
         {
             // Arrange
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))

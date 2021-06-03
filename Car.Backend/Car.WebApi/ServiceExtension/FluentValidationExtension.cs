@@ -14,7 +14,7 @@ namespace Car.WebApi.ServiceExtension
         {
             services.AddTransient<IValidator<JourneyDto>, JourneyDtoValidator>();
             services.AddTransient<IValidator<RequestDto>, RequestDtoValidator>();
-            services.AddTransient<IValidator<LocationDTO>, LocationDtoValidator>();
+            services.AddTransient<IValidator<LocationDto>, LocationDtoValidator>();
         }
     }
 }

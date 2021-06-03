@@ -46,10 +46,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddLocation_WhenLocationIsValid_ReturnsOkObjectResult(LocationDTO locationDto)
+        public async Task AddLocation_WhenLocationIsValid_ReturnsOkObjectResult(LocationDto locationDto)
         {
             // Arrange
-            var expectedLocation = Mapper.Map<LocationDTO, Location>(locationDto);
+            var expectedLocation = Mapper.Map<LocationDto, Location>(locationDto);
             locationService.Setup(service => service.AddLocationAsync(locationDto)).ReturnsAsync(expectedLocation);
 
             // Act

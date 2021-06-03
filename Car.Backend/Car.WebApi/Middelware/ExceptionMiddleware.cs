@@ -37,6 +37,17 @@ namespace Car.WebApi.Middelware
             }
         }
 
+        private static Dictionary<Type, ResponseInformation> GenerateExceptionsDictionary(Exception exception)
+        {
+            var exceptionDictionary = new Dictionary<Type, ResponseInformation>();
+
+            var result = exceptionDictionary
+            .Union(DbExceptions.GetExceptions(exception))
+            .ToDictionary(k => k.Key, v => v.Value);
+
+            return result;
+        }
+
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             logger.LogInformation("Handle error!");
@@ -46,9 +57,8 @@ namespace Car.WebApi.Middelware
             string logMessage = exception.Message;
 
             Dictionary<Type, ResponseInformation> exceptions = GenerateExceptionsDictionary(exception);
-            ResponseInformation responseInformation = new ResponseInformation();
 
-            if (exceptions.TryGetValue(exception.GetType(), out responseInformation))
+            if (exceptions.TryGetValue(exception.GetType(), out ResponseInformation responseInformation))
             {
                 logMessage = responseInformation.LogMessage;
 
@@ -62,17 +72,6 @@ namespace Car.WebApi.Middelware
 
             logger.LogError(logMessage);
             return context.Response.WriteAsync(responseMessage);
-        }
-
-        private Dictionary<Type, ResponseInformation> GenerateExceptionsDictionary(Exception exception)
-        {
-            var exceptionDictionary = new Dictionary<Type, ResponseInformation>();
-
-            var result = exceptionDictionary
-            .Union(DbExceptions.GetExceptions(exception))
-            .ToDictionary(k => k.Key, v => v.Value);
-
-            return result;
         }
     }
 }

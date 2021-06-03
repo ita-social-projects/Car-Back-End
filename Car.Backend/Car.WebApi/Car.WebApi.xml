@@ -151,7 +151,7 @@
             <param name="id">The user identifier.</param>
             <returns>All user's locations</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.LocationDTO)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.LocationDto)">
             <summary>
             Adds the location.
             </summary>
@@ -315,7 +315,7 @@
             <param name ="id">User identifier</param>
             <returns>user preferences</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Domain.Dto.UserPreferencesDTO)">
+        <member name="M:Car.WebApi.Controllers.UserPreferencesController.UpdatePreferences(Car.Domain.Dto.UserPreferencesDto)">
             <summary>
             updates preferences
             </summary>
