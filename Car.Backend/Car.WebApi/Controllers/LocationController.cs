@@ -33,7 +33,7 @@ namespace Car.WebApi.Controllers
         /// <param name="location">The location.</param>
         /// <returns>New location</returns>
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] LocationDTO location) =>
+        public async Task<IActionResult> Add([FromBody] LocationDto location) =>
             Ok(await locationService.AddLocationAsync(location));
 
         /// <summary>

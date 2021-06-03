@@ -62,7 +62,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdatePreferences_WhenPreferencesIsValid_ReturnsPreferencesObject(UserPreferencesDTO preferencesDTO)
+        public async Task UpdatePreferences_WhenPreferencesIsValid_ReturnsPreferencesObject(UserPreferencesDto preferencesDTO)
         {
             // Arrange
             var inputPreferences = Fixture.Build<UserPreferences>()
@@ -81,7 +81,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull(UserPreferences preferences, UserPreferencesDTO preferencesDTO)
+        public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull(UserPreferences preferences, UserPreferencesDto preferencesDTO)
         {
             // Arrange
             preferencesRepository.Setup(r => r.UpdateAsync(preferences))
