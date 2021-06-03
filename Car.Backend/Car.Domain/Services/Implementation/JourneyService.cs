@@ -184,6 +184,62 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
+        public async Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilterModel filter)
+        {
+            var journeysResult = new List<ApplicantJourney>();
+
+            var filteredJourneys = await GetFilteredJourneys(filter);
+
+            foreach (var journey in filteredJourneys)
+            {
+                journeysResult.Add(new ApplicantJourney()
+                {
+                    Journey = journey,
+                    ApplicantStops = GetApplicantStops(filter, journey),
+                });
+            }
+
+            return journeysResult;
+        }
+
+        public IEnumerable<StopDto> GetApplicantStops(JourneyFilterModel filter, JourneyModel journey)
+        {
+            var applicantStops = new List<StopDto>();
+
+            var distances = journey.JourneyPoints.Select(p => CalculateDistance(
+                mapper.Map<JourneyPointDto, JourneyPoint>(p),
+                filter.FromPoint.Latitude,
+                filter.FromPoint.Longitude)).ToList();
+
+            var pointIndex = distances.IndexOf(distances.Min());
+            var startRoutePoint = journey.JourneyPoints.ToList()[pointIndex];
+
+            distances = journey.JourneyPoints.ToList()
+                .GetRange(pointIndex, journey.JourneyPoints.Count - pointIndex + 1)
+                .Select(p => CalculateDistance(
+                    mapper.Map<JourneyPointDto, JourneyPoint>(p),
+                    filter.ToPoint.Latitude,
+                    filter.ToPoint.Longitude)).ToList();
+
+            var endRoutePoint = journey.JourneyPoints.ToList()[distances.IndexOf(distances.Min())];
+
+            applicantStops.Add(new StopDto()
+            {
+                UserId = filter.ApplicantId,
+                Address = new AddressDto() { Latitude = startRoutePoint.Latitude, Longitude = startRoutePoint.Longitude },
+                Type = StopType.Intermediate,
+            });
+
+            applicantStops.Add(new StopDto()
+            {
+                UserId = filter.ApplicantId,
+                Address = new AddressDto() { Latitude = endRoutePoint.Latitude, Longitude = endRoutePoint.Longitude },
+                Type = StopType.Intermediate,
+            });
+
+            return applicantStops;
+        }
+
         private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
@@ -202,18 +258,18 @@ namespace Car.Domain.Services.Implementation
             }
 
             var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(point => Distance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
+                .SkipWhile(point => CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
 
             return pointsFromStart.Any() && pointsFromStart
-                .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
-
-            static double Distance(JourneyPoint point, double latitude, double longitude) =>
-                GeoCalculator.GetDistance(
-                    point.Latitude,
-                    point.Longitude,
-                    latitude,
-                    longitude,
-                    distanceUnit: DistanceUnit.Kilometers);
+                .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
         }
+
+        private static double CalculateDistance(JourneyPoint point, double latitude, double longitude) =>
+            GeoCalculator.GetDistance(
+                point.Latitude,
+                point.Longitude,
+                latitude,
+                longitude,
+                distanceUnit: DistanceUnit.Kilometers);
     }
 }
