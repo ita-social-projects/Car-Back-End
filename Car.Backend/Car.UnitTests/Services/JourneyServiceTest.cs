@@ -419,7 +419,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetFilteredJourneys_ReturnsJourneyCollection(JourneyFilterModel filter)
+        public async Task GetFilteredJourneys_ReturnsJourneyCollection(JourneyFilter filter)
         {
             // Arrange
             var expectedJourneys = new List<Journey>();
@@ -672,7 +672,7 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()
+        private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()
         {
             var departureTime = DateTime.UtcNow.AddHours(1);
 
@@ -688,13 +688,11 @@ namespace Car.UnitTests.Services
                 .With(j => j.DepartureTime, departureTime)
                 .With(j => j.JourneyPoints, journeyPoints);
 
-            var filter = Fixture.Build<JourneyFilterModel>()
+            var filter = Fixture.Build<JourneyFilter>()
                 .With(f => f.DepartureTime, departureTime)
                 .With(f => f.PassengersCount, 1)
-                .With(f => f.FromLatitude, 30)
-                .With(f => f.FromLongitude, 30)
-                .With(f => f.ToLatitude, 35)
-                .With(f => f.ToLongitude, 35)
+                .With(f => f.FromPoint, new Point() { Latitude = 30, Longitude = 30 })
+                .With(f => f.ToPoint, new Point() { Latitude = 35, Longitude = 35 })
                 .With(f => f.Fee, FeeType.All);
 
             return (journey, filter);

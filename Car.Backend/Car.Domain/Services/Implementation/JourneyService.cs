@@ -119,7 +119,7 @@ namespace Car.Domain.Services.Implementation
             var requests = requestRepository
                 .Query()
                 .AsEnumerable()
-                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilterModel>(r)) && addedJourney.OrganizerId != r.UserId)
+                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilter>(r)) && addedJourney.OrganizerId != r.UserId)
                 .ToList();
 
             foreach (var request in requests)
@@ -132,7 +132,7 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
 
-        public async Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter)
+        public async Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilter filter)
         {
             var journeys = await journeyRepository
                 .Query()
@@ -184,7 +184,7 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
-        public async Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilterModel filter)
+        public async Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilter filter)
         {
             var journeysResult = new List<ApplicantJourney>();
 
@@ -202,7 +202,7 @@ namespace Car.Domain.Services.Implementation
             return journeysResult;
         }
 
-        public IEnumerable<StopDto> GetApplicantStops(JourneyFilterModel filter, JourneyModel journey)
+        public IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, JourneyModel journey)
         {
             var applicantStops = new List<StopDto>();
 
@@ -240,7 +240,7 @@ namespace Car.Domain.Services.Implementation
             return applicantStops;
         }
 
-        private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
+        private static bool IsSuitable(Journey journey, JourneyFilter filter)
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
@@ -258,10 +258,10 @@ namespace Car.Domain.Services.Implementation
             }
 
             var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(point => CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
+                .SkipWhile(point => CalculateDistance(point, filter.FromPoint.Latitude, filter.FromPoint.Longitude) > Constants.JourneySearchRadiusKm);
 
             return pointsFromStart.Any() && pointsFromStart
-                .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
+                .Any(point => CalculateDistance(point, filter.ToPoint.Latitude, filter.ToPoint.Longitude) < Constants.JourneySearchRadiusKm);
         }
 
         private static double CalculateDistance(JourneyPoint point, double latitude, double longitude) =>
