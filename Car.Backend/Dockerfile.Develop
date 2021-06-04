@@ -1,0 +1,16 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+
+RUN dotnet tool install --global dotnet-ef --version 5.0.6
+ENV PATH="${PATH}:/root/.dotnet/tools"
+WORKDIR /app
+
+COPY . ./
+RUN dotnet restore Car.Backend.sln
+RUN dotnet build ./Car.WebApi -c Debug
+RUN dotnet publish ./Car.WebApi/Car.WebApi.csproj -c Debug -o carAPI --no-restore --no-build
+
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
+WORKDIR /app
+COPY --from=build-env /app/carAPI .
+
+ENTRYPOINT ["dotnet", "Car.WebApi.dll"]
