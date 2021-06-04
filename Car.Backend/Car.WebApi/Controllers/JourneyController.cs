@@ -78,7 +78,7 @@ namespace Car.WebApi.Controllers
         /// <returns>Collection of filtered journeys.</returns>
         [HttpGet("filter/")]
         public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilter journeyFilterModel) =>
-            Ok(await journeyService.GetFilteredJourneys(journeyFilterModel));
+            Ok(await journeyService.GetApplicantJourneys(journeyFilterModel));
 
         /// <summary>
         /// deletes journey by identifier

@@ -116,7 +116,7 @@
             <param name="journeyDto">The journey model.</param>
             <returns>Added journey.</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetFiltered(Car.Domain.Models.Journey.JourneyFilterModel)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetFiltered(Car.Domain.Models.Journey.JourneyFilter)">
             <summary>
             Returns journeys filtered by given conditions.
             </summary>

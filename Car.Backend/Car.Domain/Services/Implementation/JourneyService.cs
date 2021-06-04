@@ -208,23 +208,25 @@ namespace Car.Domain.Services.Implementation
 
             var distances = journey.JourneyPoints.Select(p => CalculateDistance(
                 mapper.Map<JourneyPointDto, JourneyPoint>(p),
-                filter.FromPoint.Latitude,
-                filter.FromPoint.Longitude)).ToList();
+                filter.FromLatitude,
+                filter.FromLongitude)).ToList();
 
             var pointIndex = distances.IndexOf(distances.Min());
             var startRoutePoint = journey.JourneyPoints.ToList()[pointIndex];
 
             distances = journey.JourneyPoints.ToList()
-                .GetRange(pointIndex, journey.JourneyPoints.Count - pointIndex + 1)
+                .GetRange(pointIndex, journey.JourneyPoints.Count - pointIndex)
                 .Select(p => CalculateDistance(
                     mapper.Map<JourneyPointDto, JourneyPoint>(p),
-                    filter.ToPoint.Latitude,
-                    filter.ToPoint.Longitude)).ToList();
+                    filter.ToLatitude,
+                    filter.ToLongitude)).ToList();
 
             var endRoutePoint = journey.JourneyPoints.ToList()[distances.IndexOf(distances.Min())];
 
             applicantStops.Add(new StopDto()
             {
+                Id = 0,
+                Index = 0,
                 UserId = filter.ApplicantId,
                 Address = new AddressDto() { Latitude = startRoutePoint.Latitude, Longitude = startRoutePoint.Longitude },
                 Type = StopType.Intermediate,
@@ -232,6 +234,8 @@ namespace Car.Domain.Services.Implementation
 
             applicantStops.Add(new StopDto()
             {
+                Id = 0,
+                Index = 1,
                 UserId = filter.ApplicantId,
                 Address = new AddressDto() { Latitude = endRoutePoint.Latitude, Longitude = endRoutePoint.Longitude },
                 Type = StopType.Intermediate,
@@ -258,10 +262,10 @@ namespace Car.Domain.Services.Implementation
             }
 
             var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(point => CalculateDistance(point, filter.FromPoint.Latitude, filter.FromPoint.Longitude) > Constants.JourneySearchRadiusKm);
+                .SkipWhile(point => CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
 
             return pointsFromStart.Any() && pointsFromStart
-                .Any(point => CalculateDistance(point, filter.ToPoint.Latitude, filter.ToPoint.Longitude) < Constants.JourneySearchRadiusKm);
+                .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
         }
 
         private static double CalculateDistance(JourneyPoint point, double latitude, double longitude) =>

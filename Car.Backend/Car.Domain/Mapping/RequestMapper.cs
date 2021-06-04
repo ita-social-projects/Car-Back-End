@@ -15,7 +15,7 @@ namespace Car.Domain.Mapping
         public RequestMapper()
         {
             CreateMap<Request, RequestDto>().ReverseMap();
-            CreateMap<Request, JourneyFilterModel>()
+            CreateMap<Request, JourneyFilter>()
                 .ForMember(f => f.FromLatitude, req => req.MapFrom(r => r.From.Latitude))
                 .ForMember(f => f.FromLongitude, req => req.MapFrom(r => r.From.Longitude))
                 .ForMember(f => f.ToLatitude, req => req.MapFrom(r => r.To.Latitude))

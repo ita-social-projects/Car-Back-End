@@ -691,8 +691,10 @@ namespace Car.UnitTests.Services
             var filter = Fixture.Build<JourneyFilter>()
                 .With(f => f.DepartureTime, departureTime)
                 .With(f => f.PassengersCount, 1)
-                .With(f => f.FromPoint, new Point() { Latitude = 30, Longitude = 30 })
-                .With(f => f.ToPoint, new Point() { Latitude = 35, Longitude = 35 })
+                .With(f => f.FromLatitude, 30)
+                .With(f => f.FromLongitude, 30)
+                .With(f => f.ToLatitude, 35)
+                .With(f => f.ToLongitude, 35)
                 .With(f => f.Fee, FeeType.All);
 
             return (journey, filter);

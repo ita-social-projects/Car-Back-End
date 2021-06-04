@@ -1,6 +1,6 @@
 ﻿using System;
-using Car.Data.Entities;
 using Car.Data.Enums;
+using Point = Car.Data.Entities.Point;
 
 namespace Car.Domain.Models.Journey
 {
@@ -8,9 +8,13 @@ namespace Car.Domain.Models.Journey
     {
         public int ApplicantId { get; set; }
 
-        public Point FromPoint { get; set; }
+        public double FromLatitude { get; set; }
 
-        public Point ToPoint { get; set; }
+        public double FromLongitude { get; set; }
+
+        public double ToLatitude { get; set; }
+
+        public double ToLongitude { get; set; }
 
         public DateTime DepartureTime { get; set; }
 
