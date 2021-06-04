@@ -5,7 +5,7 @@
 Platform for sharing rides between company employees.
 
 
-![CI](https://github.com/ita-social-projects/Car-Back-End/workflows/CI/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_Car-Back-End&metric=alert_status)](https://sonarcloud.io/dashboard?id=ita-social-projects_Car-Back-End) 
+![CI](https://github.com/ita-social-projects/Car-Back-End/workflows/CI/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_Car-Back-End&metric=alert_status)](https://sonarcloud.io/dashboard?id=ita-social-projects_Car-Back-End)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects_Car-Back-End&metric=coverage)](https://sonarcloud.io/dashboard?id=ita-social-projects_Car-Back-End)   [![Github Issues](https://img.shields.io/github/issues/ita-social-projects/SoftServeCar-Back-End?style=flat-square)](https://github.com/ita-social-projects/SoftServeCar-Back-End/issues)
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/SoftServeCar-Back-End?style=flat-square)](https://github.com/ita-social-projects/SoftServeCar-Back-End/pulls)
   [![License](http://img.shields.io/:license-mit-ff69b4.svg?style=flat-square)](http://badges.mit-license.org)
@@ -47,7 +47,24 @@ Platform for sharing rides between company employees.
 
 ### How to run locally
 
-### How to run with Docker
+### How to run with Docker :whale:
+
+- `First` you need to have `docker` on your system:
+	- `Windows` instalation: *https://docs.docker.com/docker-for-windows/install/*
+	- `Ubuntu`  instalation: *https://docs.docker.com/engine/install/ubuntu/*
+
+- `Second` make shure that the DB connection string in
+*appsettings.Development.json* file looks like this: <br/>
+`"ConnectionStrings": {
+    "CarConnection": "Server=db-server,1433;Database=master;User Id=sa;Password=paSSw0rd@;"
+ }`
+
+- `Third` run:
+	- *docker-compose run db-server*  (in Car.Backend folder)
+	- *dotnet ef database update*  (in Car.WebApi folder)
+	- *docker-compose up --build*  (in Car.Backend folder)
+
+- `That's it`  now you can open *localhost:8000* =]
 
 ---
 
@@ -67,7 +84,7 @@ You're encouraged to contribute to our project if you've found any issues or mis
 
 Before sending any pull request, please discuss requirements/changes to be implemented using an existing issue or by creating a new one. All pull requests should be done into `dev` branch.
 
-Though there are two GitHub projects: [SoftServeCar-Back-End](https://github.com/ita-social-projects/SoftServeCar-Back-End) for back-end part and [SoftServeCar-Front-End](https://github.com/ita-social-projects/SoftServeCar-Front-End) for front-end part) all of the requirements are listed in the first one - [SoftServeCar-Back-End](https://github.com/ita-social-projects/SoftServeCar-Back-End). 
+Though there are two GitHub projects: [SoftServeCar-Back-End](https://github.com/ita-social-projects/SoftServeCar-Back-End) for back-end part and [SoftServeCar-Front-End](https://github.com/ita-social-projects/SoftServeCar-Front-End) for front-end part) all of the requirements are listed in the first one - [SoftServeCar-Back-End](https://github.com/ita-social-projects/SoftServeCar-Back-End).
 
 Every pull request should be linked to an issue. So if you make changes on front-end part you should create an issue there (subtask) with a link to corresponding requirement (story, task or epic) on back-end.
 
