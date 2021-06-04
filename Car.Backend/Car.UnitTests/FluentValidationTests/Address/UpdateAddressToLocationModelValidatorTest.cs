@@ -12,11 +12,11 @@ namespace Car.UnitTests.FluentValidationTests.Address
     [TestFixture]
     public class UpdateAddressToLocationModelValidatorTest
     {
-        private readonly UpdateAddressToLocationModelValidator validator;
+        private readonly UpdateAddressToLocationDtoValidator validator;
 
         public UpdateAddressToLocationModelValidatorTest()
         {
-            validator = new UpdateAddressToLocationModelValidator();
+            validator = new UpdateAddressToLocationDtoValidator();
         }
 
         [Xunit.Theory]

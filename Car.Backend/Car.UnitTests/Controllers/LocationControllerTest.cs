@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Models.Location;
+using Car.Domain.Dto.Location;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -85,7 +85,7 @@ namespace Car.UnitTests.Controllers
         [Theory]
         [AutoEntityData]
         public async Task UpdateLocation_WhenLocationExists_ReturnsLocation(
-            UpdateLocationModel locationModel, Location location)
+            UpdateLocationDto locationModel, Location location)
         {
             // Arrange
             locationService.Setup(l => l.UpdateAsync(locationModel))
@@ -101,7 +101,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateLocation_WhenLocationNotExists_ReturnsNull(UpdateLocationModel locationModel)
+        public async Task UpdateLocation_WhenLocationNotExists_ReturnsNull(UpdateLocationDto locationModel)
         {
             // Arrange
             locationService.Setup(l => l.UpdateAsync(locationModel))

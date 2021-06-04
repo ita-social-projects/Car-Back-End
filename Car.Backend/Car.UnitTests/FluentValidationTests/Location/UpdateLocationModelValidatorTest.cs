@@ -10,11 +10,11 @@ namespace Car.UnitTests.FluentValidationTests.Location
     [TestFixture]
     public class UpdateLocationModelValidatorTest
     {
-        private UpdateLocationModelValidator validator;
+        private UpdateLocationDtoValidator validator;
 
         public UpdateLocationModelValidatorTest()
         {
-            validator = new UpdateLocationModelValidator();
+            validator = new UpdateLocationDtoValidator();
         }
 
         [Fact]

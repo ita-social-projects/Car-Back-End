@@ -8,7 +8,7 @@ using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
-using Car.Domain.Models.Location;
+using Car.Domain.Dto.Location;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -136,7 +136,7 @@ namespace Car.UnitTests.Services
         public async Task UpdateLocation_WhenLocationIsValid_ReturnsLocationObject(Location[] locations)
         {
             // Arrange
-            var updatedLocationModel = Fixture.Build<UpdateLocationModel>()
+            var updatedLocationModel = Fixture.Build<UpdateLocationDto>()
                 .With(model => model.Id, locations.First().Id).Create();
             var expectedLocation = locations.First();
 
@@ -155,7 +155,7 @@ namespace Car.UnitTests.Services
         public async Task UpdateLocation_WhenLocationIsNotValid_ReturnsNull(Location[] locations)
         {
             // Arrange
-            var updatedLocationModel = Fixture.Build<UpdateLocationModel>()
+            var updatedLocationModel = Fixture.Build<UpdateLocationDto>()
                 .With(model => model.Id, locations.Max(journey => journey.Id) + 1)
                 .Create();
 
