@@ -1,6 +1,7 @@
 using Car.Data.Entities;
 using Car.Data.FluentValidation;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Location;
 using Car.Domain.FluentValidation;
 using Car.Domain.Models.Journey;
 using FluentValidation;
