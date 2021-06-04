@@ -154,6 +154,27 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetUserChatsAsync_WhenUserNotExist_ReturnsNull(IEnumerable<User> users)
+        {
+            // Arrange
+            var user = Fixture.Build<User>().With(user => user.Id, users.Max(user => user.Id) + 1).Create();
+            var organizerJourneys = Fixture.Build<Journey>()
+                .With(j => j.Chat, (Chat)null).CreateMany();
+            var participantJourneys = Fixture.Build<Journey>()
+                .With(j => j.Chat, (Chat)null).CreateMany();
+
+            userRepository.Setup(repo => repo.Query())
+                .Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await chatService.GetUserChatsAsync(user.Id);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddMessageAsync_WhenMessageIsValid_ReturnsMessageObject(Message message)
         {
             // Arrange
