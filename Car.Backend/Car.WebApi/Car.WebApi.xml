@@ -31,7 +31,7 @@
             <param name="id">The car identifier.</param>
             <returns>The car entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.UpdateCar(Car.Domain.Models.Car.UpdateCarModel)">
+        <member name="M:Car.WebApi.Controllers.CarController.UpdateCar(Car.Domain.Dto.UpdateCarDto)">
             <summary>
             Updates car.
             </summary>

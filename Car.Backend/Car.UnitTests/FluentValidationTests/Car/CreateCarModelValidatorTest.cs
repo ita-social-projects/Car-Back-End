@@ -10,11 +10,11 @@ namespace Car.UnitTests.FluentValidationTests.Car
     [TestFixture]
     public class CreateCarModelValidatorTest
     {
-        private CreateCarModelValidator validator;
+        private CreateCarDtoValidator validator;
 
         public CreateCarModelValidatorTest()
         {
-            validator = new CreateCarModelValidator();
+            validator = new CreateCarDtoValidator();
         }
 
         [Xunit.Theory]

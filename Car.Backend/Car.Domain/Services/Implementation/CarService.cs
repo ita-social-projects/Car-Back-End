@@ -58,7 +58,7 @@ namespace Car.Domain.Services.Implementation
             return cars;
         }
 
-        public async Task<CarEntity> UpdateCarAsync(UpdateCarModel updateCarModel)
+        public async Task<CarEntity> UpdateCarAsync(UpdateCarDto updateCarModel)
         {
             var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 

@@ -10,11 +10,11 @@ namespace Car.UnitTests.FluentValidationTests.Car
     [TestFixture]
     public class UpdateCarModelValidatorTest
     {
-        private UpdateCarModelValidator validator;
+        private UpdateCarDtoValidator validator;
 
         public UpdateCarModelValidatorTest()
         {
-            validator = new UpdateCarModelValidator();
+            validator = new UpdateCarDtoValidator();
         }
 
         [Xunit.Theory]
