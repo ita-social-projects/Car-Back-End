@@ -25,17 +25,22 @@ namespace Car.UnitTests.Services
     public class JourneyServiceTest : TestBase
     {
         private readonly IJourneyService journeyService;
+        private readonly IRequestService requestService;
+        private readonly INotificationService notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
+        private readonly Mock<IRepository<User>> userRepository;
 
         public JourneyServiceTest()
         {
             journeyRepository = new Mock<IRepository<Journey>>();
             requestRepository = new Mock<IRepository<Request>>();
+            userRepository = new Mock<IRepository<User>>();
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
-                null,
+                notificationService,
+                requestService,
                 Mapper);
         }
 
@@ -575,8 +580,12 @@ namespace Car.UnitTests.Services
         public async Task DeleteAsync_WhenJourneyIsNotExist_ThrowDbUpdateConcurrencyException(int journeyIdToDelete)
         {
             // Arrange
+            var journeys = new List<Journey>();
+
             journeyRepository.Setup(repo =>
                 repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
             var result = journeyService.Invoking(service => service.DeleteAsync(journeyIdToDelete));
@@ -589,6 +598,14 @@ namespace Car.UnitTests.Services
         [AutoData]
         public async Task DeleteAsync_WhenJourneyExist_ExecuteOnce(int journeyIdToDelete)
         {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Participants, null as List<User>)
+                .With(j => j.Id, journeyIdToDelete)
+                .CreateMany(1);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
             // Act
             await journeyService.DeleteAsync(journeyIdToDelete);
 
