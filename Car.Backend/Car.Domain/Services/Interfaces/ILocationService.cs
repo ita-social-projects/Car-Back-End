@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Models.Location;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -13,7 +14,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<Location>> GetAllByUserIdAsync(int userId);
 
-        Task<Location> UpdateLocationAsync(Location location);
+        Task<Location> UpdateAsync(UpdateLocationModel location);
 
         public Task DeleteAsync(int locationId);
     }

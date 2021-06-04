@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Car.Domain.Dto;
+using Car.Domain.Models.Location;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,15 @@ namespace Car.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] LocationDto location) =>
             Ok(await locationService.AddLocationAsync(location));
+
+        /// <summary>
+        /// updates location
+        /// </summary>
+        /// <param name="location">location to be updated</param>
+        /// <returns>updated location</returns>
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateLocationModel location) =>
+            Ok(await locationService.UpdateAsync(location));
 
         /// <summary>
         /// Gets the location by identifier.

@@ -8,6 +8,7 @@ using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Models.Location;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -132,29 +133,37 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateLocationAsync_WhenLocationIsValid_ReturnsUpdatedLocation(Location location)
+        public async Task UpdateLocation_WhenLocationIsValid_ReturnsLocationObject(Location[] locations)
         {
             // Arrange
-            locationRepository.Setup(repo => repo.UpdateAsync(location))
-                .ReturnsAsync(location);
+            var updatedLocationModel = Fixture.Build<UpdateLocationModel>()
+                .With(model => model.Id, locations.First().Id).Create();
+            var expectedLocation = locations.First();
+
+            locationRepository.Setup(r => r.Query())
+                .Returns(locations.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await locationService.UpdateLocationAsync(location);
+            var result = await locationService.UpdateAsync(updatedLocationModel);
 
             // Assert
-            result.Should().BeEquivalentTo(location);
+            result.Should().BeEquivalentTo(expectedLocation);
         }
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateLocationAsync_WhenLocationIsNotValid_ReturnsNull(Location location)
+        public async Task UpdateLocation_WhenLocationIsNotValid_ReturnsNull(Location[] locations)
         {
             // Arrange
-            locationRepository.Setup(repo => repo.UpdateAsync(location))
-                .ReturnsAsync((Location)null);
+            var updatedLocationModel = Fixture.Build<UpdateLocationModel>()
+                .With(model => model.Id, locations.Max(journey => journey.Id) + 1)
+                .Create();
+
+            locationRepository.Setup(r => r.Query())
+                .Returns(locations.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await locationService.UpdateLocationAsync(location);
+            var result = await locationService.UpdateAsync(updatedLocationModel);
 
             // Assert
             result.Should().BeNull();
