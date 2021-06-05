@@ -17,7 +17,7 @@
             <param name="id">The user identifier.</param>
             <returns>All user's cars</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Models.Car.CreateCarModel)">
+        <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Dto.CreateCarDto)">
             <summary>
             Adds the car asynchronously.
             </summary>
@@ -31,7 +31,7 @@
             <param name="id">The car identifier.</param>
             <returns>The car entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.UpdateCar(Car.Domain.Models.Car.UpdateCarModel)">
+        <member name="M:Car.WebApi.Controllers.CarController.UpdateCar(Car.Domain.Dto.UpdateCarDto)">
             <summary>
             Updates car.
             </summary>

@@ -1,13 +1,14 @@
 ﻿using Car.Data.Constants;
+using Car.Domain.Dto;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class UpdateCarModelValidator : AbstractValidator<Models.Car.UpdateCarModel>
+    public class CreateCarDtoValidator : AbstractValidator<CreateCarDto>
     {
-        public UpdateCarModelValidator()
+        public CreateCarDtoValidator()
         {
-            RuleFor(car => car.Id).GreaterThan(Constants.IdLength);
+            RuleFor(car => car.OwnerId).GreaterThan(Constants.IdLength);
             RuleFor(car => car.Color).NotNull();
             RuleFor(car => car.ModelId).GreaterThan(Constants.IdLength);
             RuleFor(car => car.PlateNumber).NotNull().NotEmpty()
