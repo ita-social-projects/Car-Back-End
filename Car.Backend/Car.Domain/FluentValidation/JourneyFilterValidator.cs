@@ -1,6 +1,6 @@
 ﻿using System;
 using Car.Data.Constants;
-using Car.Domain.Models.Journey;
+using Car.Domain.Filters;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation

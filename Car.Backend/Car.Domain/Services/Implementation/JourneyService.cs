@@ -10,6 +10,7 @@ using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
+using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Geolocation;
@@ -116,23 +117,12 @@ namespace Car.Domain.Services.Implementation
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            var requests = requestRepository
-                .Query()
-                .AsEnumerable()
-                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilter>(r)) && addedJourney.OrganizerId != r.UserId)
-                .ToList();
-
-            foreach (var request in requests)
-            {
-                await requestService.NotifyUserAsync(
-                    mapper.Map<Request, RequestDto>(request),
-                    mapper.Map<Journey, JourneyModel>(addedJourney));
-            }
+            await CheckForSuitableRequests(addedJourney);
 
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
 
-        public async Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilter filter)
+        public async Task<IEnumerable<Journey>> GetFilteredJourneys(JourneyFilter filter)
         {
             var journeys = await journeyRepository
                 .Query()
@@ -141,7 +131,7 @@ namespace Car.Domain.Services.Implementation
                 .IncludeJourneyPoints()
                 .ToListAsync();
 
-            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys.Where(j => IsSuitable(j, filter)));
+            return journeys.Where(j => IsSuitable(j, filter));
         }
 
         public async Task DeleteAsync(int journeyId)
@@ -194,7 +184,7 @@ namespace Car.Domain.Services.Implementation
             {
                 journeysResult.Add(new ApplicantJourney()
                 {
-                    Journey = journey,
+                    Journey = mapper.Map<Journey, JourneyModel>(journey),
                     ApplicantStops = GetApplicantStops(filter, journey),
                 });
             }
@@ -202,12 +192,31 @@ namespace Car.Domain.Services.Implementation
             return journeysResult;
         }
 
-        public IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, JourneyModel journey)
+        public async Task CheckForSuitableRequests(Journey journey)
+        {
+            var requests = requestRepository
+                .Query()
+                .AsEnumerable()
+                .Where(r => IsSuitable(journey, mapper.Map<Request, JourneyFilter>(r)) && journey.OrganizerId != r.UserId)
+                .ToList();
+
+            foreach (var request in requests)
+            {
+                await requestService.NotifyUserAsync(
+                    mapper.Map<Request, RequestDto>(request),
+                    mapper.Map<Journey, JourneyModel>(journey),
+                    GetApplicantStops(
+                        mapper.Map<Request, JourneyFilter>(request),
+                        journey));
+            }
+        }
+
+        private IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
         {
             var applicantStops = new List<StopDto>();
 
             var distances = journey.JourneyPoints.Select(p => CalculateDistance(
-                mapper.Map<JourneyPointDto, JourneyPoint>(p),
+                p,
                 filter.FromLatitude,
                 filter.FromLongitude)).ToList();
 
@@ -217,7 +226,7 @@ namespace Car.Domain.Services.Implementation
             distances = journey.JourneyPoints.ToList()
                 .GetRange(pointIndex, journey.JourneyPoints.Count - pointIndex)
                 .Select(p => CalculateDistance(
-                    mapper.Map<JourneyPointDto, JourneyPoint>(p),
+                    p,
                     filter.ToLatitude,
                     filter.ToLongitude)).ToList();
 

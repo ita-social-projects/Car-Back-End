@@ -1,8 +1,7 @@
 ﻿using System;
 using Car.Data.Enums;
-using Point = Car.Data.Entities.Point;
 
-namespace Car.Domain.Models.Journey
+namespace Car.Domain.Filters
 {
     public class JourneyFilter
     {
