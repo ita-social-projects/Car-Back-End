@@ -58,7 +58,7 @@ namespace Car.Domain.Services.Implementation
             return cars;
         }
 
-        public async Task<CarEntity> UpdateCarAsync(UpdateCarDto updateCarModel)
+        public async Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel)
         {
             var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 
@@ -72,7 +72,7 @@ namespace Car.Domain.Services.Implementation
 
             await carRepository.SaveChangesAsync();
 
-            return car;
+            return mapper.Map<CarEntity, UpdateCarDto>(car);
         }
 
         public async Task DeleteAsync(int carId)

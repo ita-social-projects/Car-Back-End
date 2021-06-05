@@ -5,6 +5,7 @@ using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -36,10 +37,10 @@ namespace Car.UnitTests.Services
         public async Task AddCarAsync_WhenCarIsValid_ReturnsCarObject()
         {
             // Arrange
-            var createCarModel = Fixture.Build<CreateCarModel>()
+            var createCarModel = Fixture.Build<CreateCarDto>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
-            var carEntity = Mapper.Map<CreateCarModel, CarEntity>(createCarModel);
+            var carEntity = Mapper.Map<CreateCarDto, CarEntity>(createCarModel);
 
             carRepository.Setup(repo => repo.AddAsync(It.IsAny<CarEntity>()))
                 .ReturnsAsync(carEntity);
@@ -55,7 +56,7 @@ namespace Car.UnitTests.Services
         public async Task AddCarAsync_WhenCarIsNotValid_ReturnsNull()
         {
             // Arrange
-            var createCarModel = Fixture.Build<CreateCarModel>()
+            var createCarModel = Fixture.Build<CreateCarDto>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
 
@@ -144,7 +145,7 @@ namespace Car.UnitTests.Services
         public async Task UpdateCarAsync_WhenCarIsValid_ReturnsCarObject()
         {
             // Arrange
-            var updateCarModel = Fixture.Build<UpdateCarModel>()
+            var updateCarModel = Fixture.Build<UpdateCarDto>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
             var inputCar = Fixture.Build<CarEntity>()
@@ -165,7 +166,7 @@ namespace Car.UnitTests.Services
         public async Task UpdateCarAsync_WhenCarIsNotExist_ReturnsNull()
         {
             // Arrange
-            var updateCarModel = Fixture.Build<UpdateCarModel>()
+            var updateCarModel = Fixture.Build<UpdateCarDto>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
 

@@ -8,11 +8,11 @@ using Xunit;
 namespace Car.UnitTests.FluentValidationTests.Car
 {
     [TestFixture]
-    public class CreateCarModelValidatorTest
+    public class CreateCarDtoValidatorTest
     {
-        private CreateCarDtoValidator validator;
+        private readonly CreateCarDtoValidator validator;
 
-        public CreateCarModelValidatorTest()
+        public CreateCarDtoValidatorTest()
         {
             validator = new CreateCarDtoValidator();
         }
