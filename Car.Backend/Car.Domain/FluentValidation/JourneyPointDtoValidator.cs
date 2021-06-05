@@ -9,12 +9,9 @@ namespace Car.Domain.FluentValidation
         {
             RuleFor(point => point.Index).GreaterThanOrEqualTo(Constants.NumberMin);
 
-            RuleFor(point => point.Latitude)
-                .GreaterThanOrEqualTo(Constants.MinLatitude)
-                .LessThanOrEqualTo(Constants.MaxLatitude);
-            RuleFor(point => point.Longitude)
-                .GreaterThanOrEqualTo(Constants.MinLongitude)
-                .LessThanOrEqualTo(Constants.MaxLongitude);
+            RuleFor(point => point.Latitude).InclusiveBetween(Constants.MinLatitude, Constants.MaxLatitude);
+
+            RuleFor(point => point.Longitude).InclusiveBetween(Constants.MinLongitude, Constants.MaxLongitude);
         }
     }
 }

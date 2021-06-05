@@ -25,7 +25,6 @@ namespace Car.UnitTests.Services
     public class JourneyServiceTest : TestBase
     {
         private readonly IJourneyService journeyService;
-        private readonly IRequestService requestService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
 
@@ -36,7 +35,7 @@ namespace Car.UnitTests.Services
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
-                requestService,
+                null,
                 Mapper);
         }
 
