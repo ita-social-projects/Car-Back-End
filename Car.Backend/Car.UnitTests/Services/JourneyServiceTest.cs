@@ -26,20 +26,19 @@ namespace Car.UnitTests.Services
     {
         private readonly IJourneyService journeyService;
         private readonly IRequestService requestService;
-        private readonly INotificationService notificationService;
+        private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
-        private readonly Mock<IRepository<User>> userRepository;
 
         public JourneyServiceTest()
         {
             journeyRepository = new Mock<IRepository<Journey>>();
             requestRepository = new Mock<IRepository<Request>>();
-            userRepository = new Mock<IRepository<User>>();
+            notificationService = new Mock<INotificationService>();
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
-                notificationService,
+                notificationService.Object,
                 requestService,
                 Mapper);
         }
@@ -603,6 +602,8 @@ namespace Car.UnitTests.Services
                 .With(j => j.Participants, null as List<User>)
                 .With(j => j.Id, journeyIdToDelete)
                 .CreateMany(1);
+
+            notificationService.Setup(s => s.NotifyParticipantsAboutCancellationAsync(It.IsAny<Journey>())).Returns(Task.CompletedTask);
 
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
 
