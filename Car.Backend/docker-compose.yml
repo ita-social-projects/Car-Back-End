@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+    db-server:
+        container_name: db-server
+        image: microsoft/mssql-server-linux:latest
+        volumes:
+            - db-data:/var/opt/mssql/data
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "paSSw0rd@"
+            MSSQL_PID: Express
+            MSSQL_AGENT_ENABLED: "true"
+        ports:
+            - "1433:1433"
+        expose:
+            - 1433
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile.Develop
+        ports:
+            - "8000:80"
+        depends_on:
+            - db-server
+
+volumes:
+    db-data:

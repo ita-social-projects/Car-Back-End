@@ -128,5 +128,38 @@ namespace Car.UnitTests.Controllers
             // Assert
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task MarkNotificationAsReadAsync_WhenNotificationExists_ReturnOkObjectResult(int notificationId)
+        {
+            // Arrange
+            var notification = Fixture.Build<Notification>().With(n => n.Id, notificationId).Create();
+            notificationService.Setup(service => service.MarkNotificationAsReadAsync(notificationId))
+                .ReturnsAsync(notification);
+
+            // Act
+            var result = await notificationController.MarkNotificationAsReadAsync(notificationId);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult).Value.Should().Be(notification);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task MarkNotificationAsReadAsync_WhenNotificationNotExists_ReturnNull(int notificationId)
+        {
+            // Arrange
+            notificationService.Setup(service => service.MarkNotificationAsReadAsync(notificationId))
+                .ReturnsAsync((Notification)null);
+
+            // Act
+            var result = await notificationController.MarkNotificationAsReadAsync(notificationId);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().BeNull();
+        }
     }
 }

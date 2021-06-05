@@ -151,12 +151,19 @@
             <param name="id">The user identifier.</param>
             <returns>All user's locations</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.LocationDto)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.Location.LocationDto)">
             <summary>
             Adds the location.
             </summary>
             <param name="location">The location.</param>
             <returns>New location</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.LocationController.UpdateAsync(Car.Domain.Dto.Location.UpdateLocationDto)">
+            <summary>
+            updates location
+            </summary>
+            <param name="location">location to be updated</param>
+            <returns>updated location</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.LocationController.Get(System.Int32)">
             <summary>

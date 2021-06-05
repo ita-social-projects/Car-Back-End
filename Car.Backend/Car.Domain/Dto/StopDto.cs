@@ -1,4 +1,5 @@
 ﻿using Car.Data.Enums;
+using Car.Domain.Dto.Address;
 
 namespace Car.Domain.Dto
 {
