@@ -83,9 +83,14 @@ namespace Car.Domain.Services.Implementation
         public Task<Notification> CreateNewNotificationAsync(CreateNotificationModel createNotificationModel) =>
             Task.Run(() => mapper.Map<CreateNotificationModel, Notification>(createNotificationModel));
 
-        public async Task NotifyUsersAboutCancellationAsync(IEnumerable<User> users, Journey journey)
+        public async Task NotifyParticipantsAboutCancellationAsync(Journey journey)
         {
-            foreach (var user in users)
+            if (journey.Participants is null)
+            {
+                return;
+            }
+
+            foreach (var user in journey.Participants)
             {
                 await AddNotificationAsync(new Notification()
                     {

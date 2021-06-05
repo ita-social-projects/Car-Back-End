@@ -269,5 +269,39 @@ namespace Car.UnitTests.Services
             // Assert
             result.IsRead.Should().BeTrue();
         }
+
+        [Fact]
+        public async Task NotifyParticipantsAboutCancellationAsync_WhenJourneyHasNotParticipants_ExecuteSaveChangesNever()
+        {
+            // Arrange
+            var journey = Fixture.Build<Journey>().With(j => j.Participants, null as List<User>).Create();
+
+            // Act
+            await notificationService.NotifyParticipantsAboutCancellationAsync(journey);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
+        }
+
+        [Fact]
+        public async Task NotifyParticipantsAboutCancellationAsync_WhenJourneyHasParticipants_ExecuteSaveChangesAtLeastOnce()
+        {
+            // Arrange
+            var journey = Fixture.Create<Journey>();
+
+            var notifications = Fixture.CreateMany<Notification>();
+
+            notificationRepository.Setup(repo => repo.AddAsync(It.IsAny<Notification>())).ReturnsAsync(notifications.First());
+
+            notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
+
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
+
+            // Act
+            await notificationService.NotifyParticipantsAboutCancellationAsync(journey);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.AtLeastOnce);
+        }
     }
 }

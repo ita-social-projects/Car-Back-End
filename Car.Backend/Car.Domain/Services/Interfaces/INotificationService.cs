@@ -23,6 +23,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task<Notification> MarkNotificationAsReadAsync(int notificationId);
 
-        Task NotifyUsersAboutCancellationAsync(IEnumerable<User> users, Journey journey);
+        Task NotifyParticipantsAboutCancellationAsync(Journey journey);
     }
 }
