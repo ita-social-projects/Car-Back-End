@@ -228,7 +228,7 @@ namespace Car.Domain.Services.Implementation
                 Id = 0,
                 Index = 0,
                 UserId = filter.ApplicantId,
-                Address = new AddressDto() { Latitude = startRoutePoint.Latitude, Longitude = startRoutePoint.Longitude },
+                Address = new Dto.Address.AddressDto() { Latitude = startRoutePoint.Latitude, Longitude = startRoutePoint.Longitude },
                 Type = StopType.Intermediate,
             });
 
@@ -237,7 +237,7 @@ namespace Car.Domain.Services.Implementation
                 Id = 0,
                 Index = 1,
                 UserId = filter.ApplicantId,
-                Address = new AddressDto() { Latitude = endRoutePoint.Latitude, Longitude = endRoutePoint.Longitude },
+                Address = new Dto.Address.AddressDto() { Latitude = endRoutePoint.Latitude, Longitude = endRoutePoint.Longitude },
                 Type = StopType.Intermediate,
             });
 

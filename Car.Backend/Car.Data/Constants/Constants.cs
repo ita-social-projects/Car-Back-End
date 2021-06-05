@@ -19,6 +19,7 @@
         public const int PlateNumberMaxLength = 10;
 
         public const int SeatsMaxCount = 4;
+        public const int SeatsMinCount = 1;
 
         public const int CommentsMaxLength = 100;
 
