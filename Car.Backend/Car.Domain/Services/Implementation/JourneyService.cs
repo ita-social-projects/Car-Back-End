@@ -220,24 +220,29 @@ namespace Car.Domain.Services.Implementation
                 filter.FromLatitude,
                 filter.FromLongitude)).ToList();
 
-            var pointIndex = distances.IndexOf(distances.Min());
-            var startRoutePoint = journey.JourneyPoints.ToList()[pointIndex];
+            var startPointIndex = distances.IndexOf(distances.Min());
+            var startRoutePoint = journey.JourneyPoints.ToList()[startPointIndex];
 
             distances = journey.JourneyPoints.ToList()
-                .GetRange(pointIndex, journey.JourneyPoints.Count - pointIndex)
+                .GetRange(startPointIndex, journey.JourneyPoints.Count - startPointIndex)
                 .Select(p => CalculateDistance(
                     p,
                     filter.ToLatitude,
                     filter.ToLongitude)).ToList();
 
-            var endRoutePoint = journey.JourneyPoints.ToList()[distances.IndexOf(distances.Min())];
+            var endRoutePoint = journey.JourneyPoints.ToList()[startPointIndex + distances.IndexOf(distances.Min())];
 
             applicantStops.Add(new StopDto()
             {
                 Id = 0,
                 Index = 0,
                 UserId = filter.ApplicantId,
-                Address = new Dto.Address.AddressDto() { Latitude = startRoutePoint.Latitude, Longitude = startRoutePoint.Longitude },
+                Address = new Dto.Address.AddressDto()
+                {
+                    Latitude = startRoutePoint.Latitude,
+                    Longitude = startRoutePoint.Longitude,
+                    Name = "Start",
+                },
                 Type = StopType.Intermediate,
             });
 
@@ -246,7 +251,12 @@ namespace Car.Domain.Services.Implementation
                 Id = 0,
                 Index = 1,
                 UserId = filter.ApplicantId,
-                Address = new Dto.Address.AddressDto() { Latitude = endRoutePoint.Latitude, Longitude = endRoutePoint.Longitude },
+                Address = new Dto.Address.AddressDto()
+                {
+                    Latitude = endRoutePoint.Latitude,
+                    Longitude = endRoutePoint.Longitude,
+                    Name = "Finish",
+                },
                 Type = StopType.Intermediate,
             });
 
