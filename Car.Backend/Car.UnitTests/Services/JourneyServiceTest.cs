@@ -27,6 +27,7 @@ namespace Car.UnitTests.Services
     {
         private readonly IJourneyService journeyService;
         private readonly Mock<IRequestService> requestService;
+        private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
 
@@ -35,9 +36,12 @@ namespace Car.UnitTests.Services
             journeyRepository = new Mock<IRepository<Journey>>();
             requestRepository = new Mock<IRepository<Request>>();
             requestService = new Mock<IRequestService>();
+
+            notificationService = new Mock<INotificationService>();
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
+                notificationService.Object,
                 requestService.Object,
                 Mapper);
         }
@@ -578,8 +582,12 @@ namespace Car.UnitTests.Services
         public async Task DeleteAsync_WhenJourneyIsNotExist_ThrowDbUpdateConcurrencyException(int journeyIdToDelete)
         {
             // Arrange
+            var journeys = new List<Journey>();
+
             journeyRepository.Setup(repo =>
                 repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
             var result = journeyService.Invoking(service => service.DeleteAsync(journeyIdToDelete));
@@ -592,6 +600,16 @@ namespace Car.UnitTests.Services
         [AutoData]
         public async Task DeleteAsync_WhenJourneyExist_ExecuteOnce(int journeyIdToDelete)
         {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Participants, null as List<User>)
+                .With(j => j.Id, journeyIdToDelete)
+                .CreateMany(1);
+
+            notificationService.Setup(s => s.NotifyParticipantsAboutCancellationAsync(It.IsAny<Journey>())).Returns(Task.CompletedTask);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
             // Act
             await journeyService.DeleteAsync(journeyIdToDelete);
 

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -51,9 +52,9 @@ namespace Car.UnitTests.Controllers
         public async Task AddCar_WhenCarIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var createCarModel = Fixture.Build<CreateCarModel>()
+            var createCarModel = Fixture.Build<CreateCarDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
-            var expectedCar = Mapper.Map<CreateCarModel, CarEntity>(createCarModel);
+            var expectedCar = createCarModel;
 
             carService.Setup(service => service.AddCarAsync(createCarModel)).ReturnsAsync(expectedCar);
 
@@ -90,9 +91,9 @@ namespace Car.UnitTests.Controllers
         public async Task UpdateCar_WhenCarIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var updateCarModel = Fixture.Build<UpdateCarModel>()
+            var updateCarModel = Fixture.Build<UpdateCarDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
-            var expectedCar = Mapper.Map<UpdateCarModel, CarEntity>(updateCarModel);
+            var expectedCar = updateCarModel;
 
             carService.Setup(service => service.UpdateCarAsync(updateCarModel)).ReturnsAsync(expectedCar);
 

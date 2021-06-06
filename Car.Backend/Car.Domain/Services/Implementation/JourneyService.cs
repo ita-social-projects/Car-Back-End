@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.Internal;
@@ -22,17 +23,20 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
+        private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
         private readonly IMapper mapper;
 
         public JourneyService(
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
+            INotificationService notificationService,
             IRequestService requestService,
             IMapper mapper)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
+            this.notificationService = notificationService;
             this.requestService = requestService;
             this.mapper = mapper;
         }
@@ -136,7 +140,18 @@ namespace Car.Domain.Services.Implementation
 
         public async Task DeleteAsync(int journeyId)
         {
+            var journeyToDelete = await journeyRepository
+                .Query()
+                .IncludeAllParticipants()
+                .FirstOrDefaultAsync(j => j.Id == journeyId);
+
+            if (journeyToDelete is not null)
+            {
+               await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToDelete);
+            }
+
             journeyRepository.Delete(new Journey { Id = journeyId });
+
             await journeyRepository.SaveChangesAsync();
         }
 
