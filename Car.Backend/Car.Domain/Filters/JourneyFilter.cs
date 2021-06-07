@@ -1,10 +1,12 @@
 ﻿using System;
 using Car.Data.Enums;
 
-namespace Car.Domain.Models.Journey
+namespace Car.Domain.Filters
 {
-    public class JourneyFilterModel
+    public class JourneyFilter
     {
+        public int ApplicantId { get; set; }
+
         public double FromLatitude { get; set; }
 
         public double FromLongitude { get; set; }
