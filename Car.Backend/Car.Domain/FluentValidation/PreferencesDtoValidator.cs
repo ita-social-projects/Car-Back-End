@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class PreferencesDtoValidator : AbstractValidator<Dto.UserPreferencesDTO>
+    public class PreferencesDtoValidator : AbstractValidator<Dto.UserPreferencesDto>
     {
         public PreferencesDtoValidator()
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -26,11 +27,11 @@ namespace Car.UnitTests.Repository
             repository = new Repository<User>(dbContext);
         }
 
-        [Fact]
-        public async Task GetByIdAsync_EntityExists_ReturnsEntity()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetByIdAsync_EntityExists_ReturnsEntity(IEnumerable<User> entities)
         {
             // Arrange
-            var entities = Fixture.CreateMany<User>();
             await dbContext.Users.AddRangeAsync(entities);
             var entity = entities.First();
 
@@ -41,11 +42,11 @@ namespace Car.UnitTests.Repository
             result.Should().BeEquivalentTo(entity);
         }
 
-        [Fact]
-        public async Task GetByIdAsync_EntityNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetByIdAsync_EntityNotExist_ReturnsNull(IEnumerable<User> entities)
         {
             // Arrange
-            var entities = Fixture.CreateMany<User>();
             await dbContext.Users.AddRangeAsync(entities);
             var entity = Fixture.Create<User>();
 
@@ -56,11 +57,11 @@ namespace Car.UnitTests.Repository
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task Query_ParametersNotPassed_ReturnsIQueryable()
+        [Theory]
+        [AutoEntityData]
+        public async Task Query_ParametersNotPassed_ReturnsIQueryable(IEnumerable<User> entities)
         {
             // Arrange
-            var entities = Fixture.CreateMany<User>();
             await dbContext.Users.AddRangeAsync(entities);
             var expected = dbContext.Users.AsQueryable();
 
@@ -71,12 +72,10 @@ namespace Car.UnitTests.Repository
             result.Should().BeEquivalentTo(expected);
         }
 
-        [Fact]
-        public async Task AddAsync_EntityIsValid_ReturnsAddedEntity()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddAsync_EntityIsValid_ReturnsAddedEntity(User entity)
         {
-            // Arrange
-            var entity = Fixture.Create<User>();
-
             // Act
             var result = await repository.AddAsync(entity);
 

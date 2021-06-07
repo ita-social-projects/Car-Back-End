@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Address;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Extensions
@@ -13,7 +14,7 @@ namespace Car.Domain.Extensions
             journeys.Where(journey => journey.Participants.Any(user => user.Id == userId) || journey.OrganizerId == userId);
 
         public static IQueryable<Journey> IncludeStopsWithAddresses(this IQueryable<Journey> journeys) =>
-            journeys.Include(journey => journey.Stops.OrderBy(stop => stop.Type))
+            journeys.Include(journey => journey.Stops.OrderBy(stop => stop.Index))
                 .ThenInclude(stop => stop.Address);
 
         public static IQueryable<Journey> IncludeJourneyPoints(this IQueryable<Journey> journeys) =>

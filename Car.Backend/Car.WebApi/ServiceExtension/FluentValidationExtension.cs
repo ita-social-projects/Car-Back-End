@@ -1,8 +1,6 @@
-using Car.Data.Entities;
-using Car.Data.FluentValidation;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Location;
 using Car.Domain.FluentValidation;
-using Car.Domain.Models.Journey;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,12 +10,11 @@ namespace Car.WebApi.ServiceExtension
     {
         public static void AddFluentValidators(this IServiceCollection services)
         {
-            services.AddTransient<IValidator<CreateJourneyModel>, CreateJourneyModelValidator>();
             services.AddTransient<IValidator<JourneyDto>, JourneyDtoValidator>();
-            services.AddTransient<IValidator<CreateJourneyPointModel>, CreateJourneyPointModelValidator>();
-            services.AddTransient<IValidator<CreateStopModel>, CreateStopModelValidator>();
             services.AddTransient<IValidator<RequestDto>, RequestDtoValidator>();
-            services.AddTransient<IValidator<LocationDTO>, LocationDtoValidator>();
+            services.AddTransient<IValidator<LocationDto>, LocationDtoValidator>();
+            services.AddTransient<IValidator<CreateCarDto>, CreateCarDtoValidator>();
+            services.AddTransient<IValidator<UpdateCarDto>, UpdateCarDtoValidator>();
         }
     }
 }

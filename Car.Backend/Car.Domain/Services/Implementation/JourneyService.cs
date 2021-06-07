@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.Internal;
 using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
+using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Geolocation;
@@ -20,17 +23,20 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
+        private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
         private readonly IMapper mapper;
 
         public JourneyService(
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
+            INotificationService notificationService,
             IRequestService requestService,
             IMapper mapper)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
+            this.notificationService = notificationService;
             this.requestService = requestService;
             this.mapper = mapper;
         }
@@ -108,31 +114,19 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
         }
 
-        public async Task<JourneyModel> AddJourneyAsync(CreateJourneyModel journeyModel)
+        public async Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel)
         {
-            var journey = mapper.Map<CreateJourneyModel, Journey>(journeyModel);
-            journey.Duration = TimeSpan.FromMinutes(journeyModel.DurationInMinutes);
+            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            var requests = requestRepository
-                .Query()
-                .AsEnumerable()
-                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilterModel>(r)) && addedJourney.OrganizerId != r.UserId)
-                .ToList();
-
-            foreach (var request in requests)
-            {
-                await requestService.NotifyUserAsync(
-                    mapper.Map<Request, RequestDto>(request),
-                    mapper.Map<Journey, JourneyModel>(addedJourney));
-            }
+            await CheckForSuitableRequests(addedJourney);
 
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
 
-        public async Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter)
+        public async Task<IEnumerable<Journey>> GetFilteredJourneys(JourneyFilter filter)
         {
             var journeys = await journeyRepository
                 .Query()
@@ -141,26 +135,150 @@ namespace Car.Domain.Services.Implementation
                 .IncludeJourneyPoints()
                 .ToListAsync();
 
-            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys.Where(j => IsSuitable(j, filter)));
+            return journeys.Where(j => IsSuitable(j, filter));
         }
 
         public async Task DeleteAsync(int journeyId)
         {
+            var journeyToDelete = await journeyRepository
+                .Query()
+                .IncludeAllParticipants()
+                .FirstOrDefaultAsync(j => j.Id == journeyId);
+
+            if (journeyToDelete is not null)
+            {
+               await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToDelete);
+            }
+
             journeyRepository.Delete(new Journey { Id = journeyId });
+
             await journeyRepository.SaveChangesAsync();
         }
 
-        public async Task<JourneyModel> UpdateAsync(JourneyDto journeyDto)
+        public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
+        {
+            var journey = await journeyRepository.Query()
+                    .IncludeStopsWithAddresses()
+                    .IncludeJourneyPoints()
+                    .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
+
+            if (journey is null)
+            {
+                return null;
+            }
+
+            var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
+
+            journey.Duration = updatedJourney.Duration;
+            journey.Stops = updatedJourney.Stops;
+            journey.JourneyPoints = updatedJourney.JourneyPoints;
+            journey.RouteDistance = updatedJourney.RouteDistance;
+
+            await journeyRepository.SaveChangesAsync();
+
+            return mapper.Map<Journey, JourneyModel>(journey);
+        }
+
+        public async Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto)
         {
             var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
 
-            var updatedJourney = await journeyRepository.UpdateAsync(journey);
+            journey = await journeyRepository.UpdateAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            return mapper.Map<Journey, JourneyModel>(updatedJourney);
+            return mapper.Map<Journey, JourneyModel>(journey);
         }
 
-        private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
+        public async Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilter filter)
+        {
+            var journeysResult = new List<ApplicantJourney>();
+
+            var filteredJourneys = await GetFilteredJourneys(filter);
+
+            foreach (var journey in filteredJourneys)
+            {
+                journeysResult.Add(new ApplicantJourney()
+                {
+                    Journey = mapper.Map<Journey, JourneyModel>(journey),
+                    ApplicantStops = GetApplicantStops(filter, journey),
+                });
+            }
+
+            return journeysResult;
+        }
+
+        public async Task CheckForSuitableRequests(Journey journey)
+        {
+            var requests = requestRepository
+                .Query()
+                .AsEnumerable()
+                .Where(r => IsSuitable(journey, mapper.Map<Request, JourneyFilter>(r)) && journey.OrganizerId != r.UserId)
+                .ToList();
+
+            foreach (var request in requests)
+            {
+                await requestService.NotifyUserAsync(
+                    mapper.Map<Request, RequestDto>(request),
+                    mapper.Map<Journey, JourneyModel>(journey),
+                    GetApplicantStops(
+                        mapper.Map<Request, JourneyFilter>(request),
+                        journey));
+            }
+        }
+
+        private IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
+        {
+            var applicantStops = new List<StopDto>();
+
+            var distances = journey.JourneyPoints.Select(p => CalculateDistance(
+                p,
+                filter.FromLatitude,
+                filter.FromLongitude)).ToList();
+
+            var startPointIndex = distances.IndexOf(distances.Min());
+            var startRoutePoint = journey.JourneyPoints.ToList()[startPointIndex];
+
+            distances = journey.JourneyPoints.ToList()
+                .GetRange(startPointIndex, journey.JourneyPoints.Count - startPointIndex)
+                .Select(p => CalculateDistance(
+                    p,
+                    filter.ToLatitude,
+                    filter.ToLongitude)).ToList();
+
+            var endRoutePoint = journey.JourneyPoints.ToList()[startPointIndex + distances.IndexOf(distances.Min())];
+
+            applicantStops.Add(new StopDto()
+            {
+                Id = 0,
+                Index = 0,
+                UserId = filter.ApplicantId,
+                Address = new Dto.Address.AddressDto()
+                {
+                    Latitude = startRoutePoint.Latitude,
+                    Longitude = startRoutePoint.Longitude,
+                    Name = "Start",
+                },
+                Type = StopType.Intermediate,
+            });
+
+            applicantStops.Add(new StopDto()
+            {
+                Id = 0,
+                Index = 1,
+                UserId = filter.ApplicantId,
+                Address = new Dto.Address.AddressDto()
+                {
+                    Latitude = endRoutePoint.Latitude,
+                    Longitude = endRoutePoint.Longitude,
+                    Name = "Finish",
+                },
+                Type = StopType.Intermediate,
+            });
+
+            return applicantStops;
+        }
+
+        private static bool IsSuitable(Journey journey, JourneyFilter filter)
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
@@ -178,18 +296,18 @@ namespace Car.Domain.Services.Implementation
             }
 
             var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(point => Distance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
+                .SkipWhile(point => CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
 
             return pointsFromStart.Any() && pointsFromStart
-                .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
-
-            static double Distance(JourneyPoint point, double latitude, double longitude) =>
-                GeoCalculator.GetDistance(
-                    point.Latitude,
-                    point.Longitude,
-                    latitude,
-                    longitude,
-                    distanceUnit: DistanceUnit.Kilometers);
+                .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
         }
+
+        private static double CalculateDistance(JourneyPoint point, double latitude, double longitude) =>
+            GeoCalculator.GetDistance(
+                point.Latitude,
+                point.Longitude,
+                latitude,
+                longitude,
+                distanceUnit: DistanceUnit.Kilometers);
     }
 }

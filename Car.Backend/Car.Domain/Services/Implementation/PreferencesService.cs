@@ -17,7 +17,7 @@ namespace Car.Domain.Services.Implementation
         public Task<UserPreferences> GetPreferencesAsync(int userId) =>
             preferencesRepository.Query().FirstOrDefaultAsync(p => p.Id == userId);
 
-        public async Task<UserPreferences> UpdatePreferencesAsync(UserPreferencesDTO preferencesDTO)
+        public async Task<UserPreferences> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO)
         {
             var preferences = await preferencesRepository.GetByIdAsync(preferencesDTO.Id);
 

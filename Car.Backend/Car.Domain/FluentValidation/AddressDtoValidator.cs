@@ -3,17 +3,13 @@ using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class AddressDtoValidator : AbstractValidator<Dto.AddressDto>
+    public class AddressDtoValidator : AbstractValidator<Dto.Address.AddressDto>
     {
         public AddressDtoValidator()
         {
             RuleFor(address => address.Name).NotNull().NotEmpty();
-            RuleFor(address => address.Latitude)
-                .GreaterThanOrEqualTo(Constants.MinLatitude)
-                .LessThanOrEqualTo(Constants.MaxLatitude);
-            RuleFor(address => address.Longitude)
-                .GreaterThanOrEqualTo(Constants.MinLongitude)
-                .LessThanOrEqualTo(Constants.MaxLongitude);
+            RuleFor(address => address.Latitude).InclusiveBetween(Constants.MinLatitude, Constants.MaxLatitude);
+            RuleFor(address => address.Longitude).InclusiveBetween(Constants.MinLongitude, Constants.MaxLongitude);
         }
     }
 }
