@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Exceptions;
 using Car.Domain.Extensions;
 using Car.Domain.Models.Car;
@@ -25,15 +26,15 @@ namespace Car.Domain.Services.Implementation
             this.mapper = mapper;
         }
 
-        public async Task<CarEntity> AddCarAsync(CreateCarModel createCarModel)
+        public async Task<CreateCarDto> AddCarAsync(CreateCarDto createCarModel)
         {
-            var carEntity = mapper.Map<CreateCarModel, CarEntity>(createCarModel);
+            var carEntity = mapper.Map<CreateCarDto, CarEntity>(createCarModel);
             await imageService.UploadImageAsync(carEntity, createCarModel.Image);
 
             var newCar = await carRepository.AddAsync(carEntity);
             await carRepository.SaveChangesAsync();
 
-            return newCar;
+            return mapper.Map<CarEntity, CreateCarDto>(newCar);
         }
 
         public async Task<CarEntity> GetCarByIdAsync(int carId)
@@ -57,7 +58,7 @@ namespace Car.Domain.Services.Implementation
             return cars;
         }
 
-        public async Task<CarEntity> UpdateCarAsync(UpdateCarModel updateCarModel)
+        public async Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel)
         {
             var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 
@@ -71,7 +72,7 @@ namespace Car.Domain.Services.Implementation
 
             await carRepository.SaveChangesAsync();
 
-            return car;
+            return mapper.Map<CarEntity, UpdateCarDto>(car);
         }
 
         public async Task DeleteAsync(int carId)

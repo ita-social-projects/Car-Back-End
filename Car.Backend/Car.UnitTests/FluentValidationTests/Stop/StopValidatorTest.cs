@@ -9,11 +9,27 @@ namespace Car.UnitTests.FluentValidationTests.Stop
     [TestFixture]
     public class StopValidatorTest
     {
-        private StopValidator validator;
+        private readonly StopValidator validator;
 
         public StopValidatorTest()
         {
             validator = new StopValidator();
+        }
+
+        [Xunit.Theory]
+        [InlineData(-1)]
+        [InlineData(-10)]
+        public void Index_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(stop => stop.Index, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        public void Index_IsSpecified_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(stop => stop.Index, value);
         }
 
         [Xunit.Theory]

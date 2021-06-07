@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
-using Car.Domain.Exceptions;
+using Car.Domain.Dto;
 using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -29,13 +30,11 @@ namespace Car.UnitTests.Controllers
             carController = new CarController(carService.Object);
         }
 
-        [Fact]
-        public async Task GetAllByUserId_WhenCarsExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllByUserId_WhenCarsExist_ReturnsOkObjectResult(IEnumerable<CarEntity> cars, User user)
         {
             // Arrange
-            var cars = Fixture.CreateMany<CarEntity>();
-            var user = Fixture.Create<User>();
-
             carService.Setup(service => service.GetAllByUserIdAsync(user.Id)).ReturnsAsync(cars);
 
             // Act
@@ -53,9 +52,9 @@ namespace Car.UnitTests.Controllers
         public async Task AddCar_WhenCarIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var createCarModel = Fixture.Build<CreateCarModel>()
+            var createCarModel = Fixture.Build<CreateCarDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
-            var expectedCar = Mapper.Map<CreateCarModel, CarEntity>(createCarModel);
+            var expectedCar = createCarModel;
 
             carService.Setup(service => service.AddCarAsync(createCarModel)).ReturnsAsync(expectedCar);
 
@@ -70,12 +69,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetCarById_WhenCarExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetCarById_WhenCarExists_ReturnsOkObjectResult(CarEntity car)
         {
             // Arrange
-            var car = Fixture.Create<CarEntity>();
-
             carService.Setup(service => service.GetCarByIdAsync(car.Id)).ReturnsAsync(car);
 
             // Act
@@ -93,9 +91,9 @@ namespace Car.UnitTests.Controllers
         public async Task UpdateCar_WhenCarIsValid_ReturnsOkObjectResult()
         {
             // Arrange
-            var updateCarModel = Fixture.Build<UpdateCarModel>()
+            var updateCarModel = Fixture.Build<UpdateCarDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
-            var expectedCar = Mapper.Map<UpdateCarModel, CarEntity>(updateCarModel);
+            var expectedCar = updateCarModel;
 
             carService.Setup(service => service.UpdateCarAsync(updateCarModel)).ReturnsAsync(expectedCar);
 
@@ -110,12 +108,10 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenCarIsNotInJourney_ReturnsOkResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenCarIsNotInJourney_ReturnsOkResult(CarEntity car)
         {
-            // Arrange
-            var car = Fixture.Create<CarEntity>();
-
             // Act
             var result = await carController.DeleteAsync(car.Id);
 
@@ -124,11 +120,11 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenCarNotExists_ThrowDbUpdateConcurrencyException()
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenCarNotExists_ThrowDbUpdateConcurrencyException(CarEntity car, [Frozen]Mock<ICarService> carService)
         {
             // Arrange
-            var car = Fixture.Create<CarEntity>();
             carService.Setup(service => service.DeleteAsync(car.Id)).Throws<DbUpdateConcurrencyException>();
 
             // Act
@@ -138,11 +134,11 @@ namespace Car.UnitTests.Controllers
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException()
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException(CarEntity car)
         {
             // Arrange
-            var car = Fixture.Create<CarEntity>();
             carService.Setup(service => service.DeleteAsync(car.Id)).Throws<DbUpdateException>();
 
             // Act

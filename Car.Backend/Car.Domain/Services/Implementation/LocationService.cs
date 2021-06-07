@@ -5,6 +5,7 @@ using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Location;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,9 +33,9 @@ namespace Car.Domain.Services.Implementation
                 .ToListAsync();
         }
 
-        public async Task<Location> AddLocationAsync(LocationDTO locationDTO)
+        public async Task<Location> AddLocationAsync(LocationDto locationDTO)
         {
-            var location = mapper.Map<LocationDTO, Location>(locationDTO);
+            var location = mapper.Map<LocationDto, Location>(locationDTO);
 
             var newLocation = await locationRepository.AddAsync(location);
             await locationRepository.SaveChangesAsync();
@@ -42,9 +43,19 @@ namespace Car.Domain.Services.Implementation
             return newLocation;
         }
 
-        public async Task<Location> UpdateLocationAsync(Location location)
+        public async Task<Location> UpdateAsync(UpdateLocationDto location)
         {
-            var updatedLocation = await locationRepository.UpdateAsync(location);
+            var updatedLocation = await locationRepository.Query().Include(locationAddress => locationAddress.Address).FirstOrDefaultAsync(i => i.Id == location.Id);
+
+            if (updatedLocation is not null)
+            {
+                updatedLocation.Name = location.Name;
+                updatedLocation.Address.Name = location.Address.Name;
+                updatedLocation.Address.Longitude = location.Address.Longitude;
+                updatedLocation.Address.Latitude = location.Address.Latitude;
+                updatedLocation.TypeId = location.TypeId;
+            }
+
             await locationRepository.SaveChangesAsync();
 
             return updatedLocation;

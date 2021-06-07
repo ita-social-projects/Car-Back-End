@@ -1,6 +1,6 @@
-namespace Car.Domain.Models.Journey
+﻿namespace Car.Domain.Dto.Address
 {
-    public class CreateAddressModel
+    public class UpdateAddressToLocationDto
     {
         public string Name { get; set; }
 

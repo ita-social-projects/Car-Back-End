@@ -4,9 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Location;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -29,11 +31,11 @@ namespace Car.UnitTests.Services
             locationService = new LocationService(locationRepository.Object, Mapper);
         }
 
-        [Fact]
-        public async Task GetLocationByIdAsync_WhenLocationExists_ReturnsLocationObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetLocationByIdAsync_WhenLocationExists_ReturnsLocationObject(List<Location> locations)
         {
             // Arrange
-            var locations = Fixture.Create<List<Location>>();
             var location = locations.First();
 
             locationRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Location, object>>[]>()))
@@ -46,13 +48,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(location);
         }
 
-        [Fact]
-        public async Task GetLocationByIdAsync_WhenLocationNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetLocationByIdAsync_WhenLocationNotExist_ReturnsNull(List<Location> locations, Location location)
         {
             // Arrange
-            var locations = Fixture.Create<List<Location>>();
-            var location = Fixture.Create<Location>();
-
             locationRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Location, object>>[]>()))
                 .Returns(locations.AsQueryable().BuildMock().Object);
 
@@ -84,13 +84,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(expectedLocations);
         }
 
-        [Fact]
-        public async Task GetAllByUserIdAsync_WhenLocationsNotExist_ReturnsEmptyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllByUserIdAsync_WhenLocationsNotExist_ReturnsEmptyCollection(User user, List<Location> locations)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var locations = Fixture.Create<List<Location>>();
-
             locationRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Location, object>>[]>()))
                 .Returns(locations.AsQueryable().BuildMock().Object);
 
@@ -101,12 +99,12 @@ namespace Car.UnitTests.Services
             result.Should().BeEmpty();
         }
 
-        [Fact]
-        public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject(LocationDto locationDto)
         {
             // Arrange
-            var locationDto = Fixture.Create<LocationDTO>();
-            var location = Mapper.Map<LocationDTO, Location>(locationDto);
+            var location = Mapper.Map<LocationDto, Location>(locationDto);
 
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync(location);
@@ -118,12 +116,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(locationDto, options => options.ExcludingMissingMembers());
         }
 
-        [Fact]
-        public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull(LocationDto locationDto)
         {
             // Arrange
-            var locationDto = Fixture.Create<LocationDTO>();
-
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync((Location)null);
 
@@ -134,43 +131,49 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task UpdateLocationAsync_WhenLocationIsValid_ReturnsUpdatedLocation()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationIsValid_ReturnsLocationObject(Location[] locations)
         {
             // Arrange
-            var location = Fixture.Create<Location>();
+            var updatedLocationModel = Fixture.Build<UpdateLocationDto>()
+                .With(model => model.Id, locations.First().Id).Create();
+            var expectedLocation = locations.First();
 
-            locationRepository.Setup(repo => repo.UpdateAsync(location))
-                .ReturnsAsync(location);
+            locationRepository.Setup(r => r.Query())
+                .Returns(locations.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await locationService.UpdateLocationAsync(location);
+            var result = await locationService.UpdateAsync(updatedLocationModel);
 
             // Assert
-            result.Should().BeEquivalentTo(location);
+            result.Should().BeEquivalentTo(expectedLocation);
         }
 
-        [Fact]
-        public async Task UpdateLocationAsync_WhenLocationIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationIsNotValid_ReturnsNull(Location[] locations)
         {
             // Arrange
-            var location = Fixture.Create<Location>();
+            var updatedLocationModel = Fixture.Build<UpdateLocationDto>()
+                .With(model => model.Id, locations.Max(journey => journey.Id) + 1)
+                .Create();
 
-            locationRepository.Setup(repo => repo.UpdateAsync(location))
-                .ReturnsAsync((Location)null);
+            locationRepository.Setup(r => r.Query())
+                .Returns(locations.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await locationService.UpdateLocationAsync(location);
+            var result = await locationService.UpdateAsync(updatedLocationModel);
 
             // Assert
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenLocationIsNotExist_ThrowDbUpdateConcurrencyException()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenLocationIsNotExist_ThrowDbUpdateConcurrencyException(int idLocationToDelete)
         {
             // Arrange
-            var idLocationToDelete = Fixture.Create<int>();
             locationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
@@ -180,12 +183,10 @@ namespace Car.UnitTests.Services
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenLocationExist_ExecuteOnce()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenLocationExist_ExecuteOnce(int idLocationToDelete)
         {
-            // Arrange
-            var idLocationToDelete = Fixture.Create<int>();
-
             // Act
             await locationService.DeleteAsync(idLocationToDelete);
 

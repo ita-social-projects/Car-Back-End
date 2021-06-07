@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Services.Implementation;
+using Car.Domain.Dto.Location;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -26,13 +27,11 @@ namespace Car.UnitTests.Controllers
             locationController = new LocationController(locationService.Object);
         }
 
-        [Fact]
-        public async Task GetAllByUserId_WhenLocationsExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllByUserId_WhenLocationsExist_ReturnsOkObjectResult(IEnumerable<Location> locations, User user)
         {
             // Arrange
-            var locations = Fixture.CreateMany<Location>();
-            var user = Fixture.Create<User>();
-
             locationService.Setup(service => service.GetAllByUserIdAsync(user.Id)).ReturnsAsync(locations);
 
             // Act
@@ -46,14 +45,12 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task AddLocation_WhenLocationIsValid_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddLocation_WhenLocationIsValid_ReturnsOkObjectResult(LocationDto locationDto)
         {
             // Arrange
-            var locationDto = Fixture.Create<LocationDTO>();
-
-            var expectedLocation = Mapper.Map<LocationDTO, Location>(locationDto);
-
+            var expectedLocation = Mapper.Map<LocationDto, Location>(locationDto);
             locationService.Setup(service => service.AddLocationAsync(locationDto)).ReturnsAsync(expectedLocation);
 
             // Act
@@ -67,12 +64,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetLocationById_WhenLocationExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetLocationById_WhenLocationExists_ReturnsOkObjectResult(Location location)
         {
             // Arrange
-            var location = Fixture.Create<Location>();
-
             locationService.Setup(service => service.GetLocationByIdAsync(location.Id)).ReturnsAsync(location);
 
             // Act
@@ -86,12 +82,43 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenLocationExists_ReturnsOkResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationExists_ReturnsLocation(
+            UpdateLocationDto locationModel, Location location)
         {
             // Arrange
-            var location = Fixture.Create<Location>();
+            locationService.Setup(l => l.UpdateAsync(locationModel))
+                .ReturnsAsync(location);
 
+            // Act
+            var result = await locationController.UpdateAsync(locationModel);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().BeOfType<Location>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationNotExists_ReturnsNull(UpdateLocationDto locationModel)
+        {
+            // Arrange
+            locationService.Setup(l => l.UpdateAsync(locationModel))
+                .ReturnsAsync((Location)null);
+
+            // Act
+            var result = await locationController.UpdateAsync(locationModel);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().BeNull();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenLocationExists_ReturnsOkResult(Location location)
+        {
             // Act
             var result = await locationController.DeleteAsync(location.Id);
 
@@ -100,11 +127,12 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenLocationNotExists_ThrowDbUpdateConcurrencyException()
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenLocationNotExists_ThrowDbUpdateConcurrencyException(
+            Location location, [Frozen]Mock<ILocationService> locationService)
         {
             // Arrange
-            var location = Fixture.Create<Location>();
             locationService.Setup(service => service.DeleteAsync(location.Id)).Throws<DbUpdateConcurrencyException>();
 
             // Act

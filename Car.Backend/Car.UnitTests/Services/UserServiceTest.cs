@@ -27,11 +27,11 @@ namespace Car.UnitTests.Services
             userService = new UserService(userRepository.Object, Mock.Of<IImageService>());
         }
 
-        [Fact]
-        public async Task GetUserByIdAsync_WhenUserExists_ReturnsUserObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserByIdAsync_WhenUserExists_ReturnsUserObject(IEnumerable<User> users)
         {
             // Arrange
-            var users = Fixture.CreateMany<User>();
             var user = users.First();
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
@@ -43,11 +43,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(user, options => options.Excluding(u => u.ImageId));
         }
 
-        [Fact]
-        public async Task GetUserByIdAsync_WhenUserNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserByIdAsync_WhenUserNotExist_ReturnsNull(IEnumerable<User> users)
         {
             // Arrange
-            var users = Fixture.CreateMany<User>();
             var user = Fixture.Build<User>()
                 .With(u => u.Id, users.Max(u => u.Id) + 1)
                 .Create();
@@ -61,15 +61,15 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task UpdateUserAsync_WhenUserIsValid_ReturnsUpdatedUser()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateUserAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
         {
             // Arrange
             var updateUserModel = Fixture.Build<UpdateUserModel>()
                 .With(u => u.Image, (IFormFile)null).Create();
             var user = Fixture.Build<User>().With(u => u.Id, updateUserModel.Id)
                 .Create();
-            var users = Fixture.Create<List<User>>();
             users.Add(user);
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
@@ -81,13 +81,12 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(updateUserModel, options => options.ExcludingMissingMembers());
         }
 
-        [Fact]
-        public async Task UpdateUserAsync_WhenUserIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateUserAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
         {
             // Arrange
             UpdateUserModel updateUserModel = null;
-            var users = Fixture.Create<List<User>>();
-
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act

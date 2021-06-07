@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Car.Domain.Dto.Address;
 
-namespace Car.Domain.Dto
+namespace Car.Domain.Dto.Location
 {
-    public class LocationDTO
+    public class LocationDto
     {
         public int Id { get; set; }
 

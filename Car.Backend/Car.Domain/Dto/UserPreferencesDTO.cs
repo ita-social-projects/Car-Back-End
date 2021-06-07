@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Car.Domain.Dto
 {
-    public class UserPreferencesDTO
+    public class UserPreferencesDto
     {
         public int Id { get; set; }
 

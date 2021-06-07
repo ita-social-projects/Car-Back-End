@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
@@ -30,11 +31,11 @@ namespace Car.UnitTests.Services
             requestService = new RequestService(notificationService.Object, requestRepository.Object, Mapper);
         }
 
-        [Fact]
-        public async Task AddRequestAsync_WhenRequestIsValid_ReturnsRequestObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddRequestAsync_WhenRequestIsValid_ReturnsRequestObject(RequestDto requestDto)
         {
             // Arrange
-            var requestDto = Fixture.Create<RequestDto>();
             var request = Mapper.Map<RequestDto, Request>(requestDto);
 
             requestRepository.Setup(r => r.AddAsync(It.IsAny<Request>()))
@@ -47,12 +48,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(requestDto, options => options.ExcludingMissingMembers());
         }
 
-        [Fact]
-        public async Task AddRequestAsync_WhenRequestIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddRequestAsync_WhenRequestIsNotValid_ReturnsNull(RequestDto requestDto)
         {
             // Arrange
-            var requestDto = Fixture.Create<RequestDto>();
-
             requestRepository.Setup(r => r.AddAsync(It.IsAny<Request>()))
                 .ReturnsAsync((Request)null);
 
@@ -63,12 +63,10 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenRequestExists_SaveChangesExecutesOnce()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenRequestExists_SaveChangesExecutesOnce(int requestIdToDelete)
         {
-            // Arrange
-            var requestIdToDelete = Fixture.Create<int>();
-
             // Act
             await requestService.DeleteAsync(requestIdToDelete);
 
@@ -76,11 +74,11 @@ namespace Car.UnitTests.Services
             requestRepository.Verify(r => r.SaveChangesAsync(), Times.Once());
         }
 
-        [Fact]
-        public async Task DeleteOutdatedAsync_DeletesRangeOnce()
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteOutdatedAsync_DeletesRangeOnce(List<Request> requests)
         {
             // Arrange
-            var requests = Fixture.Create<List<Request>>();
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
@@ -91,11 +89,11 @@ namespace Car.UnitTests.Services
             requestRepository.Verify(r => r.DeleteRangeAsync(It.IsAny<List<Request>>()), Times.Once);
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenRequestDoesntExist_ThrowsDbUpdateConcurrencyException()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenRequestDoesntExist_ThrowsDbUpdateConcurrencyException(int requestIdToDelete)
         {
             // Arrange
-            var requestIdToDelete = Fixture.Create<int>();
             requestRepository.Setup(r => r.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
@@ -105,11 +103,11 @@ namespace Car.UnitTests.Services
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
-        [Fact]
-        public async Task GetAllAsync_ReturnsRequestCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllAsync_ReturnsRequestCollection(List<Request> requests)
         {
             // Arrange
-            var requests = Fixture.Create<List<Request>>(); //new List<Request>() { new Request() };
             var expectedRequests = Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requests);
 
             requestRepository.Setup(r => r.Query()).Returns(requests.AsQueryable().BuildMock().Object);
@@ -121,11 +119,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(expectedRequests);
         }
 
-        [Fact]
-        public async Task GetRequestByIdAsync_WhenRequestExists_ReturnsRequestObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRequestByIdAsync_WhenRequestExists_ReturnsRequestObject(IEnumerable<Request> requests)
         {
             // Arrange
-            var requests = Fixture.CreateMany<Request>();
             var requestId = requests.First().Id;
             var expectedRequest = Mapper.Map<Request, RequestDto>(requests.First());
 
@@ -139,13 +137,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(expectedRequest);
         }
 
-        [Fact]
-        public async Task GetRequestByIdAsync_WhenRequestDoesntExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRequestByIdAsync_WhenRequestDoesntExist_ReturnsNull(IEnumerable<Request> requests, int requestId)
         {
-            // Arrange
-            var requests = Fixture.CreateMany<Request>();
-            var requestId = Fixture.Create<Request>().Id;
-
+            // Arranges
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
@@ -156,15 +152,14 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Fact]
-        public async Task GetRequestsByUserIdAsync_WhenRequestExists_ReturnsRequestCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRequestsByUserIdAsync_WhenRequestExists_ReturnsRequestCollection(User user, List<Request> requests)
         {
             // Arrange
-            var user = Fixture.Create<User>();
             var expectedResult = Fixture.Build<Request>()
                 .With(r => r.UserId, user.Id)
                 .CreateMany();
-            var requests = Fixture.Create<List<Request>>();
             requests.AddRange(expectedResult);
 
             requestRepository.Setup(r => r.Query())
@@ -177,13 +172,11 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
         }
 
-        [Fact]
-        public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection(User user, List<Request> requests)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var requests = Fixture.Create<List<Request>>();
-
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
@@ -194,18 +187,15 @@ namespace Car.UnitTests.Services
             result.Should().BeEmpty();
         }
 
-        [Fact]
-        public async Task NotifyUserAsync_AddsNotificationOnce()
+        [Theory]
+        [AutoEntityData]
+        public async Task NotifyUserAsync_AddsNotificationOnce(RequestDto request, JourneyModel journey, IEnumerable<StopDto> stops)
         {
             // Arrange
-            var notification = Fixture.Create<Notification>();
-            var request = Fixture.Create<RequestDto>();
-            var journey = Fixture.Create<JourneyModel>();
-
             notificationService.Setup(n => n.AddNotificationAsync(It.IsAny<Notification>()));
 
             // Act
-            await requestService.NotifyUserAsync(request, journey);
+            await requestService.NotifyUserAsync(request, journey, stops);
 
             // Assert
             notificationService.Verify(n => n.AddNotificationAsync(It.IsAny<Notification>()), Times.AtLeastOnce);

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Dto.ChatDto;
@@ -28,13 +27,11 @@ namespace Car.UnitTests.Controllers
             chatController = new ChatController(chatService.Object);
         }
 
-        [Fact]
-        public async Task GetUserChats_WhenUserExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserChats_WhenUserExists_ReturnsOkObjectResult(User user, List<ChatDto> chats)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var chats = Fixture.Create<List<ChatDto>>();
-
             chatService.Setup(x => x.GetUserChatsAsync(It.IsAny<int>()))
                 .ReturnsAsync(chats);
 
@@ -46,11 +43,11 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().BeEquivalentTo(chats);
         }
 
-        [Fact]
-        public async Task GetUserChats_WhenUserNotExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserChats_WhenUserNotExist_ReturnsOkObjectResult(User user)
         {
             // Arrange
-            var user = Fixture.Create<User>();
             chatService.Setup(x => x.GetUserChatsAsync(It.IsAny<int>()))
                 .ReturnsAsync((List<ChatDto>)null);
 
@@ -62,12 +59,11 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().BeNull();
         }
 
-        [Fact]
-        public async Task GetChat_WhenChatExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetChat_WhenChatExists_ReturnsOkObjectResult(IEnumerable<MessageDto> chat)
         {
             // Arrange
-            var chat = Fixture.Create<IEnumerable<MessageDto>>();
-
             chatService.Setup(x => x.GetMessagesByChatIdAsync(chat.FirstOrDefault().ChatId, 0))
                 .ReturnsAsync(chat);
 
@@ -82,12 +78,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetChat_WhenChatNotExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetChat_WhenChatNotExist_ReturnsOkObjectResult(Chat chat)
         {
             // Arrange
-            var chat = Fixture.Create<Chat>();
-
             chatService.Setup(x => x.GetMessagesByChatIdAsync(chat.Id, 0))
                 .ReturnsAsync((IEnumerable<MessageDto>)null);
 
@@ -102,11 +97,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task AddChat_WhenChatIsValid_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddChat_WhenChatIsValid_ReturnsOkObjectResult(Chat chat)
         {
             // Arrange
-            var chat = Fixture.Create<Chat>();
             var createChatDto = Mapper.Map<Chat, CreateChatDto>(chat);
             chatService.Setup(x => x.AddChatAsync(createChatDto)).ReturnsAsync(chat);
 
@@ -121,18 +116,15 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetFiltered_WhenMessagesExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetFiltered_WhenMessagesExist_ReturnsOkObjectResult(ChatFilter filter, IEnumerable<ChatDto> chats)
         {
             // Arrange
-            var filter = Fixture.Create<ChatFilter>();
-            var chats = Fixture.CreateMany<ChatDto>();
-
             chatService.Setup(x => x.GetFilteredChatsAsync(filter))
                 .ReturnsAsync(chats);
 
             // Act
-
             var result = await chatController.GetFiltered(filter);
 
             // Assert
@@ -143,18 +135,15 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetFiltered_WhenMessagesNotExist_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetFiltered_WhenMessagesNotExist_ReturnsOkObjectResult(ChatFilter filter, List<ChatDto> chats)
         {
             // Arrange
-            var filter = Fixture.Create<ChatFilter>();
-            var chats = new List<ChatDto>();
-
             chatService.Setup(x => x.GetFilteredChatsAsync(filter))
                 .ReturnsAsync(chats);
 
             // Act
-
             var result = await chatController.GetFiltered(filter);
 
             // Assert

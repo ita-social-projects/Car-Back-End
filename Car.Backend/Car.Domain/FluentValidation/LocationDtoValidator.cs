@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class LocationDtoValidator : AbstractValidator<Dto.LocationDTO>
+    public class LocationDtoValidator : AbstractValidator<Dto.Location.LocationDto>
     {
         public LocationDtoValidator()
         {

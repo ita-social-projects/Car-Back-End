@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -86,16 +87,41 @@ namespace Car.Domain.Services.Implementation
         {
             foreach (var participant in journey.Participants)
             {
-                var notification = new Notification()
+                await AddNotificationAsync(new Notification()
                 {
                     SenderId = journey.Organizer.Id,
                     ReceiverId = participant.Id,
                     Type = NotificationType.JourneyDetailsUpdate,
                     IsRead = false,
                     JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id }),
-                };
+                });
+            }
+        }
 
-                await AddNotificationAsync(notification);
+        public async Task NotifyParticipantsAboutCancellationAsync(Journey journey)
+        {
+            if (journey.Participants is null)
+            {
+                return;
+            }
+
+            foreach (var user in journey.Participants)
+            {
+                await AddNotificationAsync(new Notification()
+                {
+                    SenderId = journey.Organizer.Id,
+                    ReceiverId = user.Id,
+                    Type = NotificationType.JourneyCancellation,
+                    CreatedAt = DateTime.UtcNow,
+                    IsRead = false,
+                    JsonData = JsonSerializer.Serialize(new
+                    {
+                        departureTime = journey.DepartureTime,
+                        availableSeats = journey.CountOfSeats - journey.Participants.Count,
+                        isFree = journey.IsFree,
+                        withBaggage = true,
+                    }),
+                });
             }
         }
 

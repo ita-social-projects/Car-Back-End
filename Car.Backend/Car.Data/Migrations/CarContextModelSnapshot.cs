@@ -8150,6 +8150,9 @@ namespace Car.Data.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Index")
+                        .HasColumnType("int");
+
                     b.Property<int>("JourneyId")
                         .HasColumnType("int");
 

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Car.Domain.Dto;
-using Car.Domain.Models.Journey;
+using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -65,11 +65,11 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Adds the journey asynchronously.
         /// </summary>
-        /// <param name="journeyModel">The journey model.</param>
+        /// <param name="journeyDto">The journey model.</param>
         /// <returns>Added journey.</returns>
         [HttpPost]
-        public async Task<IActionResult> AddJourney([FromBody] CreateJourneyModel journeyModel) =>
-            Ok(await journeyService.AddJourneyAsync(journeyModel));
+        public async Task<IActionResult> AddJourney([FromBody] JourneyDto journeyDto) =>
+            Ok(await journeyService.AddJourneyAsync(journeyDto));
 
         /// <summary>
         /// Returns journeys filtered by given conditions.
@@ -77,8 +77,8 @@ namespace Car.WebApi.Controllers
         /// <param name="journeyFilterModel">Model that contains needed parameters to filter by</param>
         /// <returns>Collection of filtered journeys.</returns>
         [HttpGet("filter/")]
-        public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilterModel journeyFilterModel) =>
-            Ok(await journeyService.GetFilteredJourneys(journeyFilterModel));
+        public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilter journeyFilterModel) =>
+            Ok(await journeyService.GetApplicantJourneys(journeyFilterModel));
 
         /// <summary>
         /// deletes journey by identifier
@@ -93,12 +93,21 @@ namespace Car.WebApi.Controllers
         }
 
         /// <summary>
-        /// Update the journey asynchronously.
+        /// Update the journey route asynchronously.
         /// </summary>
         /// <param name="journey">The journey dto.</param>
         /// <returns>OkResult</returns>
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] JourneyDto journey) =>
-            Ok(await journeyService.UpdateAsync(journey));
+        [HttpPut("update-route")]
+        public async Task<IActionResult> UpdateRoute([FromBody] JourneyDto journey) =>
+            Ok(await journeyService.UpdateRouteAsync(journey));
+
+        /// <summary>
+        /// Update the journey details asynchronously.
+        /// </summary>
+        /// <param name="journey">The journey dto.</param>
+        /// <returns>OkResult</returns>
+        [HttpPut("update-details")]
+        public async Task<IActionResult> UpdateDetails([FromBody] JourneyDto journey) =>
+            Ok(await journeyService.UpdateDetailsAsync(journey));
     }
 }

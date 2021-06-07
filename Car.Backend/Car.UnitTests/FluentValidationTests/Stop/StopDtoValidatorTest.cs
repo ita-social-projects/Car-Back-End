@@ -9,7 +9,7 @@ namespace Car.UnitTests.FluentValidationTests.Stop
     [TestFixture]
     public class StopDtoValidatorTest
     {
-        private StopDtoValidator validator;
+        private readonly StopDtoValidator validator;
 
         public StopDtoValidatorTest()
         {
@@ -17,19 +17,19 @@ namespace Car.UnitTests.FluentValidationTests.Stop
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
         [InlineData(-1)]
-        public void Id_IsNotValid_GeneratesValidationError(int value)
+        [InlineData(-10)]
+        public void Index_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(stopDto => stopDto.Id, value);
+            validator.ShouldHaveValidationErrorFor(stopDto => stopDto.Index, value);
         }
 
         [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
-        public void Id_IsSpecified_NotGeneratesValidationError(int value)
+        public void Index_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(stopDto => stopDto.Id, value);
+            validator.ShouldNotHaveValidationErrorFor(stopDto => stopDto.Index, value);
         }
 
         [Xunit.Theory]

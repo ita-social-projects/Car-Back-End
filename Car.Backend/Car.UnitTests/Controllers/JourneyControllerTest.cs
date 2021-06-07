@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -27,13 +29,11 @@ namespace Car.UnitTests.Controllers
             journeyController = new JourneyController(journeyService.Object);
         }
 
-        [Fact]
-        public async Task GetPastJourneys_WhenPastJourneysExist_ReturnsJourneyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetPastJourneys_WhenPastJourneysExist_ReturnsJourneyCollection(User user, List<JourneyModel> journeys)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var journeys = Fixture.Create<List<JourneyModel>>();
-
             journeyService.Setup(j => j.GetPastJourneysAsync(user.Id))
                 .ReturnsAsync(journeys);
 
@@ -48,13 +48,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetUpcomingJourneys_WhenUpcomingJourneysExist_ReturnsJourneyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUpcomingJourneys_WhenUpcomingJourneysExist_ReturnsJourneyCollection(User user, List<JourneyModel> journeys)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var journeys = Fixture.Create<List<JourneyModel>>();
-
             journeyService.Setup(j => j.GetUpcomingJourneysAsync(user.Id))
                 .ReturnsAsync(journeys);
 
@@ -69,13 +67,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetScheduledJourneys_WhenScheduledJourneysExist_ReturnsJourneyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetScheduledJourneys_WhenScheduledJourneysExist_ReturnsJourneyCollection(User user, List<JourneyModel> journeys)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var journeys = Fixture.Create<List<JourneyModel>>();
-
             journeyService.Setup(j => j.GetScheduledJourneysAsync(user.Id))
                 .ReturnsAsync(journeys);
 
@@ -90,12 +86,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey)
         {
             // Arrange
-            var journey = Fixture.Create<JourneyModel>();
-
             journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id))
                 .ReturnsAsync(journey);
 
@@ -110,12 +105,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetJourneyById_WhenJourneyNotExist_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetJourneyById_WhenJourneyNotExist_ReturnsNull(JourneyModel journey)
         {
             // Arrange
-            var journey = Fixture.Create<JourneyModel>();
-
             journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id))
                 .ReturnsAsync((JourneyModel)null);
 
@@ -130,13 +124,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetRecentAddresses_WhenRecentJourneysExist_ReturnsStopCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRecentAddresses_WhenRecentJourneysExist_ReturnsStopCollection(User user, List<IEnumerable<StopDto>> stops)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var stops = Fixture.Create<List<IEnumerable<StopDto>>>();
-
             journeyService.Setup(j => j.GetStopsFromRecentJourneysAsync(user.Id, 5))
                 .ReturnsAsync(stops);
 
@@ -151,13 +143,11 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetRecentAddresses_WhenRecentJourneysNotExist_ReturnsEmptyCollection()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRecentAddresses_WhenRecentJourneysNotExist_ReturnsEmptyCollection(User user, List<IEnumerable<StopDto>> stops)
         {
             // Arrange
-            var user = Fixture.Create<User>();
-            var stops = new List<IEnumerable<StopDto>>();
-
             journeyService.Setup(j => j.GetStopsFromRecentJourneysAsync(user.Id, 5))
                 .ReturnsAsync(stops);
 
@@ -172,18 +162,18 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
         {
             // Arrange
-            var createJourneyModel = Fixture.Create<CreateJourneyModel>();
-            var expectedJourney = Mapper.Map<CreateJourneyModel, JourneyModel>(createJourneyModel);
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
 
-            journeyService.Setup(j => j.AddJourneyAsync(createJourneyModel))
+            journeyService.Setup(j => j.AddJourneyAsync(journeyDto))
                 .ReturnsAsync(expectedJourney);
 
             // Act
-            var result = await journeyController.AddJourney(createJourneyModel);
+            var result = await journeyController.AddJourney(journeyDto);
 
             // Assert
             using (new AssertionScope())
@@ -193,15 +183,12 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task GetFiltered_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<ApplicantJourney> expectedResult)
         {
             // Arrange
-            var filterModel = Fixture.Create<JourneyFilterModel>();
-            var journeys = Fixture.Create<IEnumerable<Journey>>();
-            var expectedResult = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
-
-            journeyService.Setup(j => j.GetFilteredJourneys(filterModel)).ReturnsAsync(expectedResult);
+            journeyService.Setup(j => j.GetApplicantJourneys(filterModel)).ReturnsAsync(expectedResult);
 
             // Act
             var result = await journeyController.GetFiltered(filterModel);
@@ -211,12 +198,10 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().Be(expectedResult);
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenJourneyIdIsValid_ReturnsOkResult()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenJourneyIdIsValid_ReturnsOkResult(int journeyIdToDelete)
         {
-            // Arrange
-            var journeyIdToDelete = Fixture.Create<int>();
-
             // Act
             var result = await journeyController.Delete(journeyIdToDelete);
 
@@ -225,11 +210,11 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<OkResult>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_WhenJourneyNotExists_ThrowDbUpdateConcurrencyException()
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenJourneyNotExists_ThrowDbUpdateConcurrencyException(int journeyIdToDelete)
         {
             // Arrange
-            var journeyIdToDelete = Fixture.Create<int>();
             journeyService.Setup(service =>
                 service.DeleteAsync(journeyIdToDelete)).Throws<DbUpdateConcurrencyException>();
 
@@ -241,17 +226,34 @@ namespace Car.UnitTests.Controllers
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
-        [Fact]
-        public async Task UpdateCar_WhenCarIsValid_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateRoute_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
         {
             // Arrange
-            var journeyDto = Fixture.Create<JourneyDto>();
             var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
             journeyService.Setup(service =>
-                service.UpdateAsync(journeyDto)).ReturnsAsync(expectedJourney);
+                service.UpdateRouteAsync(journeyDto)).ReturnsAsync(expectedJourney);
 
             // Act
-            var result = await journeyController.Update(journeyDto);
+            var result = await journeyController.UpdateRoute(journeyDto);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateDetails_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
+        {
+            // Arrange
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+            journeyService.Setup(service =>
+                service.UpdateDetailsAsync(journeyDto)).ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.UpdateDetails(journeyDto);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
