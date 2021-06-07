@@ -13,7 +13,8 @@ namespace Car.Domain.FluentValidation
             RuleFor(car => car.ModelId).GreaterThan(Constants.IdLength);
             RuleFor(car => car.PlateNumber).NotNull().NotEmpty()
                                                      .MinimumLength(Constants.PlateNumberMinLength)
-                                                     .MaximumLength(Constants.PlateNumberMaxLength);
+                                                     .MaximumLength(Constants.PlateNumberMaxLength)
+                                                     .Matches("^[A-Za-zА-ЯА-я0-9-]+$");
         }
     }
 }
