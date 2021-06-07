@@ -21,17 +21,20 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
         private readonly IRequestService requestService;
+        private readonly INotificationService notificationService;
         private readonly IMapper mapper;
 
         public JourneyService(
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
             IRequestService requestService,
+            INotificationService notificationService,
             IMapper mapper)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
             this.requestService = requestService;
+            this.notificationService = notificationService;
             this.mapper = mapper;
         }
 
@@ -156,6 +159,8 @@ namespace Car.Domain.Services.Implementation
 
             var updatedJourney = await journeyRepository.UpdateAsync(journey);
             await journeyRepository.SaveChangesAsync();
+
+            await notificationService.JourneyUpdateNotifyUserAsync(journey);
 
             return mapper.Map<Journey, JourneyModel>(updatedJourney);
         }

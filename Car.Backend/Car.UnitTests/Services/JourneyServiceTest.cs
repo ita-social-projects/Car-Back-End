@@ -28,6 +28,7 @@ namespace Car.UnitTests.Services
         private readonly IRequestService requestService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
+        private readonly Mock<INotificationService> notificationService;
 
         public JourneyServiceTest()
         {
@@ -37,6 +38,7 @@ namespace Car.UnitTests.Services
                 journeyRepository.Object,
                 requestRepository.Object,
                 requestService,
+                notificationService.Object,
                 Mapper);
         }
 

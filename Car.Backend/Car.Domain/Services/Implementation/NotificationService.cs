@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
@@ -80,6 +81,23 @@ namespace Car.Domain.Services.Implementation
 
         public Task<Notification> CreateNewNotificationAsync(CreateNotificationModel createNotificationModel) =>
             Task.Run(() => mapper.Map<CreateNotificationModel, Notification>(createNotificationModel));
+
+        public async Task JourneyUpdateNotifyUserAsync(Journey journey)
+        {
+            foreach (var participant in journey.Participants)
+            {
+                var notification = new Notification()
+                {
+                    SenderId = journey.Organizer.Id,
+                    ReceiverId = participant.Id,
+                    Type = NotificationType.JourneyDetailsUpdate,
+                    IsRead = false,
+                    JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id }),
+                };
+
+                await AddNotificationAsync(notification);
+            }
+        }
 
         private async Task NotifyClientAsync(Notification notification)
         {
