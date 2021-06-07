@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Location;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -79,6 +80,39 @@ namespace Car.UnitTests.Controllers
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(location);
             }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationExists_ReturnsLocation(
+            UpdateLocationDto locationModel, Location location)
+        {
+            // Arrange
+            locationService.Setup(l => l.UpdateAsync(locationModel))
+                .ReturnsAsync(location);
+
+            // Act
+            var result = await locationController.UpdateAsync(locationModel);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().BeOfType<Location>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationNotExists_ReturnsNull(UpdateLocationDto locationModel)
+        {
+            // Arrange
+            locationService.Setup(l => l.UpdateAsync(locationModel))
+                .ReturnsAsync((Location)null);
+
+            // Act
+            var result = await locationController.UpdateAsync(locationModel);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().BeNull();
         }
 
         [Theory]

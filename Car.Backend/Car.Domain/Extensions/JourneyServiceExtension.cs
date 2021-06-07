@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Address;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Extensions

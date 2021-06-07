@@ -1,4 +1,4 @@
-﻿namespace Car.Domain.Dto
+﻿namespace Car.Domain.Dto.Address
 {
     public class AddressDto
     {

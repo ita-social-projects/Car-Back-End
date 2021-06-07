@@ -1,11 +1,12 @@
 ﻿using Car.Data.Constants;
+using Car.Domain.Dto.Address;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class AddressDtoValidator : AbstractValidator<Dto.Address.AddressDto>
+    public class UpdateAddressToLocationDtoValidator : AbstractValidator<UpdateAddressToLocationDto>
     {
-        public AddressDtoValidator()
+        public UpdateAddressToLocationDtoValidator()
         {
             RuleFor(address => address.Name).NotNull().NotEmpty();
             RuleFor(address => address.Latitude).InclusiveBetween(Constants.MinLatitude, Constants.MaxLatitude);

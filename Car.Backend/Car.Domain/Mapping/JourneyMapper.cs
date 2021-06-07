@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Address;
 using Car.Domain.Models.Journey;
 
 namespace Car.Domain.Mapping
