@@ -4,6 +4,7 @@ using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -184,12 +185,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetFiltered_ReturnsOkObjectResult(JourneyFilterModel filterModel, IEnumerable<Journey> journeys)
+        public async Task GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<ApplicantJourney> expectedResult)
         {
             // Arrange
-            var expectedResult = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
-
-            journeyService.Setup(j => j.GetFilteredJourneys(filterModel)).ReturnsAsync(expectedResult);
+            journeyService.Setup(j => j.GetApplicantJourneys(filterModel)).ReturnsAsync(expectedResult);
 
             // Act
             var result = await journeyController.GetFiltered(filterModel);

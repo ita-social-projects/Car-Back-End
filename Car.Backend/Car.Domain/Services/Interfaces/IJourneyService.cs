@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 
 namespace Car.Domain.Services.Interfaces
@@ -22,12 +23,16 @@ namespace Car.Domain.Services.Interfaces
 
         Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel);
 
-        Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter);
+        Task<IEnumerable<Journey>> GetFilteredJourneys(JourneyFilter filter);
 
         Task DeleteAsync(int journeyId);
 
         Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto);
 
         Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto);
+
+        Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilter filter);
+
+        Task CheckForSuitableRequests(Journey journey);
     }
 }

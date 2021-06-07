@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Models.Journey;
+using Car.Domain.Filters;
 
 namespace Car.Domain.Mapping
 {
@@ -15,7 +10,7 @@ namespace Car.Domain.Mapping
         public RequestMapper()
         {
             CreateMap<Request, RequestDto>().ReverseMap();
-            CreateMap<Request, JourneyFilterModel>()
+            CreateMap<Request, JourneyFilter>()
                 .ForMember(f => f.FromLatitude, req => req.MapFrom(r => r.From.Latitude))
                 .ForMember(f => f.FromLongitude, req => req.MapFrom(r => r.From.Longitude))
                 .ForMember(f => f.ToLatitude, req => req.MapFrom(r => r.To.Latitude))

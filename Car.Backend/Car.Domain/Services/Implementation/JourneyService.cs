@@ -11,6 +11,7 @@ using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
+using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Geolocation;
@@ -120,23 +121,12 @@ namespace Car.Domain.Services.Implementation
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            var requests = requestRepository
-                .Query()
-                .AsEnumerable()
-                .Where(r => IsSuitable(addedJourney, mapper.Map<Request, JourneyFilterModel>(r)) && addedJourney.OrganizerId != r.UserId)
-                .ToList();
-
-            foreach (var request in requests)
-            {
-                await requestService.NotifyUserAsync(
-                    mapper.Map<Request, RequestDto>(request),
-                    mapper.Map<Journey, JourneyModel>(addedJourney));
-            }
+            await CheckForSuitableRequests(addedJourney);
 
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
 
-        public async Task<IEnumerable<JourneyModel>> GetFilteredJourneys(JourneyFilterModel filter)
+        public async Task<IEnumerable<Journey>> GetFilteredJourneys(JourneyFilter filter)
         {
             var journeys = await journeyRepository
                 .Query()
@@ -145,7 +135,7 @@ namespace Car.Domain.Services.Implementation
                 .IncludeJourneyPoints()
                 .ToListAsync();
 
-            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys.Where(j => IsSuitable(j, filter)));
+            return journeys.Where(j => IsSuitable(j, filter));
         }
 
         public async Task DeleteAsync(int journeyId)
@@ -199,7 +189,96 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
-        private static bool IsSuitable(Journey journey, JourneyFilterModel filter)
+        public async Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilter filter)
+        {
+            var journeysResult = new List<ApplicantJourney>();
+
+            var filteredJourneys = await GetFilteredJourneys(filter);
+
+            foreach (var journey in filteredJourneys)
+            {
+                journeysResult.Add(new ApplicantJourney()
+                {
+                    Journey = mapper.Map<Journey, JourneyModel>(journey),
+                    ApplicantStops = GetApplicantStops(filter, journey),
+                });
+            }
+
+            return journeysResult;
+        }
+
+        public async Task CheckForSuitableRequests(Journey journey)
+        {
+            var requests = requestRepository
+                .Query()
+                .AsEnumerable()
+                .Where(r => IsSuitable(journey, mapper.Map<Request, JourneyFilter>(r)) && journey.OrganizerId != r.UserId)
+                .ToList();
+
+            foreach (var request in requests)
+            {
+                await requestService.NotifyUserAsync(
+                    mapper.Map<Request, RequestDto>(request),
+                    mapper.Map<Journey, JourneyModel>(journey),
+                    GetApplicantStops(
+                        mapper.Map<Request, JourneyFilter>(request),
+                        journey));
+            }
+        }
+
+        private IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
+        {
+            var applicantStops = new List<StopDto>();
+
+            var distances = journey.JourneyPoints.Select(p => CalculateDistance(
+                p,
+                filter.FromLatitude,
+                filter.FromLongitude)).ToList();
+
+            var startPointIndex = distances.IndexOf(distances.Min());
+            var startRoutePoint = journey.JourneyPoints.ToList()[startPointIndex];
+
+            distances = journey.JourneyPoints.ToList()
+                .GetRange(startPointIndex, journey.JourneyPoints.Count - startPointIndex)
+                .Select(p => CalculateDistance(
+                    p,
+                    filter.ToLatitude,
+                    filter.ToLongitude)).ToList();
+
+            var endRoutePoint = journey.JourneyPoints.ToList()[startPointIndex + distances.IndexOf(distances.Min())];
+
+            applicantStops.Add(new StopDto()
+            {
+                Id = 0,
+                Index = 0,
+                UserId = filter.ApplicantId,
+                Address = new Dto.Address.AddressDto()
+                {
+                    Latitude = startRoutePoint.Latitude,
+                    Longitude = startRoutePoint.Longitude,
+                    Name = "Start",
+                },
+                Type = StopType.Intermediate,
+            });
+
+            applicantStops.Add(new StopDto()
+            {
+                Id = 0,
+                Index = 1,
+                UserId = filter.ApplicantId,
+                Address = new Dto.Address.AddressDto()
+                {
+                    Latitude = endRoutePoint.Latitude,
+                    Longitude = endRoutePoint.Longitude,
+                    Name = "Finish",
+                },
+                Type = StopType.Intermediate,
+            });
+
+            return applicantStops;
+        }
+
+        private static bool IsSuitable(Journey journey, JourneyFilter filter)
         {
             var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
 
@@ -217,18 +296,18 @@ namespace Car.Domain.Services.Implementation
             }
 
             var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(point => Distance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
+                .SkipWhile(point => CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
 
             return pointsFromStart.Any() && pointsFromStart
-                .Any(point => Distance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
-
-            static double Distance(JourneyPoint point, double latitude, double longitude) =>
-                GeoCalculator.GetDistance(
-                    point.Latitude,
-                    point.Longitude,
-                    latitude,
-                    longitude,
-                    distanceUnit: DistanceUnit.Kilometers);
+                .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
         }
+
+        private static double CalculateDistance(JourneyPoint point, double latitude, double longitude) =>
+            GeoCalculator.GetDistance(
+                point.Latitude,
+                point.Longitude,
+                latitude,
+                longitude,
+                distanceUnit: DistanceUnit.Kilometers);
     }
 }

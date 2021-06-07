@@ -10,6 +10,7 @@ using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -25,7 +26,7 @@ namespace Car.UnitTests.Services
     public class JourneyServiceTest : TestBase
     {
         private readonly IJourneyService journeyService;
-        private readonly IRequestService requestService;
+        private readonly Mock<IRequestService> requestService;
         private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
@@ -34,12 +35,14 @@ namespace Car.UnitTests.Services
         {
             journeyRepository = new Mock<IRepository<Journey>>();
             requestRepository = new Mock<IRepository<Request>>();
+            requestService = new Mock<IRequestService>();
+
             notificationService = new Mock<INotificationService>();
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
                 notificationService.Object,
-                requestService,
+                requestService.Object,
                 Mapper);
         }
 
@@ -422,7 +425,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetFilteredJourneys_ReturnsJourneyCollection(JourneyFilterModel filter)
+        public async Task GetFilteredJourneys_ReturnsJourneyCollection(JourneyFilter filter)
         {
             // Arrange
             var expectedJourneys = new List<Journey>();
@@ -689,7 +692,91 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilterModel> Filter) GetInitializedJourneyAndFilter()
+        [Theory]
+        [InlineAutoData(3)]
+        public async Task GetApplicantJourneys_SuitableJourneysExist_ReturnsNotEmptyApplicantJoutneyCollection(int journeysCount)
+        {
+            // Arrange
+            (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
+            var journeys = journeyComposer
+                .With(j => j.IsFree, false)
+                .CreateMany(journeysCount);
+
+            var filter = filterComposer
+                .With(f => f.Fee, FeeType.All)
+                .Create();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetApplicantJourneys(filter);
+
+            // Assert
+            result.Should().HaveCount(journeys.Count());
+            result.Should().BeOfType<List<ApplicantJourney>>();
+        }
+
+        [Theory]
+        [InlineAutoData(3)]
+        public async Task GetApplicantJourneys_SuitableJourneysNotExist_ReturnsEmptyApplicantJoutneyCollection(int journeysCount)
+        {
+            // Arrange
+            (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
+            var journeys = journeyComposer
+                .With(j => j.IsFree, false)
+                .CreateMany(journeysCount);
+
+            var filter = filterComposer
+                .With(f => f.Fee, FeeType.Free)
+                .Create();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetApplicantJourneys(filter);
+
+            // Assert
+            result.Should().BeEmpty();
+            result.Should().BeOfType<List<ApplicantJourney>>();
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task CheckForSuitableRequests_SuitableRequestsFound_DoesNotifyUser(int filtersCount)
+        {
+            // Arrange
+            (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
+            var journey = journeyComposer
+                .With(j => j.IsFree, false)
+                .Create();
+
+            var filters = filterComposer
+                .With(f => f.Fee, FeeType.All)
+                .CreateMany(filtersCount);
+
+            var requests = Mapper.Map<IEnumerable<JourneyFilter>, IEnumerable<Request>>(filters);
+
+            requestRepository.Setup(r => r.Query())
+                .Returns(requests.AsQueryable().BuildMock().Object);
+
+            requestService.Setup(r => r.NotifyUserAsync(It.IsAny<RequestDto>(), It.IsAny<JourneyModel>(), It.IsAny<IEnumerable<StopDto>>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await journeyService.CheckForSuitableRequests(journey);
+
+            // Assert
+            requestService.Verify(
+                r => r.NotifyUserAsync(
+                It.IsAny<RequestDto>(),
+                It.IsAny<JourneyModel>(),
+                It.IsAny<IEnumerable<StopDto>>()),
+                Times.AtLeastOnce);
+        }
+
+        private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()
         {
             var departureTime = DateTime.UtcNow.AddHours(1);
 
@@ -705,7 +792,7 @@ namespace Car.UnitTests.Services
                 .With(j => j.DepartureTime, departureTime)
                 .With(j => j.JourneyPoints, journeyPoints);
 
-            var filter = Fixture.Build<JourneyFilterModel>()
+            var filter = Fixture.Build<JourneyFilter>()
                 .With(f => f.DepartureTime, departureTime)
                 .With(f => f.PassengersCount, 1)
                 .With(f => f.FromLatitude, 30)
