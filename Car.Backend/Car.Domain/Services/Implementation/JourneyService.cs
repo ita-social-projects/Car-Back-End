@@ -147,7 +147,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journeyToDelete is not null)
             {
-               await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToDelete);
+                await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToDelete);
             }
 
             journeyRepository.Delete(new Journey { Id = journeyId });
@@ -176,6 +176,8 @@ namespace Car.Domain.Services.Implementation
 
             await journeyRepository.SaveChangesAsync();
 
+            await notificationService.JourneyUpdateNotifyUserAsync(journey);
+
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
@@ -186,7 +188,13 @@ namespace Car.Domain.Services.Implementation
             journey = await journeyRepository.UpdateAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            await notificationService.JourneyUpdateNotifyUserAsync(journey);
+            if (journey != null)
+            {
+                await notificationService.JourneyUpdateNotifyUserAsync(await journeyRepository
+                    .Query()
+                    .IncludeAllParticipants()
+                    .FirstOrDefaultAsync(j => j.Id == journey.Id));
+            }
 
             return mapper.Map<Journey, JourneyModel>(journey);
         }

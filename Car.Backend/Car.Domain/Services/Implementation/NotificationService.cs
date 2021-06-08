@@ -85,6 +85,8 @@ namespace Car.Domain.Services.Implementation
 
         public async Task JourneyUpdateNotifyUserAsync(Journey journey)
         {
+            if (journey is null || journey.Participants is null) { return; }
+
             foreach (var participant in journey.Participants)
             {
                 await AddNotificationAsync(new Notification()
