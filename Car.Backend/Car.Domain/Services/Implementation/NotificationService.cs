@@ -83,6 +83,23 @@ namespace Car.Domain.Services.Implementation
         public Task<Notification> CreateNewNotificationAsync(CreateNotificationModel createNotificationModel) =>
             Task.Run(() => mapper.Map<CreateNotificationModel, Notification>(createNotificationModel));
 
+        public async Task JourneyUpdateNotifyUserAsync(Journey journey)
+        {
+            if (journey is null || journey.Participants is null) { return; }
+
+            foreach (var participant in journey.Participants)
+            {
+                await AddNotificationAsync(new Notification()
+                {
+                    SenderId = journey.Organizer.Id,
+                    ReceiverId = participant.Id,
+                    Type = NotificationType.JourneyDetailsUpdate,
+                    IsRead = false,
+                    JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id }),
+                });
+            }
+        }
+
         public async Task NotifyParticipantsAboutCancellationAsync(Journey journey)
         {
             if (journey.Participants is null)
@@ -93,20 +110,20 @@ namespace Car.Domain.Services.Implementation
             foreach (var user in journey.Participants)
             {
                 await AddNotificationAsync(new Notification()
+                {
+                    SenderId = journey.Organizer.Id,
+                    ReceiverId = user.Id,
+                    Type = NotificationType.JourneyCancellation,
+                    CreatedAt = DateTime.UtcNow,
+                    IsRead = false,
+                    JsonData = JsonSerializer.Serialize(new
                     {
-                        SenderId = journey.Organizer.Id,
-                        ReceiverId = user.Id,
-                        Type = NotificationType.JourneyCancellation,
-                        CreatedAt = DateTime.UtcNow,
-                        IsRead = false,
-                        JsonData = JsonSerializer.Serialize(new
-                        {
-                            departureTime = journey.DepartureTime,
-                            availableSeats = journey.CountOfSeats - journey.Participants.Count,
-                            isFree = journey.IsFree,
-                            withBaggage = true,
-                        }),
-                    });
+                        departureTime = journey.DepartureTime,
+                        availableSeats = journey.CountOfSeats - journey.Participants.Count,
+                        isFree = journey.IsFree,
+                        withBaggage = true,
+                    }),
+                });
             }
         }
 
