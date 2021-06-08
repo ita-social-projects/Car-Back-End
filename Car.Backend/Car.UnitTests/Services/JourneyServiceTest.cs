@@ -623,10 +623,15 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journey.Id)
+                .CreateMany(1);
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
 
             journeyRepository.Setup(repo =>
                     repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync(journey);
+            journeyRepository.Setup(repo =>
+                    repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
@@ -640,8 +645,14 @@ namespace Car.UnitTests.Services
         public async Task UpdateDetailsAsync_WhenJourneyIsNotValid_ReturnsNull(JourneyDto updatedJourneyDto)
         {
             // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, updatedJourneyDto.Id)
+                .CreateMany(1);
+
             journeyRepository.Setup(repo =>
                     repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
+            journeyRepository.Setup(repo =>
+                    repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);

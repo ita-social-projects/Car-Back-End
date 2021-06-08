@@ -20,6 +20,7 @@ using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
 using Xunit;
+using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Car.UnitTests.Services
 {
@@ -288,20 +289,56 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var journey = Fixture.Create<Journey>();
-
             var notifications = Fixture.CreateMany<Notification>();
 
-            notificationRepository.Setup(repo => repo.AddAsync(It.IsAny<Notification>())).ReturnsAsync(notifications.First());
-
-            notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
-
-            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
+            NotificationInitializer(journey, notifications);
 
             // Act
             await notificationService.NotifyParticipantsAboutCancellationAsync(journey);
 
             // Assert
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.AtLeastOnce);
+        }
+
+        [Fact]
+        public async Task JourneyUpdateNotifyUserAsync_WhenJourneyHasParticipants_ExecuteSaveChangesAtLeastOnce()
+        {
+            // Arrange
+            var journey = Fixture.Create<Journey>();
+            var notifications = Fixture.CreateMany<Notification>();
+
+            NotificationInitializer(journey, notifications);
+
+            // Act
+            await notificationService.JourneyUpdateNotifyUserAsync(journey);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.AtLeastOnce);
+        }
+
+        [Fact]
+        public async Task JourneyUpdateNotifyUserAsync_WhenJourneyHasNotParticipants_ExecuteSaveChangesNever()
+        {
+            // Arrange
+            var notifications = Fixture.CreateMany<Notification>();
+            var journey = Fixture.Build<Journey>().With(j => j.Participants, null as List<User>).Create();
+
+            NotificationInitializer(journey, notifications);
+
+            // Act
+            await notificationService.JourneyUpdateNotifyUserAsync(journey);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
+        }
+
+        private void NotificationInitializer(Journey journey, IEnumerable<Notification> notifications)
+        {
+            notificationRepository.Setup(repo => repo.AddAsync(It.IsAny<Notification>())).ReturnsAsync(notifications.First());
+
+            notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
+
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
         }
     }
 }
