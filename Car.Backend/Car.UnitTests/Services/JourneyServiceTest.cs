@@ -579,7 +579,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenJourneyIsNotExist_ThrowDbUpdateConcurrencyException(int journeyIdToDelete)
+        public async Task DeleteAsync_WhenJourneyIsNotExist_ExecuteNever(int journeyIdToDelete)
         {
             // Arrange
             var journeys = new List<Journey>();
@@ -590,10 +590,10 @@ namespace Car.UnitTests.Services
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = journeyService.Invoking(service => service.DeleteAsync(journeyIdToDelete));
+            await journeyService.DeleteAsync(journeyIdToDelete);
 
             // Assert
-            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
         }
 
         [Theory]
