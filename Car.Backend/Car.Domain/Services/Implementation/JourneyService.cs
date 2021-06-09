@@ -145,12 +145,14 @@ namespace Car.Domain.Services.Implementation
                 .IncludeAllParticipants()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
-            if (journeyToDelete is not null)
+            if (journeyToDelete is null)
             {
-                await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToDelete);
+                return;
             }
 
-            journeyRepository.Delete(new Journey { Id = journeyId });
+            await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToDelete);
+
+            journeyRepository.Delete(journeyToDelete);
 
             await journeyRepository.SaveChangesAsync();
         }
