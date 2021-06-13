@@ -21,5 +21,9 @@ namespace Car.Data.Entities
         public bool IsRead { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public int? JourneyId { get; set; }
+
+        public Journey Journey { get; set; }
     }
 }

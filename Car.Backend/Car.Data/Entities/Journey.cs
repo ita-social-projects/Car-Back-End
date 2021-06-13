@@ -20,6 +20,8 @@ namespace Car.Data.Entities
 
         public bool IsFree { get; set; }
 
+        public bool IsCancelled { get; set; }
+
         public bool IsOnOwnCar { get; set; }
 
         public int OrganizerId { get; set; }
@@ -42,5 +44,7 @@ namespace Car.Data.Entities
         public ICollection<Stop> Stops { get; set; } = new List<Stop>();
 
         public ICollection<JourneyPoint> JourneyPoints { get; set; } = new List<JourneyPoint>();
+
+        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     }
 }
