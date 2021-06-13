@@ -34,5 +34,7 @@ namespace Car.Domain.Services.Interfaces
         Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilter filter);
 
         Task CheckForSuitableRequests(Journey journey);
+
+        Task CancelAsync(int journeyId);
     }
 }

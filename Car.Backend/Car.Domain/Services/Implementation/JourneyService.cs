@@ -45,6 +45,7 @@ namespace Car.Domain.Services.Implementation
         {
             var journey = await journeyRepository
                 .Query()
+                .FilterUncancelledJourneys()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
@@ -57,6 +58,7 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = await journeyRepository
                 .Query()
+                .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .FilterPast()
                 .ToListAsync();
@@ -68,6 +70,7 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = await journeyRepository
                 .Query(journey => journey.Schedule)
+                .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .Where(journey => journey.Schedule != null)
                 .ToListAsync();
@@ -79,6 +82,7 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = await journeyRepository
                 .Query()
+                .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .FilterUpcoming()
                 .ToListAsync();
@@ -88,7 +92,9 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int userId, int countToTake = 5)
         {
-            var journeys = await journeyRepository.Query()
+            var stops = await journeyRepository
+                .Query()
+                .FilterUncancelledJourneys()
                 .IncludeStopsWithAddresses()
                 .FilterByUser(userId)
                 .OrderByDescending(journey => journey.DepartureTime)
@@ -96,7 +102,7 @@ namespace Car.Domain.Services.Implementation
                 .SelectStartAndFinishStops()
                 .ToListAsync();
 
-            return journeys;
+            return stops;
         }
 
         public async Task DeletePastJourneyAsync()
@@ -130,6 +136,7 @@ namespace Car.Domain.Services.Implementation
         {
             var journeys = await journeyRepository
                 .Query()
+                .FilterUncancelledJourneys()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
@@ -150,16 +157,34 @@ namespace Car.Domain.Services.Implementation
                 return;
             }
 
-            await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToDelete);
-
             journeyRepository.Delete(journeyToDelete);
 
             await journeyRepository.SaveChangesAsync();
         }
 
+        public async Task CancelAsync(int journeyId)
+        {
+            var journeyToCancel = await journeyRepository
+                .Query()
+                .FilterUncancelledJourneys()
+                .IncludeAllParticipants()
+                .FirstOrDefaultAsync(j => j.Id == journeyId);
+
+            if (journeyToCancel is null)
+            {
+                return;
+            }
+
+            journeyToCancel.IsCancelled = true;
+            await journeyRepository.SaveChangesAsync();
+
+            await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToCancel);
+        }
+
         public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
         {
             var journey = await journeyRepository.Query()
+                    .FilterUncancelledJourneys()
                     .IncludeStopsWithAddresses()
                     .IncludeJourneyPoints()
                     .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);

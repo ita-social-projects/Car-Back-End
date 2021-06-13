@@ -801,7 +801,8 @@ namespace Car.UnitTests.Services
                 .With(j => j.CountOfSeats, 4)
                 .With(j => j.IsFree, true)
                 .With(j => j.DepartureTime, departureTime)
-                .With(j => j.JourneyPoints, journeyPoints);
+                .With(j => j.JourneyPoints, journeyPoints)
+                .With(j => j.IsCancelled, false);
 
             var filter = Fixture.Build<JourneyFilter>()
                 .With(f => f.DepartureTime, departureTime)

@@ -144,6 +144,13 @@
             <param name="journey">The journey dto.</param>
             <returns>OkResult</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.CancelJourney(System.Int32)">
+            <summary>
+            Cancels journey
+            </summary>
+            <param name="id">id of journey that should be cancelled</param>
+            <returns>OkResult</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
             Gets all the locations by user id

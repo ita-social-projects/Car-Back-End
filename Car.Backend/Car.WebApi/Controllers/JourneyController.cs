@@ -109,5 +109,17 @@ namespace Car.WebApi.Controllers
         [HttpPut("update-details")]
         public async Task<IActionResult> UpdateDetails([FromBody] JourneyDto journey) =>
             Ok(await journeyService.UpdateDetailsAsync(journey));
+
+        /// <summary>
+        /// Cancels journey
+        /// </summary>
+        /// <param name="id">id of journey that should be cancelled</param>
+        /// <returns>OkResult</returns>
+        [HttpPut("cancel/{id}")]
+        public async Task<IActionResult> CancelJourney(int id)
+        {
+            await journeyService.CancelAsync(id);
+            return Ok();
+        }
     }
 }
