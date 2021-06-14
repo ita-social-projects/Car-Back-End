@@ -10,7 +10,7 @@ namespace Car.Data.FluentValidation
             RuleFor(address => address.Name).NotNull().NotEmpty();
             RuleFor(address => address.Latitude).NotNull();
             RuleFor(address => address.Longitude).NotNull();
-            RuleFor(address => address.Location).SetValidator(new LocationValidator());
+            RuleFor(address => address.Location).SetValidator(new LocationValidator()!);
         }
     }
 }

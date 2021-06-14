@@ -24,7 +24,7 @@ namespace Car.Domain.Services.Implementation
         public Task<User> GetUserAsync(string email) =>
             userRepository.Query().FirstOrDefaultAsync(p => p.Email == email);
 
-        public async Task<User> AddUserAsync(User user)
+        public async Task<User?> AddUserAsync(User user)
         {
             if (user == null)
             {
@@ -41,13 +41,13 @@ namespace Car.Domain.Services.Implementation
         public async Task<UserDto> LoginAsync(UserDto userDto)
         {
             var user = mapper.Map<UserDto, User>(userDto);
-            var loginUser = await GetUserAsync(user?.Email) ?? await AddUserAsync(user);
+            var loginUser = await GetUserAsync(user?.Email!) ?? await AddUserAsync(user!);
             if (loginUser != null)
             {
                 loginUser.Token = webTokenGenerator.GenerateWebToken(loginUser);
             }
 
-            var result = mapper.Map<User, UserDto>(loginUser);
+            var result = mapper.Map<User, UserDto>(loginUser!);
 
             return result;
         }

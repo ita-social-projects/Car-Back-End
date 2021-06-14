@@ -31,11 +31,11 @@ namespace Car.Domain.Services.Implementation
         }
 
         public Task<Notification> GetNotificationAsync(int notificationId) =>
-            notificationRepository.Query(notificationSender => notificationSender.Sender)
+            notificationRepository.Query(notificationSender => notificationSender!.Sender!)
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
 
         public Task<List<Notification>> GetNotificationsAsync(int userId) =>
-            notificationRepository.Query(m => m.Sender)
+            notificationRepository.Query(m => m.Sender!)
                 .Where(p => p.ReceiverId == userId)
                 .OrderByDescending(k => k.CreatedAt)
                 .ToListAsync();
@@ -85,13 +85,16 @@ namespace Car.Domain.Services.Implementation
 
         public async Task JourneyUpdateNotifyUserAsync(Journey journey)
         {
-            if (journey is null || journey.Participants is null) { return; }
+            if (journey is null || journey.Participants is null)
+            {
+                return;
+            }
 
             foreach (var participant in journey.Participants)
             {
                 await AddNotificationAsync(new Notification()
                 {
-                    SenderId = journey.Organizer.Id,
+                    SenderId = journey.Organizer!.Id,
                     ReceiverId = participant.Id,
                     Type = NotificationType.JourneyDetailsUpdate,
                     IsRead = false,
@@ -111,7 +114,7 @@ namespace Car.Domain.Services.Implementation
             {
                 await AddNotificationAsync(new Notification()
                 {
-                    SenderId = journey.Organizer.Id,
+                    SenderId = journey.Organizer!.Id,
                     ReceiverId = user.Id,
                     Type = NotificationType.JourneyCancellation,
                     CreatedAt = DateTime.UtcNow,

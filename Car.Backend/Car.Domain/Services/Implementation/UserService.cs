@@ -25,7 +25,7 @@ namespace Car.Domain.Services.Implementation
             return user;
         }
 
-        public async Task<User> UpdateUserAsync(UpdateUserModel updateUserModel)
+        public async Task<User?> UpdateUserAsync(UpdateUserModel updateUserModel)
         {
             if (updateUserModel == null)
             {

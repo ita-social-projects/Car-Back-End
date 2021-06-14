@@ -12,7 +12,7 @@ namespace Car.Data.FluentValidation
             RuleFor(message => message.CreatedAt).NotNull().GreaterThanOrEqualTo(DateTime.Now);
             RuleFor(message => message.SenderId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(message => message.ChatId).GreaterThan(Constants.Constants.IdLength);
-            RuleFor(message => message.Sender).NotNull().SetValidator(new UserValidator());
+            RuleFor(message => message.Sender).NotNull().SetValidator(new UserValidator()!);
         }
     }
 }

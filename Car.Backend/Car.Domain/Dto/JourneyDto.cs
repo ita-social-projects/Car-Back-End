@@ -15,7 +15,7 @@ namespace Car.Domain.Dto
 
         public int CountOfSeats { get; set; }
 
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
 
         public bool IsFree { get; set; }
 

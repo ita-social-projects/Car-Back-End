@@ -28,7 +28,7 @@ namespace Car.Domain.Services.Implementation
         public async Task<IEnumerable<Location>> GetAllByUserIdAsync(int userId)
         {
             return await locationRepository
-                .Query(locationAddress => locationAddress.Address, locationType => locationType.Type)
+                .Query(locationAddress => locationAddress!.Address!, locationType => locationType!.Type!)
                 .Where(location => location.UserId == userId)
                 .ToListAsync();
         }
@@ -43,14 +43,14 @@ namespace Car.Domain.Services.Implementation
             return newLocation;
         }
 
-        public async Task<Location> UpdateAsync(UpdateLocationDto location)
+        public async Task<Location?> UpdateAsync(UpdateLocationDto location)
         {
             var updatedLocation = await locationRepository.Query().Include(locationAddress => locationAddress.Address).FirstOrDefaultAsync(i => i.Id == location.Id);
 
             if (updatedLocation is not null)
             {
                 updatedLocation.Name = location.Name;
-                updatedLocation.Address.Name = location.Address.Name;
+                updatedLocation!.Address!.Name = location!.Address!.Name;
                 updatedLocation.Address.Longitude = location.Address.Longitude;
                 updatedLocation.Address.Latitude = location.Address.Latitude;
                 updatedLocation.TypeId = location.TypeId;

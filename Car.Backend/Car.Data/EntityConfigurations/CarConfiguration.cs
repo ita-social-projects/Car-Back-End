@@ -11,12 +11,12 @@ namespace Car.Data.EntityConfigurations
             builder.HasKey(car => car.Id);
 
             builder.HasOne(car => car.Owner)
-                .WithMany(user => user.Cars)
+                .WithMany(user => user!.Cars)
                 .HasForeignKey(car => car.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(car => car.Model)
-                .WithMany(brand => brand.Cars)
+                .WithMany(brand => brand!.Cars)
                 .HasForeignKey(car => car.ModelId);
 
             builder.Property(car => car.PlateNumber).HasMaxLength(10).IsRequired();

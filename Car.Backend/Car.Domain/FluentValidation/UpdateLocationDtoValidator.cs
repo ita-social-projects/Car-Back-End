@@ -8,7 +8,7 @@ namespace Car.Domain.FluentValidation
     {
         public UpdateLocationDtoValidator()
         {
-            RuleFor(location => location.Address).SetValidator(new UpdateAddressToLocationDtoValidator());
+            RuleFor(location => location.Address).SetValidator(new UpdateAddressToLocationDtoValidator()!);
             RuleFor(location => location.Name).MaximumLength(Constants.LocationNameMaxLength);
             RuleFor(location => location.TypeId).GreaterThan(Constants.IdLength);
         }

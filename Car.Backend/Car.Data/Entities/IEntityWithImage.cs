@@ -2,6 +2,6 @@
 {
     public interface IEntityWithImage : IEntity
     {
-        public string ImageId { get; set; }
+        public string? ImageId { get; set; }
     }
 }

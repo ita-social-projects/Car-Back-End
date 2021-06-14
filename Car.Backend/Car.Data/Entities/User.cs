@@ -8,30 +8,30 @@ namespace Car.Data.Entities
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public string Surname { get; set; }
+        public string Surname { get; set; } = string.Empty;
 
-        public string Position { get; set; }
+        public string? Position { get; set; }
 
-        public string Location { get; set; }
+        public string? Location { get; set; }
 
         public DateTime HireDate { get; set; }
 
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
-        public string ImageId { get; set; }
+        public string? ImageId { get; set; }
 
         public int BadgeCount { get; set; }
 
         public int JourneyCount { get; set; }
 
         [NotMapped]
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
 
         public ICollection<Car> Cars { get; set; } = new List<Car>();
 
-        public UserPreferences UserPreferences { get; set; }
+        public UserPreferences? UserPreferences { get; set; }
 
         public ICollection<Notification> ReceivedNotifications { get; set; } = new List<Notification>();
 

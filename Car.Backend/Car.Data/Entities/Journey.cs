@@ -16,7 +16,7 @@ namespace Car.Data.Entities
 
         public int CountOfSeats { get; set; }
 
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
 
         public bool IsFree { get; set; }
 
@@ -29,13 +29,13 @@ namespace Car.Data.Entities
         [NotMapped]
         public DateTime EndTime => DepartureTime.Add(Duration);
 
-        public Car Car { get; set; }
+        public Car? Car { get; set; }
 
-        public Schedule Schedule { get; set; }
+        public Schedule? Schedule { get; set; }
 
-        public User Organizer { get; set; }
+        public User? Organizer { get; set; }
 
-        public Chat Chat { get; set; }
+        public Chat? Chat { get; set; }
 
         public ICollection<User> Participants { get; set; } = new List<User>();
 
