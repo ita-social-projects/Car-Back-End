@@ -618,6 +618,49 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyDoesNotExist_ExecutesNever(int journeyIdToCancel)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Participants, null as List<User>)
+                .With(j => j.Id, -journeyIdToCancel)
+                .CreateMany(5);
+
+            journeyRepository.Setup(repo =>
+                repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.CancelAsync(journeyIdToCancel);
+
+            // Assert
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyDoesExist_ExecuteOnce(int journeyIdToCancel)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Participants, null as List<User>)
+                .With(j => j.Id, journeyIdToCancel)
+                .CreateMany(1);
+
+            notificationService.Setup(s => s.NotifyParticipantsAboutCancellationAsync(It.IsAny<Journey>())).Returns(Task.CompletedTask);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.CancelAsync(journeyIdToCancel);
+
+            // Assert
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
+
+        [Theory]
         [AutoEntityData]
         public async Task UpdateDetailsAsync_WhenJourneyIsValid_ReturnsJourneyObject(JourneyDto updatedJourneyDto)
         {

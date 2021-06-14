@@ -259,5 +259,33 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<OkObjectResult>();
             (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
         }
+
+        [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyIdIsValid_ReturnsOkResult(int journeyIdToDelete)
+        {
+            // Act
+            var result = await journeyController.Delete(journeyIdToDelete);
+
+            // Assert
+            journeyService.Verify(service => service.DeleteAsync(journeyIdToDelete), Times.Once());
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyNotExists_ThrowDbUpdateConcurrencyException(int journeyIdToDelete)
+        {
+            // Arrange
+            journeyService.Setup(service =>
+                service.DeleteAsync(journeyIdToDelete)).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = journeyService.Invoking(service =>
+                service.Object.DeleteAsync(journeyIdToDelete));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
     }
 }

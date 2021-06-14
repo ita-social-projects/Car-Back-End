@@ -176,8 +176,10 @@ namespace Car.Domain.Services.Implementation
             }
 
             journeyToCancel.IsCancelled = true;
+            journeyToCancel.DepartureTime = DateTime.UtcNow;
             await journeyRepository.SaveChangesAsync();
 
+            await notificationService.DeleteConflictingNotificationAfterJourneyCancellationAsync(journeyId);
             await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToCancel);
         }
 

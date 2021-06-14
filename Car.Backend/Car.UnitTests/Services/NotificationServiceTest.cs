@@ -224,6 +224,7 @@ namespace Car.UnitTests.Services
                 .With(n => n.JsonData, notification.JsonData)
                 .With(n => n.ReceiverId, notification.ReceiverId)
                 .With(n => n.SenderId, notification.SenderId)
+                .With(n => n.JourneyId, notification.JourneyId)
                 .Create();
 
             notificationRepository
@@ -245,6 +246,7 @@ namespace Car.UnitTests.Services
                         .Excluding(o => o.Id)
                         .Excluding(o => o.Receiver)
                         .Excluding(o => o.Sender)
+                        .Excluding(o => o.Journey)
                         .Excluding(o => o.CreatedAt)
                         .Excluding(o => o.IsRead));
         }
@@ -330,6 +332,29 @@ namespace Car.UnitTests.Services
 
             // Assert
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
+        }
+
+        [Xunit.Theory]
+        [AutoData]
+        public async Task DeleteConflictingNotificationAfterJourneyCancellationAsync_SavesChangesOnce(
+            int canceledJourenyId, [Range(1, 5)] int notificationToDeleteCount)
+        {
+            // Arrange
+            var notificationsToDelete = Fixture.Build<Notification>()
+                .With(n => n.JourneyId, canceledJourenyId)
+                .With(n => n.IsRead, false)
+                .CreateMany(notificationToDeleteCount);
+
+            notificationRepository.Setup(r => r.Query()).Returns(notificationsToDelete
+                .AsQueryable()
+                .BuildMock()
+                .Object);
+
+            // Act
+            await notificationService.DeleteConflictingNotificationAfterJourneyCancellationAsync(canceledJourenyId);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         private void NotificationInitializer(Journey journey, IEnumerable<Notification> notifications)

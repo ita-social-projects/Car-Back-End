@@ -26,5 +26,7 @@ namespace Car.Domain.Services.Interfaces
         Task JourneyUpdateNotifyUserAsync(Journey journey);
 
         Task NotifyParticipantsAboutCancellationAsync(Journey journey);
+
+        Task DeleteConflictingNotificationAfterJourneyCancellationAsync(int journeyId);
     }
 }

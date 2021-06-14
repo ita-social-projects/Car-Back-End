@@ -95,7 +95,8 @@ namespace Car.Domain.Services.Implementation
                     ReceiverId = participant.Id,
                     Type = NotificationType.JourneyDetailsUpdate,
                     IsRead = false,
-                    JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id }),
+                    JourneyId = journey.Id,
+                    JsonData = JsonSerializer.Serialize(new { }),
                 });
             }
         }
@@ -125,6 +126,17 @@ namespace Car.Domain.Services.Implementation
                     }),
                 });
             }
+        }
+
+        public async Task DeleteConflictingNotificationAfterJourneyCancellationAsync(int journeyId)
+        {
+            var notificationsToDelete = await notificationRepository
+                .Query()
+                .Where(notification => notification.IsRead == false && notification.JourneyId == journeyId)
+                .ToListAsync();
+
+            await notificationRepository.DeleteRangeAsync(notificationsToDelete);
+            await notificationRepository.SaveChangesAsync();
         }
 
         private async Task NotifyClientAsync(Notification notification)

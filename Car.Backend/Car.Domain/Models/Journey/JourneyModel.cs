@@ -23,6 +23,8 @@ namespace Car.Domain.Models.Journey
 
         public bool IsOnOwnCar { get; set; }
 
+        public bool IsCancelled { get; set; }
+
         public Schedule Schedule { get; set; }
 
         public UserDto Organizer { get; set; }
