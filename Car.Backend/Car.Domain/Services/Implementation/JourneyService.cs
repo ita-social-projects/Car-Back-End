@@ -67,7 +67,7 @@ namespace Car.Domain.Services.Implementation
         public async Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync(int userId)
         {
             var journeys = await journeyRepository
-                .Query(journey => journey.Schedule)
+                .Query(journey => journey!.Schedule!)
                 .IncludeJourneyInfo(userId)
                 .Where(journey => journey.Schedule != null)
                 .ToListAsync();
@@ -166,7 +166,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journey is null)
             {
-                return null;
+                return null!;
             }
 
             var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
@@ -198,7 +198,7 @@ namespace Car.Domain.Services.Implementation
                     .FirstOrDefaultAsync(j => j.Id == journey.Id));
             }
 
-            return mapper.Map<Journey, JourneyModel>(journey);
+            return mapper.Map<Journey, JourneyModel>(journey!);
         }
 
         public async Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilter filter)

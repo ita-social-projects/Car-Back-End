@@ -6,7 +6,7 @@ namespace Car.Data.Entities
     {
         public int Id { get; set; }
 
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
@@ -14,8 +14,8 @@ namespace Car.Data.Entities
 
         public int ChatId { get; set; }
 
-        public User Sender { get; set; }
+        public User? Sender { get; set; }
 
-        public Chat Chat { get; set; }
+        public Chat? Chat { get; set; }
     }
 }

@@ -51,7 +51,7 @@ namespace Car.Domain.Extensions
                 Type = stop.Type,
                 Address = new AddressDto
                 {
-                    Id = stop.Address.Id,
+                    Id = stop.Address!.Id,
                     Name = stop.Address.Name,
                     Longitude = stop.Address.Longitude,
                     Latitude = stop.Address.Latitude,

@@ -11,8 +11,8 @@ namespace Car.Data.FluentValidation
             RuleFor(location => location.TypeId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(location => location.AddressId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(location => location.UserId).GreaterThan(Constants.Constants.IdLength);
-            RuleFor(location => location.Type).SetValidator(new LocationTypeValidator());
-            RuleFor(location => location.User).SetValidator(new UserValidator());
+            RuleFor(location => location.Type).SetValidator(new LocationTypeValidator()!);
+            RuleFor(location => location.User).SetValidator(new UserValidator()!);
         }
     }
 }

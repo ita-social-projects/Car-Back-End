@@ -11,16 +11,16 @@ namespace Car.Data.Entities
 
         public Color Color { get; set; }
 
-        public string PlateNumber { get; set; }
+        public string PlateNumber { get; set; } = string.Empty;
 
-        public string ImageId { get; set; }
+        public string? ImageId { get; set; }
 
         public int OwnerId { get; set; }
 
         public ICollection<Journey> Journeys { get; set; } = new List<Journey>();
 
-        public User Owner { get; set; }
+        public User? Owner { get; set; }
 
-        public Model Model { get; set; }
+        public Model? Model { get; set; }
     }
 }

@@ -7,9 +7,9 @@ namespace Car.Data.Entities
     {
         public int Id { get; set; }
 
-        public Point From { get; set; }
+        public Point? From { get; set; }
 
-        public Point To { get; set; }
+        public Point? To { get; set; }
 
         public DateTime DepartureTime { get; set; }
 
@@ -19,6 +19,6 @@ namespace Car.Data.Entities
 
         public int UserId { get; set; }
 
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

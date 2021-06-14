@@ -4,9 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
-using Car.Domain.Exceptions;
 using Car.Domain.Extensions;
-using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using CarEntity = Car.Data.Entities.Car;
@@ -72,7 +70,7 @@ namespace Car.Domain.Services.Implementation
 
             await carRepository.SaveChangesAsync();
 
-            return mapper.Map<CarEntity, UpdateCarDto>(car);
+            return mapper.Map<CarEntity, UpdateCarDto>(car!);
         }
 
         public async Task DeleteAsync(int carId)
