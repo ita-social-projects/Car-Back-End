@@ -14,7 +14,7 @@ namespace Car.Data.EntityConfigurations
             builder.Property(message => message.Text).HasMaxLength(500).IsRequired();
 
             builder.HasOne(message => message.Sender)
-                .WithMany(user => user.SentMessages)
+                .WithMany(user => user!.SentMessages)
                 .HasForeignKey(message => message.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

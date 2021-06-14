@@ -19,17 +19,17 @@ namespace Car.Data.EntityConfigurations
 
             builder.OwnsOne(p => p.From, from =>
             {
-                from.Property(f => f.Latitude).HasColumnName(nameof(Request.From) + nameof(Point.Latitude));
-                from.Property(f => f.Longitude).HasColumnName(nameof(Request.From) + nameof(Point.Longitude));
+                from.Property(f => f!.Latitude).HasColumnName(nameof(Request.From) + nameof(Point.Latitude));
+                from.Property(f => f!.Longitude).HasColumnName(nameof(Request.From) + nameof(Point.Longitude));
             });
             builder.OwnsOne(p => p.To, to =>
             {
-                to.Property(t => t.Latitude).HasColumnName(nameof(Request.To) + nameof(Point.Latitude));
-                to.Property(t => t.Longitude).HasColumnName(nameof(Request.To) + nameof(Point.Longitude));
+                to.Property(t => t!.Latitude).HasColumnName(nameof(Request.To) + nameof(Point.Latitude));
+                to.Property(t => t!.Longitude).HasColumnName(nameof(Request.To) + nameof(Point.Longitude));
             });
 
             builder.HasOne(r => r.User)
-                .WithMany(u => u.Requests)
+                .WithMany(u => u!.Requests)
                 .HasForeignKey(r => r.UserId);
         }
     }

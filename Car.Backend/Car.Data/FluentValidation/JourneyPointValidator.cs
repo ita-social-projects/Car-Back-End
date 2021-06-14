@@ -17,7 +17,7 @@ namespace Car.Data.FluentValidation
                 .LessThanOrEqualTo(Constants.Constants.MaxLongitude);
 
             RuleFor(point => point.JourneyId).GreaterThan(Constants.Constants.NumberMin);
-            RuleFor(point => point.Journey).SetValidator(new JourneyValidator());
+            RuleFor(point => point.Journey).SetValidator(new JourneyValidator()!);
         }
     }
 }

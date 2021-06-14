@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Car.Domain.Dto;
-using Car.Domain.Models.Car;
 using CarEntity = Car.Data.Entities.Car;
 
 namespace Car.Domain.Mapping

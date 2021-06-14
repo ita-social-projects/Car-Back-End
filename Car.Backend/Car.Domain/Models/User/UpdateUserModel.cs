@@ -6,6 +6,6 @@ namespace Car.Domain.Models.User
     {
         public int Id { get; set; }
 
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

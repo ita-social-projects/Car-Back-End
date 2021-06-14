@@ -4,7 +4,6 @@ using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;

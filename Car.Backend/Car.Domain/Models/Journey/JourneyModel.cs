@@ -17,7 +17,7 @@ namespace Car.Domain.Models.Journey
 
         public int CountOfSeats { get; set; }
 
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
 
         public bool IsFree { get; set; }
 
@@ -25,11 +25,11 @@ namespace Car.Domain.Models.Journey
 
         public bool IsCancelled { get; set; }
 
-        public Schedule Schedule { get; set; }
+        public Schedule? Schedule { get; set; }
 
-        public UserDto Organizer { get; set; }
+        public UserDto? Organizer { get; set; }
 
-        public Data.Entities.Car Car { get; set; }
+        public Data.Entities.Car? Car { get; set; }
 
         public ICollection<UserDto> Participants { get; set; } = new List<UserDto>();
 

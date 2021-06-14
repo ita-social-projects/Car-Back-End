@@ -12,6 +12,6 @@ namespace Car.Data.Entities
 
         public int JourneyId { get; set; }
 
-        public Journey Journey { get; set; }
+        public Journey? Journey { get; set; }
     }
 }
