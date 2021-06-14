@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Car.Domain.Dto
 {
@@ -20,6 +21,7 @@ namespace Car.Domain.Dto
 
         public string ImageId { get; set; }
 
+        [NotMapped]
         public string Token { get; set; }
 
         public int JourneyCount { get; set; }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Models.User;
 
 namespace Car.Domain.Mapping
 {
@@ -9,7 +8,7 @@ namespace Car.Domain.Mapping
     {
         public UserMapper()
         {
-            CreateMap<UpdateUserModel, User>();
+            CreateMap<UpdateUserDto, User>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
         }
     }
