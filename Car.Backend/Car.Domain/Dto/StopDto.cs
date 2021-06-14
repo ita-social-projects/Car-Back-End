@@ -11,7 +11,7 @@ namespace Car.Domain.Dto
 
         public StopType Type { get; set; }
 
-        public AddressDto Address { get; set; }
+        public AddressDto? Address { get; set; }
 
         public int UserId { get; set; }
     }

@@ -20,7 +20,7 @@ namespace Car.Data.Migrations
                     DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Fee = table.Column<int>(type: "int", nullable: false),
                     PassengersCount = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {

@@ -15,9 +15,9 @@ namespace Car.Data.FluentValidation
             RuleFor(journey => journey.IsFree).NotNull();
             RuleFor(journey => journey.IsOnOwnCar).NotNull();
             RuleFor(journey => journey.OrganizerId).GreaterThan(Constants.Constants.IdLength);
-            RuleFor(journey => journey.Car).NotNull().SetValidator(new CarValidator());
-            RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator());
-            RuleFor(journey => journey.Organizer).NotNull().SetValidator(new UserValidator());
+            RuleFor(journey => journey.Car).NotNull().SetValidator(new CarValidator()!);
+            RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator()!);
+            RuleFor(journey => journey.Organizer).NotNull().SetValidator(new UserValidator()!);
             RuleForEach(journey => journey.Participants).SetValidator(new UserValidator());
             RuleForEach(journey => journey.Stops).SetValidator(new StopValidator());
         }

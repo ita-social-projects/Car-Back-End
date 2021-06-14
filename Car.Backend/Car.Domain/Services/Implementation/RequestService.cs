@@ -88,7 +88,7 @@ namespace Car.Domain.Services.Implementation
         {
             var notification = new Notification()
             {
-                SenderId = journey.Organizer.Id,
+                SenderId = journey.Organizer!.Id,
                 ReceiverId = request.UserId,
                 Type = NotificationType.RequestedJourneyCreated,
                 IsRead = false,

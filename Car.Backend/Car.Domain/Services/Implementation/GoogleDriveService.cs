@@ -21,9 +21,9 @@ namespace Car.Domain.Services.Implementation
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly IOptions<GoogleDriveOptions> googleDriveOptions;
 
-        private DriveService service;
+        private DriveService? service;
 
-        public string RootFolderId => googleDriveOptions.Value.RootFolder;
+        public string? RootFolderId => googleDriveOptions.Value.RootFolder;
 
         public GoogleDriveService(
             IOptions<GoogleDriveOptions> googleDriveOptions,
@@ -43,7 +43,7 @@ namespace Car.Domain.Services.Implementation
         {
             var keyFilePath = Path.Combine(
                 webHostEnvironment.WebRootPath,
-                googleDriveOptions.Value.CredentialsPath);
+                googleDriveOptions.Value.CredentialsPath!);
 
             var stream = new FileStream(keyFilePath, FileMode.Open, FileAccess.Read);
             var credential = GoogleCredential.FromStream(stream);
@@ -65,14 +65,14 @@ namespace Car.Domain.Services.Implementation
         /// <returns>Identifier of the uploaded file.</returns>
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
         {
-            var fileMetadata = new File { Name = fileName, Parents = new List<string> { RootFolderId } };
+            var fileMetadata = new File { Name = fileName, Parents = new List<string> { RootFolderId! } };
 
             FilesResource.CreateMediaUpload request;
 
             await using (fileStream)
             {
                 await using var compressedFile = compressor.CompressFile(fileStream, Quality);
-                request = service.Files.Create(fileMetadata, compressedFile, contentType);
+                request = service!.Files.Create(fileMetadata, compressedFile, contentType);
                 request.Fields = IdFieldName;
                 await request.UploadAsync();
             }
@@ -86,6 +86,6 @@ namespace Car.Domain.Services.Implementation
         /// <param name="fileId">Identifier of the required file.</param>
         /// <returns>Result object.</returns>
         public Task<string> DeleteFileAsync(string fileId) =>
-            service.Files.Delete(fileId).ExecuteAsync();
+            service!.Files.Delete(fileId).ExecuteAsync();
     }
 }

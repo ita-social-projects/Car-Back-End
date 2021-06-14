@@ -16,9 +16,9 @@ namespace Car.Domain.FluentValidation
             RuleFor(journey => journey.Comments).MaximumLength(Constants.CommentsMaxLength);
             RuleFor(journey => journey.IsFree).NotNull();
             RuleFor(journey => journey.IsOnOwnCar).NotNull();
-            RuleFor(journey => journey.Organizer).SetValidator(new UserDtoValidator());
-            RuleFor(journey => journey.Car).SetValidator(new CarValidator());
-            RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator());
+            RuleFor(journey => journey.Organizer).SetValidator(new UserDtoValidator()!);
+            RuleFor(journey => journey.Car).SetValidator(new CarValidator()!);
+            RuleFor(journey => journey.Schedule).SetValidator(new ScheduleValidator()!);
             RuleForEach(journey => journey.Participants).SetValidator(new UserDtoValidator());
             RuleForEach(journey => journey.Stops).SetValidator(new StopDtoValidator());
         }
