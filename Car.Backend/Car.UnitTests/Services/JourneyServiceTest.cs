@@ -865,7 +865,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.IsCanceled(journeyId);
 
             // Assert
-            result.Should().BeFalse();
+            result.Should().BeTrue();
         }
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()
