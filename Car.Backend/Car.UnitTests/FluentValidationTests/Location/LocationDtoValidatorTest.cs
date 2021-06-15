@@ -33,15 +33,14 @@ namespace Car.UnitTests.FluentValidationTests.Location
             validator.ShouldNotHaveValidationErrorFor(locationModel => locationModel.UserId, value);
         }
 
-        [Fact]
-        public void LocationName_IsNotValid_GeneratesValidationError()
+        [Theory]
+        [InlineData(null)]
+        public void LocationName_IsNull_GeneratesValidationError(string value)
         {
-            var longName = new string('*', Constants.LocationNameMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(locationModel => locationModel.Name, longName);
+            validator.ShouldHaveValidationErrorFor(locationModel => locationModel.Name, value);
         }
 
         [Theory]
-        [InlineData("")]
         [InlineData("work1")]
         public void LocationName_IsSpecified_NotGeneratesValidationError(string value)
         {
