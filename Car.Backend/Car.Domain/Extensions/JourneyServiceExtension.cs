@@ -62,6 +62,6 @@ namespace Car.Domain.Extensions
         }
 
         public static IQueryable<Journey> FilterUncancelledJourneys(this IQueryable<Journey> journeys) =>
-            journeys.Where(journey => journey.IsCancelled == false);
+            journeys.Where(journey => !journey.IsCancelled);
     }
 }

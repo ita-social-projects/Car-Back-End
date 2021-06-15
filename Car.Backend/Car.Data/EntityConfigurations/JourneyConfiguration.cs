@@ -39,7 +39,7 @@ namespace Car.Data.EntityConfigurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(journey => journey.Notifications)
-                .WithOne(notification => notification.Journey)
+                .WithOne(notification => notification.Journey!)
                 .HasForeignKey(notification => notification.JourneyId)
                 .OnDelete(DeleteBehavior.Cascade);
 

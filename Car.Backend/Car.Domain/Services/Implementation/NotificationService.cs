@@ -135,7 +135,7 @@ namespace Car.Domain.Services.Implementation
         {
             var notificationsToDelete = await notificationRepository
                 .Query()
-                .Where(notification => notification.IsRead == false && notification.JourneyId == journeyId)
+                .Where(notification => !notification.IsRead && notification.JourneyId == journeyId)
                 .ToListAsync();
 
             await notificationRepository.DeleteRangeAsync(notificationsToDelete);
