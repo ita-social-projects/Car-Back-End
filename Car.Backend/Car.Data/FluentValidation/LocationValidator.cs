@@ -8,6 +8,7 @@ namespace Car.Data.FluentValidation
         {
             RuleFor(location => location.Id).GreaterThan(Constants.Constants.IdLength);
             RuleFor(location => location.Name).NotNull().NotEmpty();
+
             RuleFor(location => location.TypeId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(location => location.AddressId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(location => location.UserId).GreaterThan(Constants.Constants.IdLength);
