@@ -12,7 +12,7 @@ namespace Car.Data.EntityConfigurations
 
             builder.HasKey(location => location.Id);
 
-            builder.Property(type => type.Name).HasMaxLength(50).IsRequired();
+            builder.Property(type => type.Name).IsRequired();
 
             builder.HasOne(location => location.Address)
                 .WithOne(address => address!.Location!)
