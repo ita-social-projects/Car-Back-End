@@ -41,13 +41,6 @@ namespace Car.UnitTests.FluentValidationTests.Location
             validator.ShouldHaveValidationErrorFor(location => location.Name, value);
         }
 
-        [Fact]
-        public void Name_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.StringMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(location => location.Name, longText);
-        }
-
         [Theory]
         [InlineData("abc")]
         public void Name_IsSpecified_NotGeneratesValidationError(string value)
