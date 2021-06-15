@@ -271,7 +271,7 @@ namespace Car.Domain.Services.Implementation
                 .Query()
                 .FirstOrDefaultAsync(journey => journey.Id == journeyId);
 
-            return journey is null || journey.IsCancelled;
+            return journey?.IsCancelled ?? true;
         }
 
         private IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
