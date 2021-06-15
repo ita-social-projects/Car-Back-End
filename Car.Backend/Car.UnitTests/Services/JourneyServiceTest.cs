@@ -830,6 +830,44 @@ namespace Car.UnitTests.Services
                 Times.AtLeastOnce);
         }
 
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyExists_ReturnsIsCanceledJourneyPropertyValue(int journeyId, bool isCancelled)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyId)
+                .With(j => j.IsCancelled, isCancelled)
+                .CreateMany(1);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.IsCanceled(journeyId);
+
+            // Assert
+            result.Should().Be(isCancelled);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyDoesntExist_ReturnsFalse(int journeyId, bool isCancelled)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, -journeyId)
+                .With(j => j.IsCancelled, isCancelled)
+                .CreateMany(1);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.IsCanceled(journeyId);
+
+            // Assert
+            result.Should().BeFalse();
+        }
+
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()
         {
             var departureTime = DateTime.UtcNow.AddHours(1);

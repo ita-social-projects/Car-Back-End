@@ -265,6 +265,20 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
+        public async Task<bool> IsCanceled(int journeyId)
+        {
+            var journey = await journeyRepository
+                .Query()
+                .FirstOrDefaultAsync(journey => journey.Id == journeyId);
+
+            if (journey == null)
+            {
+                return false;
+            }
+
+            return journey.IsCancelled;
+        }
+
         private IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
         {
             var applicantStops = new List<StopDto>();

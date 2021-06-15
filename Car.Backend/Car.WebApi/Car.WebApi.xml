@@ -151,6 +151,13 @@
             <param name="id">id of journey that should be cancelled</param>
             <returns>OkResult</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.IsCanceled(System.Int32)">
+            <summary>
+            Defines if journey was canceled
+            </summary>
+            <param name="id">id of journey</param>
+            <returns>bool value that indicates whether journey was canceled</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
             Gets all the locations by user id

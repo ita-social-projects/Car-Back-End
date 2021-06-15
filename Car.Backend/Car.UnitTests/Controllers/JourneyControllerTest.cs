@@ -262,30 +262,45 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoData]
-        public async Task CancelAsync_WhenJourneyIdIsValid_ReturnsOkResult(int journeyIdToDelete)
+        public async Task CancelAsync_WhenJourneyExists_ReturnsOkResult(int journeyIdToCancel)
         {
+            // Arrange
+            journeyService.Setup(service => service.CancelAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
+
             // Act
-            var result = await journeyController.Delete(journeyIdToDelete);
+            var result = await journeyController.CancelJourney(journeyIdToCancel);
 
             // Assert
-            journeyService.Verify(service => service.DeleteAsync(journeyIdToDelete), Times.Once());
             result.Should().BeOfType<OkResult>();
         }
 
         [Theory]
         [AutoData]
-        public async Task CancelAsync_WhenJourneyNotExists_ThrowDbUpdateConcurrencyException(int journeyIdToDelete)
+        public async Task IsCanceled_WhenJourneyExists_ReturnsIsCancelledPropertyValue(int journeyId, bool expectedResult)
         {
             // Arrange
-            journeyService.Setup(service =>
-                service.DeleteAsync(journeyIdToDelete)).Throws<DbUpdateConcurrencyException>();
+            journeyService.Setup(service => service.IsCanceled(It.IsAny<int>())).ReturnsAsync(expectedResult);
 
             // Act
-            var result = journeyService.Invoking(service =>
-                service.Object.DeleteAsync(journeyIdToDelete));
+            var result = await journeyController.IsCanceled(journeyId);
 
             // Assert
-            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+            (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyDoesntExist_ReturnsFalse(int journeyId)
+        {
+            // Arrange
+            var expectedResult = false;
+            journeyService.Setup(service => service.IsCanceled(It.IsAny<int>())).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await journeyController.IsCanceled(journeyId);
+
+            // Assert
+            (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
         }
     }
 }

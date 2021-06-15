@@ -36,5 +36,7 @@ namespace Car.Domain.Services.Interfaces
         Task CheckForSuitableRequests(Journey journey);
 
         Task CancelAsync(int journeyId);
+
+        Task<bool> IsCanceled(int journeyId);
     }
 }

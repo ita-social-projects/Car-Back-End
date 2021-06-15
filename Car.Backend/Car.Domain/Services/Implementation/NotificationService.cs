@@ -35,7 +35,7 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
 
         public Task<List<Notification>> GetNotificationsAsync(int userId) =>
-            notificationRepository.Query(m => m.Sender!)
+            notificationRepository.Query().Include(n => n.Sender)
                 .Where(p => p.ReceiverId == userId)
                 .OrderByDescending(k => k.CreatedAt)
                 .ToListAsync();
