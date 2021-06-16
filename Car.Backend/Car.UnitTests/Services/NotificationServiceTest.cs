@@ -335,26 +335,29 @@ namespace Car.UnitTests.Services
         }
 
         [Xunit.Theory]
-        [AutoData]
-        public async Task DeleteConflictingNotificationAfterJourneyCancellationAsync_SavesChangesOnce(
-            int canceledJourenyId, [Range(1, 5)] int notificationToDeleteCount)
+        [AutoEntityData]
+        public async Task DeleteNotificationsAsync_WhenNotificaionsNotNull_SavesChangesOnce(
+            IEnumerable<Notification> notificationsToDelete)
         {
             // Arrange
-            var notificationsToDelete = Fixture.Build<Notification>()
-                .With(n => n.JourneyId, canceledJourenyId)
-                .With(n => n.IsRead, false)
-                .CreateMany(notificationToDeleteCount);
-
-            notificationRepository.Setup(r => r.Query()).Returns(notificationsToDelete
-                .AsQueryable()
-                .BuildMock()
-                .Object);
 
             // Act
-            await notificationService.DeleteConflictingNotificationAfterJourneyCancellationAsync(canceledJourenyId);
+            await notificationService.DeleteNotificationsAsync(notificationsToDelete);
 
             // Assert
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeleteNotificationsAsync_WhenNotificationsIsNull_SavesChangesNever()
+        {
+            // Arrange
+
+            // Act
+            await notificationService.DeleteNotificationsAsync((IEnumerable<Notification>)null);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
         }
 
         private void NotificationInitializer(Journey journey, IEnumerable<Notification> notifications)

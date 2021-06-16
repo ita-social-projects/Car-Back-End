@@ -167,20 +167,19 @@ namespace Car.Domain.Services.Implementation
             var journeyToCancel = await journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
+                .IncludeNotifications()
                 .IncludeAllParticipants()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
-            if (journeyToCancel is null)
+            if (journeyToCancel is not null)
             {
-                return;
+                journeyToCancel.IsCancelled = true;
+                journeyToCancel.DepartureTime = DateTime.UtcNow;
+                await journeyRepository.SaveChangesAsync();
+
+                await notificationService.DeleteNotificationsAsync(journeyToCancel.Notifications);
+                await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToCancel);
             }
-
-            journeyToCancel.IsCancelled = true;
-            journeyToCancel.DepartureTime = DateTime.UtcNow;
-            await journeyRepository.SaveChangesAsync();
-
-            await notificationService.DeleteConflictingNotificationAfterJourneyCancellationAsync(journeyId);
-            await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToCancel);
         }
 
         public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
