@@ -10,11 +10,11 @@ namespace Car.UnitTests.FluentValidationTests.UserPreferences
     [TestFixture]
     public class UserPreferencesDtoValidatorTest
     {
-        private PreferencesDtoValidator validator;
+        private UserPreferencesDtoValidator validator;
 
         public UserPreferencesDtoValidatorTest()
         {
-            validator = new PreferencesDtoValidator();
+            validator = new UserPreferencesDtoValidator();
         }
 
         [Fact]

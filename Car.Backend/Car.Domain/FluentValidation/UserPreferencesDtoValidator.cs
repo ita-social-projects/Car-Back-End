@@ -1,11 +1,12 @@
 ﻿using Car.Data.Constants;
+using Car.Domain.Dto;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class PreferencesDtoValidator : AbstractValidator<Dto.UserPreferencesDto>
+    public class UserPreferencesDtoValidator : AbstractValidator<UserPreferencesDto>
     {
-        public PreferencesDtoValidator()
+        public UserPreferencesDtoValidator()
         {
             RuleFor(userPreferences => userPreferences.Id).GreaterThan(Constants.IdLength);
             RuleFor(userPreferences => userPreferences.DoAllowSmoking).NotNull();
