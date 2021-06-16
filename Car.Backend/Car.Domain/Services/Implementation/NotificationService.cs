@@ -131,15 +131,13 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task DeleteConflictingNotificationAfterJourneyCancellationAsync(int journeyId)
+        public async Task DeleteNotificationsAsync(IEnumerable<Notification> notifications)
         {
-            var notificationsToDelete = await notificationRepository
-                .Query()
-                .Where(notification => !notification.IsRead && notification.JourneyId == journeyId)
-                .ToListAsync();
-
-            await notificationRepository.DeleteRangeAsync(notificationsToDelete);
-            await notificationRepository.SaveChangesAsync();
+            if (notifications is not null)
+            {
+                await notificationRepository.DeleteRangeAsync(notifications);
+                await notificationRepository.SaveChangesAsync();
+            }
         }
 
         private async Task NotifyClientAsync(Notification notification)
