@@ -259,5 +259,48 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<OkObjectResult>();
             (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
         }
+
+        [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyExists_ReturnsOkResult(int journeyIdToCancel)
+        {
+            // Arrange
+            journeyService.Setup(service => service.CancelAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await journeyController.CancelJourney(journeyIdToCancel);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyExists_ReturnsIsCancelledPropertyValue(int journeyId, bool expectedResult)
+        {
+            // Arrange
+            journeyService.Setup(service => service.IsCanceled(It.IsAny<int>())).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await journeyController.IsCanceled(journeyId);
+
+            // Assert
+            (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyDoesntExist_ReturnsFalse(int journeyId)
+        {
+            // Arrange
+            var expectedResult = false;
+            journeyService.Setup(service => service.IsCanceled(It.IsAny<int>())).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await journeyController.IsCanceled(journeyId);
+
+            // Assert
+            (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
+        }
     }
 }

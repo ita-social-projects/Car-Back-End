@@ -60,5 +60,8 @@ namespace Car.Domain.Extensions
 
             return result;
         }
+
+        public static IQueryable<Journey> FilterUncancelledJourneys(this IQueryable<Journey> journeys) =>
+            journeys.Where(journey => !journey.IsCancelled);
     }
 }

@@ -618,6 +618,49 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyDoesNotExist_ExecutesNever(int journeyIdToCancel)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Participants, null as List<User>)
+                .With(j => j.Id, -journeyIdToCancel)
+                .CreateMany(5);
+
+            journeyRepository.Setup(repo =>
+                repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.CancelAsync(journeyIdToCancel);
+
+            // Assert
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyDoesExist_ExecuteOnce(int journeyIdToCancel)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Participants, null as List<User>)
+                .With(j => j.Id, journeyIdToCancel)
+                .CreateMany(1);
+
+            notificationService.Setup(s => s.NotifyParticipantsAboutCancellationAsync(It.IsAny<Journey>())).Returns(Task.CompletedTask);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.CancelAsync(journeyIdToCancel);
+
+            // Assert
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
+
+        [Theory]
         [AutoEntityData]
         public async Task UpdateDetailsAsync_WhenJourneyIsValid_ReturnsJourneyObject(JourneyDto updatedJourneyDto)
         {
@@ -787,6 +830,44 @@ namespace Car.UnitTests.Services
                 Times.AtLeastOnce);
         }
 
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyExists_ReturnsIsCanceledJourneyPropertyValue(int journeyId, bool isCancelled)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyId)
+                .With(j => j.IsCancelled, isCancelled)
+                .CreateMany(1);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.IsCanceled(journeyId);
+
+            // Assert
+            result.Should().Be(isCancelled);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyDoesntExist_ReturnsFalse(int journeyId, bool isCancelled)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, -journeyId)
+                .With(j => j.IsCancelled, isCancelled)
+                .CreateMany(1);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.IsCanceled(journeyId);
+
+            // Assert
+            result.Should().BeTrue();
+        }
+
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()
         {
             var departureTime = DateTime.UtcNow.AddHours(1);
@@ -801,7 +882,8 @@ namespace Car.UnitTests.Services
                 .With(j => j.CountOfSeats, 4)
                 .With(j => j.IsFree, true)
                 .With(j => j.DepartureTime, departureTime)
-                .With(j => j.JourneyPoints, journeyPoints);
+                .With(j => j.JourneyPoints, journeyPoints)
+                .With(j => j.IsCancelled, false);
 
             var filter = Fixture.Build<JourneyFilter>()
                 .With(f => f.DepartureTime, departureTime)

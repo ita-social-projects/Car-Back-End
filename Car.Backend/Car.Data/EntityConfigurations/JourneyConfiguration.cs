@@ -38,6 +38,11 @@ namespace Car.Data.EntityConfigurations
                 .HasForeignKey(point => point.JourneyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(journey => journey.Notifications)
+                .WithOne(notification => notification.Journey!)
+                .HasForeignKey(notification => notification.JourneyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(journey => journey.Comments).HasMaxLength(100);
         }
     }

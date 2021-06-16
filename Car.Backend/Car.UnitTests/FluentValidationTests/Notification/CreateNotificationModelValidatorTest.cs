@@ -50,6 +50,22 @@ namespace Car.UnitTests.FluentValidationTests.Notification
         }
 
         [Xunit.Theory]
+        [InlineData(-5)]
+        [InlineData(-1)]
+        public void JourneyId_IsNotValid_GeneratesValidationError(int? value)
+        {
+            validator.ShouldHaveValidationErrorFor(notificationModel => notificationModel.JourneyId, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(null)]
+        [InlineData(10)]
+        public void JourneyId_IsValid_NotGeneratesValidationError(int? value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(notificationModel => notificationModel.JourneyId, value);
+        }
+
+        [Xunit.Theory]
         [InlineData(NotificationType.AcceptedInvitation)]
         public void Type_IsSpecified_NotGeneratesValidationError(NotificationType value)
         {
