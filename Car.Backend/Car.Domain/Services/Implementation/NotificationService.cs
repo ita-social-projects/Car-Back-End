@@ -120,6 +120,7 @@ namespace Car.Domain.Services.Implementation
                     Type = NotificationType.JourneyCancellation,
                     CreatedAt = DateTime.UtcNow,
                     IsRead = false,
+                    JourneyId = journey.Id,
                     JsonData = JsonSerializer.Serialize(new
                     {
                         departureTime = journey.DepartureTime,
@@ -139,6 +140,24 @@ namespace Car.Domain.Services.Implementation
                 await notificationRepository.SaveChangesAsync();
             }
         }
+
+        public async Task NotifyDriverAboutParticipantWithdrawal(Journey journey, int participantId) =>
+            await AddNotificationAsync(new Notification()
+                {
+                    SenderId = participantId,
+                    ReceiverId = journey.Organizer!.Id,
+                    Type = NotificationType.PassengerWithdrawal,
+                    CreatedAt = DateTime.UtcNow,
+                    IsRead = false,
+                    JourneyId = journey.Id,
+                    JsonData = JsonSerializer.Serialize(new
+                        {
+                            departureTime = journey.DepartureTime,
+                            availableSeats = journey.CountOfSeats - journey.Participants.Count,
+                            isFree = journey.IsFree,
+                            withBaggage = true,
+                        }),
+                });
 
         private async Task NotifyClientAsync(Notification notification)
         {

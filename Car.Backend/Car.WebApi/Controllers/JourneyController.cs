@@ -130,5 +130,18 @@ namespace Car.WebApi.Controllers
         [HttpGet("is-canceled/{id}")]
         public async Task<IActionResult> IsCanceled(int id) =>
             Ok(await journeyService.IsCanceled(id));
+
+        /// <summary>
+        /// Deletes user from journey
+        /// </summary>
+        /// <param name="journeyId">journey Id</param>
+        /// <param name="userId">user Id</param>
+        /// <returns>OkResult</returns>
+        [HttpDelete("delete-user/{journeyId}/{userId}")]
+        public async Task<IActionResult> DeleteUserFromJourney(int journeyId, int userId)
+        {
+            await journeyService.DeleteUserFromJourney(journeyId, userId);
+            return Ok();
+        }
     }
 }

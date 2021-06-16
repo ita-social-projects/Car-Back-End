@@ -302,5 +302,19 @@ namespace Car.UnitTests.Controllers
             // Assert
             (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
         }
+
+        [Theory]
+        [AutoData]
+        public async Task DeleteUserFromJourney_ReturnsOkResult(int journeyId, int userId)
+        {
+            // Arrange
+            journeyService.Setup(service => service.DeleteUserFromJourney(journeyId, userId)).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await journeyController.DeleteUserFromJourney(journeyId, userId);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
     }
 }
