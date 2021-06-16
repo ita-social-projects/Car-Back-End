@@ -224,6 +224,7 @@ namespace Car.UnitTests.Services
                 .With(n => n.JsonData, notification.JsonData)
                 .With(n => n.ReceiverId, notification.ReceiverId)
                 .With(n => n.SenderId, notification.SenderId)
+                .With(n => n.JourneyId, notification.JourneyId)
                 .Create();
 
             notificationRepository
@@ -245,6 +246,7 @@ namespace Car.UnitTests.Services
                         .Excluding(o => o.Id)
                         .Excluding(o => o.Receiver)
                         .Excluding(o => o.Sender)
+                        .Excluding(o => o.Journey)
                         .Excluding(o => o.CreatedAt)
                         .Excluding(o => o.IsRead));
         }
@@ -327,6 +329,32 @@ namespace Car.UnitTests.Services
 
             // Act
             await notificationService.JourneyUpdateNotifyUserAsync(journey);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
+        }
+
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task DeleteNotificationsAsync_WhenNotificaionsNotNull_SavesChangesOnce(
+            IEnumerable<Notification> notificationsToDelete)
+        {
+            // Arrange
+
+            // Act
+            await notificationService.DeleteNotificationsAsync(notificationsToDelete);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeleteNotificationsAsync_WhenNotificationsIsNull_SavesChangesNever()
+        {
+            // Arrange
+
+            // Act
+            await notificationService.DeleteNotificationsAsync((IEnumerable<Notification>)null);
 
             // Assert
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);

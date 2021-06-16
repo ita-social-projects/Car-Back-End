@@ -21,6 +21,8 @@ namespace Car.Domain.Dto
 
         public bool IsOnOwnCar { get; set; }
 
+        public bool IsCancelled { get; set; }
+
         public int OrganizerId { get; set; }
 
         public int? CarId { get; set; }

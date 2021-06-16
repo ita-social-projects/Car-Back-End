@@ -27,6 +27,9 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> IncludeJourneyInfo(this IQueryable<Journey> journeys, int userId) =>
             journeys.IncludeAllParticipants().IncludeStopsWithAddresses().FilterByUser(userId);
 
+        public static IQueryable<Journey> IncludeNotifications(this IQueryable<Journey> journeys) =>
+            journeys.Include(journey => journey.Notifications);
+
         public static IQueryable<Journey> FilterPast(this IQueryable<Journey> journeys)
         {
             DateTime now = DateTime.UtcNow;
@@ -60,5 +63,8 @@ namespace Car.Domain.Extensions
 
             return result;
         }
+
+        public static IQueryable<Journey> FilterUncancelledJourneys(this IQueryable<Journey> journeys) =>
+            journeys.Where(journey => !journey.IsCancelled);
     }
 }

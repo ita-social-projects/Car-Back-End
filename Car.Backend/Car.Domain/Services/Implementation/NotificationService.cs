@@ -35,7 +35,7 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
 
         public Task<List<Notification>> GetNotificationsAsync(int userId) =>
-            notificationRepository.Query(m => m.Sender!)
+            notificationRepository.Query().Include(n => n.Sender)
                 .Where(p => p.ReceiverId == userId)
                 .OrderByDescending(k => k.CreatedAt)
                 .ToListAsync();
@@ -98,7 +98,8 @@ namespace Car.Domain.Services.Implementation
                     ReceiverId = participant.Id,
                     Type = NotificationType.JourneyDetailsUpdate,
                     IsRead = false,
-                    JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id }),
+                    JourneyId = journey.Id,
+                    JsonData = JsonSerializer.Serialize(new { }),
                 });
             }
         }
@@ -127,6 +128,15 @@ namespace Car.Domain.Services.Implementation
                         withBaggage = true,
                     }),
                 });
+            }
+        }
+
+        public async Task DeleteNotificationsAsync(IEnumerable<Notification> notifications)
+        {
+            if (notifications is not null)
+            {
+                await notificationRepository.DeleteRangeAsync(notifications);
+                await notificationRepository.SaveChangesAsync();
             }
         }
 

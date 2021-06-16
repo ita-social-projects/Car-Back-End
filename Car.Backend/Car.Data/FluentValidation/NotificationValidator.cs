@@ -12,6 +12,8 @@ namespace Car.Data.FluentValidation
             RuleFor(notification => notification.Receiver).NotNull().SetValidator(new UserValidator()!);
             RuleFor(notification => notification.ReceiverId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(notification => notification.SenderId).GreaterThan(Constants.Constants.IdLength);
+            RuleFor(notification => notification.JourneyId).GreaterThan(Constants.Constants.IdLength)
+                .When(notification => notification.JourneyId is not null);
             RuleFor(notification => notification.Type).NotNull();
             RuleFor(notification => notification.JsonData).NotNull()
                                                           .MinimumLength(Constants.Constants.JsonMinLength)

@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210615072236_Remove_LocationName_Restriction")]
+    partial class Remove_LocationName_Restriction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -441,9 +443,6 @@ namespace Car.Data.Migrations
 
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
-
-                    b.Property<bool>("IsCancelled")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsFree")
                         .HasColumnType("bit");
@@ -8078,9 +8077,6 @@ namespace Car.Data.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("JourneyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("JsonData")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -8096,8 +8092,6 @@ namespace Car.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("JourneyId");
 
                     b.HasIndex("ReceiverId");
 
@@ -8384,11 +8378,6 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Notification", b =>
                 {
-                    b.HasOne("Car.Data.Entities.Journey", "Journey")
-                        .WithMany("Notifications")
-                        .HasForeignKey("JourneyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Car.Data.Entities.User", "Receiver")
                         .WithMany("ReceivedNotifications")
                         .HasForeignKey("ReceiverId")
@@ -8400,8 +8389,6 @@ namespace Car.Data.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Journey");
 
                     b.Navigation("Receiver");
 
@@ -8560,8 +8547,6 @@ namespace Car.Data.Migrations
                     b.Navigation("Chat");
 
                     b.Navigation("JourneyPoints");
-
-                    b.Navigation("Notifications");
 
                     b.Navigation("Schedule");
 
