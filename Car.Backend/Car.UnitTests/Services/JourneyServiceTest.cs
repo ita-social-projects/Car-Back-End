@@ -868,6 +868,51 @@ namespace Car.UnitTests.Services
             result.Should().BeTrue();
         }
 
+        [Theory]
+        [AutoData]
+        public async Task DeleteUserFromJourney_WhenUserExists_ExecuteOnce(int journeyId, int userId)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, userId)
+                .Create();
+
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyId)
+                .With(j => j.Participants, new List<User> { user })
+                .CreateMany(1);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            notificationService.Setup(n => n.NotifyDriverAboutParticipantWithdrawal(It.IsAny<Journey>(), It.IsAny<int>())).Returns(Task.CompletedTask);
+
+            // Act
+            await journeyService.DeleteUserFromJourney(journeyId, userId);
+
+            // Assert
+            journeys.First().Participants.Any(u => u.Id == userId).Should().BeFalse();
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task DeleteUserFromJourney_WhenUserDoesNotExist_ExecuteNever(int journeyId, int userId)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyId)
+                .With(j => j.Participants, new List<User>())
+                .CreateMany(1);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.DeleteUserFromJourney(journeyId, userId);
+
+            // Assert
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
+        }
+
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()
         {
             var departureTime = DateTime.UtcNow.AddHours(1);

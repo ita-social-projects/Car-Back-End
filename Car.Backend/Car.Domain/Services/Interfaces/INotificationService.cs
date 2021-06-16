@@ -28,5 +28,7 @@ namespace Car.Domain.Services.Interfaces
         Task NotifyParticipantsAboutCancellationAsync(Journey journey);
 
         Task DeleteNotificationsAsync(IEnumerable<Notification> notifications);
+
+        Task NotifyDriverAboutParticipantWithdrawal(Journey journey, int participantId);
     }
 }

@@ -273,6 +273,22 @@ namespace Car.Domain.Services.Implementation
             return journey?.IsCancelled ?? true;
         }
 
+        public async Task DeleteUserFromJourney(int journeyId, int userId)
+        {
+            var journey = await journeyRepository
+                .Query()
+                .IncludeAllParticipants()
+                .FirstOrDefaultAsync(j => j.Id == journeyId);
+
+            var userToDelete = journey?.Participants.FirstOrDefault(u => u.Id == userId);
+
+            if (journey?.Participants.Remove(userToDelete) ?? false)
+            {
+                await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
+                await journeyRepository.SaveChangesAsync();
+            }
+        }
+
         private IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
         {
             var applicantStops = new List<StopDto>();
