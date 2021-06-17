@@ -98,6 +98,7 @@ namespace Car.Domain.Services.Implementation
                     Journey = chat.Journey,
                     JourneyOrganizer = chat.JourneyOrganizer,
                     MessageText = msg.Text,
+                    MessageId = msg.Id,
                     Name = chat.Name,
                 }))
             .ToList();
