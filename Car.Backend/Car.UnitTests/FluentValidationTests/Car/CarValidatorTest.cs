@@ -2,12 +2,10 @@
 using Car.Data.Enums;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Car
 {
-    [TestFixture]
     public class CarValidatorTest
     {
         private readonly CarValidator validator;

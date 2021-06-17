@@ -1,11 +1,9 @@
 ﻿using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Address
 {
-    [TestFixture]
     public class AddressValidatorTest
     {
         private readonly AddressValidator validator;

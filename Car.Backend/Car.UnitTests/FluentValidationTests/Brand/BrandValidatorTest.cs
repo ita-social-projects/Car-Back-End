@@ -1,12 +1,10 @@
 ﻿using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Brand
 {
-    [TestFixture]
     public class BrandValidatorTest
     {
         private readonly BrandValidator validator;

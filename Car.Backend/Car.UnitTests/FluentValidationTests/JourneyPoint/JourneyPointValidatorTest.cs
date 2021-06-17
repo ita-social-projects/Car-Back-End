@@ -1,11 +1,9 @@
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.JourneyPoint
 {
-    [TestFixture]
     public class JourneyPointValidatorTest
     {
         private readonly JourneyPointValidator validator;

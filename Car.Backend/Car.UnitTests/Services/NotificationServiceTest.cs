@@ -360,6 +360,22 @@ namespace Car.UnitTests.Services
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
         }
 
+        [Theory]
+        [AutoEntityData]
+        public async Task NotifyDriverAboutParticipantWithdrawal_SaveChangesOnce(Journey journey, int participantId)
+        {
+            // Arrange
+            var notifications = Fixture.CreateMany<Notification>();
+
+            NotificationInitializer(journey, notifications);
+
+            // Act
+            await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, participantId);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
         private void NotificationInitializer(Journey journey, IEnumerable<Notification> notifications)
         {
             notificationRepository.Setup(repo => repo.AddAsync(It.IsAny<Notification>())).ReturnsAsync(notifications.First());

@@ -1,15 +1,11 @@
 using AutoFixture.Xunit2;
-using Car.Data.FluentValidation;
-using Car.Domain.Dto;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 using RangeAttr = System.ComponentModel.DataAnnotations.RangeAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.JourneyPoint
 {
-    [TestFixture]
     public class JourneyPointDtoValidatorTest
     {
         private readonly JourneyPointDtoValidator validator;
