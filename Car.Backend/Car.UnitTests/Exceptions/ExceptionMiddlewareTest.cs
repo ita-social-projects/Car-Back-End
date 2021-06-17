@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Xunit2;
 using Car.Domain.Exceptions;
 using Car.UnitTests.Base;
 using Car.WebApi.Middelware;
@@ -85,11 +86,12 @@ namespace Car.UnitTests.Exceptions
             context.Response.StatusCode.Should().Be(500);
         }
 
-        [Fact]
-        public async Task InvokeAsync_WhenDefaultApplicationExceptionThrown_ReturnExceptionStatusCode()
+        [Theory]
+        [AutoData]
+        public async Task InvokeAsync_WhenDefaultApplicationExceptionThrown_ReturnExceptionStatusCode(
+            int exceptionStatusCode)
         {
             // Arrange
-            int exceptionStatusCode = new Fixture().Create<int>();
             env.SetupGet(e => e.EnvironmentName).Returns("Development");
             next.Setup(n => n.Invoke(context)).Throws(new DefaultApplicationException() { StatusCode = exceptionStatusCode });
 

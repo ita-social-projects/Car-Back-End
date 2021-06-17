@@ -1,12 +1,10 @@
 ﻿using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Journey
 {
-    [TestFixture]
     public class ScheduleValidatorTest
     {
         private readonly ScheduleValidator validator;

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
-using Car.Domain.Dto;
 using Car.Domain.Dto.Location;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;

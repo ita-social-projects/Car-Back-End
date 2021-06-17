@@ -3,12 +3,10 @@ using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Notification
 {
-    [TestFixture]
     public class NotificationValidatorTest
     {
         private readonly NotificationValidator validator;

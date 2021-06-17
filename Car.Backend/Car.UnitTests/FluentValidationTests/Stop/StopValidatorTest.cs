@@ -1,12 +1,10 @@
 ﻿using Car.Data.Enums;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Stop
 {
-    [TestFixture]
     public class StopValidatorTest
     {
         private readonly StopValidator validator;

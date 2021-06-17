@@ -2,12 +2,10 @@
 using Car.Data.Entities;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Notification
 {
-    [TestFixture]
     public class NotificationDtoValidatorTest
     {
         private readonly NotificationDtoValidator validator;
