@@ -38,5 +38,7 @@ namespace Car.Domain.Services.Interfaces
         Task CancelAsync(int journeyId);
 
         Task<bool> IsCanceled(int journeyId);
+
+        Task DeleteUserFromJourney(int journeyId, int userId);
     }
 }

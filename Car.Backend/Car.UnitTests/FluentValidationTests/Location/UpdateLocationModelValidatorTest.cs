@@ -1,13 +1,10 @@
-﻿using Car.Data.Constants;
-using Car.Domain.FluentValidation;
+﻿using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.Location
 {
-    [TestFixture]
     public class UpdateLocationModelValidatorTest
     {
         private UpdateLocationDtoValidator validator;

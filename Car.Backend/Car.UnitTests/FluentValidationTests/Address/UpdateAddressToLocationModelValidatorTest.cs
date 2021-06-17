@@ -1,15 +1,12 @@
 ﻿using AutoFixture.Xunit2;
 using Car.Data.Constants;
-using Car.Data.FluentValidation;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 using RangeAttr = System.ComponentModel.DataAnnotations.RangeAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.Address
 {
-    [TestFixture]
     public class UpdateAddressToLocationModelValidatorTest
     {
         private readonly UpdateAddressToLocationDtoValidator validator;

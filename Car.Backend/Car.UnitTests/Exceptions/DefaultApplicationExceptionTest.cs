@@ -20,11 +20,6 @@ namespace Car.UnitTests.Exceptions
         {
         }
 
-        private DefaultApplicationExceptionTest(bool isProtected)
-            : base(SerializationInfo, default)
-        {
-        }
-
         [Fact]
         public void TestParameterLessConstructor()
         {
