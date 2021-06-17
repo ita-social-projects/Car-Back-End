@@ -8,6 +8,8 @@ namespace Car.Domain.Dto.ChatDto
 
         public string MessageText { get; set; } = string.Empty;
 
+        public int MessageId { get; set; }
+
         public ChatUserDto? JourneyOrganizer { get; set; }
 
         public ChatJourneyDto? Journey { get; set; }
