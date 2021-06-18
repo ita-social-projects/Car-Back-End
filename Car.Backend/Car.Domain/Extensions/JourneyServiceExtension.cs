@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Car.Data.Constants;
 using Car.Data.Entities;
+using Car.Data.Enums;
 using Car.Domain.Dto;
 using Car.Domain.Dto.Address;
+using Car.Domain.Filters;
+using Geolocation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Extensions
@@ -66,5 +71,44 @@ namespace Car.Domain.Extensions
 
         public static IQueryable<Journey> FilterUncancelledJourneys(this IQueryable<Journey> journeys) =>
             journeys.Where(journey => !journey.IsCancelled);
+
+        public static IEnumerable<Request> FilterUnsuitableRequests(this IQueryable<Request> requests, Journey journey, Func<Request, JourneyFilter> requestToJourneyFilter) =>
+            requests.Where(request => journey.Participants.Count + request.PassengersCount <= journey.CountOfSeats)
+            .Where(request => journey.DepartureTime > DateTime.UtcNow
+                && journey.DepartureTime <= request.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
+                && journey.DepartureTime >= request.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours))
+            .Where(request => (journey.IsFree && request.Fee == FeeType.Free)
+                || (!journey.IsFree && request.Fee == FeeType.Paid)
+                || (request.Fee == FeeType.All))
+            .AsEnumerable()
+            .Where(request => IsSuitablePoints(journey, requestToJourneyFilter(request)));
+
+        public static IEnumerable<Journey> FilterUnsuitableJourneys(this IQueryable<Journey> journeys, JourneyFilter filter) =>
+            journeys.Where(journey => journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats)
+            .Where(journey => journey.DepartureTime > DateTime.UtcNow
+                && journey.DepartureTime <= filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
+                && journey.DepartureTime >= filter.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours))
+            .Where(journey => (journey.IsFree && filter.Fee == FeeType.Free)
+                || (!journey.IsFree && filter.Fee == FeeType.Paid)
+                || (filter.Fee == FeeType.All))
+            .AsEnumerable()
+            .Where(journey => IsSuitablePoints(journey, filter));
+
+        public static double CalculateDistance(this JourneyPoint point, double latitude, double longitude) =>
+            GeoCalculator.GetDistance(
+                point.Latitude,
+                point.Longitude,
+                latitude,
+                longitude,
+                distanceUnit: DistanceUnit.Kilometers);
+
+        private static bool IsSuitablePoints(Journey journey, JourneyFilter filter)
+        {
+            var pointsFromStart = journey.JourneyPoints
+                .SkipWhile(point => CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
+
+            return pointsFromStart.Any() && pointsFromStart
+                .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
+        }
     }
 }

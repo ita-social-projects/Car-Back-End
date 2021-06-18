@@ -132,18 +132,14 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
 
-        public async Task<IEnumerable<Journey>> GetFilteredJourneys(JourneyFilter filter)
-        {
-            var journeys = await journeyRepository
+        public IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter) =>
+            journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
-                .ToListAsync();
-
-            return journeys.Where(j => IsSuitable(j, filter));
-        }
+                .FilterUnsuitableJourneys(filter);
 
         public async Task DeleteAsync(int journeyId)
         {
@@ -227,11 +223,11 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey!);
         }
 
-        public async Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilter filter)
+        public IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter)
         {
             var journeysResult = new List<ApplicantJourney>();
 
-            var filteredJourneys = await GetFilteredJourneys(filter);
+            var filteredJourneys = GetFilteredJourneys(filter);
 
             foreach (var journey in filteredJourneys)
             {
@@ -249,9 +245,8 @@ namespace Car.Domain.Services.Implementation
         {
             var requests = requestRepository
                 .Query()
-                .AsEnumerable()
-                .Where(r => IsSuitable(journey, mapper.Map<Request, JourneyFilter>(r)) && journey.OrganizerId != r.UserId)
-                .ToList();
+                .Where(r => journey.OrganizerId != r.UserId)
+                .FilterUnsuitableRequests(journey, request => mapper.Map<Request, JourneyFilter>(request));
 
             foreach (var request in requests)
             {
@@ -282,7 +277,7 @@ namespace Car.Domain.Services.Implementation
 
             var userToDelete = journey?.Participants.FirstOrDefault(u => u.Id == userId);
 
-            if (journey?.Participants.Remove(userToDelete) ?? false)
+            if (journey?.Participants.Remove(userToDelete!) ?? false)
             {
                 await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
                 await journeyRepository.SaveChangesAsync();
@@ -293,8 +288,7 @@ namespace Car.Domain.Services.Implementation
         {
             var applicantStops = new List<StopDto>();
 
-            var distances = journey.JourneyPoints.Select(p => CalculateDistance(
-                p,
+            var distances = journey.JourneyPoints.Select(p => p.CalculateDistance(
                 filter.FromLatitude,
                 filter.FromLongitude)).ToList();
 
@@ -303,8 +297,7 @@ namespace Car.Domain.Services.Implementation
 
             distances = journey.JourneyPoints.ToList()
                 .GetRange(startPointIndex, journey.JourneyPoints.Count - startPointIndex)
-                .Select(p => CalculateDistance(
-                    p,
+                .Select(p => p.CalculateDistance(
                     filter.ToLatitude,
                     filter.ToLongitude)).ToList();
 
@@ -340,37 +333,5 @@ namespace Car.Domain.Services.Implementation
 
             return applicantStops;
         }
-
-        private static bool IsSuitable(Journey journey, JourneyFilter filter)
-        {
-            var isEnoughSeats = journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats;
-
-            var isDepartureTimeSuitable = journey.DepartureTime > DateTime.UtcNow
-                                          && journey.DepartureTime <= filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
-                                          && journey.DepartureTime >= filter.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours);
-
-            var isFeeSuitable = (journey.IsFree && filter.Fee == FeeType.Free)
-                                || (!journey.IsFree && filter.Fee == FeeType.Paid)
-                                || (filter.Fee == FeeType.All);
-
-            if (!isEnoughSeats || !isDepartureTimeSuitable || !isFeeSuitable)
-            {
-                return false;
-            }
-
-            var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(point => CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
-
-            return pointsFromStart.Any() && pointsFromStart
-                .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
-        }
-
-        private static double CalculateDistance(JourneyPoint point, double latitude, double longitude) =>
-            GeoCalculator.GetDistance(
-                point.Latitude,
-                point.Longitude,
-                latitude,
-                longitude,
-                distanceUnit: DistanceUnit.Kilometers);
     }
 }
