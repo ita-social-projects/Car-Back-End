@@ -10,7 +10,7 @@ namespace Car.Domain.Mapping
         public NotificationMapper()
         {
             CreateMap<Notification, NotificationDto>().ReverseMap();
-            CreateMap<CreateNotificationModel, Notification>();
+            CreateMap<CreateNotificationDto, Notification>().ReverseMap();
         }
     }
 }

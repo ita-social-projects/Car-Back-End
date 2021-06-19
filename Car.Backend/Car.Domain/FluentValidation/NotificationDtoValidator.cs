@@ -1,9 +1,10 @@
 ﻿using Car.Data.Constants;
+using Car.Domain.Dto;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class NotificationDtoValidator : AbstractValidator<Dto.NotificationDto>
+    public class NotificationDtoValidator : AbstractValidator<NotificationDto>
     {
         public NotificationDtoValidator()
         {

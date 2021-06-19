@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Hubs;
-using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -80,8 +80,8 @@ namespace Car.Domain.Services.Implementation
             return notificationToUpdate;
         }
 
-        public Task<Notification> CreateNewNotificationAsync(CreateNotificationModel createNotificationModel) =>
-            Task.Run(() => mapper.Map<CreateNotificationModel, Notification>(createNotificationModel));
+        public Task<Notification> CreateNewNotificationAsync(CreateNotificationDto createNotificationModel) =>
+            Task.Run(() => mapper.Map<CreateNotificationDto, Notification>(createNotificationModel));
 
         public async Task JourneyUpdateNotifyUserAsync(Journey journey)
         {

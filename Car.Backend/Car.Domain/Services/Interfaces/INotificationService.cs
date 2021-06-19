@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Car.Data.Entities;
-using Car.Domain.Models.Notification;
+using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -19,7 +19,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeleteAsync(int notificationId);
 
-        Task<Notification> CreateNewNotificationAsync(CreateNotificationModel createNotificationModel);
+        Task<Notification> CreateNewNotificationAsync(CreateNotificationDto createNotificationDto);
 
         Task<Notification> MarkNotificationAsReadAsync(int notificationId);
 

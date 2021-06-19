@@ -10,11 +10,11 @@ namespace Car.UnitTests.FluentValidationTests.Notification
     [TestFixture]
     public class CreateNotificationModelValidatorTest
     {
-        private readonly CreateNotificationModelValidator validator;
+        private readonly CreateNotificationDtoValidator validator;
 
         public CreateNotificationModelValidatorTest()
         {
-            validator = new CreateNotificationModelValidator();
+            validator = new CreateNotificationDtoValidator();
         }
 
         [Xunit.Theory]
