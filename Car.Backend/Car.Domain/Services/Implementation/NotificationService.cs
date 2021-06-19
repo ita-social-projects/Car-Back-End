@@ -17,16 +17,22 @@ namespace Car.Domain.Services.Implementation
     public class NotificationService : INotificationService
     {
         private readonly IRepository<Notification> notificationRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IHubContext<SignalRHub> notificationHub;
+        private readonly IFirebaseService firebaseService;
         private readonly IMapper mapper;
 
         public NotificationService(
             IRepository<Notification> notificationRepository,
+            IRepository<User> userRepository,
             IHubContext<SignalRHub> notificationHub,
+            IFirebaseService firebaseService,
             IMapper mapper)
         {
             this.notificationRepository = notificationRepository;
+            this.userRepository = userRepository;
             this.notificationHub = notificationHub;
+            this.firebaseService = firebaseService;
             this.mapper = mapper;
         }
 
@@ -58,6 +64,7 @@ namespace Car.Domain.Services.Implementation
             await notificationRepository.SaveChangesAsync();
 
             await NotifyClientAsync(notification);
+            await firebaseService.SendNotification(userRepository, notification.ReceiverId, "title", "body");
 
             return addedNotification;
         }
@@ -134,5 +141,10 @@ namespace Car.Domain.Services.Implementation
                 "updateUnreadNotificationsNumber",
                 await GetUnreadNotificationsNumberAsync(notification.ReceiverId));
         }
+
+        // private async Task NotifyWithPushAsync(Notification notification)
+        // {
+        //     await notificationHub.Clients.All.SendAsync("recievePushNotification", notification);
+        // }
     }
 }
