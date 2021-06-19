@@ -8188,6 +8188,9 @@ namespace Car.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("FCMToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("HireDate")
                         .HasColumnType("date");
 
