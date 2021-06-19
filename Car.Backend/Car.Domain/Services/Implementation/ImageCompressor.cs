@@ -29,7 +29,7 @@ namespace Car.Domain.Services.Implementation
 
             var compressedFile = new MemoryStream();
 
-            image.Save(compressedFile, jpegCodec, codecParameter);
+            image.Save(compressedFile, jpegCodec!, codecParameter);
 
             return compressedFile;
         }

@@ -70,7 +70,7 @@ namespace Car.Domain.Services.Implementation
 
             await carRepository.SaveChangesAsync();
 
-            return mapper.Map<CarEntity, UpdateCarDto>(car);
+            return mapper.Map<CarEntity, UpdateCarDto>(car!);
         }
 
         public async Task DeleteAsync(int carId)

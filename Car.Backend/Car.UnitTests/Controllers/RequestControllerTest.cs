@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;

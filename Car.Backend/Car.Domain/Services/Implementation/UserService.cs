@@ -28,7 +28,7 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<User, UserDto>(user);
         }
 
-        public async Task<UserDto> UpdateUserAsync(UpdateUserDto updateUserDto)
+        public async Task<UserDto?> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
             if (updateUserDto == null)
             {

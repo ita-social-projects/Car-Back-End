@@ -12,8 +12,8 @@ namespace Car.Domain.Dto
 
         public Color Color { get; set; }
 
-        public string PlateNumber { get; set; }
+        public string PlateNumber { get; set; } = string.Empty;
 
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

@@ -58,7 +58,7 @@ namespace Car.WebApi.Middelware
 
             Dictionary<Type, ResponseInformation> exceptions = GenerateExceptionsDictionary(exception);
 
-            if (exceptions.TryGetValue(exception.GetType(), out ResponseInformation responseInformation))
+            if (exceptions.TryGetValue(exception.GetType(), out ResponseInformation? responseInformation))
             {
                 logMessage = responseInformation.LogMessage;
 

@@ -12,16 +12,16 @@ namespace Car.Data.EntityConfigurations
 
             builder.HasKey(location => location.Id);
 
-            builder.Property(type => type.Name).HasMaxLength(50).IsRequired();
+            builder.Property(type => type.Name).IsRequired();
 
             builder.HasOne(location => location.Address)
-                .WithOne(address => address.Location)
+                .WithOne(address => address!.Location!)
                 .HasForeignKey<Location>(location => location.AddressId);
             builder.HasOne(location => location.User)
-                .WithMany(user => user.Locations)
+                .WithMany(user => user!.Locations)
                 .HasForeignKey(location => location.UserId);
             builder.HasOne(location => location.Type)
-                .WithMany(locationType => locationType.Locations)
+                .WithMany(locationType => locationType!.Locations)
                 .HasForeignKey(location => location.TypeId);
         }
     }

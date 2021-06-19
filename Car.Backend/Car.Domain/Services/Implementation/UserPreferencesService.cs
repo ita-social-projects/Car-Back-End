@@ -26,7 +26,7 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<UserPreferences, UserPreferencesDto>(preferences);
         }
 
-        public async Task<UserPreferencesDto> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO)
+        public async Task<UserPreferencesDto?> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO)
         {
             var preferences = await preferencesRepository.GetByIdAsync(preferencesDTO.Id);
 

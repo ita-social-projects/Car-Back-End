@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Request
 {
-    [TestFixture]
     public class RequestDtoValidatorTest
     {
         private readonly RequestDtoValidator validator;

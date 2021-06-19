@@ -6,9 +6,9 @@ namespace Car.Domain.Dto.Location
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public AddressDto Address { get; set; }
+        public AddressDto? Address { get; set; }
 
         public int TypeId { get; set; }
 

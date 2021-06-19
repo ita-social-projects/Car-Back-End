@@ -14,6 +14,6 @@ namespace Car.Domain.Dto
 
         public bool DoAllowEating { get; set; }
 
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
     }
 }

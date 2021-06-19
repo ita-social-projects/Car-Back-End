@@ -7,6 +7,6 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<UserDto> GetUserByIdAsync(int userId);
 
-        Task<UserDto> UpdateUserAsync(UpdateUserDto updateUserDto);
+        Task<UserDto?> UpdateUserAsync(UpdateUserDto updateUserDto);
     }
 }

@@ -2,12 +2,10 @@
 using Car.Data.Constants;
 using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.User
 {
-    [TestFixture]
     public class UserValidatorTest
     {
         private readonly UserValidator validator;

@@ -44,7 +44,7 @@ namespace Car.Domain.Services.Implementation
                     ChatId = message.ChatId,
                     CreatedAt = message.CreatedAt,
                     Text = message.Text,
-                    SenderId = message.Sender.Id,
+                    SenderId = message.Sender!.Id,
                     SenderName = message.Sender.Name,
                     SenderSurname = message.Sender.Surname,
                     ImageId = message.Sender.ImageId,
@@ -74,15 +74,15 @@ namespace Car.Domain.Services.Implementation
 
             var chats = user?.OrganizerJourneys.Select(journey => journey.Chat)
                 .Union(user.ParticipantJourneys.Select(journey => journey.Chat))
-                .Except(new List<Chat>() { null });
+                .Except(new List<Chat>() { null! });
 
-            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats);
+            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
         }
 
         public async Task<IEnumerable<ChatDto>> GetFilteredChatsAsync(ChatFilter filter)
         {
             var messages = await messageRepository.Query()
-            .Where(msg => filter.Chats
+            .Where(msg => filter.Chats!
                 .Select(chat => chat.Id)
                 .Contains(msg.ChatId))
             .Where(msg => msg.Text
@@ -90,7 +90,7 @@ namespace Car.Domain.Services.Implementation
             .ToListAsync();
 
             var result = messages
-            .SelectMany(msg => filter.Chats
+            .SelectMany(msg => filter.Chats!
                 .Where(chat => msg.ChatId == chat.Id)
                 .Select(chat => new ChatDto()
                 {
@@ -98,6 +98,7 @@ namespace Car.Domain.Services.Implementation
                     Journey = chat.Journey,
                     JourneyOrganizer = chat.JourneyOrganizer,
                     MessageText = msg.Text,
+                    MessageId = msg.Id,
                     Name = chat.Name,
                 }))
             .ToList();

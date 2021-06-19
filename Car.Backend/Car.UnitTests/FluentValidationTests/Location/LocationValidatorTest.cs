@@ -1,13 +1,10 @@
-﻿using Car.Data.Constants;
-using Car.Data.FluentValidation;
+﻿using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.Location
 {
-    [TestFixture]
     public class LocationValidatorTest
     {
         private readonly LocationValidator validator;
@@ -39,13 +36,6 @@ namespace Car.UnitTests.FluentValidationTests.Location
         public void Name_IsNull_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(location => location.Name, value);
-        }
-
-        [Fact]
-        public void Name_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.StringMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(location => location.Name, longText);
         }
 
         [Theory]

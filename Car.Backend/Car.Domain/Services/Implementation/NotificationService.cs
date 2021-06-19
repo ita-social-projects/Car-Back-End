@@ -31,11 +31,11 @@ namespace Car.Domain.Services.Implementation
         }
 
         public Task<Notification> GetNotificationAsync(int notificationId) =>
-            notificationRepository.Query(notificationSender => notificationSender.Sender)
+            notificationRepository.Query(notificationSender => notificationSender!.Sender!)
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
 
         public Task<List<Notification>> GetNotificationsAsync(int userId) =>
-            notificationRepository.Query(m => m.Sender)
+            notificationRepository.Query().Include(n => n.Sender)
                 .Where(p => p.ReceiverId == userId)
                 .OrderByDescending(k => k.CreatedAt)
                 .ToListAsync();
@@ -85,17 +85,21 @@ namespace Car.Domain.Services.Implementation
 
         public async Task JourneyUpdateNotifyUserAsync(Journey journey)
         {
-            if (journey is null || journey.Participants is null) { return; }
+            if (journey is null || journey.Participants is null)
+            {
+                return;
+            }
 
             foreach (var participant in journey.Participants)
             {
                 await AddNotificationAsync(new Notification()
                 {
-                    SenderId = journey.Organizer.Id,
+                    SenderId = journey.Organizer!.Id,
                     ReceiverId = participant.Id,
                     Type = NotificationType.JourneyDetailsUpdate,
                     IsRead = false,
-                    JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id }),
+                    JourneyId = journey.Id,
+                    JsonData = JsonSerializer.Serialize(new { }),
                 });
             }
         }
@@ -111,11 +115,12 @@ namespace Car.Domain.Services.Implementation
             {
                 await AddNotificationAsync(new Notification()
                 {
-                    SenderId = journey.Organizer.Id,
+                    SenderId = journey.Organizer!.Id,
                     ReceiverId = user.Id,
                     Type = NotificationType.JourneyCancellation,
                     CreatedAt = DateTime.UtcNow,
                     IsRead = false,
+                    JourneyId = journey.Id,
                     JsonData = JsonSerializer.Serialize(new
                     {
                         departureTime = journey.DepartureTime,
@@ -126,6 +131,33 @@ namespace Car.Domain.Services.Implementation
                 });
             }
         }
+
+        public async Task DeleteNotificationsAsync(IEnumerable<Notification> notifications)
+        {
+            if (notifications is not null)
+            {
+                await notificationRepository.DeleteRangeAsync(notifications);
+                await notificationRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task NotifyDriverAboutParticipantWithdrawal(Journey journey, int participantId) =>
+            await AddNotificationAsync(new Notification()
+                {
+                    SenderId = participantId,
+                    ReceiverId = journey.Organizer!.Id,
+                    Type = NotificationType.PassengerWithdrawal,
+                    CreatedAt = DateTime.UtcNow,
+                    IsRead = false,
+                    JourneyId = journey.Id,
+                    JsonData = JsonSerializer.Serialize(new
+                        {
+                            departureTime = journey.DepartureTime,
+                            availableSeats = journey.CountOfSeats - journey.Participants.Count,
+                            isFree = journey.IsFree,
+                            withBaggage = true,
+                        }),
+                });
 
         private async Task NotifyClientAsync(Notification notification)
         {

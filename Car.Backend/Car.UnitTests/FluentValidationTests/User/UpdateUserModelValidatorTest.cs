@@ -1,11 +1,9 @@
 ﻿using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.User
 {
-    [TestFixture]
     public class UpdateUserModelValidatorTest
     {
         private readonly UpdateUserDtoValidator validator;

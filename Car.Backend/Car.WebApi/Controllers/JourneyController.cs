@@ -77,8 +77,8 @@ namespace Car.WebApi.Controllers
         /// <param name="journeyFilterModel">Model that contains needed parameters to filter by</param>
         /// <returns>Collection of filtered journeys.</returns>
         [HttpGet("filter/")]
-        public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilter journeyFilterModel) =>
-            Ok(await journeyService.GetApplicantJourneys(journeyFilterModel));
+        public IActionResult GetFiltered([FromQuery] JourneyFilter journeyFilterModel) =>
+            Ok(journeyService.GetApplicantJourneys(journeyFilterModel));
 
         /// <summary>
         /// deletes journey by identifier
@@ -109,5 +109,39 @@ namespace Car.WebApi.Controllers
         [HttpPut("update-details")]
         public async Task<IActionResult> UpdateDetails([FromBody] JourneyDto journey) =>
             Ok(await journeyService.UpdateDetailsAsync(journey));
+
+        /// <summary>
+        /// Cancels journey
+        /// </summary>
+        /// <param name="id">id of journey that should be cancelled</param>
+        /// <returns>OkResult</returns>
+        [HttpPut("cancel/{id}")]
+        public async Task<IActionResult> CancelJourney(int id)
+        {
+            await journeyService.CancelAsync(id);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Defines if journey was canceled
+        /// </summary>
+        /// <param name="id">id of journey</param>
+        /// <returns>bool value that indicates whether journey was canceled</returns>
+        [HttpGet("is-canceled/{id}")]
+        public async Task<IActionResult> IsCanceled(int id) =>
+            Ok(await journeyService.IsCanceled(id));
+
+        /// <summary>
+        /// Deletes user from journey
+        /// </summary>
+        /// <param name="journeyId">journey Id</param>
+        /// <param name="userId">user Id</param>
+        /// <returns>OkResult</returns>
+        [HttpDelete("delete-user/{journeyId}/{userId}")]
+        public async Task<IActionResult> DeleteUserFromJourney(int journeyId, int userId)
+        {
+            await journeyService.DeleteUserFromJourney(journeyId, userId);
+            return Ok();
+        }
     }
 }

@@ -15,11 +15,13 @@ namespace Car.Domain.Dto
 
         public int CountOfSeats { get; set; }
 
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
 
         public bool IsFree { get; set; }
 
         public bool IsOnOwnCar { get; set; }
+
+        public bool IsCancelled { get; set; }
 
         public int OrganizerId { get; set; }
 

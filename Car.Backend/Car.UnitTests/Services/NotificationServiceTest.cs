@@ -224,6 +224,7 @@ namespace Car.UnitTests.Services
                 .With(n => n.JsonData, notification.JsonData)
                 .With(n => n.ReceiverId, notification.ReceiverId)
                 .With(n => n.SenderId, notification.SenderId)
+                .With(n => n.JourneyId, notification.JourneyId)
                 .Create();
 
             notificationRepository
@@ -245,6 +246,7 @@ namespace Car.UnitTests.Services
                         .Excluding(o => o.Id)
                         .Excluding(o => o.Receiver)
                         .Excluding(o => o.Sender)
+                        .Excluding(o => o.Journey)
                         .Excluding(o => o.CreatedAt)
                         .Excluding(o => o.IsRead));
         }
@@ -330,6 +332,48 @@ namespace Car.UnitTests.Services
 
             // Assert
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
+        }
+
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task DeleteNotificationsAsync_WhenNotificaionsNotNull_SavesChangesOnce(
+            IEnumerable<Notification> notificationsToDelete)
+        {
+            // Arrange
+
+            // Act
+            await notificationService.DeleteNotificationsAsync(notificationsToDelete);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeleteNotificationsAsync_WhenNotificationsIsNull_SavesChangesNever()
+        {
+            // Arrange
+
+            // Act
+            await notificationService.DeleteNotificationsAsync((IEnumerable<Notification>)null);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task NotifyDriverAboutParticipantWithdrawal_SaveChangesOnce(Journey journey, int participantId)
+        {
+            // Arrange
+            var notifications = Fixture.CreateMany<Notification>();
+
+            NotificationInitializer(journey, notifications);
+
+            // Act
+            await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, participantId);
+
+            // Assert
+            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         private void NotificationInitializer(Journey journey, IEnumerable<Notification> notifications)

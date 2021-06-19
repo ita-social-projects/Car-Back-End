@@ -2,12 +2,10 @@
 using Car.Data.Entities;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Notification
 {
-    [TestFixture]
     public class CreateNotificationModelValidatorTest
     {
         private readonly CreateNotificationDtoValidator validator;
@@ -47,6 +45,22 @@ namespace Car.UnitTests.FluentValidationTests.Notification
         public void SenderId_IsSpecified_NotGeneratesValidationError(int value)
         {
             validator.ShouldNotHaveValidationErrorFor(notificationModel => notificationModel.SenderId, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(-5)]
+        [InlineData(-1)]
+        public void JourneyId_IsNotValid_GeneratesValidationError(int? value)
+        {
+            validator.ShouldHaveValidationErrorFor(notificationModel => notificationModel.JourneyId, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(null)]
+        [InlineData(10)]
+        public void JourneyId_IsValid_NotGeneratesValidationError(int? value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(notificationModel => notificationModel.JourneyId, value);
         }
 
         [Xunit.Theory]
