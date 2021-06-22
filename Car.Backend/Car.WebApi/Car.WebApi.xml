@@ -243,7 +243,7 @@
             <param name="userId">user Id</param>
             <returns>int number</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Models.Notification.CreateNotificationModel)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Dto.CreateNotificationDto)">
             <summary>
             adds new user notification Asynchronously
             </summary>

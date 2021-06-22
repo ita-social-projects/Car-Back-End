@@ -6,8 +6,8 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface IUserPreferencesService
     {
-        Task<UserPreferencesDto> GetPreferencesAsync(int userId);
+        Task<UserPreferencesDto?> GetPreferencesAsync(int userId);
 
-        Task<UserPreferencesDto> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO);
+        Task<UserPreferencesDto?> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO);
     }
 }

@@ -19,7 +19,7 @@ namespace Car.Domain.Services.Implementation
             this.mapper = mapper;
         }
 
-        public async Task<UserPreferencesDto> GetPreferencesAsync(int userId)
+        public async Task<UserPreferencesDto?> GetPreferencesAsync(int userId)
         {
             var preferences = await preferencesRepository.Query().FirstOrDefaultAsync(p => p.Id == userId);
 
@@ -39,7 +39,7 @@ namespace Car.Domain.Services.Implementation
 
             await preferencesRepository.SaveChangesAsync();
 
-            return mapper.Map<UserPreferences, UserPreferencesDto>(preferences);
+            return mapper.Map<UserPreferences, UserPreferencesDto>(preferences!);
         }
     }
 }

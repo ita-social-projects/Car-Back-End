@@ -7,27 +7,27 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface INotificationService
     {
-        Task<Notification> GetNotificationAsync(int notificationId);
+        Task<NotificationDto> GetNotificationAsync(int notificationId);
 
-        Task<List<Notification>> GetNotificationsAsync(int userId);
+        Task<IEnumerable<Notification>> GetNotificationsAsync(int userId);
 
         Task<int> GetUnreadNotificationsNumberAsync(int userId);
 
-        Task<Notification> UpdateNotificationAsync(Notification notification);
+        Task<NotificationDto> UpdateNotificationAsync(NotificationDto notification);
 
-        Task<Notification> AddNotificationAsync(Notification notification);
+        Task<NotificationDto> AddNotificationAsync(NotificationDto notification);
 
         Task DeleteAsync(int notificationId);
 
-        Task<Notification> CreateNewNotificationAsync(CreateNotificationDto createNotificationDto);
+        Task<NotificationDto> CreateNewNotificationAsync(CreateNotificationDto createNotificationDto);
 
-        Task<Notification> MarkNotificationAsReadAsync(int notificationId);
+        Task<NotificationDto> MarkNotificationAsReadAsync(int notificationId);
 
         Task JourneyUpdateNotifyUserAsync(Journey journey);
 
         Task NotifyParticipantsAboutCancellationAsync(Journey journey);
 
-        Task DeleteNotificationsAsync(IEnumerable<Notification> notifications);
+        Task DeleteNotificationsAsync(IEnumerable<NotificationDto> notifications);
 
         Task NotifyDriverAboutParticipantWithdrawal(Journey journey, int participantId);
     }

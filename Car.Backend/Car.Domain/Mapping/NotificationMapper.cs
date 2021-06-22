@@ -11,6 +11,7 @@ namespace Car.Domain.Mapping
         {
             CreateMap<Notification, NotificationDto>().ReverseMap();
             CreateMap<CreateNotificationDto, Notification>().ReverseMap();
+            CreateMap<CreateNotificationDto, NotificationDto>().ReverseMap();
         }
     }
 }

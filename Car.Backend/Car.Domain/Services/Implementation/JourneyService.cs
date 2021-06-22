@@ -173,7 +173,8 @@ namespace Car.Domain.Services.Implementation
                 journeyToCancel.DepartureTime = DateTime.UtcNow;
                 await journeyRepository.SaveChangesAsync();
 
-                await notificationService.DeleteNotificationsAsync(journeyToCancel.Notifications);
+                var notificationsToDelete = mapper.Map<IEnumerable<Notification>, IEnumerable<NotificationDto>>(journeyToCancel.Notifications);
+                await notificationService.DeleteNotificationsAsync(notificationsToDelete);
                 await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToCancel);
             }
         }

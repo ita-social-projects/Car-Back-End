@@ -95,7 +95,7 @@ namespace Car.Domain.Services.Implementation
                 JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id, applicantStops = stops }),
             };
 
-            await notificationService.AddNotificationAsync(notification);
+            await notificationService.AddNotificationAsync(mapper.Map<Notification, NotificationDto>(notification));
         }
     }
 }

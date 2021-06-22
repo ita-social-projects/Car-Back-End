@@ -7,9 +7,9 @@ namespace Car.Domain.Dto
     {
         public int Id { get; set; }
 
-        public User Sender { get; set; }
+        public User? Sender { get; set; }
 
-        public User Receiver { get; set; }
+        public User? Receiver { get; set; }
 
         public int ReceiverId { get; set; }
 
@@ -22,5 +22,9 @@ namespace Car.Domain.Dto
         public bool IsRead { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public int? JourneyId { get; set; }
+
+        public Journey? Journey { get; set; }
     }
 }
