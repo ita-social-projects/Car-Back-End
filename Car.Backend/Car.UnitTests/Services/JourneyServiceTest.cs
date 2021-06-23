@@ -425,7 +425,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetFilteredJourneys_ReturnsJourneyCollection(JourneyFilter filter)
+        public void GetFilteredJourneys_ReturnsJourneyCollection(JourneyFilter filter)
         {
             // Arrange
             var expectedJourneys = new List<Journey>();
@@ -434,7 +434,7 @@ namespace Car.UnitTests.Services
                 .Returns(expectedJourneys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetFilteredJourneys(filter);
+            var result = journeyService.GetFilteredJourneys(filter);
 
             // Assert
             result.Should().BeEquivalentTo(expectedJourneys);
@@ -443,7 +443,7 @@ namespace Car.UnitTests.Services
         [Theory]
         [InlineData(true, 3, 3)]
         [InlineData(false, 3, 0)]
-        public async Task GetFilteredJourneys_FilteringFreeJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
+        public void GetFilteredJourneys_FilteringFreeJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
@@ -460,7 +460,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var freeResult = await journeyService.GetFilteredJourneys(freeFilter);
+            var freeResult = journeyService.GetFilteredJourneys(freeFilter);
 
             // Assert
             freeResult.Should().HaveCount(expectedCount);
@@ -469,7 +469,7 @@ namespace Car.UnitTests.Services
         [Theory]
         [InlineData(true, 3, 0)]
         [InlineData(false, 3, 3)]
-        public async Task GetFilteredJourneys_FilteringPaidJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
+        public void GetFilteredJourneys_FilteringPaidJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
@@ -486,7 +486,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var paidResult = await journeyService.GetFilteredJourneys(paidFilter);
+            var paidResult = journeyService.GetFilteredJourneys(paidFilter);
 
             // Assert
             paidResult.Should().HaveCount(expectedCount);
@@ -495,7 +495,7 @@ namespace Car.UnitTests.Services
         [Theory]
         [InlineData(true, 3, 3)]
         [InlineData(false, 3, 3)]
-        public async Task GetFilteredJourneys_FilteringAllFeeJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
+        public void GetFilteredJourneys_FilteringAllFeeJourneys_ReturnsJourneysCollection(bool isFree, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
@@ -512,7 +512,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var allResult = await journeyService.GetFilteredJourneys(allFilter);
+            var allResult = journeyService.GetFilteredJourneys(allFilter);
 
             // Assert
             allResult.Should().HaveCount(expectedCount);
@@ -524,7 +524,7 @@ namespace Car.UnitTests.Services
         [InlineData("2121-1-1T12:00:00", "2121-1-1T10:00:00", 1, 1)]
         [InlineData("2121-1-1T12:00:00", "2121-1-1T15:00:00", 1, 0)]
         [InlineData("2121-1-1T12:00:00", "2121-1-1T09:00:00", 1, 0)]
-        public async Task GetFilteredJourneys_FilteringByDepartureTime_ReturnsJourneysCollection(string journeyTime, string filterTime, int journeysToCreateCount, int expectedCount)
+        public void GetFilteredJourneys_FilteringByDepartureTime_ReturnsJourneysCollection(string journeyTime, string filterTime, int journeysToCreateCount, int expectedCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
@@ -541,7 +541,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetFilteredJourneys(filter);
+            var result = journeyService.GetFilteredJourneys(filter);
 
             // Assert
             result.Should().HaveCount(expectedCount);
@@ -551,7 +551,7 @@ namespace Car.UnitTests.Services
         [InlineData(3, 4, 1, 1, 1)]
         [InlineData(4, 4, 1, 1, 0)]
         [InlineData(2, 4, 4, 1, 0)]
-        public async Task GetFilteredJourneys_FilteringIsEnoughSeats_ReturnsJourneysCollection(int participantsCountJourney, int countOfSeats, int passengersCountFilter, int journeysToCreateCount, int expectedCountOfJourneys)
+        public void GetFilteredJourneys_FilteringIsEnoughSeats_ReturnsJourneysCollection(int participantsCountJourney, int countOfSeats, int passengersCountFilter, int journeysToCreateCount, int expectedCountOfJourneys)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
@@ -571,7 +571,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var allResult = await journeyService.GetFilteredJourneys(allFilter);
+            var allResult = journeyService.GetFilteredJourneys(allFilter);
 
             // Assert
             allResult.Should().HaveCount(expectedCountOfJourneys);
@@ -748,7 +748,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [InlineAutoData(3)]
-        public async Task GetApplicantJourneys_SuitableJourneysExist_ReturnsNotEmptyApplicantJoutneyCollection(int journeysCount)
+        public void GetApplicantJourneys_SuitableJourneysExist_ReturnsNotEmptyApplicantJoutneyCollection(int journeysCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
@@ -764,7 +764,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetApplicantJourneys(filter);
+            var result = journeyService.GetApplicantJourneys(filter);
 
             // Assert
             result.Should().HaveCount(journeys.Count());
@@ -773,7 +773,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [InlineAutoData(3)]
-        public async Task GetApplicantJourneys_SuitableJourneysNotExist_ReturnsEmptyApplicantJoutneyCollection(int journeysCount)
+        public void GetApplicantJourneys_SuitableJourneysNotExist_ReturnsEmptyApplicantJoutneyCollection(int journeysCount)
         {
             // Arrange
             (var journeyComposer, var filterComposer) = GetInitializedJourneyAndFilter();
@@ -789,7 +789,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetApplicantJourneys(filter);
+            var result = journeyService.GetApplicantJourneys(filter);
 
             // Assert
             result.Should().BeEmpty();

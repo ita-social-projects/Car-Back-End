@@ -31,6 +31,7 @@ namespace Car.WebApi.Controllers
         /// <param name="updateUserModel">User object to update.</param>
         /// <returns>Updated user.</returns>
         [HttpPut]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateUser([FromForm] UpdateUserModel updateUserModel) =>
             Ok(await userService.UpdateUserAsync(updateUserModel));
     }

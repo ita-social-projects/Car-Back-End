@@ -184,13 +184,13 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<ApplicantJourney> expectedResult)
+        public void GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<ApplicantJourney> expectedResult)
         {
             // Arrange
-            journeyService.Setup(j => j.GetApplicantJourneys(filterModel)).ReturnsAsync(expectedResult);
+            journeyService.Setup(j => j.GetApplicantJourneys(filterModel)).Returns(expectedResult);
 
             // Act
-            var result = await journeyController.GetFiltered(filterModel);
+            var result = journeyController.GetFiltered(filterModel);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();

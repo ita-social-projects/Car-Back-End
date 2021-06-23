@@ -77,8 +77,8 @@ namespace Car.WebApi.Controllers
         /// <param name="journeyFilterModel">Model that contains needed parameters to filter by</param>
         /// <returns>Collection of filtered journeys.</returns>
         [HttpGet("filter/")]
-        public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilter journeyFilterModel) =>
-            Ok(await journeyService.GetApplicantJourneys(journeyFilterModel));
+        public IActionResult GetFiltered([FromQuery] JourneyFilter journeyFilterModel) =>
+            Ok(journeyService.GetApplicantJourneys(journeyFilterModel));
 
         /// <summary>
         /// deletes journey by identifier
