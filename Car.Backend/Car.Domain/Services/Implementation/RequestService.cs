@@ -84,15 +84,17 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(userRequests);
         }
 
-        public async Task NotifyUserAsync(RequestDto request, JourneyModel journey, IEnumerable<StopDto> stops)
+        public async Task NotifyUserAsync(RequestDto request, Journey journey, IEnumerable<StopDto> stops)
         {
             var notification = new Notification()
             {
-                SenderId = journey.Organizer!.Id,
+                SenderId = journey.OrganizerId,
                 ReceiverId = request.UserId,
                 Type = NotificationType.RequestedJourneyCreated,
                 IsRead = false,
+                CreatedAt = DateTime.UtcNow,
                 JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id, applicantStops = stops }),
+                JourneyId = journey.Id,
             };
 
             await notificationService.AddNotificationAsync(notification);
