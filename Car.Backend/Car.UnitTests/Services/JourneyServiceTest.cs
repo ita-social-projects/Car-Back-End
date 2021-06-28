@@ -815,7 +815,7 @@ namespace Car.UnitTests.Services
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
-            requestService.Setup(r => r.NotifyUserAsync(It.IsAny<RequestDto>(), It.IsAny<JourneyModel>(), It.IsAny<IEnumerable<StopDto>>()))
+            requestService.Setup(r => r.NotifyUserAsync(It.IsAny<RequestDto>(), It.IsAny<Journey>(), It.IsAny<IEnumerable<StopDto>>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -825,7 +825,7 @@ namespace Car.UnitTests.Services
             requestService.Verify(
                 r => r.NotifyUserAsync(
                 It.IsAny<RequestDto>(),
-                It.IsAny<JourneyModel>(),
+                It.IsAny<Journey>(),
                 It.IsAny<IEnumerable<StopDto>>()),
                 Times.AtLeastOnce);
         }
