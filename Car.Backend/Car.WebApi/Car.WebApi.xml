@@ -95,11 +95,12 @@
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32,System.Boolean)">
             <summary>
             Gets journey by identifier.
             </summary>
             <param name="id">Journey identifier</param>
+            <param name="withCancelledStops">Include cancelled stops</param>
             <returns>Journey</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAddresses(System.Int32)">

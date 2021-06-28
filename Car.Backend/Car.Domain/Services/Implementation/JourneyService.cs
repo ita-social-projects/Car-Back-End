@@ -41,15 +41,22 @@ namespace Car.Domain.Services.Implementation
             this.mapper = mapper;
         }
 
-        public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId)
+        public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops)
         {
-            var journey = await journeyRepository
+            var journeyQueryable = journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
-                .IncludeJourneyPoints()
-                .FirstOrDefaultAsync(j => j.Id == journeyId);
+                .IncludeJourneyPoints();
+
+            var journey = withCancelledStops ?
+                await journeyQueryable
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(j => j.Id == journeyId)
+                :
+                await journeyQueryable
+                    .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             return mapper.Map<Journey, JourneyModel>(journey);
         }

@@ -87,10 +87,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey)
+        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey, bool withCancelledStops = false)
         {
             // Arrange
-            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id))
+            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, withCancelledStops))
                 .ReturnsAsync(journey);
 
             // Act
@@ -106,10 +106,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetJourneyById_WhenJourneyNotExist_ReturnsNull(JourneyModel journey)
+        public async Task GetJourneyById_WhenJourneyNotExist_ReturnsNull(JourneyModel journey, bool withCancelledStops = false)
         {
             // Arrange
-            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id))
+            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, withCancelledStops))
                 .ReturnsAsync((JourneyModel)null);
 
             // Act
