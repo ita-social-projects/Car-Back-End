@@ -9,6 +9,8 @@ namespace Car.Domain.Dto
 
         public int Index { get; set; }
 
+        public bool IsCancelled { get; set; }
+
         public StopType Type { get; set; }
 
         public AddressDto? Address { get; set; }
