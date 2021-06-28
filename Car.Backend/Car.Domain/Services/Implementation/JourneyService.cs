@@ -41,7 +41,7 @@ namespace Car.Domain.Services.Implementation
             this.mapper = mapper;
         }
 
-        public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops)
+        public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false)
         {
             var journeyQueryable = journeyRepository
                 .Query()
