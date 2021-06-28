@@ -248,11 +248,11 @@ namespace Car.Domain.Services.Implementation
                 .Where(r => journey.OrganizerId != r.UserId)
                 .FilterUnsuitableRequests(journey, request => mapper.Map<Request, JourneyFilter>(request));
 
-            foreach (var request in requests)
+            foreach (var request in requests.ToList())
             {
                 await requestService.NotifyUserAsync(
                     mapper.Map<Request, RequestDto>(request),
-                    mapper.Map<Journey, JourneyModel>(journey),
+                    journey,
                     GetApplicantStops(
                         mapper.Map<Request, JourneyFilter>(request),
                         journey));
