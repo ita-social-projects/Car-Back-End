@@ -7,11 +7,11 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface IRequestService
     {
-        Task<RequestDto> GetRequestByIdAsync(int requestId);
+        Task<Request> GetRequestByIdAsync(int requestId);
 
         Task<IEnumerable<RequestDto>> GetAllAsync();
 
-        Task<IEnumerable<RequestDto>> GetRequestsByUserIdAsync(int userId);
+        Task<IEnumerable<Request>> GetRequestsByUserIdAsync(int userId);
 
         Task<RequestDto> AddRequestAsync(RequestDto request);
 

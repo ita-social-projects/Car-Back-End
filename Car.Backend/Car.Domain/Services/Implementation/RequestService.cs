@@ -65,23 +65,23 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requests);
         }
 
-        public async Task<RequestDto> GetRequestByIdAsync(int requestId)
+        public async Task<Request> GetRequestByIdAsync(int requestId)
         {
             var request = await requestRepository
                 .Query()
                 .FirstOrDefaultAsync(request => request.Id == requestId);
 
-            return mapper.Map<Request, RequestDto>(request);
+            return request;
         }
 
-        public async Task<IEnumerable<RequestDto>> GetRequestsByUserIdAsync(int userId)
+        public async Task<IEnumerable<Request>> GetRequestsByUserIdAsync(int userId)
         {
             var userRequests = await requestRepository
                 .Query()
                 .Where(request => request.UserId == userId)
                 .ToListAsync();
 
-            return mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(userRequests);
+            return userRequests;
         }
 
         public async Task NotifyUserAsync(RequestDto request, Journey journey, IEnumerable<StopDto> stops)
