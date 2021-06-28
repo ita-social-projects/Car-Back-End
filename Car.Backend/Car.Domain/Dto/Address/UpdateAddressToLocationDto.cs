@@ -1,11 +1,11 @@
 ﻿namespace Car.Domain.Dto.Address
 {
-    public class UpdateAddressToLocationDto
+    public record UpdateAddressToLocationDto
     {
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; init; } = string.Empty;
 
-        public double Latitude { get; set; }
+        public double Latitude { get; init; }
 
-        public double Longitude { get; set; }
+        public double Longitude { get; init; }
     }
 }
