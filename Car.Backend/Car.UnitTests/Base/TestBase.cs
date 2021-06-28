@@ -24,6 +24,8 @@ namespace Car.UnitTests.Base
                     {
                         new JourneyMapper(),
                         new CarMapper(),
+                        new BrandMapper(),
+                        new ModelMapper(),
                         new UserMapper(),
                         new NotificationMapper(),
                         new ChatMapper(),
