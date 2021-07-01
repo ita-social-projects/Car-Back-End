@@ -41,15 +41,22 @@ namespace Car.Domain.Services.Implementation
             this.mapper = mapper;
         }
 
-        public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId)
+        public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false)
         {
-            var journey = await journeyRepository
+            var journeyQueryable = journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
-                .IncludeJourneyPoints()
-                .FirstOrDefaultAsync(j => j.Id == journeyId);
+                .IncludeJourneyPoints();
+
+            var journey = withCancelledStops ?
+                await journeyQueryable
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(j => j.Id == journeyId)
+                :
+                await journeyQueryable
+                    .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             return mapper.Map<Journey, JourneyModel>(journey);
         }
@@ -249,11 +256,11 @@ namespace Car.Domain.Services.Implementation
                 .Where(r => journey.OrganizerId != r.UserId)
                 .FilterUnsuitableRequests(journey, request => mapper.Map<Request, JourneyFilter>(request));
 
-            foreach (var request in requests)
+            foreach (var request in requests.ToList())
             {
                 await requestService.NotifyUserAsync(
                     mapper.Map<Request, RequestDto>(request),
-                    mapper.Map<Journey, JourneyModel>(journey),
+                    journey,
                     GetApplicantStops(
                         mapper.Map<Request, JourneyFilter>(request),
                         journey));

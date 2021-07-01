@@ -189,7 +189,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task NotifyUserAsync_AddsNotificationOnce(RequestDto request, JourneyModel journey, IEnumerable<StopDto> stops)
+        public async Task NotifyUserAsync_AddsNotificationOnce(RequestDto request, Journey journey, IEnumerable<StopDto> stops)
         {
             // Arrange
             notificationService.Setup(n => n.AddNotificationAsync(It.IsAny<NotificationDto>()));

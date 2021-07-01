@@ -48,10 +48,11 @@ namespace Car.WebApi.Controllers
         /// Gets journey by identifier.
         /// </summary>
         /// <param name="id">Journey identifier</param>
+        /// <param name="withCancelledStops">Include cancelled stops</param>
         /// <returns>Journey</returns>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetJourneyById(int id) =>
-            Ok(await journeyService.GetJourneyByIdAsync(id));
+        [HttpGet("{id}/{withCancelledStops}")]
+        public async Task<IActionResult> GetJourneyById(int id, bool withCancelledStops = false) =>
+            Ok(await journeyService.GetJourneyByIdAsync(id, withCancelledStops));
 
         /// <summary>
         /// Gets recent addresses by identifier.

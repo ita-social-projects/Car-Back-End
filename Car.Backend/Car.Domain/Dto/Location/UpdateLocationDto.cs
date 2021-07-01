@@ -2,14 +2,14 @@
 
 namespace Car.Domain.Dto.Location
 {
-    public class UpdateLocationDto
+    public record UpdateLocationDto
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; init; } = string.Empty;
 
-        public UpdateAddressToLocationDto? Address { get; set; }
+        public UpdateAddressToLocationDto? Address { get; init; }
 
-        public int TypeId { get; set; }
+        public int TypeId { get; init; }
     }
 }

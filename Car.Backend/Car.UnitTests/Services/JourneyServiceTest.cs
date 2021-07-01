@@ -91,11 +91,13 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany()
                 .ToList();
             var pastJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany().ToList();
             journeys.AddRange(pastJourneys);
 
@@ -165,11 +167,13 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany()
                 .ToList();
             var upcomingJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.OrganizerId, organizer.Id)
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
@@ -192,11 +196,13 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany()
                 .ToList();
             var upcomingJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
@@ -267,10 +273,12 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.Participants, new List<User>() { participant })
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany().ToList();
             var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.Participants, new List<User>() { participant })
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);
 
@@ -294,10 +302,12 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany().ToList();
             var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.OrganizerId, organizer.Id)
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);
 
@@ -815,7 +825,7 @@ namespace Car.UnitTests.Services
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
-            requestService.Setup(r => r.NotifyUserAsync(It.IsAny<RequestDto>(), It.IsAny<JourneyModel>(), It.IsAny<IEnumerable<StopDto>>()))
+            requestService.Setup(r => r.NotifyUserAsync(It.IsAny<RequestDto>(), It.IsAny<Journey>(), It.IsAny<IEnumerable<StopDto>>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -825,7 +835,7 @@ namespace Car.UnitTests.Services
             requestService.Verify(
                 r => r.NotifyUserAsync(
                 It.IsAny<RequestDto>(),
-                It.IsAny<JourneyModel>(),
+                It.IsAny<Journey>(),
                 It.IsAny<IEnumerable<StopDto>>()),
                 Times.AtLeastOnce);
         }

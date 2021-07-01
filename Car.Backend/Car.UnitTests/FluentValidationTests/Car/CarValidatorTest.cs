@@ -56,7 +56,7 @@ namespace Car.UnitTests.FluentValidationTests.Car
 
         [Xunit.Theory]
         [InlineData("")]
-        [InlineData("123")]
+        [InlineData("12345678910")]
         [InlineData(null)]
         public void PlateNumber_IsNull_GeneratesValidationError(string value)
         {

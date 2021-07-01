@@ -15,7 +15,7 @@
         public const int PositionMaxLength = 100;
         public const int LocationMaxLength = 100;
 
-        public const int PlateNumberMinLength = 4;
+        public const int PlateNumberMinLength = 1;
         public const int PlateNumberMaxLength = 10;
 
         public const int SeatsMaxCount = 4;
