@@ -84,8 +84,8 @@ namespace Car.Domain.Services.Implementation
             return updatedNotification;
         }
 
-        public Task<NotificationDto> CreateNewNotificationAsync(CreateNotificationDto createNotificationModel) =>
-            Task.Run(() => mapper.Map<CreateNotificationDto, NotificationDto>(createNotificationModel));
+        public Task<NotificationDto> CreateNewNotificationAsync(CreateNotificationDto createNotificationDto) =>
+            Task.Run(() => mapper.Map<CreateNotificationDto, NotificationDto>(createNotificationDto));
 
         public async Task JourneyUpdateNotifyUserAsync(Journey journey)
         {
