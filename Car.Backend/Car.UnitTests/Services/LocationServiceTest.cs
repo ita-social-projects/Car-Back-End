@@ -113,7 +113,7 @@ namespace Car.UnitTests.Services
             var result = await locationService.AddLocationAsync(locationDto);
 
             // Assert
-            result.Should().BeEquivalentTo(locationDto, options => options.ExcludingMissingMembers());
+            result.Id.Should().Be(locationDto.Id);
         }
 
         [Theory]
