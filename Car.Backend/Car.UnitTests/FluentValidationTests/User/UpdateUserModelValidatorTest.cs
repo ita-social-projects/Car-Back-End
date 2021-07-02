@@ -6,11 +6,11 @@ namespace Car.UnitTests.FluentValidationTests.User
 {
     public class UpdateUserModelValidatorTest
     {
-        private readonly UpdateUserModelValidator validator;
+        private readonly UpdateUserDtoValidator validator;
 
         public UpdateUserModelValidatorTest()
         {
-            validator = new UpdateUserModelValidator();
+            validator = new UpdateUserDtoValidator();
         }
 
         [Xunit.Theory]

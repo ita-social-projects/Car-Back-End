@@ -1,10 +1,11 @@
 ﻿using System;
 using Car.Data.Constants;
+using Car.Domain.Dto;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class UserDtoValidator : AbstractValidator<Dto.UserDto>
+    public class UserDtoValidator : AbstractValidator<UserDto>
     {
         public UserDtoValidator()
         {

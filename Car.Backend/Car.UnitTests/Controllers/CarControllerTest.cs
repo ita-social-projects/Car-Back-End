@@ -31,7 +31,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetAllByUserId_WhenCarsExist_ReturnsOkObjectResult(IEnumerable<CarEntity> cars, User user)
+        public async Task GetAllByUserId_WhenCarsExist_ReturnsOkObjectResult(IEnumerable<CarDto> cars, User user)
         {
             // Arrange
             carService.Setup(service => service.GetAllByUserIdAsync(user.Id)).ReturnsAsync(cars);
@@ -70,7 +70,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetCarById_WhenCarExists_ReturnsOkObjectResult(CarEntity car)
+        public async Task GetCarById_WhenCarExists_ReturnsOkObjectResult(CarDto car)
         {
             // Arrange
             carService.Setup(service => service.GetCarByIdAsync(car.Id)).ReturnsAsync(car);

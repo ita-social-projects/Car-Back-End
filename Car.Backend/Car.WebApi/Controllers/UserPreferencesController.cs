@@ -11,9 +11,9 @@ namespace Car.WebApi.Controllers
     [ApiController]
     public class UserPreferencesController : ControllerBase
     {
-        private readonly IPreferencesService preferencesService;
+        private readonly IUserPreferencesService preferencesService;
 
-        public UserPreferencesController(IPreferencesService preferencesService) =>
+        public UserPreferencesController(IUserPreferencesService preferencesService) =>
             this.preferencesService = preferencesService;
 
         /// <summary>

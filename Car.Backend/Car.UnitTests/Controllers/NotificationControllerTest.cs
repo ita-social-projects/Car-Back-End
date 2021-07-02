@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
+using Car.Domain.Dto;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -29,7 +30,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetNotificationAsync_WhenNotificationExists_ReturnsOkObjectResult(Notification notification)
+        public async Task GetNotificationAsync_WhenNotificationExists_ReturnsOkObjectResult(NotificationDto notification)
         {
             // Arrange
             notificationService.Setup(service => service.GetNotificationAsync(notification.Id)).ReturnsAsync(notification);
@@ -83,10 +84,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult(CreateNotificationModel createNotificationModel)
+        public async Task AddNotificationAsync_WhenNotificationIsValid_ReturnsOkObjectResult(CreateNotificationDto createNotificationModel)
         {
             // Arrange
-            var expectedNotification = Mapper.Map<CreateNotificationModel, Notification>(createNotificationModel);
+            var expectedNotification = Mapper.Map<CreateNotificationDto, NotificationDto>(createNotificationModel);
 
             notificationService.Setup(service => service.CreateNewNotificationAsync(createNotificationModel))
                 .ReturnsAsync(expectedNotification);
@@ -134,7 +135,7 @@ namespace Car.UnitTests.Controllers
         public async Task MarkNotificationAsReadAsync_WhenNotificationExists_ReturnOkObjectResult(int notificationId)
         {
             // Arrange
-            var notification = Fixture.Build<Notification>().With(n => n.Id, notificationId).Create();
+            var notification = Fixture.Build<NotificationDto>().With(n => n.Id, notificationId).Create();
             notificationService.Setup(service => service.MarkNotificationAsReadAsync(notificationId))
                 .ReturnsAsync(notification);
 
@@ -152,7 +153,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             notificationService.Setup(service => service.MarkNotificationAsReadAsync(notificationId))
-                .ReturnsAsync((Notification)null);
+                .ReturnsAsync((NotificationDto)null);
 
             // Act
             var result = await notificationController.MarkNotificationAsReadAsync(notificationId);

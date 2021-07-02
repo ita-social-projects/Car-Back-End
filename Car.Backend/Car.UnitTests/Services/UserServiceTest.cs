@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
-using Car.Domain.Models.User;
+using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -24,7 +24,7 @@ namespace Car.UnitTests.Services
         public UserServiceTest()
         {
             userRepository = new Mock<IRepository<User>>();
-            userService = new UserService(userRepository.Object, Mock.Of<IImageService>());
+            userService = new UserService(userRepository.Object, Mock.Of<IImageService>(), Mapper);
         }
 
         [Theory]
@@ -36,11 +36,13 @@ namespace Car.UnitTests.Services
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
+            var userToReturn = Mapper.Map<User, UserDto>(user);
+
             // Act
             var result = await userService.GetUserByIdAsync(user.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(user, options => options.Excluding(u => u.ImageId));
+            result.Should().BeEquivalentTo(userToReturn, options => options.Excluding(u => u.ImageId));
         }
 
         [Theory]
@@ -66,19 +68,19 @@ namespace Car.UnitTests.Services
         public async Task UpdateUserAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
         {
             // Arrange
-            var updateUserModel = Fixture.Build<UpdateUserModel>()
+            var updateUserDto = Fixture.Build<UpdateUserDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
-            var user = Fixture.Build<User>().With(u => u.Id, updateUserModel.Id)
+            var user = Fixture.Build<User>().With(u => u.Id, updateUserDto.Id)
                 .Create();
             users.Add(user);
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await userService.UpdateUserAsync(updateUserModel);
+            var result = await userService.UpdateUserAsync(updateUserDto);
 
             // Assert
-            result.Should().BeEquivalentTo(updateUserModel, options => options.ExcludingMissingMembers());
+            result.Should().BeEquivalentTo(updateUserDto, options => options.ExcludingMissingMembers());
         }
 
         [Theory]
@@ -86,11 +88,11 @@ namespace Car.UnitTests.Services
         public async Task UpdateUserAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
         {
             // Arrange
-            UpdateUserModel updateUserModel = null;
+            UpdateUserDto updateUserDto = null;
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await userService.UpdateUserAsync(updateUserModel);
+            var result = await userService.UpdateUserAsync(updateUserDto);
 
             // Assert
             result.Should().BeNull();

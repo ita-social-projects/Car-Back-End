@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Car.Domain.Models.User;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +28,10 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Updates a user with the identifier asynchronously.
         /// </summary>
-        /// <param name="updateUserModel">User object to update.</param>
+        /// <param name="updateUserDto">User object to update.</param>
         /// <returns>Updated user.</returns>
         [HttpPut]
-        [AllowAnonymous]
-        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserModel updateUserModel) =>
-            Ok(await userService.UpdateUserAsync(updateUserModel));
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDto updateUserDto) =>
+            Ok(await userService.UpdateUserAsync(updateUserDto));
     }
 }

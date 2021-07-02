@@ -1,11 +1,12 @@
 ﻿using Car.Data.Constants;
+using Car.Domain.Dto;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class UpdateUserModelValidator : AbstractValidator<Models.User.UpdateUserModel>
+    public class UpdateUserDtoValidator : AbstractValidator<UpdateUserDto>
     {
-        public UpdateUserModelValidator()
+        public UpdateUserDtoValidator()
         {
             RuleFor(user => user.Id).GreaterThan(Constants.IdLength);
         }
