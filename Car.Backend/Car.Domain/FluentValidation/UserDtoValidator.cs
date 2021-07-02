@@ -9,7 +9,6 @@ namespace Car.Domain.FluentValidation
     {
         public UserDtoValidator()
         {
-            RuleFor(user => user.Id).GreaterThan(Constants.IdLength);
             RuleFor(user => user.Name).NotNull().NotEmpty().MaximumLength(Constants.StringMaxLength);
             RuleFor(user => user.Surname).NotNull().NotEmpty().MaximumLength(Constants.StringMaxLength);
             RuleFor(user => user.Position).NotNull().NotEmpty().MaximumLength(Constants.PositionMaxLength);

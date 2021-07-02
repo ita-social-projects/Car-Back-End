@@ -16,14 +16,6 @@ namespace Car.UnitTests.FluentValidationTests.User
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void Id_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(userDto => userDto.Id, value);
-        }
-
-        [Xunit.Theory]
         [InlineData(1)]
         [InlineData(10)]
         public void Id_IsSpecified_NotGeneratesValidationError(int value)
