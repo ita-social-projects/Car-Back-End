@@ -33,7 +33,6 @@ namespace Car.WebApi.Controllers
         /// <param name="car">The car.</param>
         /// <returns>New car.</returns>
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> AddCar([FromForm] CreateCarDto car) =>
             Ok(await carService.AddCarAsync(car));
 
@@ -52,7 +51,6 @@ namespace Car.WebApi.Controllers
         /// <param name="updateCarModel">The car.</param>
         /// <returns>The updated car.</returns>
         [HttpPut]
-        [AllowAnonymous]
         public async Task<IActionResult> UpdateCar([FromForm] UpdateCarDto updateCarModel) =>
             Ok(await carService.UpdateCarAsync(updateCarModel));
 
