@@ -68,50 +68,6 @@ namespace Car.UnitTests.FluentValidationTests.User
         }
 
         [Xunit.Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void Position_IsNull_GeneratesValidationError(string value)
-        {
-            validator.ShouldHaveValidationErrorFor(userDto => userDto.Position, value);
-        }
-
-        [Fact]
-        public void Position_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.PositionMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(userDto => userDto.Position, longText);
-        }
-
-        [Xunit.Theory]
-        [InlineData("abc")]
-        public void Position_IsSpecified_NotGeneratesValidationError(string value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.Position, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void Location_IsNull_GeneratesValidationError(string value)
-        {
-            validator.ShouldHaveValidationErrorFor(userDto => userDto.Location, value);
-        }
-
-        [Fact]
-        public void Location_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.LocationMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(userDto => userDto.Location, longText);
-        }
-
-        [Xunit.Theory]
-        [InlineData("abc")]
-        public void Location_IsSpecified_NotGeneratesValidationError(string value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(userDto => userDto.Location, value);
-        }
-
-        [Xunit.Theory]
         [InlineData("2090-06-27")]
         public void HireDate_IsNotValid_GeneratesValidationError(string value)
         {
