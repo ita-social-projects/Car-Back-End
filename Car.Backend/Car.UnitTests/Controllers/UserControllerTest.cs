@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
-using Car.Data.Entities;
-using Car.Domain.Models.User;
+using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -27,7 +26,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetUserById_WhenUserExists_ReturnsOkObjectResult(User user)
+        public async Task GetUserById_WhenUserExists_ReturnsOkObjectResult(UserDto user)
         {
             // Arrange
             userService.Setup(service => service.GetUserByIdAsync(user.Id)).ReturnsAsync(user);
@@ -47,14 +46,14 @@ namespace Car.UnitTests.Controllers
         public async Task UpdateUser_WhenUserExists_ReturnsOkObjectResult()
         {
             // Arrange
-            var updateUserModel = Fixture.Build<UpdateUserModel>()
+            var updateUserDto = Fixture.Build<UpdateUserDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
-            var expectedUser = Mapper.Map<UpdateUserModel, User>(updateUserModel);
+            var expectedUser = Mapper.Map<UpdateUserDto, UserDto>(updateUserDto);
 
-            userService.Setup(service => service.UpdateUserAsync(updateUserModel)).ReturnsAsync(expectedUser);
+            userService.Setup(service => service.UpdateUserAsync(updateUserDto)).ReturnsAsync(expectedUser);
 
             // Act
-            var result = await userController.UpdateUser(updateUserModel);
+            var result = await userController.UpdateUser(updateUserDto);
 
             // Assert
             using (new AssertionScope())

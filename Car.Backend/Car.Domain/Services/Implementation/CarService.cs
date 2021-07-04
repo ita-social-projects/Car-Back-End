@@ -35,17 +35,17 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<CarEntity, CreateCarDto>(newCar);
         }
 
-        public async Task<CarEntity> GetCarByIdAsync(int carId)
+        public async Task<CarDto> GetCarByIdAsync(int carId)
         {
             var car = await carRepository
                 .Query()
                 .IncludeModelWithBrand()
                 .FirstOrDefaultAsync(c => c.Id == carId);
 
-            return car;
+            return mapper.Map<CarEntity, CarDto>(car);
         }
 
-        public async Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId)
+        public async Task<IEnumerable<CarDto>> GetAllByUserIdAsync(int userId)
         {
             var cars = await carRepository
                 .Query()
@@ -53,7 +53,7 @@ namespace Car.Domain.Services.Implementation
                 .Where(car => car.OwnerId == userId)
                 .ToListAsync();
 
-            return cars;
+            return mapper.Map<IEnumerable<CarEntity>, IEnumerable<CarDto>>(cars);
         }
 
         public async Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel)

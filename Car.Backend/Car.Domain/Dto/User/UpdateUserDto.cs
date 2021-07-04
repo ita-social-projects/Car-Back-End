@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Car.Domain.Models.User
+namespace Car.Domain.Dto
 {
-    public class UpdateUserModel
+    public class UpdateUserDto
     {
         public int Id { get; set; }
 

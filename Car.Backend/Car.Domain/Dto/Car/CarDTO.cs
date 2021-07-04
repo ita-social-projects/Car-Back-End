@@ -7,7 +7,7 @@ namespace Car.Domain.Dto
     {
         public int Id { get; set; }
 
-        public Model? Model { get; set; }
+        public ModelDto? Model { get; set; }
 
         public Color Color { get; set; }
 
