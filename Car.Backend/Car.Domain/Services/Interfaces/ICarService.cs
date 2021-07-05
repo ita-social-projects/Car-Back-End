@@ -7,11 +7,11 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface ICarService
     {
-        Task<CarEntity> GetCarByIdAsync(int carId);
+        Task<CarDto> GetCarByIdAsync(int carId);
 
         Task<CreateCarDto> AddCarAsync(CreateCarDto createCarModel);
 
-        Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId);
+        Task<IEnumerable<CarDto>> GetAllByUserIdAsync(int userId);
 
         Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel);
 

@@ -97,7 +97,7 @@ namespace Car.Domain.Services.Implementation
                 JourneyId = journey.Id,
             };
 
-            await notificationService.AddNotificationAsync(notification);
+            await notificationService.AddNotificationAsync(mapper.Map<Notification, NotificationDto>(notification));
         }
     }
 }

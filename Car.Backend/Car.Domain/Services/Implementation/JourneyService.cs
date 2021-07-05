@@ -45,7 +45,6 @@ namespace Car.Domain.Services.Implementation
         {
             var journeyQueryable = journeyRepository
                 .Query()
-                .FilterUncancelledJourneys()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints();
@@ -56,6 +55,7 @@ namespace Car.Domain.Services.Implementation
                     .FirstOrDefaultAsync(j => j.Id == journeyId)
                 :
                 await journeyQueryable
+                    .FilterUncancelledJourneys()
                     .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             return mapper.Map<Journey, JourneyModel>(journey);
@@ -180,7 +180,8 @@ namespace Car.Domain.Services.Implementation
                 journeyToCancel.DepartureTime = DateTime.UtcNow;
                 await journeyRepository.SaveChangesAsync();
 
-                await notificationService.DeleteNotificationsAsync(journeyToCancel.Notifications);
+                var notificationsToDelete = mapper.Map<IEnumerable<Notification>, IEnumerable<NotificationDto>>(journeyToCancel.Notifications);
+                await notificationService.DeleteNotificationsAsync(notificationsToDelete);
                 await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToCancel);
             }
         }
@@ -286,6 +287,11 @@ namespace Car.Domain.Services.Implementation
 
             if (journey?.Participants.Remove(userToDelete!) ?? false)
             {
+                journey!.Stops
+                    .Where(stop => stop.UserId == userToDelete!.Id)
+                    .ToList()
+                    .ForEach(stop => stop.IsCancelled = true);
+
                 await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
                 await journeyRepository.SaveChangesAsync();
             }

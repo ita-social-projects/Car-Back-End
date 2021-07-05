@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
+using Car.Domain.Dto;
 using Car.Domain.Hubs;
-using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -30,12 +30,13 @@ namespace Car.Domain.Services.Implementation
             this.mapper = mapper;
         }
 
-        public Task<Notification> GetNotificationAsync(int notificationId) =>
-            notificationRepository.Query(notificationSender => notificationSender!.Sender!)
-                .FirstOrDefaultAsync(notification => notification.Id == notificationId);
+        public async Task<NotificationDto> GetNotificationAsync(int notificationId) =>
+            mapper.Map<Notification, NotificationDto>(
+              await notificationRepository.Query(notificationSender => notificationSender!.Sender!)
+              .FirstOrDefaultAsync(notification => notification.Id == notificationId));
 
-        public Task<List<Notification>> GetNotificationsAsync(int userId) =>
-            notificationRepository.Query().Include(n => n.Sender)
+        public async Task<IEnumerable<Notification>> GetNotificationsAsync(int userId) =>
+                await notificationRepository.Query().Include(n => n.Sender)
                 .Where(p => p.ReceiverId == userId)
                 .OrderByDescending(k => k.CreatedAt)
                 .ToListAsync();
@@ -44,22 +45,24 @@ namespace Car.Domain.Services.Implementation
             notificationRepository.Query()
                 .CountAsync(p => p.ReceiverId == userId && !p.IsRead);
 
-        public async Task<Notification> UpdateNotificationAsync(Notification notification)
+        public async Task<NotificationDto> UpdateNotificationAsync(NotificationDto notification)
         {
-            await notificationRepository.UpdateAsync(notification);
+            var updateNotification = mapper.Map<NotificationDto, Notification>(notification);
+            await notificationRepository.UpdateAsync(updateNotification);
             await notificationRepository.SaveChangesAsync();
 
             return notification;
         }
 
-        public async Task<Notification> AddNotificationAsync(Notification notification)
+        public async Task<NotificationDto> AddNotificationAsync(NotificationDto notification)
         {
-            var addedNotification = await notificationRepository.AddAsync(notification);
+            var addNotification = mapper.Map<NotificationDto, Notification>(notification);
+            await notificationRepository.AddAsync(addNotification);
             await notificationRepository.SaveChangesAsync();
 
             await NotifyClientAsync(notification);
 
-            return addedNotification;
+            return notification;
         }
 
         public async Task DeleteAsync(int notificationId)
@@ -68,20 +71,21 @@ namespace Car.Domain.Services.Implementation
             await notificationRepository.SaveChangesAsync();
         }
 
-        public async Task<Notification> MarkNotificationAsReadAsync(int notificationId)
+        public async Task<NotificationDto> MarkNotificationAsReadAsync(int notificationId)
         {
             var notificationToUpdate = await notificationRepository.Query()
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
             notificationToUpdate.IsRead = true;
             await notificationRepository.SaveChangesAsync();
 
-            await NotifyClientAsync(notificationToUpdate);
+            var updatedNotification = mapper.Map<Notification, NotificationDto>(notificationToUpdate);
+            await NotifyClientAsync(updatedNotification);
 
-            return notificationToUpdate;
+            return updatedNotification;
         }
 
-        public Task<Notification> CreateNewNotificationAsync(CreateNotificationModel createNotificationModel) =>
-            Task.Run(() => mapper.Map<CreateNotificationModel, Notification>(createNotificationModel));
+        public Task<NotificationDto> CreateNewNotificationAsync(CreateNotificationDto createNotificationDto) =>
+            Task.Run(() => mapper.Map<CreateNotificationDto, NotificationDto>(createNotificationDto));
 
         public async Task JourneyUpdateNotifyUserAsync(Journey journey)
         {
@@ -92,7 +96,7 @@ namespace Car.Domain.Services.Implementation
 
             foreach (var participant in journey.Participants)
             {
-                await AddNotificationAsync(new Notification()
+                await AddNotificationAsync(new NotificationDto()
                 {
                     SenderId = journey.Organizer!.Id,
                     ReceiverId = participant.Id,
@@ -113,7 +117,7 @@ namespace Car.Domain.Services.Implementation
 
             foreach (var user in journey.Participants)
             {
-                await AddNotificationAsync(new Notification()
+                await AddNotificationAsync(new NotificationDto()
                 {
                     SenderId = journey.Organizer!.Id,
                     ReceiverId = user.Id,
@@ -121,28 +125,23 @@ namespace Car.Domain.Services.Implementation
                     CreatedAt = DateTime.UtcNow,
                     IsRead = false,
                     JourneyId = journey.Id,
-                    JsonData = JsonSerializer.Serialize(new
-                    {
-                        departureTime = journey.DepartureTime,
-                        availableSeats = journey.CountOfSeats - journey.Participants.Count,
-                        isFree = journey.IsFree,
-                        withBaggage = true,
-                    }),
+                    JsonData = JsonSerializer.Serialize(new { }),
                 });
             }
         }
 
-        public async Task DeleteNotificationsAsync(IEnumerable<Notification> notifications)
+        public async Task DeleteNotificationsAsync(IEnumerable<NotificationDto> notifications)
         {
             if (notifications is not null)
             {
-                await notificationRepository.DeleteRangeAsync(notifications);
+                var notificationsToDelete = mapper.Map<IEnumerable<NotificationDto>, IEnumerable<Notification>>(notifications);
+                await notificationRepository.DeleteRangeAsync(notificationsToDelete);
                 await notificationRepository.SaveChangesAsync();
             }
         }
 
         public async Task NotifyDriverAboutParticipantWithdrawal(Journey journey, int participantId) =>
-            await AddNotificationAsync(new Notification()
+            await AddNotificationAsync(new NotificationDto()
                 {
                     SenderId = participantId,
                     ReceiverId = journey.Organizer!.Id,
@@ -150,16 +149,10 @@ namespace Car.Domain.Services.Implementation
                     CreatedAt = DateTime.UtcNow,
                     IsRead = false,
                     JourneyId = journey.Id,
-                    JsonData = JsonSerializer.Serialize(new
-                        {
-                            departureTime = journey.DepartureTime,
-                            availableSeats = journey.CountOfSeats - journey.Participants.Count,
-                            isFree = journey.IsFree,
-                            withBaggage = true,
-                        }),
+                    JsonData = JsonSerializer.Serialize(new { }),
                 });
 
-        private async Task NotifyClientAsync(Notification notification)
+        private async Task NotifyClientAsync(NotificationDto notification)
         {
             await notificationHub.Clients.All.SendAsync("sendToReact", notification);
             await notificationHub.Clients.All.SendAsync(

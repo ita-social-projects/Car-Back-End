@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Car.Domain.Dto;
 using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -83,7 +84,7 @@ namespace Car.WebApi.Controllers
         /// // }
         /// <returns>added notification</returns>
         [HttpPost]
-        public async Task<IActionResult> AddNotificationAsync([FromBody] CreateNotificationModel createNotificationModel)
+        public async Task<IActionResult> AddNotificationAsync([FromBody] CreateNotificationDto createNotificationModel)
         {
             var notification = await notificationService.CreateNewNotificationAsync(createNotificationModel);
             await notificationService.AddNotificationAsync(notification);

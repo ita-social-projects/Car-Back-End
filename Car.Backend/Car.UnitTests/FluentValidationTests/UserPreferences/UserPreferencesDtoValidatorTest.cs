@@ -8,11 +8,11 @@ namespace Car.UnitTests.FluentValidationTests.UserPreferences
 {
     public class UserPreferencesDtoValidatorTest
     {
-        private PreferencesDtoValidator validator;
+        private UserPreferencesDtoValidator validator;
 
         public UserPreferencesDtoValidatorTest()
         {
-            validator = new PreferencesDtoValidator();
+            validator = new UserPreferencesDtoValidator();
         }
 
         [Fact]

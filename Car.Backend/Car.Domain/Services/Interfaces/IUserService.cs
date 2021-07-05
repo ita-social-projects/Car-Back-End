@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
-using Car.Data.Entities;
-using Car.Domain.Models.User;
+using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<User> GetUserByIdAsync(int userId);
+        Task<UserDto> GetUserByIdAsync(int userId);
 
-        Task<User?> UpdateUserAsync(UpdateUserModel updateUserModel);
+        Task<UserDto?> UpdateUserAsync(UpdateUserDto updateUserDto);
     }
 }
