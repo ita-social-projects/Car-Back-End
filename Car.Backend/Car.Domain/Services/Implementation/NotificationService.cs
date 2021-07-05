@@ -125,13 +125,7 @@ namespace Car.Domain.Services.Implementation
                     CreatedAt = DateTime.UtcNow,
                     IsRead = false,
                     JourneyId = journey.Id,
-                    JsonData = JsonSerializer.Serialize(new
-                    {
-                        departureTime = journey.DepartureTime,
-                        availableSeats = journey.CountOfSeats - journey.Participants.Count,
-                        isFree = journey.IsFree,
-                        withBaggage = true,
-                    }),
+                    JsonData = JsonSerializer.Serialize(new { }),
                 });
             }
         }
@@ -155,13 +149,7 @@ namespace Car.Domain.Services.Implementation
                     CreatedAt = DateTime.UtcNow,
                     IsRead = false,
                     JourneyId = journey.Id,
-                    JsonData = JsonSerializer.Serialize(new
-                        {
-                            departureTime = journey.DepartureTime,
-                            availableSeats = journey.CountOfSeats - journey.Participants.Count,
-                            isFree = journey.IsFree,
-                            withBaggage = true,
-                        }),
+                    JsonData = JsonSerializer.Serialize(new { }),
                 });
 
         private async Task NotifyClientAsync(NotificationDto notification)
