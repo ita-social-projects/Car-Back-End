@@ -8,7 +8,7 @@ namespace Car.Domain.Services.Interfaces
    {
       Task<User> GetUserAsync(string email);
 
-      Task<User> AddUserAsync(User user);
+      Task<User?> AddUserAsync(User user);
 
       Task<UserDto> LoginAsync(UserDto userDto);
    }

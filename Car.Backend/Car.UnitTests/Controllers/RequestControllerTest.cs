@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -31,15 +28,13 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task Get_WhenRequestExists_ReturnsRequestObject(Request requestEntity)
+        public async Task Get_WhenRequestExists_ReturnsRequestObject(Request expectedResult)
         {
             // Arrange
-            var expectedResult = Mapper.Map<Request, RequestDto>(requestEntity);
-
             requestService.Setup(r => r.GetRequestByIdAsync(It.IsAny<int>())).ReturnsAsync(expectedResult);
 
             // Act
-            var result = await requestController.Get(requestEntity.Id);
+            var result = await requestController.Get(expectedResult.Id);
 
             // Assert
             (result as OkObjectResult)?.StatusCode.Should().Be(Constants.OkStatusCode);
@@ -54,7 +49,7 @@ namespace Car.UnitTests.Controllers
             var expectedResult = Mapper.Map<Request, RequestDto>(requestEntity);
 
             requestService.Setup(r => r.GetRequestByIdAsync(It.IsAny<int>()))
-                .ReturnsAsync((RequestDto)null);
+                .ReturnsAsync((Request)null);
 
             // Act
             var result = await requestController.Get(requestEntity.Id);
@@ -112,7 +107,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetByUserId_WhenRequestsExist_ReturnsRequestsCollection(User user, List<RequestDto> requests)
+        public async Task GetByUserId_WhenRequestsExist_ReturnsRequestsCollection(User user, List<Request> requests)
         {
             // Arrange
             requestService.Setup(r => r.GetRequestsByUserIdAsync(user.Id))
@@ -128,7 +123,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection(User user, IEnumerable<RequestDto> requests)
+        public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection(User user, IEnumerable<Request> requests)
         {
             // Arrange
             requestService.Setup(r => r.GetRequestsByUserIdAsync(user.Id))

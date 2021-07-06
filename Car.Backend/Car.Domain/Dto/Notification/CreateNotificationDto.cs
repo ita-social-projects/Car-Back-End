@@ -2,7 +2,7 @@
 
 namespace Car.Domain.Dto
 {
-    public class NotificationDto
+    public class CreateNotificationDto
     {
         public int SenderId { get; set; }
 
@@ -10,6 +10,8 @@ namespace Car.Domain.Dto
 
         public NotificationType Type { get; set; }
 
-        public string JsonData { get; set; }
+        public string JsonData { get; set; } = "{}";
+
+        public int? JourneyId { get; set; }
     }
 }

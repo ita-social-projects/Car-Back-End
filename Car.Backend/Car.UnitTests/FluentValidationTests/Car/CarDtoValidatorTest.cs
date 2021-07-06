@@ -2,12 +2,10 @@
 using Car.Data.Enums;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Car
 {
-    [TestFixture]
     public class CarDtoValidatorTest
     {
         private readonly CarDtoValidator validator;
@@ -58,7 +56,7 @@ namespace Car.UnitTests.FluentValidationTests.Car
 
         [Xunit.Theory]
         [InlineData("")]
-        [InlineData("123")]
+        [InlineData("12345678910")]
         [InlineData(null)]
         public void PlateNumber_IsNull_GeneratesValidationError(string value)
         {

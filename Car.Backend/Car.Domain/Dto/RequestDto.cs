@@ -6,9 +6,9 @@ namespace Car.Domain.Dto
 {
     public class RequestDto
     {
-        public Point From { get; set; }
+        public Point? From { get; set; }
 
-        public Point To { get; set; }
+        public Point? To { get; set; }
 
         public DateTime DepartureTime { get; set; }
 

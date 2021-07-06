@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
@@ -7,17 +8,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
 {
-    public class PreferencesService : IPreferencesService
+    public class UserPreferencesService : IUserPreferencesService
     {
         private readonly IRepository<UserPreferences> preferencesRepository;
+        private readonly IMapper mapper;
 
-        public PreferencesService(IRepository<UserPreferences> preferencesRepository) =>
+        public UserPreferencesService(IRepository<UserPreferences> preferencesRepository, IMapper mapper)
+        {
             this.preferencesRepository = preferencesRepository;
+            this.mapper = mapper;
+        }
 
-        public Task<UserPreferences> GetPreferencesAsync(int userId) =>
-            preferencesRepository.Query().FirstOrDefaultAsync(p => p.Id == userId);
+        public async Task<UserPreferencesDto?> GetPreferencesAsync(int userId)
+        {
+            var preferences = await preferencesRepository.Query().FirstOrDefaultAsync(p => p.Id == userId);
 
-        public async Task<UserPreferences> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO)
+            return mapper.Map<UserPreferences, UserPreferencesDto>(preferences);
+        }
+
+        public async Task<UserPreferencesDto?> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO)
         {
             var preferences = await preferencesRepository.GetByIdAsync(preferencesDTO.Id);
 
@@ -30,7 +39,7 @@ namespace Car.Domain.Services.Implementation
 
             await preferencesRepository.SaveChangesAsync();
 
-            return preferences;
+            return mapper.Map<UserPreferences, UserPreferencesDto>(preferences!);
         }
     }
 }

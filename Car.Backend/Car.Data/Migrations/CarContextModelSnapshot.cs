@@ -442,6 +442,9 @@ namespace Car.Data.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsFree")
                         .HasColumnType("bit");
 
@@ -501,8 +504,7 @@ namespace Car.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TypeId")
                         .HasColumnType("int");
@@ -8076,6 +8078,9 @@ namespace Car.Data.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("JourneyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("JsonData")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -8091,6 +8096,8 @@ namespace Car.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("JourneyId");
 
                     b.HasIndex("ReceiverId");
 
@@ -8152,6 +8159,9 @@ namespace Car.Data.Migrations
 
                     b.Property<int>("Index")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("bit");
 
                     b.Property<int>("JourneyId")
                         .HasColumnType("int");
@@ -8380,6 +8390,11 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Notification", b =>
                 {
+                    b.HasOne("Car.Data.Entities.Journey", "Journey")
+                        .WithMany("Notifications")
+                        .HasForeignKey("JourneyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Car.Data.Entities.User", "Receiver")
                         .WithMany("ReceivedNotifications")
                         .HasForeignKey("ReceiverId")
@@ -8391,6 +8406,8 @@ namespace Car.Data.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Journey");
 
                     b.Navigation("Receiver");
 
@@ -8549,6 +8566,8 @@ namespace Car.Data.Migrations
                     b.Navigation("Chat");
 
                     b.Navigation("JourneyPoints");
+
+                    b.Navigation("Notifications");
 
                     b.Navigation("Schedule");
 

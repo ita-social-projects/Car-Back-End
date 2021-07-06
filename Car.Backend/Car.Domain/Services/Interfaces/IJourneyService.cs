@@ -15,7 +15,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync(int userId);
 
-        Task<JourneyModel> GetJourneyByIdAsync(int journeyId);
+        Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false);
 
         Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int userId, int countToTake = 5);
 
@@ -23,7 +23,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel);
 
-        Task<IEnumerable<Journey>> GetFilteredJourneys(JourneyFilter filter);
+        IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter);
 
         Task DeleteAsync(int journeyId);
 
@@ -31,8 +31,14 @@ namespace Car.Domain.Services.Interfaces
 
         Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto);
 
-        Task<IEnumerable<ApplicantJourney>> GetApplicantJourneys(JourneyFilter filter);
+        IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter);
 
         Task CheckForSuitableRequests(Journey journey);
+
+        Task CancelAsync(int journeyId);
+
+        Task<bool> IsCanceled(int journeyId);
+
+        Task DeleteUserFromJourney(int journeyId, int userId);
     }
 }

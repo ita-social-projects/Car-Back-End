@@ -11,13 +11,14 @@ namespace Car.Data.EntityConfigurations
             builder.ToTable("Stop");
             builder.HasKey(stop => stop.Id);
 
-            builder.HasOne(stop => stop.Address).WithMany(address => address.Stops)
+            builder.HasOne(stop => stop.Address).WithMany(address => address!.Stops)
                 .HasForeignKey(stop => stop.AddressId);
-            builder.HasOne(stop => stop.Journey).WithMany(journey => journey.Stops)
+            builder.HasOne(stop => stop.Journey).WithMany(journey => journey!.Stops)
                 .HasForeignKey(stop => stop.JourneyId);
-            builder.HasOne(stop => stop.User).WithMany(user => user.Stops)
+            builder.HasOne(stop => stop.User).WithMany(user => user!.Stops)
                 .HasForeignKey(stop => stop.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(stop => !stop.IsCancelled);
         }
     }
 }

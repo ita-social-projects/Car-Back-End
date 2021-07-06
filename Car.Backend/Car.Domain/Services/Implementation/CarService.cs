@@ -4,9 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
-using Car.Domain.Exceptions;
 using Car.Domain.Extensions;
-using Car.Domain.Models.Car;
 using Car.Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using CarEntity = Car.Data.Entities.Car;
@@ -37,17 +35,17 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<CarEntity, CreateCarDto>(newCar);
         }
 
-        public async Task<CarEntity> GetCarByIdAsync(int carId)
+        public async Task<CarDto> GetCarByIdAsync(int carId)
         {
             var car = await carRepository
                 .Query()
                 .IncludeModelWithBrand()
                 .FirstOrDefaultAsync(c => c.Id == carId);
 
-            return car;
+            return mapper.Map<CarEntity, CarDto>(car);
         }
 
-        public async Task<IEnumerable<CarEntity>> GetAllByUserIdAsync(int userId)
+        public async Task<IEnumerable<CarDto>> GetAllByUserIdAsync(int userId)
         {
             var cars = await carRepository
                 .Query()
@@ -55,7 +53,7 @@ namespace Car.Domain.Services.Implementation
                 .Where(car => car.OwnerId == userId)
                 .ToListAsync();
 
-            return cars;
+            return mapper.Map<IEnumerable<CarEntity>, IEnumerable<CarDto>>(cars);
         }
 
         public async Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel)
@@ -72,7 +70,7 @@ namespace Car.Domain.Services.Implementation
 
             await carRepository.SaveChangesAsync();
 
-            return mapper.Map<CarEntity, UpdateCarDto>(car);
+            return mapper.Map<CarEntity, UpdateCarDto>(car!);
         }
 
         public async Task DeleteAsync(int carId)

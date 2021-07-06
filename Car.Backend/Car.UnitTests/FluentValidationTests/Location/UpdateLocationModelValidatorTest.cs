@@ -1,13 +1,10 @@
-﻿using Car.Data.Constants;
-using Car.Domain.FluentValidation;
+﻿using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.Location
 {
-    [TestFixture]
     public class UpdateLocationModelValidatorTest
     {
         private UpdateLocationDtoValidator validator;
@@ -17,15 +14,14 @@ namespace Car.UnitTests.FluentValidationTests.Location
             validator = new UpdateLocationDtoValidator();
         }
 
-        [Fact]
-        public void LocationName_IsNotValid_GeneratesValidationError()
+        [Theory]
+        [InlineData(null)]
+        public void LocationName_IsNull_GeneratesValidationError(string value)
         {
-            var longName = new string('*', Constants.LocationNameMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(locationModel => locationModel.Name, longName);
+            validator.ShouldHaveValidationErrorFor(locationModel => locationModel.Name, value);
         }
 
         [Theory]
-        [InlineData("")]
         [InlineData("work1")]
         public void LocationName_IsSpecified_NotGeneratesValidationError(string value)
         {

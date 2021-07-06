@@ -10,6 +10,8 @@ namespace Car.Domain.Models.Notification
 
         public NotificationType Type { get; set; }
 
-        public string JsonData { get; set; }
+        public string JsonData { get; set; } = "{}";
+
+        public int? JourneyId { get; set; }
     }
 }

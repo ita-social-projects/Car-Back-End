@@ -6,7 +6,6 @@ using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
-using Car.Domain.Models.Car;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -76,6 +75,7 @@ namespace Car.UnitTests.Services
         {
             // Arrange);
             cars.Add(car);
+            var carToGet = Mapper.Map<CarEntity, CarDto>(car);
 
             carRepository.Setup(repo => repo.Query())
                 .Returns(cars.AsQueryable().BuildMock().Object);
@@ -84,7 +84,7 @@ namespace Car.UnitTests.Services
             var result = await carService.GetCarByIdAsync(car.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(car);
+            result.Should().BeEquivalentTo(carToGet);
         }
 
         [Theory]
@@ -111,6 +111,7 @@ namespace Car.UnitTests.Services
                 .With(c => c.OwnerId, owner.Id)
                 .CreateMany();
             cars.AddRange(ownCars);
+            var carsToGet = Mapper.Map<IEnumerable<CarEntity>, IEnumerable<CarDto>>(ownCars);
 
             carRepository.Setup(repo => repo.Query())
                 .Returns(cars.AsQueryable().BuildMock().Object);
@@ -119,7 +120,7 @@ namespace Car.UnitTests.Services
             var result = await carService.GetAllByUserIdAsync(owner.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(ownCars);
+            result.Should().BeEquivalentTo(carsToGet);
         }
 
         [Theory]

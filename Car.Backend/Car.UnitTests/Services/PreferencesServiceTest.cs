@@ -17,13 +17,13 @@ namespace Car.UnitTests.Services
 {
     public class PreferencesServiceTest : TestBase
     {
-        private readonly IPreferencesService preferencesService;
+        private readonly IUserPreferencesService preferencesService;
         private readonly Mock<IRepository<UserPreferences>> preferencesRepository;
 
         public PreferencesServiceTest()
         {
             preferencesRepository = new Mock<IRepository<UserPreferences>>();
-            preferencesService = new PreferencesService(preferencesRepository.Object);
+            preferencesService = new UserPreferencesService(preferencesRepository.Object, Mapper);
         }
 
         [Theory]
@@ -37,11 +37,13 @@ namespace Car.UnitTests.Services
             preferencesRepository.Setup(r => r.Query())
                 .Returns(preferences.AsQueryable().BuildMock().Object);
 
+            var preference = Mapper.Map<UserPreferences, UserPreferencesDto>(userPreferences);
+
             // Act
             var result = await preferencesService.GetPreferencesAsync(userPreferences.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(userPreferences);
+            result.Should().BeEquivalentTo(preference);
         }
 
         [Theory]

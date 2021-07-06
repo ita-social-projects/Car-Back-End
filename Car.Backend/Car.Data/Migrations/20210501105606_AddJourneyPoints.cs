@@ -15,7 +15,7 @@ namespace Car.Data.Migrations
                     Index = table.Column<int>(type: "int", nullable: false),
                     Latitude = table.Column<double>(type: "float", nullable: false),
                     Longitude = table.Column<double>(type: "float", nullable: false),
-                    JourneyId = table.Column<int>(type: "int", nullable: false)
+                    JourneyId = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {

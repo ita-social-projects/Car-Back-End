@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using AutoFixture;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
@@ -14,12 +13,12 @@ namespace Car.UnitTests.Controllers
 {
     public class UserPreferencesControllerTest : TestBase
     {
-        private readonly Mock<IPreferencesService> preferencesService;
+        private readonly Mock<IUserPreferencesService> preferencesService;
         private readonly UserPreferencesController userPreferencesController;
 
         public UserPreferencesControllerTest()
         {
-            preferencesService = new Mock<IPreferencesService>();
+            preferencesService = new Mock<IUserPreferencesService>();
             userPreferencesController = new UserPreferencesController(preferencesService.Object);
         }
 
@@ -28,15 +27,16 @@ namespace Car.UnitTests.Controllers
         public async Task GetPreferences_WhenUserExists_ReturnsPreferencesObject(User user)
         {
             // Arrange
+            var preferences = Mapper.Map<UserPreferences, UserPreferencesDto>(user.UserPreferences);
             preferencesService.Setup(x => x.GetPreferencesAsync(It.IsAny<int>()))
-                .ReturnsAsync(user.UserPreferences);
+                .ReturnsAsync(preferences);
 
             // Act
             var result = await userPreferencesController.GetPreferences(user.Id);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult)?.Value.Should().BeOfType<UserPreferences>();
+            (result as OkObjectResult)?.Value.Should().BeOfType<UserPreferencesDto>();
         }
 
         [Theory]
@@ -45,7 +45,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             preferencesService.Setup(x => x.GetPreferencesAsync(It.IsAny<int>()))
-                .ReturnsAsync((UserPreferences)null);
+                .ReturnsAsync((UserPreferencesDto)null);
 
             // Act
             var result = await userPreferencesController.GetPreferences(user.Id);
@@ -58,18 +58,18 @@ namespace Car.UnitTests.Controllers
         [Theory]
         [AutoEntityData]
         public async Task UpdatePreferences_WhenUserPreferencesExists_ReturnsUserPreferences(
-            UserPreferencesDto userPreferencesDTO, UserPreferences userPreferences)
+            UserPreferencesDto userPreferencesDTO)
         {
             // Arrange
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferencesDTO))
-                .ReturnsAsync(userPreferences);
+                .ReturnsAsync(userPreferencesDTO);
 
             // Act
             var result = await userPreferencesController.UpdatePreferences(userPreferencesDTO);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult)?.Value.Should().BeOfType<UserPreferences>();
+            (result as OkObjectResult)?.Value.Should().BeOfType<UserPreferencesDto>();
         }
 
         [Theory]
@@ -78,7 +78,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))
-                .ReturnsAsync((UserPreferences)null);
+                .ReturnsAsync((UserPreferencesDto)null);
 
             // Act
             var result = await userPreferencesController.UpdatePreferences(userPreferences);

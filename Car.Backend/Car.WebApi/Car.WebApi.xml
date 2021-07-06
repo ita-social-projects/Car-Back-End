@@ -95,11 +95,12 @@
             <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32,System.Boolean)">
             <summary>
             Gets journey by identifier.
             </summary>
             <param name="id">Journey identifier</param>
+            <param name="withCancelledStops">Include cancelled stops</param>
             <returns>Journey</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAddresses(System.Int32)">
@@ -142,6 +143,28 @@
             Update the journey details asynchronously.
             </summary>
             <param name="journey">The journey dto.</param>
+            <returns>OkResult</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.CancelJourney(System.Int32)">
+            <summary>
+            Cancels journey
+            </summary>
+            <param name="id">id of journey that should be cancelled</param>
+            <returns>OkResult</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.IsCanceled(System.Int32)">
+            <summary>
+            Defines if journey was canceled
+            </summary>
+            <param name="id">id of journey</param>
+            <returns>bool value that indicates whether journey was canceled</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.DeleteUserFromJourney(System.Int32,System.Int32)">
+            <summary>
+            Deletes user from journey
+            </summary>
+            <param name="journeyId">journey Id</param>
+            <param name="userId">user Id</param>
             <returns>OkResult</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
@@ -221,7 +244,7 @@
             <param name="userId">user Id</param>
             <returns>int number</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Models.Notification.CreateNotificationModel)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Dto.CreateNotificationDto)">
             <summary>
             adds new user notification Asynchronously
             </summary>
@@ -308,11 +331,11 @@
             <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.UpdateUser(Car.Domain.Models.User.UpdateUserModel)">
+        <member name="M:Car.WebApi.Controllers.UserController.UpdateUser(Car.Domain.Dto.UpdateUserDto)">
             <summary>
             Updates a user with the identifier asynchronously.
             </summary>
-            <param name="updateUserModel">User object to update.</param>
+            <param name="updateUserDto">User object to update.</param>
             <returns>Updated user.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.GetPreferences(System.Int32)">

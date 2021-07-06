@@ -14,12 +14,14 @@ namespace Car.Data.Entities
 
         public int UserId { get; set; }
 
+        public bool IsCancelled { get; set; }
+
         public StopType Type { get; set; }
 
-        public Journey Journey { get; set; }
+        public Journey? Journey { get; set; }
 
-        public Address Address { get; set; }
+        public Address? Address { get; set; }
 
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

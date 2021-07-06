@@ -21,7 +21,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IModelService, ModelService>();
-            services.AddScoped<IPreferencesService, PreferencesService>();
+            services.AddScoped<IUserPreferencesService, UserPreferencesService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IJourneyService, JourneyService>();
             services.AddScoped<INotificationService, NotificationService>();

@@ -7,14 +7,14 @@ namespace Car.Domain.Dto
     {
         public int Id { get; set; }
 
-        public Model Model { get; set; }
+        public ModelDto? Model { get; set; }
 
         public Color Color { get; set; }
 
-        public string PlateNumber { get; set; }
+        public string PlateNumber { get; set; } = string.Empty;
 
         public int OwnerId { get; set; }
 
-        public string ImageId { get; set; }
+        public string? ImageId { get; set; }
     }
 }

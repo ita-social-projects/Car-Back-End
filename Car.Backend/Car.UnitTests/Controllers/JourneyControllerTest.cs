@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
@@ -88,10 +87,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey)
+        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey, bool withCancelledStops = false)
         {
             // Arrange
-            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id))
+            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, withCancelledStops))
                 .ReturnsAsync(journey);
 
             // Act
@@ -107,10 +106,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetJourneyById_WhenJourneyNotExist_ReturnsNull(JourneyModel journey)
+        public async Task GetJourneyById_WhenJourneyNotExist_ReturnsNull(JourneyModel journey, bool withCancelledStops = false)
         {
             // Arrange
-            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id))
+            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, withCancelledStops))
                 .ReturnsAsync((JourneyModel)null);
 
             // Act
@@ -185,13 +184,13 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<ApplicantJourney> expectedResult)
+        public void GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<ApplicantJourney> expectedResult)
         {
             // Arrange
-            journeyService.Setup(j => j.GetApplicantJourneys(filterModel)).ReturnsAsync(expectedResult);
+            journeyService.Setup(j => j.GetApplicantJourneys(filterModel)).Returns(expectedResult);
 
             // Act
-            var result = await journeyController.GetFiltered(filterModel);
+            var result = journeyController.GetFiltered(filterModel);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -258,6 +257,63 @@ namespace Car.UnitTests.Controllers
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyExists_ReturnsOkResult(int journeyIdToCancel)
+        {
+            // Arrange
+            journeyService.Setup(service => service.CancelAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await journeyController.CancelJourney(journeyIdToCancel);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyExists_ReturnsIsCancelledPropertyValue(int journeyId, bool expectedResult)
+        {
+            // Arrange
+            journeyService.Setup(service => service.IsCanceled(It.IsAny<int>())).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await journeyController.IsCanceled(journeyId);
+
+            // Assert
+            (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task IsCanceled_WhenJourneyDoesntExist_ReturnsFalse(int journeyId)
+        {
+            // Arrange
+            var expectedResult = false;
+            journeyService.Setup(service => service.IsCanceled(It.IsAny<int>())).ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await journeyController.IsCanceled(journeyId);
+
+            // Assert
+            (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task DeleteUserFromJourney_ReturnsOkResult(int journeyId, int userId)
+        {
+            // Arrange
+            journeyService.Setup(service => service.DeleteUserFromJourney(journeyId, userId)).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await journeyController.DeleteUserFromJourney(journeyId, userId);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
         }
     }
 }

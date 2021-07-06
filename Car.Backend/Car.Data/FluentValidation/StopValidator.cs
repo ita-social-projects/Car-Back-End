@@ -12,8 +12,8 @@ namespace Car.Data.FluentValidation
             RuleFor(stop => stop.AddressId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(stop => stop.UserId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(stop => stop.Type).NotNull();
-            RuleFor(stop => stop.Address).SetValidator(new AddressValidator());
-            RuleFor(stop => stop.User).SetValidator(new UserValidator());
+            RuleFor(stop => stop.Address).SetValidator(new AddressValidator()!);
+            RuleFor(stop => stop.User).SetValidator(new UserValidator()!);
         }
     }
 }

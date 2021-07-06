@@ -1,20 +1,18 @@
 ﻿using Car.Data.Constants;
 using Car.Domain.FluentValidation;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using Xunit;
 using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.UserPreferences
 {
-    [TestFixture]
     public class UserPreferencesDtoValidatorTest
     {
-        private PreferencesDtoValidator validator;
+        private UserPreferencesDtoValidator validator;
 
         public UserPreferencesDtoValidatorTest()
         {
-            validator = new PreferencesDtoValidator();
+            validator = new UserPreferencesDtoValidator();
         }
 
         [Fact]

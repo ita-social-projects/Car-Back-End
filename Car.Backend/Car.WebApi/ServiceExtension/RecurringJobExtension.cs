@@ -11,12 +11,12 @@ namespace Car.WebApi.ServiceExtension
         {
             recurringJobManager.AddOrUpdate(
                 "DeleteOutdatedJourneys",
-                () => serviceProvider.GetService<IJourneyService>().DeletePastJourneyAsync(),
+                () => serviceProvider.GetService<IJourneyService>()!.DeletePastJourneyAsync(),
                 Cron.Daily(),
                 TimeZoneInfo.Utc);
             recurringJobManager.AddOrUpdate(
                 "DeleteOutdatedRequests",
-                () => serviceProvider.GetService<IRequestService>().DeleteOutdatedAsync(),
+                () => serviceProvider.GetService<IRequestService>()!.DeleteOutdatedAsync(),
                 Cron.Daily(),
                 TimeZoneInfo.Utc);
         }

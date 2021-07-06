@@ -166,7 +166,7 @@ namespace Car.Data.Migrations
                     { 28, "Jaguar" },
                     { 29, "Jeep" },
                     { 30, "Kia" },
-                    { 31, "Lamborghini" }
+                    { 31, "Lamborghini" },
                 });
 
             migrationBuilder.InsertData(
@@ -193,7 +193,7 @@ namespace Car.Data.Migrations
                     { 41, "Mercedes-Benz" },
                     { 40, "McLaren" },
                     { 44, "Nissan" },
-                    { 39, "Maybach" }
+                    { 39, "Maybach" },
                 });
 
             migrationBuilder.UpdateData(
@@ -1656,7 +1656,7 @@ namespace Car.Data.Migrations
                     { 307, 13, "D150 Club Cab" },
                     { 282, 10, "Fifth Ave" },
                     { 284, 10, "Imperial" },
-                    { 285, 10, "LHS" }
+                    { 285, 10, "LHS" },
                 });
 
             migrationBuilder.InsertData(
@@ -1705,7 +1705,7 @@ namespace Car.Data.Migrations
                     { 323, 13, "Grand Caravan Passenger" },
                     { 324, 13, "Intrepid" },
                     { 318, 13, "Dart" },
-                    { 343, 13, "Ram 3500 Quad Cab" }
+                    { 343, 13, "Ram 3500 Quad Cab" },
                 });
 
             migrationBuilder.InsertData(
@@ -1754,7 +1754,7 @@ namespace Car.Data.Migrations
                     { 259, 9, "Sportvan G30" },
                     { 260, 9, "Suburban" },
                     { 261, 9, "Suburban 1500" },
-                    { 262, 9, "Suburban 2500" }
+                    { 262, 9, "Suburban 2500" },
                 });
 
             migrationBuilder.InsertData(
@@ -1803,7 +1803,7 @@ namespace Car.Data.Migrations
                     { 472, 18, "Transit 250 Van" },
                     { 473, 18, "Transit 350 HD Van" },
                     { 474, 18, "Transit 350 Van" },
-                    { 475, 18, "Transit 350 Wagon" }
+                    { 475, 18, "Transit 350 Wagon" },
                 });
 
             migrationBuilder.InsertData(
@@ -1852,7 +1852,7 @@ namespace Car.Data.Migrations
                     { 435, 18, "F250 Crew Cab" },
                     { 417, 18, "Econoline E350 Cargo" },
                     { 444, 18, "F350 Super Duty Crew Cab" },
-                    { 446, 18, "F350 Super Duty Super Cab" }
+                    { 446, 18, "F350 Super Duty Super Cab" },
                 });
 
             migrationBuilder.InsertData(
@@ -1901,7 +1901,7 @@ namespace Car.Data.Migrations
                     { 350, 13, "Ram Van B250" },
                     { 351, 13, "Ram Van B350" },
                     { 352, 13, "Ram Wagon 1500" },
-                    { 378, 15, "500e" }
+                    { 378, 15, "500e" },
                 });
 
             migrationBuilder.InsertData(
@@ -1950,7 +1950,7 @@ namespace Car.Data.Migrations
                     { 391, 16, "F430" },
                     { 392, 16, "FF" },
                     { 393, 16, "GTC4Lusso" },
-                    { 394, 16, "Portofino" }
+                    { 394, 16, "Portofino" },
                 });
 
             migrationBuilder.InsertData(
@@ -2014,7 +2014,7 @@ namespace Car.Data.Migrations
                     { 978, 44, "Titan King Cab" },
                     { 979, 44, "Versa" },
                     { 980, 44, "Versa Note" },
-                    { 981, 44, "Xterra" }
+                    { 981, 44, "Xterra" },
                 });
 
             migrationBuilder.InsertData(
@@ -2063,7 +2063,7 @@ namespace Car.Data.Migrations
                     { 1009, 47, "Sundance" },
                     { 1020, 48, "Grand Am" },
                     { 1022, 48, "LeMans" },
-                    { 1023, 48, "Montana" }
+                    { 1023, 48, "Montana" },
                 });
 
             migrationBuilder.InsertData(
@@ -2112,7 +2112,7 @@ namespace Car.Data.Migrations
                     { 873, 41, "Mercedes-AMG GLC Coupe" },
                     { 874, 41, "Mercedes-AMG GLE" },
                     { 875, 41, "Mercedes-AMG GLE Coupe" },
-                    { 876, 41, "Mercedes-AMG GLS" }
+                    { 876, 41, "Mercedes-AMG GLS" },
                 });
 
             migrationBuilder.InsertData(
@@ -2161,7 +2161,7 @@ namespace Car.Data.Migrations
                     { 938, 43, "Raider Extended Cab" },
                     { 936, 43, "Precis" },
                     { 916, 42, "Tracer" },
-                    { 917, 42, "Villager" }
+                    { 917, 42, "Villager" },
                 });
 
             migrationBuilder.InsertData(
@@ -2210,7 +2210,7 @@ namespace Car.Data.Migrations
                     { 1193, 60, "GLI" },
                     { 1194, 60, "GTI" },
                     { 1195, 60, "GTI (New)" },
-                    { 1176, 59, "Tundra Regular Cab" }
+                    { 1176, 59, "Tundra Regular Cab" },
                 });
 
             migrationBuilder.InsertData(
@@ -2259,7 +2259,7 @@ namespace Car.Data.Migrations
                     { 1235, 61, "V60" },
                     { 1236, 61, "V70" },
                     { 1237, 61, "V90" },
-                    { 1238, 61, "XC40" }
+                    { 1238, 61, "XC40" },
                 });
 
             migrationBuilder.InsertData(
@@ -2308,7 +2308,7 @@ namespace Car.Data.Migrations
                     { 1087, 55, "FR-S" },
                     { 1088, 55, "iA" },
                     { 1089, 55, "iM" },
-                    { 1090, 55, "iQ" }
+                    { 1090, 55, "iQ" },
                 });
 
             migrationBuilder.InsertData(
@@ -2357,7 +2357,7 @@ namespace Car.Data.Migrations
                     { 1129, 58, "Model X" },
                     { 1130, 59, "4Runner" },
                     { 1131, 59, "86" },
-                    { 1132, 59, "Avalon" }
+                    { 1132, 59, "Avalon" },
                 });
 
             migrationBuilder.InsertData(
@@ -2406,7 +2406,7 @@ namespace Car.Data.Migrations
                     { 1123, 57, "Vitara" },
                     { 1124, 57, "X-90" },
                     { 1115, 57, "Grand Vitara" },
-                    { 867, 41, "Mercedes-AMG CLA" }
+                    { 867, 41, "Mercedes-AMG CLA" },
                 });
 
             migrationBuilder.InsertData(
@@ -2455,7 +2455,7 @@ namespace Car.Data.Migrations
                     { 597, 24, "Insight" },
                     { 598, 24, "Odyssey" },
                     { 599, 24, "Passport" },
-                    { 600, 24, "Pilot" }
+                    { 600, 24, "Pilot" },
                 });
 
             migrationBuilder.InsertData(
@@ -2504,7 +2504,7 @@ namespace Car.Data.Migrations
                     { 638, 26, "G" },
                     { 639, 26, "I" },
                     { 652, 26, "QX70" },
-                    { 640, 26, "J" }
+                    { 640, 26, "J" },
                 });
 
             migrationBuilder.InsertData(
@@ -2553,7 +2553,7 @@ namespace Car.Data.Migrations
                     { 491, 20, "2500 Crew Cab" },
                     { 492, 20, "2500 HD Club Coupe" },
                     { 493, 20, "2500 HD Extended Cab" },
-                    { 494, 20, "2500 HD Regular Cab" }
+                    { 494, 20, "2500 HD Regular Cab" },
                 });
 
             migrationBuilder.InsertData(
@@ -2602,7 +2602,7 @@ namespace Car.Data.Migrations
                     { 570, 20, "Yukon XL 1500" },
                     { 581, 23, "H3" },
                     { 558, 20, "Suburban 1500" },
-                    { 556, 20, "Sonoma Extended Cab" }
+                    { 556, 20, "Sonoma Extended Cab" },
                 });
 
             migrationBuilder.InsertData(
@@ -2651,7 +2651,7 @@ namespace Car.Data.Migrations
                     { 812, 37, "Roadster" },
                     { 813, 38, "Coupe" },
                     { 814, 38, "Ghibli" },
-                    { 815, 38, "GranSport" }
+                    { 815, 38, "GranSport" },
                 });
 
             migrationBuilder.InsertData(
@@ -2700,7 +2700,7 @@ namespace Car.Data.Migrations
                     { 844, 41, "600 SL" },
                     { 854, 41, "E-Class" },
                     { 856, 41, "GL-Class" },
-                    { 857, 41, "GLA" }
+                    { 857, 41, "GLA" },
                 });
 
             migrationBuilder.InsertData(
@@ -2749,7 +2749,7 @@ namespace Car.Data.Migrations
                     { 706, 30, "Optima Hybrid" },
                     { 707, 30, "Optima Plug-in Hybrid" },
                     { 708, 30, "Rio" },
-                    { 709, 30, "Rondo" }
+                    { 709, 30, "Rondo" },
                 });
 
             migrationBuilder.InsertData(
@@ -2798,7 +2798,7 @@ namespace Car.Data.Migrations
                     { 724, 32, "Defender 110" },
                     { 725, 32, "Defender 90" },
                     { 750, 33, "RX" },
-                    { 751, 33, "SC" }
+                    { 751, 33, "SC" },
                 });
 
             migrationBuilder.InsertData(
@@ -2847,7 +2847,7 @@ namespace Car.Data.Migrations
                     { 742, 33, "IS" },
                     { 743, 33, "IS F" },
                     { 744, 33, "LC" },
-                    { 745, 33, "LFA" }
+                    { 745, 33, "LFA" },
                 });
 
             migrationBuilder.InsertData(

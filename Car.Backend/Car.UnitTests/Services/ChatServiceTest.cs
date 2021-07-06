@@ -300,6 +300,7 @@ namespace Car.UnitTests.Services
 
             expectedResult = chatDtoList;
             expectedResult.First().MessageText = messages.First().Text;
+            expectedResult.First().MessageId = messages.First().Id;
         }
     }
 }
