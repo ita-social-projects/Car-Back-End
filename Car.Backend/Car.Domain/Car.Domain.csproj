@@ -1,53 +1,47 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-      <Nullable>enable</Nullable>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="MapperProfile\**" />
-        <EmbeddedResource Remove="MapperProfile\**" />
-        <None Remove="MapperProfile\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="10.1.1" />
-        <PackageReference Include="Geolocation" Version="1.2.1" />
-        <PackageReference Include="Google.Apis.Drive.v3" Version="1.50.0.2236" />
-        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" />
-        <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="..\.editorconfig" Link=".editorconfig" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.17.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.3" />
-        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.321">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.7" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.0.7" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Car.Data\Car.Data.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EditorConfigFiles Update="D:\Internship\project\back-end\CarBackEnd\.editorconfig" Link=".editorconfig" />
-    </ItemGroup>
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="MapperProfile\**"/>
+    <EmbeddedResource Remove="MapperProfile\**"/>
+    <None Remove="MapperProfile\**"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1"/>
+    <PackageReference Include="Geolocation" Version="1.2.1"/>
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.50.0.2236"/>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0"/>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3"/>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7"/>
+    <PackageReference Include="FirebaseAdmin" Version="2.2.0"/>
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.3"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.17.0"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.3"/>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.321">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Drawing.Common" Version="5.0.1"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.7"/>
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.0.7"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Car.Data\Car.Data.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Update="D:\Internship\project\back-end\CarBackEnd\.editorconfig" Link=".editorconfig"/>
+  </ItemGroup>
 </Project>
