@@ -18,20 +18,18 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<Notification> notificationRepository;
         private readonly IHubContext<SignalRHub> notificationHub;
-        //private readonly IFirebaseService firebaseService;
-        //add that when tests will in "Car-Back-End\Car.Backend\Car.UnitTests\Services\NotificationServiceTest.cs"
-        //will not fail
+        private readonly IFirebaseService firebaseService;
         private readonly IMapper mapper;
 
         public NotificationService(
             IRepository<Notification> notificationRepository,
             IHubContext<SignalRHub> notificationHub,
-            //IFirebaseService firebaseService,
+            IFirebaseService firebaseService,
             IMapper mapper)
         {
             this.notificationRepository = notificationRepository;
             this.notificationHub = notificationHub;
-            //this.firebaseService = firebaseService;
+            this.firebaseService = firebaseService;
             this.mapper = mapper;
         }
 

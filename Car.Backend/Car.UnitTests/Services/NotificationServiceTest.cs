@@ -28,7 +28,7 @@ namespace Car.UnitTests.Services
     public class NotificationServiceTest : TestBase
     {
         private readonly INotificationService notificationService;
-        //private readonly IFirebaseService firebaseService;
+        private readonly IFirebaseService fcmService;
         private readonly Mock<IHubContext<SignalRHub>> hubContext;
         private readonly Mock<IHubCallerClients> hubClients;
         private readonly Mock<IClientProxy> clientProxy;
@@ -39,12 +39,13 @@ namespace Car.UnitTests.Services
         {
             hubContext = new Mock<IHubContext<SignalRHub>>();
             notificationRepository = new Mock<IRepository<Notification>>();
+            userRepository = new Mock<IRepository<User>>();
             hubClients = new Mock<IHubCallerClients>();
             clientProxy = new Mock<IClientProxy>();
             notificationService = new NotificationService(
                 notificationRepository.Object,
                 hubContext.Object,
-                //firebaseService,
+                fcmService,
                 Mapper);
         }
 
