@@ -51,6 +51,14 @@ jobs:
           json: ${{ secrets.GOOGLE }}
           dir: './Car.Backend/Car.WebApi/wwwroot/Credentials/'
 
+      - name: create-json
+        id: create-json5
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "credential-firebase-adminsdk.json"
+          json: ${{ secrets.FIREBASE_CREDENTIALS }}
+          dir: './Car.Backend/Car.WebApi/wwwroot/Credentials/'
+
       - name: login to docker
         run: |
           docker login --username ${{secrets.DOCKER_USER}} --password ${{secrets.DOCKER_PASSWORD}}

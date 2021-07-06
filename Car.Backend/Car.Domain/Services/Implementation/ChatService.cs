@@ -109,6 +109,7 @@ namespace Car.Domain.Services.Implementation
         {
             var addedMessage = await messageRepository.AddAsync(message);
             await messageRepository.SaveChangesAsync();
+
             return addedMessage;
         }
 

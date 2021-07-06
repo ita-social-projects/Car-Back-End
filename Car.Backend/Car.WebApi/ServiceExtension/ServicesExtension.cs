@@ -13,8 +13,8 @@ namespace Car.WebApi.ServiceExtension
     {
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddSingleton<IFirebaseService, FirebaseService>();
             services.AddScoped<ICompressor, ImageCompressor>();
+            services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddScoped<IFileService<File>, GoogleDriveService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarService, CarService>();

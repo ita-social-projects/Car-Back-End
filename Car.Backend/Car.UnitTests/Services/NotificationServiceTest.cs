@@ -38,12 +38,10 @@ namespace Car.UnitTests.Services
         {
             hubContext = new Mock<IHubContext<SignalRHub>>();
             notificationRepository = new Mock<IRepository<Notification>>();
-            userRepository = new Mock<IRepository<User>>();
             hubClients = new Mock<IHubCallerClients>();
             clientProxy = new Mock<IClientProxy>();
             notificationService = new NotificationService(
                 notificationRepository.Object,
-                userRepository.Object,
                 hubContext.Object,
                 firebaseService.Object,
                 Mapper);

@@ -11,15 +11,12 @@ namespace Car.Domain.Hubs
     {
         private readonly IChatService userManager;
         private readonly IFirebaseService firebaseService;
-        private readonly IRepository<User> userRepository;
 
         public SignalRHub(
             IChatService userManager,
-            IFirebaseService firebaseService,
-            IRepository<User> userRepository)
+            IFirebaseService firebaseService)
         {
             this.userManager = userManager;
-            this.userRepository = userRepository;
             this.firebaseService = firebaseService;
         }
 
@@ -38,12 +35,12 @@ namespace Car.Domain.Hubs
             message.CreatedAt = DateTime.UtcNow;
             await userManager.AddMessageAsync(message);
             await Clients.Group(message.ChatId.ToString()).SendAsync("RecieveMessage", message);
+            await firebaseService.SendNotification(message);
         }
 
         public async Task UpdateFCMTocken(string token, int userId)
         {
-            System.Console.WriteLine(userId + " : " + token);
-            await firebaseService.UpdateUserToken(userRepository, token, userId);
+            await firebaseService.UpdateUserToken(token, userId);
         }
     }
 }
