@@ -1,41 +1,39 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-	<ItemGroup>
-		<None Include="..\.editorconfig" Link=".editorconfig" />
-	</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoFixture" Version="4.15.0" />
-    <PackageReference Include="AutoFixture.AutoMoq" Version="4.15.0" />
-    <PackageReference Include="AutoFixture.Xunit2" Version="4.15.0" />
+    <None Include="..\.editorconfig" Link=".editorconfig"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="4.15.0"/>
+    <PackageReference Include="AutoFixture.AutoMoq" Version="4.15.0"/>
+    <PackageReference Include="AutoFixture.Xunit2" Version="4.15.0"/>
     <PackageReference Include="coverlet.msbuild" Version="3.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="FluentAssertions" Version="6.0.0-alpha0002" />
-    <PackageReference Include="FluentValidation" Version="9.5.1" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
-    <PackageReference Include="MockQueryable.Core" Version="5.0.0" />
-    <PackageReference Include="MockQueryable.EntityFrameworkCore" Version="5.0.0" />
-    <PackageReference Include="MockQueryable.Moq" Version="5.0.0" />
-    <PackageReference Include="Moq" Version="4.16.1" />
-    <PackageReference Include="NUnit" Version="3.13.1" />
+    <PackageReference Include="FluentAssertions" Version="6.0.0-alpha0002"/>
+    <PackageReference Include="FluentValidation" Version="9.5.1"/>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3"/>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.3"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.3"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.3"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1"/>
+    <PackageReference Include="MockQueryable.Core" Version="5.0.0"/>
+    <PackageReference Include="MockQueryable.EntityFrameworkCore" Version="5.0.0"/>
+    <PackageReference Include="MockQueryable.Moq" Version="5.0.0"/>
+    <PackageReference Include="Moq" Version="4.16.1"/>
+    <PackageReference Include="NUnit" Version="3.13.1"/>
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.321">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.7" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.0.7" />
-    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.7"/>
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.0.7"/>
+    <PackageReference Include="xunit" Version="2.4.1"/>
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -44,9 +42,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="FirebaseAdmin" Version="2.2.0"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Car.WebApi\Car.WebApi.csproj" />
+    <ProjectReference Include="..\Car.WebApi\Car.WebApi.csproj"/>
   </ItemGroup>
-
 </Project>
