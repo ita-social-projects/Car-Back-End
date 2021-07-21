@@ -61,13 +61,9 @@ namespace Car.WebApi.Middelware
             if (exceptions.TryGetValue(exception.GetType(), out ResponseInformation? responseInformation))
             {
                 logMessage = responseInformation.LogMessage;
-
                 context.Response.ContentType = responseInformation.ContentType;
                 context.Response.StatusCode = responseInformation.StatusCode;
-                if (env.IsDevelopment())
-                {
-                    responseMessage = responseInformation.ResponseMessage;
-                }
+                responseMessage = responseInformation.ResponseMessage;
             }
 
             logger.LogError(logMessage);
