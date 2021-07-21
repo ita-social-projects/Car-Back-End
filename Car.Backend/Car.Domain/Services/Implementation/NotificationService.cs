@@ -130,17 +130,11 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task DeleteNotificationsAsync(IEnumerable<int> notificationsId)
+        public async Task DeleteNotificationsAsync(IEnumerable<Notification> notifications)
         {
-            if (notificationsId is not null)
+            if (notifications is not null)
             {
-                var notificationsToDelete = await notificationRepository
-                    .Query()
-                    .Where(x => notificationsId
-                        .Contains(x.Id))
-                    .ToListAsync();
-
-                await notificationRepository.DeleteRangeAsync(notificationsToDelete);
+                await notificationRepository.DeleteRangeAsync(notifications);
                 await notificationRepository.SaveChangesAsync();
             }
         }
