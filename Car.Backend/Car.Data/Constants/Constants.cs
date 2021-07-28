@@ -10,7 +10,7 @@
         public const int EmailMaxLength = 100;
 
         public const int JsonMinLength = 2;
-        public const int JsonMaxLength = 100;
+        public const int JsonMaxLength = 1000;
 
         public const int PositionMaxLength = 100;
         public const int LocationMaxLength = 100;
