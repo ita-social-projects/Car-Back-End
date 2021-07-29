@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
 using Google.Apis.Drive.v3.Data;
@@ -22,7 +23,7 @@ namespace Car.Domain.Services.Implementation
         /// <returns>Task.</returns>
         public async Task<IEntityWithImage?> UploadImageAsync(IEntityWithImage entity, IFormFile? entityFile)
         {
-            if (entityFile != null && entity != null)
+            if (entityFile != null)
             {
                 entity.ImageId = await fileService.UploadFileAsync(entityFile.OpenReadStream(), entityFile.FileName, ImageContentType);
             }
@@ -38,7 +39,7 @@ namespace Car.Domain.Services.Implementation
         /// <returns>Task.</returns>
         public async Task<IEntityWithImage> UpdateImageAsync(IEntityWithImage entity, IFormFile? entityFile)
         {
-            await DeleteImageAsync(entity);
+            DeleteImageAsync(entity);
             await UploadImageAsync(entity, entityFile);
 
             return entity;
@@ -49,11 +50,12 @@ namespace Car.Domain.Services.Implementation
         /// </summary>
         /// <param name="entity">Entity with an image to delete.</param>
         /// <returns>Task.</returns>
-        public async Task<IEntityWithImage?> DeleteImageAsync(IEntityWithImage entity)
+        public IEntityWithImage? DeleteImageAsync(IEntityWithImage entity)
         {
             if (entity?.ImageId != null)
             {
-                await fileService.DeleteFileAsync(entity.ImageId);
+                fileService.DeleteFileAsync(entity.ImageId);
+
                 entity.ImageId = null;
             }
 
