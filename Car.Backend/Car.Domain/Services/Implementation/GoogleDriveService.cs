@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Car.Domain.Configurations;
@@ -71,8 +72,16 @@ namespace Car.Domain.Services.Implementation
 
             await using (fileStream)
             {
-                await using var compressedFile = compressor.CompressFile(fileStream, Quality);
-                request = service!.Files.Create(fileMetadata, compressedFile, contentType);
+                try
+                {
+                    await using var compressedFile = compressor.CompressFile(fileStream, Quality);
+                    request = service!.Files.Create(fileMetadata, compressedFile, contentType);
+                }
+                catch (ArgumentException)
+                {
+                    request = service!.Files.Create(fileMetadata, fileStream, contentType);
+                }
+
                 request.Fields = IdFieldName;
                 await request.UploadAsync();
             }
