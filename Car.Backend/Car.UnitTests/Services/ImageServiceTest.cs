@@ -70,39 +70,39 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task DeleteImageAsync_EntityIsNull_ReturnsNull()
+        public void DeleteImageAsync_EntityIsNull_ReturnsNull()
         {
             // Arrange
             var entity = (IEntityWithImage)null;
 
             // Act
-            var result = await imageService.DeleteImageAsync(entity);
+            var result = imageService.DeleteImageAsync(entity);
 
             // Assert
             result.Should().BeNull();
         }
 
         [Fact]
-        public async Task DeleteImageAsync_ImageIdIsNull_ReturnsSameEntity()
+        public void DeleteImageAsync_ImageIdIsNull_ReturnsSameEntity()
         {
             // Arrange
             IEntityWithImage entity = Fixture.Build<User>().With(u => u.ImageId, (string)null).Create();
 
             // Act
-            var result = await imageService.DeleteImageAsync(entity);
+            var result = imageService.DeleteImageAsync(entity);
 
             // Assert
             result.Should().BeEquivalentTo(entity);
         }
 
         [Fact]
-        public async Task DeleteImageAsync_ImageIdIsValid_ReturnsUpdatedEntity()
+        public void DeleteImageAsync_ImageIdIsValid_ReturnsUpdatedEntity()
         {
             // Arrange
             IEntityWithImage entity = Fixture.Create<User>();
 
             // Act
-            var result = await imageService.DeleteImageAsync(entity);
+            var result = imageService.DeleteImageAsync(entity);
 
             // Assert
             result.ImageId.Should().BeNull();
