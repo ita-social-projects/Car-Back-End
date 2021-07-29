@@ -39,7 +39,7 @@ namespace Car.Domain.Services.Implementation
         /// <returns>Task.</returns>
         public async Task<IEntityWithImage> UpdateImageAsync(IEntityWithImage entity, IFormFile? entityFile)
         {
-            DeleteImageAsync(entity);
+            DeleteImage(entity);
             await UploadImageAsync(entity, entityFile);
 
             return entity;
@@ -50,7 +50,7 @@ namespace Car.Domain.Services.Implementation
         /// </summary>
         /// <param name="entity">Entity with an image to delete.</param>
         /// <returns>Task.</returns>
-        public IEntityWithImage? DeleteImageAsync(IEntityWithImage entity)
+        public IEntityWithImage? DeleteImage(IEntityWithImage entity)
         {
             if (entity?.ImageId != null)
             {
