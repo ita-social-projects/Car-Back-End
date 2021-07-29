@@ -32,6 +32,11 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<UserDto?> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
+            if (updateUserDto == null)
+            {
+                return null;
+            }
+
             var user = await userRepository.Query().FirstOrDefaultAsync(u => updateUserDto.Id == u.Id);
 
             await imageService.UpdateImageAsync(user, updateUserDto.Image);
