@@ -296,7 +296,7 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        private IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
+        private static IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
         {
             var applicantStops = new List<StopDto>();
 
