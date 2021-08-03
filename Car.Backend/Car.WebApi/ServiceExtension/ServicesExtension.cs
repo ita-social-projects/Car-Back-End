@@ -5,7 +5,6 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.WebApi.ServiceExtension
 {
@@ -14,7 +13,7 @@ namespace Car.WebApi.ServiceExtension
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<ICompressor, ImageCompressor>();
-            services.AddScoped<IFileService<File>, GoogleDriveService>();
+            services.AddScoped<IFileService, AzureBlobStorageService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarService, CarService>();
             services.AddScoped<ILoginService, LoginService>();
@@ -49,7 +48,7 @@ namespace Car.WebApi.ServiceExtension
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<Jwt>(configuration.GetSection("Jwt"));
-            services.Configure<GoogleDriveOptions>(configuration.GetSection("GoogleDriveOptions"));
+            services.Configure<AzureBlobStorageOptions>(configuration.GetSection("AzureBlobStorageOptions"));
         }
     }
 }

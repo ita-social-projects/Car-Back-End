@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace Car.Domain.Services.Interfaces
 {
-    public interface IFileService<TFile>
+    public interface IFileService
     {
-        Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType);
+        Task<string> UploadFileAsync(Stream fileStream, string fileName);
 
-        Task<string> DeleteFileAsync(string fileId);
+        Task<bool> DeleteFileAsync(string fileId);
 
         void SetCredentials();
     }
