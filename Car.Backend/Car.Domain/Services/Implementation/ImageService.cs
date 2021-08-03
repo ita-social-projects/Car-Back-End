@@ -2,14 +2,12 @@
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
-using Google.Apis.Drive.v3.Data;
 using Microsoft.AspNetCore.Http;
 
 namespace Car.Domain.Services.Implementation
 {
     public class ImageService : IImageService
     {
-        private const string ImageContentType = "image/png";
         private readonly IFileService fileService;
 
         public ImageService(IFileService fileService) =>

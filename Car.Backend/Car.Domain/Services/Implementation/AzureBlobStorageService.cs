@@ -64,7 +64,7 @@ namespace Car.Domain.Services.Implementation
 
                     await blobClient.SetMetadataAsync(fileMetadata);
                 }
-                catch (ArgumentException e)
+                catch (ArgumentException)
                 {
                     id += Path.GetExtension(fileName);
                     var blobClient = blobContainerClient.GetBlobClient(id);
