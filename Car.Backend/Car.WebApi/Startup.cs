@@ -48,7 +48,7 @@ namespace Car.WebApi
             services.AddDbContext(Configuration);
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            services.AddServices();
+            services.AddServices(Configuration);
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddCorsSettings();
             services.InitializeConfigurations(Configuration);

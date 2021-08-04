@@ -1,17 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
-using Google.Apis.Drive.v3.Data;
 using Microsoft.AspNetCore.Http;
 
 namespace Car.Domain.Services.Implementation
 {
     public class ImageService : IImageService
     {
-        private const string ImageContentType = "image/png";
-        private readonly IFileService<File> fileService;
+        private readonly IFileService fileService;
 
-        public ImageService(IFileService<File> fileService) =>
+        public ImageService(IFileService fileService) =>
             this.fileService = fileService;
 
         /// <summary>
@@ -24,7 +23,7 @@ namespace Car.Domain.Services.Implementation
         {
             if (entityFile != null && entity != null)
             {
-                entity.ImageId = await fileService.UploadFileAsync(entityFile.OpenReadStream(), entityFile.FileName, ImageContentType);
+                entity.ImageId = await fileService.UploadFileAsync(entityFile.OpenReadStream(), entityFile.FileName);
             }
 
             return entity;
@@ -38,7 +37,7 @@ namespace Car.Domain.Services.Implementation
         /// <returns>Task.</returns>
         public async Task<IEntityWithImage> UpdateImageAsync(IEntityWithImage entity, IFormFile? entityFile)
         {
-            await DeleteImageAsync(entity);
+            DeleteImage(entity);
             await UploadImageAsync(entity, entityFile);
 
             return entity;
@@ -49,11 +48,12 @@ namespace Car.Domain.Services.Implementation
         /// </summary>
         /// <param name="entity">Entity with an image to delete.</param>
         /// <returns>Task.</returns>
-        public async Task<IEntityWithImage?> DeleteImageAsync(IEntityWithImage entity)
+        public IEntityWithImage? DeleteImage(IEntityWithImage entity)
         {
             if (entity?.ImageId != null)
             {
-                await fileService.DeleteFileAsync(entity.ImageId);
+                fileService.DeleteFileAsync(entity.ImageId);
+
                 entity.ImageId = null;
             }
 

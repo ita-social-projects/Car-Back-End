@@ -76,7 +76,7 @@ namespace Car.Data.Infrastructure
         /// <param name="entities">Entities to delete.</param>
         /// <returns>Task.</returns>
         public async Task DeleteRangeAsync(IEnumerable<TEntity> entities) =>
-            await Task.Run(() => dbEntities.RemoveRange(entities));
+            await Task.Run(() => entities.ToList().ForEach(item => context.Entry(item).State = EntityState.Deleted));
 
         /// <summary>
         /// Saves changes in the database asynchronously.

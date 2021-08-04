@@ -10,6 +10,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEntityWithImage> UpdateImageAsync(IEntityWithImage entity, IFormFile? entityFile);
 
-        Task<IEntityWithImage?> DeleteImageAsync(IEntityWithImage entity);
+        IEntityWithImage? DeleteImage(IEntityWithImage entity);
     }
 }
