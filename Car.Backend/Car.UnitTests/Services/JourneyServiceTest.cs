@@ -27,6 +27,7 @@ namespace Car.UnitTests.Services
     {
         private readonly IJourneyService journeyService;
         private readonly Mock<IRequestService> requestService;
+        private readonly Mock<ILocationService> locationService;
         private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
@@ -36,6 +37,7 @@ namespace Car.UnitTests.Services
             journeyRepository = new Mock<IRepository<Journey>>();
             requestRepository = new Mock<IRepository<Request>>();
             requestService = new Mock<IRequestService>();
+            locationService = new Mock<ILocationService>();
 
             notificationService = new Mock<INotificationService>();
             journeyService = new JourneyService(
@@ -43,6 +45,7 @@ namespace Car.UnitTests.Services
                 requestRepository.Object,
                 notificationService.Object,
                 requestService.Object,
+                locationService.Object,
                 Mapper);
         }
 
