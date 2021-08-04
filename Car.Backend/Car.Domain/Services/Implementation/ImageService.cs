@@ -2,17 +2,15 @@
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
-using Google.Apis.Drive.v3.Data;
 using Microsoft.AspNetCore.Http;
 
 namespace Car.Domain.Services.Implementation
 {
     public class ImageService : IImageService
     {
-        private const string ImageContentType = "image/png";
-        private readonly IFileService<File> fileService;
+        private readonly IFileService fileService;
 
-        public ImageService(IFileService<File> fileService) =>
+        public ImageService(IFileService fileService) =>
             this.fileService = fileService;
 
         /// <summary>
@@ -25,7 +23,7 @@ namespace Car.Domain.Services.Implementation
         {
             if (entityFile != null && entity != null)
             {
-                entity.ImageId = await fileService.UploadFileAsync(entityFile.OpenReadStream(), entityFile.FileName, ImageContentType);
+                entity.ImageId = await fileService.UploadFileAsync(entityFile.OpenReadStream(), entityFile.FileName);
             }
 
             return entity;

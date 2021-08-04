@@ -31,6 +31,8 @@ namespace Car.Domain.Services.Implementation
 
             image.Save(compressedFile, jpegCodec!, codecParameter);
 
+            compressedFile.Position = 0;
+
             return compressedFile;
         }
     }

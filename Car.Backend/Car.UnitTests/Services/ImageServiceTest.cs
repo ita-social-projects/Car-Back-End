@@ -10,18 +10,17 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
-using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Car.UnitTests.Services
 {
     public class ImageServiceTest : TestBase
     {
         private readonly IImageService imageService;
-        private readonly Mock<IFileService<File>> fileService;
+        private readonly Mock<IFileService> fileService;
 
         public ImageServiceTest()
         {
-            fileService = new Mock<IFileService<File>>();
+            fileService = new Mock<IFileService>();
             imageService = new ImageService(fileService.Object);
         }
 
@@ -32,7 +31,7 @@ namespace Car.UnitTests.Services
             // Arrange
             IEntityWithImage entity = Fixture.Create<Data.Entities.User>();
             fileService
-                .Setup(f => f.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(f => f.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>()))
                 .ReturnsAsync(imageId);
 
             // Act
@@ -115,7 +114,7 @@ namespace Car.UnitTests.Services
             // Arrange
             IEntityWithImage entity = Fixture.Create<User>();
             fileService
-                .Setup(f => f.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(f => f.UploadFileAsync(It.IsAny<Stream>(), It.IsAny<string>()))
                 .ReturnsAsync(imageId);
 
             // Act
