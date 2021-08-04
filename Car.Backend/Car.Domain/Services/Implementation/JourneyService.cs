@@ -25,6 +25,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Request> requestRepository;
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
+        private readonly ILocationService locationService;
         private readonly IMapper mapper;
 
         public JourneyService(
@@ -32,12 +33,14 @@ namespace Car.Domain.Services.Implementation
             IRepository<Request> requestRepository,
             INotificationService notificationService,
             IRequestService requestService,
+            ILocationService locationService,
             IMapper mapper)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
             this.notificationService = notificationService;
             this.requestService = requestService;
+            this.locationService = locationService;
             this.mapper = mapper;
         }
 
@@ -63,11 +66,12 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<JourneyModel>> GetPastJourneysAsync(int userId)
         {
-            var journeys = await journeyRepository
+            var journeys = await (await journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .FilterPast()
+                .UseSavedAdresses(userId, locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -75,11 +79,12 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync(int userId)
         {
-            var journeys = await journeyRepository
+            var journeys = await (await journeyRepository
                 .Query(journey => journey!.Schedule!)
                 .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .Where(journey => journey.Schedule != null)
+                .UseSavedAdresses(userId, locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -87,11 +92,12 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync(int userId)
         {
-            var journeys = await journeyRepository
+            var journeys = await (await journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .FilterUpcoming()
+                .UseSavedAdresses(userId, locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -297,7 +303,7 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        private IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
+        private static IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
         {
             var applicantStops = new List<StopDto>();
 
