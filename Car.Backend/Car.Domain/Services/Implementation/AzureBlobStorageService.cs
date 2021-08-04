@@ -19,24 +19,16 @@ namespace Car.Domain.Services.Implementation
 
         private readonly IOptions<AzureBlobStorageOptions> azureBlobStorageOptions;
         private readonly ICompressor compressor;
-
-        private BlobServiceClient? blobServiceClient;
+        private readonly BlobServiceClient blobServiceClient;
 
         public AzureBlobStorageService(
             IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
-            ICompressor compressor)
+            ICompressor compressor,
+            BlobServiceClient blobServiceClient)
         {
             this.azureBlobStorageOptions = azureBlobStorageOptions;
             this.compressor = compressor;
-            SetCredentials();
-        }
-
-        /// <summary>
-        /// Sets the credentials for the azure-blob-storage service.
-        /// </summary>
-        public void SetCredentials()
-        {
-            blobServiceClient = new BlobServiceClient(azureBlobStorageOptions.Value.AccessKey!);
+            this.blobServiceClient = blobServiceClient;
         }
 
         /// <summary>

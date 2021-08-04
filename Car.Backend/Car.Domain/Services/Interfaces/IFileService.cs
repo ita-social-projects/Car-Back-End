@@ -8,7 +8,5 @@ namespace Car.Domain.Services.Interfaces
         Task<string> UploadFileAsync(Stream fileStream, string fileName);
 
         Task<bool> DeleteFileAsync(string fileId);
-
-        void SetCredentials();
     }
 }

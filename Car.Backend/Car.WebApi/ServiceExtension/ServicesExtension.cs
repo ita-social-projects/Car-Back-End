@@ -1,4 +1,5 @@
-﻿using Car.Data.Entities;
+﻿using Azure.Storage.Blobs;
+using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Configurations;
 using Car.Domain.Services.Implementation;
@@ -10,8 +11,11 @@ namespace Car.WebApi.ServiceExtension
 {
     public static class ServicesExtension
     {
-        public static void AddServices(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<BlobServiceClient>(provider =>
+                new BlobServiceClient(configuration.GetSection("AzureBlobStorageOptions")
+                    .GetValue<string>("AccessKey")));
             services.AddScoped<ICompressor, ImageCompressor>();
             services.AddScoped<IFileService, AzureBlobStorageService>();
             services.AddScoped<IUserService, UserService>();
