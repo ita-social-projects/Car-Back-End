@@ -3,6 +3,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using Car.Domain.Services.Interfaces;
+using SkiaSharp;
 
 namespace Car.Domain.Services.Implementation
 {
@@ -16,24 +17,11 @@ namespace Car.Domain.Services.Implementation
         /// <returns>Stream of compressed file</returns>
         public Stream CompressFile(Stream fileStream, int imageQuality)
         {
-            using var image = Image.FromStream(fileStream);
+            using var image = SKImage.FromEncodedData(fileStream);
 
-            var imageQualityParameter = new EncoderParameter(
-                Encoder.Quality, imageQuality);
+            SKData data = image.Encode(SKEncodedImageFormat.Jpeg, imageQuality);
 
-            var imageCodecInfos = ImageCodecInfo.GetImageEncoders();
-
-            var codecParameter = new EncoderParameters(1) { Param = { [0] = imageQualityParameter } };
-
-            var jpegCodec = imageCodecInfos.FirstOrDefault(t => t.MimeType == "image/jpeg");
-
-            var compressedFile = new MemoryStream();
-
-            image.Save(compressedFile, jpegCodec!, codecParameter);
-
-            compressedFile.Position = 0;
-
-            return compressedFile;
+            return data.AsStream();
         }
     }
 }
