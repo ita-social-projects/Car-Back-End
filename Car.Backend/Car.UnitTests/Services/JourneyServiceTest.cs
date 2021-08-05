@@ -20,6 +20,7 @@ using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
+using Range = Moq.Range;
 
 namespace Car.UnitTests.Services
 {
@@ -31,6 +32,7 @@ namespace Car.UnitTests.Services
         private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
+        private readonly Mock<IRepository<User>> userRepository;
 
         public JourneyServiceTest()
         {
@@ -38,11 +40,13 @@ namespace Car.UnitTests.Services
             requestRepository = new Mock<IRepository<Request>>();
             requestService = new Mock<IRequestService>();
             locationService = new Mock<ILocationService>();
+            userRepository = new Mock<IRepository<User>>();
 
             notificationService = new Mock<INotificationService>();
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
+                userRepository.Object,
                 notificationService.Object,
                 requestService.Object,
                 locationService.Object,
@@ -924,6 +928,48 @@ namespace Car.UnitTests.Services
 
             // Assert
             journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(int journeyId, int userId, User[] participants)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyId + 1)
+                .With(j => j.Participants, new List<User>())
+                .CreateMany(1);
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.AddUserToJourney(journeyId, userId);
+
+            // Assert
+            result.Should().Be(false);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValid_ReturnsTrue(int journeyId, int userId)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyId)
+                .With(j => j.Participants, new List<User>())
+                .With(j => j.CountOfSeats, 4).
+                CreateMany(1);
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, userId)
+                .CreateMany(1);
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.AddUserToJourney(journeyId, userId);
+
+            // Assert
+            result.Should().Be(true);
         }
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()

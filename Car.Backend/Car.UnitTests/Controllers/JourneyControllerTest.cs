@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
@@ -314,6 +315,26 @@ namespace Car.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task AddUserToJourney_ReturnsOkObjectResult(int journeyId, int userId, bool expectedResult)
+        {
+            // Arrange
+            journeyService
+                .Setup(service => service.AddUserToJourney(It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(expectedResult);
+
+            // Act
+            var result = await journeyController.AddUserToJourney(journeyId, userId);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                (result as OkObjectResult)?.StatusCode.Should().Be(200);
+                (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
+            }
         }
     }
 }
