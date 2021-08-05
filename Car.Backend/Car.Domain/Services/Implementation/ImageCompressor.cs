@@ -17,7 +17,6 @@ namespace Car.Domain.Services.Implementation
         /// <returns>Stream of compressed file</returns>
         public Stream CompressFile(Stream fileStream, int imageQuality)
         {
-
             using var image = SKImage.FromEncodedData(fileStream);
 
             SKData data = image.Encode(SKEncodedImageFormat.Jpeg, imageQuality);
