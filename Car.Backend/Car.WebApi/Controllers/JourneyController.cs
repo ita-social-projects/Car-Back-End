@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using Car.Domain.Dto;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
@@ -143,6 +145,19 @@ namespace Car.WebApi.Controllers
         {
             await journeyService.DeleteUserFromJourney(journeyId, userId);
             return Ok();
+        }
+
+        /// <summary>
+        /// Adds user to journey
+        /// </summary>
+        /// <param name="journeyId">journey Id</param>
+        /// <param name="userId">user Id</param>
+        /// <returns>OkResult</returns>
+        [HttpPut("add-user/{journeyId}/{userId}")]
+        public async Task<IActionResult> AddUserToJourney(int journeyId, int userId)
+        {
+            var isUserAdded = await journeyService.AddUserToJourney(journeyId, userId);
+            return Ok(isUserAdded);
         }
     }
 }

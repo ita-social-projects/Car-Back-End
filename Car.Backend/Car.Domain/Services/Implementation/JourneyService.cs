@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Internal;
-using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
@@ -14,7 +11,6 @@ using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
-using Geolocation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
@@ -23,6 +19,7 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
+        private readonly IRepository<User> userRepository;
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
         private readonly ILocationService locationService;
@@ -31,6 +28,7 @@ namespace Car.Domain.Services.Implementation
         public JourneyService(
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
+            IRepository<User> userRepository,
             INotificationService notificationService,
             IRequestService requestService,
             ILocationService locationService,
@@ -38,6 +36,7 @@ namespace Car.Domain.Services.Implementation
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
+            this.userRepository = userRepository;
             this.notificationService = notificationService;
             this.requestService = requestService;
             this.locationService = locationService;
@@ -300,6 +299,30 @@ namespace Car.Domain.Services.Implementation
                 await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
                 await journeyRepository.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> AddUserToJourney(int journeyId, int userId)
+        {
+            var journey = await journeyRepository
+                .Query()
+                .IncludeAllParticipants()
+                .FirstOrDefaultAsync(j => j.Id == journeyId);
+
+            var userToAdd = await userRepository
+                .Query()
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (journey == null
+                || userToAdd == null
+                || journey.Participants.Contains(userToAdd)
+                || journey.Participants.Count >= journey.CountOfSeats)
+            {
+                return false;
+            }
+
+            journey.Participants.Add(userToAdd);
+            await journeyRepository.SaveChangesAsync();
+            return true;
         }
 
         private static IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)

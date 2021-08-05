@@ -167,6 +167,14 @@
             <param name="userId">user Id</param>
             <returns>OkResult</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddUserToJourney(System.Int32,System.Int32)">
+            <summary>
+            Adds user to journey
+            </summary>
+            <param name="journeyId">journey Id</param>
+            <param name="userId">user Id</param>
+            <returns>OkResult</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
             <summary>
             Gets all the locations by user id

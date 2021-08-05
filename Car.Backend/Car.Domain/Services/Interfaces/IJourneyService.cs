@@ -40,5 +40,7 @@ namespace Car.Domain.Services.Interfaces
         Task<bool> IsCanceled(int journeyId);
 
         Task DeleteUserFromJourney(int journeyId, int userId);
+
+        Task<bool> AddUserToJourney(int journeyId, int userId);
     }
 }
