@@ -74,55 +74,6 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UploadFileAsync_FileStreamIsNotValid_ReturnsIdWithOriginalExtension(
-            Stream fileStream,
-            string filename,
-            [Frozen] Mock<ICompressor> compressor,
-            [Frozen] Mock<BlobServiceClient> blobServiceClient,
-            [Frozen] Mock<BlobContainerClient> blobContainerClient,
-            [Frozen] Mock<BlobClient> blobClient,
-            [Frozen] IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
-            Mock<Response<BlobContentInfo>> blobContentInfoResponse,
-            Mock<Response<BlobInfo>> blobInfoResponse)
-        {
-            // Arrange
-            compressor
-                .Setup(c => c.CompressFile(It.IsAny<Stream>(), It.IsAny<int>()))
-                .Throws<ArgumentException>();
-            blobServiceClient
-                .Setup(serviceClient => serviceClient.GetBlobContainerClient(It.IsAny<string>()))
-                .Returns(blobContainerClient.Object);
-            blobContainerClient
-                .Setup(containerClient => containerClient.GetBlobClient(It.IsAny<string>()))
-                .Returns(blobClient.Object);
-            blobClient
-                .Setup(client =>
-                    client.UploadAsync(
-                        It.IsAny<Stream>(),
-                        It.IsAny<bool>(),
-                        It.IsAny<CancellationToken>()))
-                .ReturnsAsync(blobContentInfoResponse.Object);
-            blobClient
-                .Setup(client =>
-                    client.SetMetadataAsync(
-                        It.IsAny<IDictionary<string, string>>(),
-                        It.IsAny<BlobRequestConditions>(),
-                        It.IsAny<CancellationToken>()))
-                .ReturnsAsync(blobInfoResponse.Object);
-            AzureBlobStorageService azureBlobStorageService =
-                new(azureBlobStorageOptions, compressor.Object, blobServiceClient.Object);
-            var fileExtension = ".webp";
-            filename += fileExtension;
-
-            // Act
-            var result = await azureBlobStorageService.UploadFileAsync(fileStream, filename);
-
-            // Assert
-            result.Should().EndWith(fileExtension);
-        }
-
-        [Theory]
-        [AutoEntityData]
         public async Task DeleteFileAsync_FileIsExist_ReturnsTrue(
             string fileId,
             [Frozen] Mock<ICompressor> compressor,
