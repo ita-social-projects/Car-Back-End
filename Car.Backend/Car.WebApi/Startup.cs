@@ -53,7 +53,11 @@ namespace Car.WebApi
             services.AddCorsSettings();
             services.InitializeConfigurations(Configuration);
             services.AddLogging();
-            services.AddApplicationInsightsTelemetry();
+            if (Environment.IsProduction())
+            {
+                services.AddApplicationInsightsTelemetry();
+            }
+
             services.AddSignalR();
             services.AddHangFire();
             services.AddHangfireServer();
