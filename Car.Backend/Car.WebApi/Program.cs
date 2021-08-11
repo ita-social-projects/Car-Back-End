@@ -27,7 +27,7 @@ namespace Car.WebApi
                     {
                         logging.AddApplicationInsights(hostingContext.Configuration["iKeyForProduction"]);
                         logging.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>(
-                            string.Empty, LogLevel.Information);
+                            string.Empty, LogLevel.Warning);
                     }
                 });
     }
