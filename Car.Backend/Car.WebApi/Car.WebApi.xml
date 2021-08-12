@@ -167,12 +167,13 @@
             <param name="userId">user Id</param>
             <returns>OkResult</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.AddUserToJourney(System.Int32,System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddUserToJourney(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{Car.Domain.Dto.StopDto})">
             <summary>
             Adds user to journey
             </summary>
             <param name="journeyId">journey Id</param>
             <param name="userId">user Id</param>
+            <param name="applicantStops">applicant stops</param>
             <returns>OkResult</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">

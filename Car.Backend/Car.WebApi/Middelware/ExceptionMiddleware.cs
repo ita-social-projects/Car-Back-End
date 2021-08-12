@@ -70,7 +70,7 @@ namespace Car.WebApi.Middelware
                 }
             }
 
-            logger.LogError(logMessage);
+            logger.LogError(exception, logMessage);
             return context.Response.WriteAsync(responseMessage);
         }
     }

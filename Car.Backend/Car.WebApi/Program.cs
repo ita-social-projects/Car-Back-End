@@ -16,15 +16,19 @@ namespace Car.WebApi
                 .UseStartup<Startup>()
                 .ConfigureLogging((hostingContext, logging) =>
                 {
-                    logging.AddConsole();
-                    logging.AddAzureWebAppDiagnostics();
                     var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                     var isDevelopment = environment == Environments.Development;
-                    var appInsightKey = isDevelopment ? hostingContext.Configuration["iKeyForDevelop"] : hostingContext.Configuration["iKeyForProduction"];
-
-                    logging.AddApplicationInsights(appInsightKey);
-                    logging.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>(
-                        string.Empty, LogLevel.Information);
+                    if (isDevelopment)
+                    {
+                        logging.AddConsole();
+                        logging.AddFilter(string.Empty, LogLevel.Information);
+                    }
+                    else
+                    {
+                        logging.AddApplicationInsights(hostingContext.Configuration["iKeyForProduction"]);
+                        logging.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>(
+                            string.Empty, LogLevel.Warning);
+                    }
                 });
     }
 }

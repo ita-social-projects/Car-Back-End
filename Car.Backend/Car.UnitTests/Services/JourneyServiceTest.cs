@@ -932,7 +932,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(int journeyId, int userId, User[] participants)
+        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(int journeyId, int userId, User[] participants, IEnumerable<StopDto> applicantStops)
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
@@ -943,7 +943,7 @@ namespace Car.UnitTests.Services
             userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.AddUserToJourney(journeyId, userId);
+            var result = await journeyService.AddUserToJourney(journeyId, userId, applicantStops);
 
             // Assert
             result.Should().Be(false);
@@ -951,7 +951,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyAndUserAreValid_ReturnsTrue(int journeyId, int userId)
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValid_ReturnsTrue(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
@@ -966,7 +966,7 @@ namespace Car.UnitTests.Services
             userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.AddUserToJourney(journeyId, userId);
+            var result = await journeyService.AddUserToJourney(journeyId, userId, applicantStops);
 
             // Assert
             result.Should().Be(true);
