@@ -301,7 +301,9 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
+
         public async Task<bool> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
+
         {
             var journey = await journeyRepository
                 .Query()
@@ -331,7 +333,6 @@ namespace Car.Domain.Services.Implementation
             }
 
             await journeyRepository.SaveChangesAsync();
-
             return true;
         }
 

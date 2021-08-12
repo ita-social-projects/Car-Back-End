@@ -933,6 +933,7 @@ namespace Car.UnitTests.Services
         [Theory]
         [AutoEntityData]
         public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(int journeyId, int userId, User[] participants, IEnumerable<StopDto> applicantStops)
+
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
@@ -944,6 +945,7 @@ namespace Car.UnitTests.Services
 
             // Act
             var result = await journeyService.AddUserToJourney(journeyId, userId, applicantStops);
+
 
             // Assert
             result.Should().Be(false);

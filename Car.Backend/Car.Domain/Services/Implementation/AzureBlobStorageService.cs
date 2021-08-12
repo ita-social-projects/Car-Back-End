@@ -47,23 +47,12 @@ namespace Car.Domain.Services.Implementation
 
             await using (fileStream)
             {
-                try
-                {
-                    await using var compressedFile = compressor.CompressFile(fileStream, Quality);
-                    id += ".jpg";
-                    var blobClient = blobContainerClient.GetBlobClient(id);
-                    await blobClient.UploadAsync(compressedFile, true);
+                await using var compressedFile = compressor.CompressFile(fileStream, Quality);
+                id += ".jpg";
+                var blobClient = blobContainerClient.GetBlobClient(id);
+                await blobClient.UploadAsync(compressedFile, true);
 
-                    await blobClient.SetMetadataAsync(fileMetadata);
-                }
-                catch (ArgumentException)
-                {
-                    id += Path.GetExtension(fileName);
-                    var blobClient = blobContainerClient.GetBlobClient(id);
-                    await blobClient.UploadAsync(fileStream, true);
-
-                    await blobClient.SetMetadataAsync(fileMetadata);
-                }
+                await blobClient.SetMetadataAsync(fileMetadata);
             }
 
             return id;

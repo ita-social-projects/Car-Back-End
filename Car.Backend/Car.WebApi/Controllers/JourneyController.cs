@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using System.Net;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
@@ -161,6 +162,7 @@ namespace Car.WebApi.Controllers
         public async Task<IActionResult> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
         {
             var isUserAdded = await journeyService.AddUserToJourney(journeyId, userId, applicantStops);
+
             return Ok(isUserAdded);
         }
     }
