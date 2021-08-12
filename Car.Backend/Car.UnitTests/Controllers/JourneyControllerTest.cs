@@ -318,16 +318,16 @@ namespace Car.UnitTests.Controllers
         }
 
         [Theory]
-        [AutoData]
-        public async Task AddUserToJourney_ReturnsOkObjectResult(int journeyId, int userId, bool expectedResult)
+        [AutoEntityData]
+        public async Task AddUserToJourney_ReturnsOkObjectResult(int journeyId, int userId, IEnumerable<StopDto> applicantStops, bool expectedResult)
         {
             // Arrange
             journeyService
-                .Setup(service => service.AddUserToJourney(It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(service => service.AddUserToJourney(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<IEnumerable<StopDto>>()))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await journeyController.AddUserToJourney(journeyId, userId);
+            var result = await journeyController.AddUserToJourney(journeyId, userId, applicantStops);
 
             // Assert
             using (new AssertionScope())

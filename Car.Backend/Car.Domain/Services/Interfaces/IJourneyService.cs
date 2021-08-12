@@ -41,6 +41,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeleteUserFromJourney(int journeyId, int userId);
 
-        Task<bool> AddUserToJourney(int journeyId, int userId);
+        Task<bool> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops);
     }
 }
