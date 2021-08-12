@@ -86,6 +86,11 @@ namespace Car.Domain.Services.Implementation
 
         public async Task NotifyUserAsync(RequestDto request, Journey journey, IEnumerable<StopDto> stops)
         {
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
+
             var notification = new Notification()
             {
                 SenderId = journey.OrganizerId,
@@ -93,7 +98,7 @@ namespace Car.Domain.Services.Implementation
                 Type = NotificationType.RequestedJourneyCreated,
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow,
-                JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id, applicantStops = stops }),
+                JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id, applicantStops = stops }, serializeOptions),
                 JourneyId = journey.Id,
             };
 

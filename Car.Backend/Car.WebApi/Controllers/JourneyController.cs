@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
@@ -6,6 +8,7 @@ using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace Car.WebApi.Controllers
 {
@@ -152,11 +155,12 @@ namespace Car.WebApi.Controllers
         /// </summary>
         /// <param name="journeyId">journey Id</param>
         /// <param name="userId">user Id</param>
+        /// <param name="applicantStops">applicant stops</param>
         /// <returns>OkResult</returns>
         [HttpPut("add-user/{journeyId}/{userId}")]
-        public async Task<IActionResult> AddUserToJourney(int journeyId, int userId)
+        public async Task<IActionResult> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
         {
-            var isUserAdded = await journeyService.AddUserToJourney(journeyId, userId);
+            var isUserAdded = await journeyService.AddUserToJourney(journeyId, userId, applicantStops);
             return Ok(isUserAdded);
         }
     }
