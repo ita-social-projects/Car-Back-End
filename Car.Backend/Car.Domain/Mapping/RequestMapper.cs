@@ -15,6 +15,7 @@ namespace Car.Domain.Mapping
                 .ForMember(f => f.FromLongitude, req => req.MapFrom(r => r.From!.Longitude))
                 .ForMember(f => f.ToLatitude, req => req.MapFrom(r => r.To!.Latitude))
                 .ForMember(f => f.ToLongitude, req => req.MapFrom(r => r.To!.Longitude))
+                .ForMember(f => f.ApplicantId, req => req.MapFrom(r => r.UserId))
                 .ReverseMap();
         }
     }

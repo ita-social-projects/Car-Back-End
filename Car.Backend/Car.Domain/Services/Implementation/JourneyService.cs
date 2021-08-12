@@ -301,7 +301,7 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<bool> AddUserToJourney(int journeyId, int userId)
+        public async Task<bool> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
         {
             var journey = await journeyRepository
                 .Query()
@@ -320,8 +320,19 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
+            var stops = mapper.Map<IEnumerable<Stop>>(applicantStops);
+
             journey.Participants.Add(userToAdd);
+
+            foreach (var stop in stops)
+            {
+                stop.UserId = userId;
+                stop.JourneyId = journeyId;
+                journey.Stops.Add(stop);
+            }
+
             await journeyRepository.SaveChangesAsync();
+
             return true;
         }
 
