@@ -19,14 +19,17 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Notification> notificationRepository;
         private readonly IHubContext<SignalRHub> notificationHub;
         private readonly IMapper mapper;
+        private readonly IPushNotificationService pushNotificationService;
 
         public NotificationService(
             IRepository<Notification> notificationRepository,
             IHubContext<SignalRHub> notificationHub,
+            IPushNotificationService pushNotificationService,
             IMapper mapper)
         {
             this.notificationRepository = notificationRepository;
             this.notificationHub = notificationHub;
+            this.pushNotificationService = pushNotificationService;
             this.mapper = mapper;
         }
 
@@ -61,6 +64,10 @@ namespace Car.Domain.Services.Implementation
             await notificationRepository.SaveChangesAsync();
 
             await NotifyClientAsync(notification);
+            if (pushNotificationService != null)
+            {
+                await pushNotificationService.SendNotification(notification);
+            }
 
             return notification;
         }

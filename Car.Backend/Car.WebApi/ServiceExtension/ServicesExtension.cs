@@ -17,6 +17,7 @@ namespace Car.WebApi.ServiceExtension
                 new BlobServiceClient(configuration.GetSection("AzureBlobStorageOptions")
                     .GetValue<string>("AccessKey")));
             services.AddScoped<ICompressor, ImageCompressor>();
+            services.AddScoped<IPushNotificationService, PushNotificationService>();
             services.AddScoped<IFileService, AzureBlobStorageService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarService, CarService>();
@@ -53,6 +54,7 @@ namespace Car.WebApi.ServiceExtension
         {
             services.Configure<Jwt>(configuration.GetSection("Jwt"));
             services.Configure<AzureBlobStorageOptions>(configuration.GetSection("AzureBlobStorageOptions"));
+            services.Configure<FirebaseOptions>(configuration.GetSection("FirebaseOptions"));
         }
     }
 }

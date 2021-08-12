@@ -14,6 +14,7 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="10.1.1" />
         <PackageReference Include="Azure.Storage.Blobs" Version="12.9.1" />
+        <PackageReference Include="FirebaseAdmin" Version="2.2.0" />
         <PackageReference Include="Geolocation" Version="1.2.1" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />

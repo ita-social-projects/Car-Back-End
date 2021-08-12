@@ -41,6 +41,10 @@ namespace Car.Domain.Services.Implementation
 
             await imageService.UpdateImageAsync(user, updateUserDto.Image);
 
+            user.FCMToken = updateUserDto.Fcmtoken;
+
+            await userRepository.UpdateAsync(user);
+
             await userRepository.SaveChangesAsync();
 
             return mapper.Map<User, UserDto>(user);
