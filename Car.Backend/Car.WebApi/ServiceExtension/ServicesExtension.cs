@@ -17,6 +17,7 @@ namespace Car.WebApi.ServiceExtension
                 new BlobServiceClient(configuration.GetSection("AzureBlobStorageOptions")
                     .GetValue<string>("AccessKey")));
             services.AddScoped<ICompressor, ImageCompressor>();
+            services.AddSingleton<IFirebaseService, FirebaseService>();
             services.AddScoped<IPushNotificationService, PushNotificationService>();
             services.AddScoped<IFileService, AzureBlobStorageService>();
             services.AddScoped<IUserService, UserService>();

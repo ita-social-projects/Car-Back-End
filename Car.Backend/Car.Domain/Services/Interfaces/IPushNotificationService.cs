@@ -7,8 +7,8 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface IPushNotificationService
     {
-        Task SendNotification(NotificationDto notification);
+        Task<string?> SendNotificationAsync(NotificationDto notification);
 
-        Task SendNotification(Message message);
+        Task<bool> SendNotificationAsync(Message message);
     }
 }

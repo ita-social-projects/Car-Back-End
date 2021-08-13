@@ -64,10 +64,7 @@ namespace Car.Domain.Services.Implementation
             await notificationRepository.SaveChangesAsync();
 
             await NotifyClientAsync(notification);
-            if (pushNotificationService != null)
-            {
-                await pushNotificationService.SendNotification(notification);
-            }
+            await pushNotificationService.SendNotificationAsync(notification);
 
             return notification;
         }

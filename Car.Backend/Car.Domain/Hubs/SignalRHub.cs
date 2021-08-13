@@ -32,7 +32,7 @@ namespace Car.Domain.Hubs
             message.CreatedAt = DateTime.UtcNow;
             await userManager.AddMessageAsync(message);
             await Clients.Group(message.ChatId.ToString()).SendAsync("RecieveMessage", message);
-            await pushNotificationService.SendNotification(message);
+            await pushNotificationService.SendNotificationAsync(message);
         }
     }
 }

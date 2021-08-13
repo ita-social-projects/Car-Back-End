@@ -22,39 +22,32 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<model.Chat> chatRepository;
         private readonly IRepository<model.User> userRepository;
-        private readonly IWebHostEnvironment webHostEnvironment;
-        private readonly IOptions<FirebaseOptions> firebaseOptions;
-        private FirebaseApp? app;
-        private FirebaseMessaging? messaging;
+        private readonly IFirebaseService firebaseService;
 
         public PushNotificationService(
             IRepository<model.Chat> chatRepository,
             IRepository<model.User> userRepository,
-            IWebHostEnvironment webHostEnvironment,
-            IOptions<FirebaseOptions> firebaseOptions)
+            IFirebaseService firebaseService)
         {
             this.chatRepository = chatRepository;
             this.userRepository = userRepository;
-            this.webHostEnvironment = webHostEnvironment;
-            this.firebaseOptions = firebaseOptions;
-
-            SetCredentials();
+            this.firebaseService = firebaseService;
         }
 
-        public async Task SendNotification(NotificationDto notification)
+        public async Task<string?> SendNotificationAsync(NotificationDto notification)
         {
             var reciever = userRepository.Query().Where(u => u.Id == notification.ReceiverId).FirstOrDefault();
             var sender = userRepository.Query().Where(u => u.Id == notification.SenderId).FirstOrDefault();
             if (reciever == null || reciever.FCMToken == null || sender == null)
             {
-                return;
+                return null;
             }
 
             var (title, message) = FormatToMessage(sender, notification);
-            await messaging.SendAsync(CreateNotification(title, message, reciever.FCMToken, "NotificationsTabs"));
+            return await firebaseService.SendAsync(CreateNotification(title, message, reciever.FCMToken, "NotificationsTabs"));
         }
 
-        public async Task SendNotification(model.Message message)
+        public async Task<bool> SendNotificationAsync(model.Message message)
         {
             var chat = await chatRepository.Query()
                 .Where(chat => chat.Id == message.ChatId)
@@ -64,7 +57,7 @@ namespace Car.Domain.Services.Implementation
 
             if (chat == null || chat.Journey == null)
             {
-                return;
+                return false;
             }
 
             var users = chat.Journey.Participants;
@@ -79,10 +72,12 @@ namespace Car.Domain.Services.Implementation
             {
                 if (user.FCMToken != null && user.Id != message.Sender?.Id)
                 {
-                    await messaging.SendAsync(
+                    await firebaseService.SendAsync(
                         CreateNotification((message.Sender != null) ? message.Sender.Name : "User", message.Text, user.FCMToken, "MessagesTabs"));
                 }
             }
+
+            return true;
         }
 
         private static Message CreateNotification(string title, string notificationBody, string token, string navigateTab)
@@ -139,31 +134,6 @@ namespace Car.Domain.Services.Implementation
                 _ => ("Car", $"You have new notification from {sender.Name}"),
             };
             return (title, message);
-        }
-
-        private void SetCredentials()
-        {
-            var keyFilePath = Path.Combine(
-                webHostEnvironment.WebRootPath,
-                firebaseOptions.Value.CredentialsPath!);
-
-            var stream = new FileStream(keyFilePath, FileMode.Open, FileAccess.Read);
-            var credential = GoogleCredential.FromStream(stream);
-            credential = credential.CreateScoped("https://www.googleapis.com/auth/firebase.messaging");
-
-            if (FirebaseApp.GetInstance("[DEFAULT]") == null)
-            {
-                app = FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = credential,
-                });
-                messaging = FirebaseMessaging.GetMessaging(app);
-            }
-            else
-            {
-                app = FirebaseApp.GetInstance("[DEFAULT]");
-                messaging = FirebaseMessaging.GetMessaging(app);
-            }
         }
     }
 }
