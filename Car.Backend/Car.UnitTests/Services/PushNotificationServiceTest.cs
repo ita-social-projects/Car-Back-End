@@ -159,5 +159,54 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().Be(false);
         }
+
+        [Xunit.Theory]
+        [InlineAutoMoqData(NotificationType.PassengerApply)]
+        [InlineAutoMoqData(NotificationType.ApplicationApproval)]
+        [InlineAutoMoqData(NotificationType.JourneyCancellation)]
+        [InlineAutoMoqData(NotificationType.JourneyDetailsUpdate)]
+        [InlineAutoMoqData(NotificationType.JourneyInvitation)]
+        [InlineAutoMoqData(NotificationType.AcceptedInvitation)]
+        [InlineAutoMoqData(NotificationType.RejectedInvitation)]
+        [InlineAutoMoqData(NotificationType.PassengerWithdrawal)]
+        [InlineAutoMoqData(NotificationType.RequestedJourneyCreated)]
+        [InlineAutoMoqData(NotificationType.ApplicationRejection)]
+        [InlineAutoMoqData(13)]
+        public void FormatToMessage_AllNotificationTypes_ReturnsTitleAndMessage(
+            NotificationType type,
+            [Frozen] Mock<IRepository<Chat>> chatRepository,
+            [Frozen] Mock<IRepository<User>> userRepository,
+            [Frozen] Mock<IFirebaseService> firebaseService,
+            User sender,
+            NotificationDto notification)
+        {
+            // Arrange
+            firebaseService.Setup(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>())).ReturnsAsync("123");
+            (string Title, string Message)[] pushNotifications =
+            {
+                ("Your ride", $"{sender.Name} wants to join a ride"),
+                ($"{sender.Name}`s ride", "Your request has been approved"),
+                ($"{sender.Name}`s ride", $"{sender.Name}`s ride has been canceled"),
+                ($"{sender.Name}`s ride", $"{sender.Name}`s ride has been updated"),
+                ($"You recieved a ride invite", $"{sender.Name}, invited you to join a ride"),
+                ("Your journey", $"{sender.Name} accepted your invitation"),
+                ("Your journey", $"{sender.Name} rejected your invitation"),
+                ("Your journey", $"{sender.Name} withdrawed your request"),
+                ("HR marketing message", $"You have new notification from {sender.Name}"),
+                ("HR marketing survey", $"You have new notification from {sender.Name}"),
+                ("Your journey", $"{sender.Name} created requested journey"),
+                ("Your journey", $"{sender.Name} rejected your application"),
+                ("Car", $"You have new notification from {sender.Name}"),
+            };
+            PushNotificationService pushNotificationService = new PushNotificationService(
+                chatRepository.Object, userRepository.Object, firebaseService.Object);
+            notification.Type = type;
+
+            // Act
+            var result = PushNotificationService.FormatToMessage(sender, notification);
+
+            // Assert
+            result.Should().Be(pushNotifications[(int)type - 1]);
+        }
     }
 }

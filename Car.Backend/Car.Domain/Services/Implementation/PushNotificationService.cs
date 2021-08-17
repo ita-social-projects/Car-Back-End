@@ -80,24 +80,8 @@ namespace Car.Domain.Services.Implementation
             return true;
         }
 
-        private static Message CreateNotification(string title, string notificationBody, string token, string navigateTab)
-        {
-            return new Message()
-            {
-                Token = token,
-                Notification = new Notification()
-                {
-                    Body = notificationBody,
-                    Title = title,
-                },
-                Data = new Dictionary<string, string>
-                {
-                    { "navigateTab", navigateTab },
-                },
-            };
-        }
-
-        private static (string Title, string Message) FormatToMessage(model.User sender, NotificationDto notification)
+        // internal for testing
+        internal static (string Title, string Message) FormatToMessage(model.User sender, NotificationDto notification)
         {
             var (title, message) = notification.Type switch
             {
@@ -134,6 +118,23 @@ namespace Car.Domain.Services.Implementation
                 _ => ("Car", $"You have new notification from {sender.Name}"),
             };
             return (title, message);
+        }
+
+        private static Message CreateNotification(string title, string notificationBody, string token, string navigateTab)
+        {
+            return new Message()
+            {
+                Token = token,
+                Notification = new Notification()
+                {
+                    Body = notificationBody,
+                    Title = title,
+                },
+                Data = new Dictionary<string, string>
+                {
+                    { "navigateTab", navigateTab },
+                },
+            };
         }
     }
 }
