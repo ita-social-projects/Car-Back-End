@@ -9,10 +9,12 @@ namespace Car.Domain.Hubs
     public class SignalRHub : Hub
     {
         private readonly IChatService userManager;
+        private readonly IPushNotificationService pushNotificationService;
 
-        public SignalRHub(IChatService userManager)
+        public SignalRHub(IChatService userManager, IPushNotificationService pushNotificationService)
         {
             this.userManager = userManager;
+            this.pushNotificationService = pushNotificationService;
         }
 
         public async Task EnterToGroup(string groupName)
@@ -30,6 +32,7 @@ namespace Car.Domain.Hubs
             message.CreatedAt = DateTime.UtcNow;
             await userManager.AddMessageAsync(message);
             await Clients.Group(message.ChatId.ToString()).SendAsync("RecieveMessage", message);
+            await pushNotificationService.SendNotificationAsync(message);
         }
     }
 }
