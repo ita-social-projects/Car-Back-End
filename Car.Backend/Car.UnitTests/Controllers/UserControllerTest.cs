@@ -46,9 +46,9 @@ namespace Car.UnitTests.Controllers
         public async Task UpdateUser_WhenUserExists_ReturnsOkObjectResult()
         {
             // Arrange
-            var updateUserDto = Fixture.Build<UpdateUserDto>()
+            var updateUserDto = Fixture.Build<UpdateUserImageDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
-            var expectedUser = Mapper.Map<UpdateUserDto, UserDto>(updateUserDto);
+            var expectedUser = Mapper.Map<UpdateUserImageDto, UserDto>(updateUserDto);
 
             userService.Setup(service => service.UpdateUserAsync(updateUserDto)).ReturnsAsync(expectedUser);
 

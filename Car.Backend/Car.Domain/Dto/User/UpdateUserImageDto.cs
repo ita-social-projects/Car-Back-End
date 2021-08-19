@@ -2,12 +2,10 @@
 
 namespace Car.Domain.Dto
 {
-    public class UpdateUserDto
+    public class UpdateUserImageDto
     {
         public int Id { get; set; }
 
         public IFormFile? Image { get; set; }
-
-        public string? Fcmtoken { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace Car.Domain.Mapping
     {
         public UserMapper()
         {
-            CreateMap<UpdateUserDto, User>().ReverseMap();
-            CreateMap<UpdateUserDto, UserDto>().ReverseMap();
+            CreateMap<UpdateUserImageDto, User>().ReverseMap();
+            CreateMap<UpdateUserImageDto, UserDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
         }
     }

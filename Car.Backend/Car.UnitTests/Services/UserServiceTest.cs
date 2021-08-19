@@ -68,7 +68,7 @@ namespace Car.UnitTests.Services
         public async Task UpdateUserAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
         {
             // Arrange
-            var updateUserDto = Fixture.Build<UpdateUserDto>()
+            var updateUserDto = Fixture.Build<UpdateUserImageDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
             var user = Fixture.Build<User>().With(u => u.Id, updateUserDto.Id)
                 .Create();
@@ -88,7 +88,7 @@ namespace Car.UnitTests.Services
         public async Task UpdateUserAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
         {
             // Arrange
-            UpdateUserDto updateUserDto = null;
+            UpdateUserImageDto updateUserDto = null;
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
