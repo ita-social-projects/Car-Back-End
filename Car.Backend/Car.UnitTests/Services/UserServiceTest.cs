@@ -65,10 +65,10 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateUserAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
+        public async Task UpdateUserImageAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
         {
             // Arrange
-            var updateUserDto = Fixture.Build<UpdateUserDto>()
+            var updateUserDto = Fixture.Build<UpdateUserImageDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
             var user = Fixture.Build<User>().With(u => u.Id, updateUserDto.Id)
                 .Create();
@@ -77,7 +77,7 @@ namespace Car.UnitTests.Services
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await userService.UpdateUserAsync(updateUserDto);
+            var result = await userService.UpdateUserImageAsync(updateUserDto);
 
             // Assert
             result.Should().BeEquivalentTo(updateUserDto, options => options.ExcludingMissingMembers());
@@ -85,17 +85,36 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateUserAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
+        public async Task UpdateUserImageAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
         {
             // Arrange
-            UpdateUserDto updateUserDto = null;
+            UpdateUserImageDto updateUserDto = null;
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await userService.UpdateUserAsync(updateUserDto);
+            var result = await userService.UpdateUserImageAsync(updateUserDto);
 
             // Assert
             result.Should().BeNull();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateUserFcmtokenAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
+        {
+            // Arrange
+            var updateUserDto = Fixture.Build<UpdateUserFcmtokenDto>().Create();
+            var user = Fixture.Build<User>().With(u => u.Id, updateUserDto.Id)
+                .Create();
+            users.Add(user);
+
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await userService.UpdateUserFcmtokenAsync(updateUserDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(updateUserDto, options => options.ExcludingMissingMembers());
         }
     }
 }
