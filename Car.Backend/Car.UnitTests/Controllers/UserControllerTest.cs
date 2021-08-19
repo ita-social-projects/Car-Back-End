@@ -62,5 +62,25 @@ namespace Car.UnitTests.Controllers
                 (result as OkObjectResult)?.Value.Should().Be(expectedUser);
             }
         }
+
+        [Fact]
+        public async Task UpdateUserFcmtoken_WhenUserExists_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var updateUserDto = Fixture.Build<UpdateUserFcmtokenDto>().Create();
+            var expectedUser = Mapper.Map<UpdateUserFcmtokenDto, UserDto>(updateUserDto);
+
+            userService.Setup(service => service.UpdateUserFcmtokenAsync(updateUserDto)).ReturnsAsync(expectedUser);
+
+            // Act
+            var result = await userController.UpdateUserFcmtoken(updateUserDto);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(expectedUser);
+            }
+        }
     }
 }

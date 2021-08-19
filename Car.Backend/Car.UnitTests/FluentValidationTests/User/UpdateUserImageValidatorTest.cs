@@ -4,11 +4,11 @@ using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.User
 {
-    public class UpdateUserModelValidatorTest
+    public class UpdateUserImageValidatorTest
     {
         private readonly UpdateUserImageDtoValidator validator;
 
-        public UpdateUserModelValidatorTest()
+        public UpdateUserImageValidatorTest()
         {
             validator = new UpdateUserImageDtoValidator();
         }

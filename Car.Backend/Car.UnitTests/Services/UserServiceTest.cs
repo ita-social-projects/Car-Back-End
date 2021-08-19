@@ -97,5 +97,24 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().BeNull();
         }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateUserFcmtokenAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
+        {
+            // Arrange
+            var updateUserDto = Fixture.Build<UpdateUserFcmtokenDto>().Create();
+            var user = Fixture.Build<User>().With(u => u.Id, updateUserDto.Id)
+                .Create();
+            users.Add(user);
+
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await userService.UpdateUserFcmtokenAsync(updateUserDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(updateUserDto, options => options.ExcludingMissingMembers());
+        }
     }
 }
