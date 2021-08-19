@@ -65,7 +65,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateUserAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
+        public async Task UpdateUserImageAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
         {
             // Arrange
             var updateUserDto = Fixture.Build<UpdateUserImageDto>()
@@ -77,7 +77,7 @@ namespace Car.UnitTests.Services
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await userService.UpdateUserAsync(updateUserDto);
+            var result = await userService.UpdateUserImageAsync(updateUserDto);
 
             // Assert
             result.Should().BeEquivalentTo(updateUserDto, options => options.ExcludingMissingMembers());
@@ -85,14 +85,14 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateUserAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
+        public async Task UpdateUserImageAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
         {
             // Arrange
             UpdateUserImageDto updateUserDto = null;
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await userService.UpdateUserAsync(updateUserDto);
+            var result = await userService.UpdateUserImageAsync(updateUserDto);
 
             // Assert
             result.Should().BeNull();
