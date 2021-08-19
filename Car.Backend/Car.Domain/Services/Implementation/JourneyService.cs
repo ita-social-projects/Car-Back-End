@@ -182,9 +182,7 @@ namespace Car.Domain.Services.Implementation
             if (journeyToCancel is not null)
             {
                 journeyToCancel.IsCancelled = true;
-                journeyToCancel.DepartureTime = DateTime.UtcNow;
                 await journeyRepository.SaveChangesAsync();
-
                 await notificationService.DeleteNotificationsAsync(journeyToCancel.Notifications);
                 await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToCancel);
             }
