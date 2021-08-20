@@ -31,13 +31,13 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetAllByUserId_WhenCarsExist_ReturnsOkObjectResult(IEnumerable<CarDto> cars, User user)
+        public async Task GetAllByUserId_WhenCarsExist_ReturnsOkObjectResult(IEnumerable<CarDto> cars)
         {
             // Arrange
-            carService.Setup(service => service.GetAllByUserIdAsync(user.Id)).ReturnsAsync(cars);
+            carService.Setup(service => service.GetAllByUserIdAsync()).ReturnsAsync(cars);
 
             // Act
-            var result = await carController.GetAllByUserId(user.Id);
+            var result = await carController.GetAllByUserId();
 
             // Assert
             using (new AssertionScope())
@@ -47,8 +47,9 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task AddCar_WhenCarIsValid_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddCar_WhenCarIsValid_ReturnsOkObjectResult(User user)
         {
             // Arrange
             var createCarModel = Fixture.Build<CreateCarDto>()

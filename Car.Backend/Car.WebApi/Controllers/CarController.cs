@@ -19,13 +19,12 @@ namespace Car.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets all the cars by user id
+        /// Gets all the cars of current user
         /// </summary>
-        /// <param name="id">The user identifier.</param>
         /// <returns>All user's cars</returns>
-        [HttpGet("by-user/{id}")]
-        public async Task<IActionResult> GetAllByUserId(int id) =>
-            Ok(await carService.GetAllByUserIdAsync(id));
+        [HttpGet("by-user")]
+        public async Task<IActionResult> GetAllByUserId() =>
+             Ok(await carService.GetAllByUserIdAsync());
 
         /// <summary>
         /// Adds the car asynchronously.
