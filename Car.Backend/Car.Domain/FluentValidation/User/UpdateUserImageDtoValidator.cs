@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class UpdateUserDtoValidator : AbstractValidator<UpdateUserDto>
+    public class UpdateUserImageDtoValidator : AbstractValidator<UpdateUserImageDto>
     {
-        public UpdateUserDtoValidator()
+        public UpdateUserImageDtoValidator()
         {
             RuleFor(user => user.Id).GreaterThan(Constants.IdLength);
         }
