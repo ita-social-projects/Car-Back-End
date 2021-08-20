@@ -43,6 +43,14 @@ jobs:
           json: ${{ secrets.APP_PROD }}
           dir: './Car.Backend/Car.WebApi'
 
+      - name: create-json
+        id: create-json4
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "credential-firebase.json"
+          json: ${{ secrets.FIREBASE }}
+          dir: './Car.Backend/Car.WebApi/wwwroot/Credentials/'
+
       - name: login to docker
         run: |
           docker login --username ${{secrets.DOCKER_USER}} --password ${{secrets.DOCKER_PASSWORD}}
