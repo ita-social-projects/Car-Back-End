@@ -10,11 +10,10 @@
             </summary>
             <returns>The brands</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.CarController.GetAllByUserId(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.CarController.GetAllByUserId">
             <summary>
-            Gets all the cars by user id
+            Gets all the cars of current user
             </summary>
-            <param name="id">The user identifier.</param>
             <returns>All user's cars</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.CarController.AddCar(Car.Domain.Dto.CreateCarDto)">
@@ -45,11 +44,10 @@
             <param name="id">car Id</param>
             <returns>ok</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.ChatController.GetUserChats">
             <summary>
-            Get the user chats by Sender Id
+            Get the current user chats
             </summary>
-            <param name="id">Sender identifier</param>
             <returns>Chats of Sender by Id</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetChat(System.Int32,System.Int32)">
@@ -74,25 +72,22 @@
             <param name="filter">Chat filter parameters</param>
             <returns>Messages</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetPast">
             <summary>
             Looks for information about past journeys where current user is participant or driver
             </summary>
-            <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetUpcoming(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetUpcoming">
             <summary>
             Looks for information about all upcoming journeys where current user is participant or driver
             </summary>
-            <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetScheduled(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetScheduled">
             <summary>
             Looks for information about all scheduled journeys where current user is participant or driver
             </summary>
-            <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32,System.Boolean)">
@@ -103,11 +98,10 @@
             <param name="withCancelledStops">Include cancelled stops</param>
             <returns>Journey</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAddresses(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAddresses">
             <summary>
             Gets recent addresses by identifier.
             </summary>
-            <param name="id">User identifier</param>
             <returns>recent addresses</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.AddJourney(Car.Domain.Dto.JourneyDto)">
@@ -176,11 +170,10 @@
             <param name="applicantStops">applicant stops</param>
             <returns>OkResult</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId">
             <summary>
-            Gets all the locations by user id
+            Gets all the locations of current user
             </summary>
-            <param name="id">The user identifier.</param>
             <returns>All user's locations</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.Location.LocationDto)">
@@ -239,18 +232,16 @@
             <param name="id">notification id</param>
             <returns>notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotificationsAsync(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotificationsAsync">
             <summary>
             gets all user notifications
             </summary>
-            <param name="userId"> user Id</param>
             <returns>list of user notifications</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.GetUnreadNotificationsNumberAsync(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetUnreadNotificationsNumberAsync">
             <summary>
             gets user unread notifications number
             </summary>
-            <param name="userId">user Id</param>
             <returns>int number</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Dto.CreateNotificationDto)">

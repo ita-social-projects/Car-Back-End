@@ -8,7 +8,6 @@ namespace Car.Domain.FluentValidation
     {
         public CreateCarDtoValidator()
         {
-            RuleFor(car => car.OwnerId).GreaterThan(Constants.IdLength);
             RuleFor(car => car.Color).NotNull();
             RuleFor(car => car.ModelId).GreaterThan(Constants.IdLength);
             RuleFor(car => car.PlateNumber).NotNull().NotEmpty()

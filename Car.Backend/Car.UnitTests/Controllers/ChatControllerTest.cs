@@ -32,11 +32,11 @@ namespace Car.UnitTests.Controllers
         public async Task GetUserChats_WhenUserExists_ReturnsOkObjectResult(User user, List<ChatDto> chats)
         {
             // Arrange
-            chatService.Setup(x => x.GetUserChatsAsync(It.IsAny<int>()))
+            chatService.Setup(x => x.GetUserChatsAsync())
                 .ReturnsAsync(chats);
 
             // Act
-            var result = await chatController.GetUserChats(user.Id);
+            var result = await chatController.GetUserChats();
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -48,11 +48,11 @@ namespace Car.UnitTests.Controllers
         public async Task GetUserChats_WhenUserNotExist_ReturnsOkObjectResult(User user)
         {
             // Arrange
-            chatService.Setup(x => x.GetUserChatsAsync(It.IsAny<int>()))
+            chatService.Setup(x => x.GetUserChatsAsync())
                 .ReturnsAsync((List<ChatDto>)null);
 
             // Act
-            var result = await chatController.GetUserChats(user.Id);
+            var result = await chatController.GetUserChats();
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();

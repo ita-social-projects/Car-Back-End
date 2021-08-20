@@ -32,20 +32,18 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// gets all user notifications
         /// </summary>
-        /// <param name="userId"> user Id</param>
         /// <returns>list of user notifications</returns>
-        [HttpGet("notifications/{userId}")]
-        public async Task<IActionResult> GetNotificationsAsync(int userId) =>
-            Ok(await notificationService.GetNotificationsAsync(userId));
+        [HttpGet("notifications")]
+        public async Task<IActionResult> GetNotificationsAsync() =>
+            Ok(await notificationService.GetNotificationsAsync());
 
         /// <summary>
         /// gets user unread notifications number
         /// </summary>
-        /// <param name="userId">user Id</param>
         /// <returns>int number</returns>
-        [HttpGet("unreadNumber/{userId}")]
-        public async Task<IActionResult> GetUnreadNotificationsNumberAsync(int userId) =>
-             Ok(await notificationService.GetUnreadNotificationsNumberAsync(userId));
+        [HttpGet("unreadNumber")]
+        public async Task<IActionResult> GetUnreadNotificationsNumberAsync() =>
+             Ok(await notificationService.GetUnreadNotificationsNumberAsync());
 
         /// <summary>
         /// adds new user notification Asynchronously

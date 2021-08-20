@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Data.Entities;
@@ -13,6 +14,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -25,13 +27,15 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<Chat>> chatRepository;
         private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IRepository<Message>> messageRepository;
+        private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public ChatServiceTest()
         {
             chatRepository = new Mock<IRepository<Chat>>();
             userRepository = new Mock<IRepository<User>>();
             messageRepository = new Mock<IRepository<Message>>();
-            chatService = new ChatService(userRepository.Object, chatRepository.Object, messageRepository.Object, Mapper);
+            httpContextAccessor = new Mock<IHttpContextAccessor>();
+            chatService = new ChatService(userRepository.Object, chatRepository.Object, messageRepository.Object, Mapper, httpContextAccessor.Object);
         }
 
         [Theory]
@@ -104,6 +108,8 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var user = users.First();
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var organizerJourneys = Fixture.Build<Journey>()
                 .With(j => j.Organizer, user)
                 .With(j => j.OrganizerId, user.Id).CreateMany();
@@ -120,7 +126,7 @@ namespace Car.UnitTests.Services
                 .Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await chatService.GetUserChatsAsync(user.Id);
+            var result = await chatService.GetUserChatsAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expectedChats);
@@ -132,6 +138,8 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var user = users.First();
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var organizerJourneys = Fixture.Build<Journey>()
                 .With(j => j.Organizer, user)
                 .With(j => j.OrganizerId, user.Id)
@@ -146,7 +154,7 @@ namespace Car.UnitTests.Services
                 .Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await chatService.GetUserChatsAsync(user.Id);
+            var result = await chatService.GetUserChatsAsync();
 
             // Assert
             result.Should().BeEmpty();
@@ -158,6 +166,8 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var user = Fixture.Build<User>().With(user => user.Id, users.Max(user => user.Id) + 1).Create();
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var organizerJourneys = Fixture.Build<Journey>()
                 .With(j => j.Chat, (Chat)null).CreateMany();
             var participantJourneys = Fixture.Build<Journey>()
@@ -167,7 +177,7 @@ namespace Car.UnitTests.Services
                 .Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await chatService.GetUserChatsAsync(user.Id);
+            var result = await chatService.GetUserChatsAsync();
 
             // Assert
             result.Should().BeEmpty();

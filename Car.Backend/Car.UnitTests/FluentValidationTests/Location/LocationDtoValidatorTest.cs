@@ -15,22 +15,6 @@ namespace Car.UnitTests.FluentValidationTests.Location
         }
 
         [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void UserId_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(locationModel => locationModel.UserId, value);
-        }
-
-        [Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void UserId_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(locationModel => locationModel.UserId, value);
-        }
-
-        [Theory]
         [InlineData(null)]
         public void LocationName_IsNull_GeneratesValidationError(string value)
         {

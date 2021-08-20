@@ -11,7 +11,5 @@ namespace Car.Domain.Dto.Location
         public AddressDto? Address { get; init; }
 
         public int TypeId { get; init; }
-
-        public int UserId { get; init; }
     }
 }
