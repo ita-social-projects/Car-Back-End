@@ -20,13 +20,12 @@ namespace Car.WebApi.Controllers
         }
 
         /// <summary>
-        /// Gets all the locations by user id
+        /// Gets all the locations of current user
         /// </summary>
-        /// <param name="id">The user identifier.</param>
         /// <returns>All user's locations</returns>
-        [HttpGet("by-user/{id}")]
-        public async Task<IActionResult> GetAllByUserId(int id) =>
-            Ok(await locationService.GetAllByUserIdAsync(id));
+        [HttpGet("by-user")]
+        public async Task<IActionResult> GetAllByUserId() =>
+            Ok(await locationService.GetAllByUserIdAsync());
 
         /// <summary>
         /// Adds the location.

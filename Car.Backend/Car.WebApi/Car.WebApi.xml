@@ -170,11 +170,10 @@
             <param name="applicantStops">applicant stops</param>
             <returns>OkResult</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId">
             <summary>
-            Gets all the locations by user id
+            Gets all the locations of current user
             </summary>
-            <param name="id">The user identifier.</param>
             <returns>All user's locations</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.Location.LocationDto)">

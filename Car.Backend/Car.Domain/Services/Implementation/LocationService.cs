@@ -7,6 +7,8 @@ using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Dto.Location;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.ServiceExtension;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
@@ -15,18 +17,21 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<Location> locationRepository;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public LocationService(IRepository<Location> locationRepository, IMapper mapper)
+        public LocationService(IRepository<Location> locationRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.locationRepository = locationRepository;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Location> GetLocationByIdAsync(int locationId) =>
             await locationRepository.Query().Include(locationAddress => locationAddress.Address).Include(locationType => locationType.Type).FirstOrDefaultAsync(i => i.Id == locationId);
 
-        public async Task<IEnumerable<Location>> GetAllByUserIdAsync(int userId)
+        public async Task<IEnumerable<Location>> GetAllByUserIdAsync()
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             return await locationRepository
                 .Query(locationAddress => locationAddress!.Address!, locationType => locationType!.Type!)
                 .Where(location => location.UserId == userId)
@@ -36,6 +41,7 @@ namespace Car.Domain.Services.Implementation
         public async Task<Location> AddLocationAsync(LocationDto locationDTO)
         {
             var location = mapper.Map<LocationDto, Location>(locationDTO);
+            location.UserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
             var newLocation = await locationRepository.AddAsync(location);
             await locationRepository.SaveChangesAsync();

@@ -76,7 +76,7 @@ namespace Car.Domain.Services.Implementation
                 .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .FilterPast()
-                .UseSavedAdresses(userId, locationService))
+                .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -90,7 +90,7 @@ namespace Car.Domain.Services.Implementation
                 .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .Where(journey => journey.Schedule != null)
-                .UseSavedAdresses(userId, locationService))
+                .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -104,7 +104,7 @@ namespace Car.Domain.Services.Implementation
                 .FilterUncancelledJourneys()
                 .IncludeJourneyInfo(userId)
                 .FilterUpcoming()
-                .UseSavedAdresses(userId, locationService))
+                .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
