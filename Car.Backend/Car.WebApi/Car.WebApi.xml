@@ -232,18 +232,16 @@
             <param name="id">notification id</param>
             <returns>notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotificationsAsync(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetNotificationsAsync">
             <summary>
             gets all user notifications
             </summary>
-            <param name="userId"> user Id</param>
             <returns>list of user notifications</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.NotificationController.GetUnreadNotificationsNumberAsync(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.NotificationController.GetUnreadNotificationsNumberAsync">
             <summary>
             gets user unread notifications number
             </summary>
-            <param name="userId">user Id</param>
             <returns>int number</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.NotificationController.AddNotificationAsync(Car.Domain.Dto.CreateNotificationDto)">

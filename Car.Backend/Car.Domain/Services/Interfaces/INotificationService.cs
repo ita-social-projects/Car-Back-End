@@ -9,9 +9,9 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<NotificationDto> GetNotificationAsync(int notificationId);
 
-        Task<IEnumerable<Notification>> GetNotificationsAsync(int userId);
+        Task<IEnumerable<Notification>> GetNotificationsAsync();
 
-        Task<int> GetUnreadNotificationsNumberAsync(int userId);
+        Task<int> GetUnreadNotificationsNumberAsync();
 
         Task<NotificationDto> UpdateNotificationAsync(NotificationDto notification);
 
