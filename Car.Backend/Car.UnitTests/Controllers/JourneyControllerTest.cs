@@ -31,14 +31,14 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetPastJourneys_WhenPastJourneysExist_ReturnsJourneyCollection(User user, List<JourneyModel> journeys)
+        public async Task GetPastJourneys_WhenPastJourneysExist_ReturnsJourneyCollection(List<JourneyModel> journeys)
         {
             // Arrange
-            journeyService.Setup(j => j.GetPastJourneysAsync(user.Id))
+            journeyService.Setup(j => j.GetPastJourneysAsync())
                 .ReturnsAsync(journeys);
 
             // Act
-            var result = await journeyController.GetPast(user.Id);
+            var result = await journeyController.GetPast();
 
             // Assert
             using (new AssertionScope())
@@ -50,14 +50,14 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetUpcomingJourneys_WhenUpcomingJourneysExist_ReturnsJourneyCollection(User user, List<JourneyModel> journeys)
+        public async Task GetUpcomingJourneys_WhenUpcomingJourneysExist_ReturnsJourneyCollection(List<JourneyModel> journeys)
         {
             // Arrange
-            journeyService.Setup(j => j.GetUpcomingJourneysAsync(user.Id))
+            journeyService.Setup(j => j.GetUpcomingJourneysAsync())
                 .ReturnsAsync(journeys);
 
             // Act
-            var result = await journeyController.GetUpcoming(user.Id);
+            var result = await journeyController.GetUpcoming();
 
             // Assert
             using (new AssertionScope())
@@ -69,14 +69,14 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetScheduledJourneys_WhenScheduledJourneysExist_ReturnsJourneyCollection(User user, List<JourneyModel> journeys)
+        public async Task GetScheduledJourneys_WhenScheduledJourneysExist_ReturnsJourneyCollection(List<JourneyModel> journeys)
         {
             // Arrange
-            journeyService.Setup(j => j.GetScheduledJourneysAsync(user.Id))
+            journeyService.Setup(j => j.GetScheduledJourneysAsync())
                 .ReturnsAsync(journeys);
 
             // Act
-            var result = await journeyController.GetScheduled(user.Id);
+            var result = await journeyController.GetScheduled();
 
             // Assert
             using (new AssertionScope())
@@ -126,14 +126,14 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetRecentAddresses_WhenRecentJourneysExist_ReturnsStopCollection(User user, List<IEnumerable<StopDto>> stops)
+        public async Task GetRecentAddresses_WhenRecentJourneysExist_ReturnsStopCollection(List<IEnumerable<StopDto>> stops)
         {
             // Arrange
-            journeyService.Setup(j => j.GetStopsFromRecentJourneysAsync(user.Id, 5))
+            journeyService.Setup(j => j.GetStopsFromRecentJourneysAsync(5))
                 .ReturnsAsync(stops);
 
             // Act
-            var result = await journeyController.GetRecentAddresses(user.Id);
+            var result = await journeyController.GetRecentAddresses();
 
             // Assert
             using (new AssertionScope())
@@ -145,14 +145,14 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetRecentAddresses_WhenRecentJourneysNotExist_ReturnsEmptyCollection(User user, List<IEnumerable<StopDto>> stops)
+        public async Task GetRecentAddresses_WhenRecentJourneysNotExist_ReturnsEmptyCollection(List<IEnumerable<StopDto>> stops)
         {
             // Arrange
-            journeyService.Setup(j => j.GetStopsFromRecentJourneysAsync(user.Id, 5))
+            journeyService.Setup(j => j.GetStopsFromRecentJourneysAsync(5))
                 .ReturnsAsync(stops);
 
             // Act
-            var result = await journeyController.GetRecentAddresses(user.Id);
+            var result = await journeyController.GetRecentAddresses();
 
             // Assert
             using (new AssertionScope())

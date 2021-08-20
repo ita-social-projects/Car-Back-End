@@ -25,29 +25,26 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Looks for information about past journeys where current user is participant or driver
         /// </summary>
-        /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
-        [HttpGet("past/{id}")]
-        public async Task<IActionResult> GetPast(int id) =>
-            Ok(await journeyService.GetPastJourneysAsync(id));
+        [HttpGet("past")]
+        public async Task<IActionResult> GetPast() =>
+            Ok(await journeyService.GetPastJourneysAsync());
 
         /// <summary>
         /// Looks for information about all upcoming journeys where current user is participant or driver
         /// </summary>
-        /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
-        [HttpGet("upcoming/{id}")]
-        public async Task<IActionResult> GetUpcoming(int id) =>
-            Ok(await journeyService.GetUpcomingJourneysAsync(id));
+        [HttpGet("upcoming")]
+        public async Task<IActionResult> GetUpcoming() =>
+            Ok(await journeyService.GetUpcomingJourneysAsync());
 
         /// <summary>
         /// Looks for information about all scheduled journeys where current user is participant or driver
         /// </summary>
-        /// <param name="id">id of current user</param>
         /// <returns>status of request with appropriate data</returns>
-        [HttpGet("scheduled/{id}")]
-        public async Task<IActionResult> GetScheduled(int id) =>
-            Ok(await journeyService.GetScheduledJourneysAsync(id));
+        [HttpGet("scheduled")]
+        public async Task<IActionResult> GetScheduled() =>
+            Ok(await journeyService.GetScheduledJourneysAsync());
 
         /// <summary>
         /// Gets journey by identifier.
@@ -62,11 +59,10 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Gets recent addresses by identifier.
         /// </summary>
-        /// <param name="id">User identifier</param>
         /// <returns>recent addresses</returns>
-        [HttpGet("recent/{id}")]
-        public async Task<IActionResult> GetRecentAddresses(int id) =>
-            Ok(await journeyService.GetStopsFromRecentJourneysAsync(id));
+        [HttpGet("recent")]
+        public async Task<IActionResult> GetRecentAddresses() =>
+            Ok(await journeyService.GetStopsFromRecentJourneysAsync());
 
         /// <summary>
         /// Adds the journey asynchronously.

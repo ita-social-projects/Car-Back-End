@@ -9,15 +9,15 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface IJourneyService
     {
-        Task<IEnumerable<JourneyModel>> GetPastJourneysAsync(int userId);
+        Task<IEnumerable<JourneyModel>> GetPastJourneysAsync();
 
-        Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync(int userId);
+        Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync();
 
-        Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync(int userId);
+        Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync();
 
         Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false);
 
-        Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int userId, int countToTake = 5);
+        Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int countToTake = 5);
 
         Task DeletePastJourneyAsync();
 

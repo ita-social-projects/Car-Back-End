@@ -11,6 +11,8 @@ using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.ServiceExtension;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
@@ -24,6 +26,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IRequestService requestService;
         private readonly ILocationService locationService;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public JourneyService(
             IRepository<Journey> journeyRepository,
@@ -32,7 +35,8 @@ namespace Car.Domain.Services.Implementation
             INotificationService notificationService,
             IRequestService requestService,
             ILocationService locationService,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
@@ -41,6 +45,7 @@ namespace Car.Domain.Services.Implementation
             this.requestService = requestService;
             this.locationService = locationService;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false)
@@ -63,8 +68,9 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
-        public async Task<IEnumerable<JourneyModel>> GetPastJourneysAsync(int userId)
+        public async Task<IEnumerable<JourneyModel>> GetPastJourneysAsync()
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
@@ -76,8 +82,9 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
 
-        public async Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync(int userId)
+        public async Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync()
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
                 .Query(journey => journey!.Schedule!)
                 .FilterUncancelledJourneys()
@@ -89,8 +96,9 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
 
-        public async Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync(int userId)
+        public async Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync()
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
@@ -102,8 +110,9 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
 
-        public async Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int userId, int countToTake = 5)
+        public async Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int countToTake = 5)
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var stops = await journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()

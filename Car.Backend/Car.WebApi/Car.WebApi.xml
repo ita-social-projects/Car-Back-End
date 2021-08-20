@@ -72,25 +72,22 @@
             <param name="filter">Chat filter parameters</param>
             <returns>Messages</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetPast(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetPast">
             <summary>
             Looks for information about past journeys where current user is participant or driver
             </summary>
-            <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetUpcoming(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetUpcoming">
             <summary>
             Looks for information about all upcoming journeys where current user is participant or driver
             </summary>
-            <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetScheduled(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetScheduled">
             <summary>
             Looks for information about all scheduled journeys where current user is participant or driver
             </summary>
-            <param name="id">id of current user</param>
             <returns>status of request with appropriate data</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetJourneyById(System.Int32,System.Boolean)">
@@ -101,11 +98,10 @@
             <param name="withCancelledStops">Include cancelled stops</param>
             <returns>Journey</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAddresses(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAddresses">
             <summary>
             Gets recent addresses by identifier.
             </summary>
-            <param name="id">User identifier</param>
             <returns>recent addresses</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.AddJourney(Car.Domain.Dto.JourneyDto)">
