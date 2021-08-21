@@ -117,5 +117,11 @@ namespace Car.Domain.Services.Implementation
         {
             return await chatRepository.GetByIdAsync(chatId);
         }
+
+        public Task<int> GetAllUnreadMessagesNumberAsync(int userId)
+        {
+            return messageRepository.Query()
+            .CountAsync(message => message.SenderId == userId && !message.IsRead);
+        }
     }
 }

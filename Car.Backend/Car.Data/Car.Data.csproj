@@ -31,5 +31,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.0.7" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20210820165605_Added-field-to-Message.cs" />
+    <Compile Remove="Migrations\20210820165605_Added-field-to-Message.Designer.cs" />
+  </ItemGroup>
 
 </Project>
