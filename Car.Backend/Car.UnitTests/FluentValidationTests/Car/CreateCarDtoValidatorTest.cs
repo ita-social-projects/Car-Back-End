@@ -16,22 +16,6 @@ namespace Car.UnitTests.FluentValidationTests.Car
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void OwnerId_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(carModel => carModel.OwnerId, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void OwnerId_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(carModel => carModel.OwnerId, value);
-        }
-
-        [Xunit.Theory]
         [InlineData(Color.Black)]
         public void Color_IsSpecified_NotGeneratesValidationError(Color value)
         {

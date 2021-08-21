@@ -28,13 +28,13 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetAllByUserId_WhenLocationsExist_ReturnsOkObjectResult(IEnumerable<Location> locations, User user)
+        public async Task GetAllByUserId_WhenLocationsExist_ReturnsOkObjectResult(IEnumerable<Location> locations)
         {
             // Arrange
-            locationService.Setup(service => service.GetAllByUserIdAsync(user.Id)).ReturnsAsync(locations);
+            locationService.Setup(service => service.GetAllByUserIdAsync()).ReturnsAsync(locations);
 
             // Act
-            var result = await locationController.GetAllByUserId(user.Id);
+            var result = await locationController.GetAllByUserId();
 
             // Assert
             using (new AssertionScope())

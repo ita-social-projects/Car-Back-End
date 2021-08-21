@@ -11,7 +11,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<CreateCarDto> AddCarAsync(CreateCarDto createCarModel);
 
-        Task<IEnumerable<CarDto>> GetAllByUserIdAsync(int userId);
+        Task<IEnumerable<CarDto>> GetAllByUserIdAsync();
 
         Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel);
 

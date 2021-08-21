@@ -6,6 +6,8 @@ using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.ServiceExtension;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using CarEntity = Car.Data.Entities.Car;
 
@@ -16,17 +18,21 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<CarEntity> carRepository;
         private readonly IImageService imageService;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public CarService(IRepository<CarEntity> carRepository, IImageService imageService, IMapper mapper)
+        public CarService(IRepository<CarEntity> carRepository, IImageService imageService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.carRepository = carRepository;
             this.imageService = imageService;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<CreateCarDto> AddCarAsync(CreateCarDto createCarModel)
         {
             var carEntity = mapper.Map<CreateCarDto, CarEntity>(createCarModel);
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            carEntity.OwnerId = userId;
             await imageService.UploadImageAsync(carEntity, createCarModel.Image);
 
             var newCar = await carRepository.AddAsync(carEntity);
@@ -45,8 +51,9 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<CarEntity, CarDto>(car);
         }
 
-        public async Task<IEnumerable<CarDto>> GetAllByUserIdAsync(int userId)
+        public async Task<IEnumerable<CarDto>> GetAllByUserIdAsync()
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var cars = await carRepository
                 .Query()
                 .IncludeModelWithBrand()

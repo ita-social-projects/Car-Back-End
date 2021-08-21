@@ -9,6 +9,8 @@ using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Hubs;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.ServiceExtension;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,17 +22,20 @@ namespace Car.Domain.Services.Implementation
         private readonly IHubContext<SignalRHub> notificationHub;
         private readonly IMapper mapper;
         private readonly IPushNotificationService pushNotificationService;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public NotificationService(
             IRepository<Notification> notificationRepository,
             IHubContext<SignalRHub> notificationHub,
             IPushNotificationService pushNotificationService,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.notificationRepository = notificationRepository;
             this.notificationHub = notificationHub;
             this.pushNotificationService = pushNotificationService;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<NotificationDto> GetNotificationAsync(int notificationId) =>
@@ -38,15 +43,22 @@ namespace Car.Domain.Services.Implementation
               await notificationRepository.Query(notificationSender => notificationSender!.Sender!)
               .FirstOrDefaultAsync(notification => notification.Id == notificationId));
 
-        public async Task<IEnumerable<Notification>> GetNotificationsAsync(int userId) =>
-                await notificationRepository.Query().Include(n => n.Sender)
-                .Where(p => p.ReceiverId == userId)
-                .OrderByDescending(k => k.CreatedAt)
-                .ToListAsync();
+        public async Task<IEnumerable<Notification>> GetNotificationsAsync()
+        {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
-        public Task<int> GetUnreadNotificationsNumberAsync(int userId) =>
-            notificationRepository.Query()
-                .CountAsync(p => p.ReceiverId == userId && !p.IsRead);
+            return await notificationRepository.Query().Include(n => n.Sender)
+                            .Where(p => p.ReceiverId == userId)
+                            .OrderByDescending(k => k.CreatedAt)
+                            .ToListAsync();
+        }
+
+        public Task<int> GetUnreadNotificationsNumberAsync()
+        {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            return notificationRepository.Query()
+                       .CountAsync(p => p.ReceiverId == userId && !p.IsRead);
+        }
 
         public async Task<NotificationDto> UpdateNotificationAsync(NotificationDto notification)
         {
@@ -160,7 +172,7 @@ namespace Car.Domain.Services.Implementation
             await notificationHub.Clients.All.SendAsync("sendToReact", notification);
             await notificationHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
-                await GetUnreadNotificationsNumberAsync(notification.ReceiverId));
+                await GetUnreadNotificationsNumberAsync());
         }
     }
 }

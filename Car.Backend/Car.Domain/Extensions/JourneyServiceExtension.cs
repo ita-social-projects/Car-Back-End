@@ -52,9 +52,9 @@ namespace Car.Domain.Extensions
                 journey.DepartureTime > now);
         }
 
-        public static async Task<IQueryable<Journey>> UseSavedAdresses(this IQueryable<Journey> journeys, int userId, ILocationService locationService)
+        public static async Task<IQueryable<Journey>> UseSavedAdresses(this IQueryable<Journey> journeys, ILocationService locationService)
         {
-            var savedLocations = await locationService.GetAllByUserIdAsync(userId);
+            var savedLocations = await locationService.GetAllByUserIdAsync();
             foreach (var journey in journeys)
             {
                 foreach (var stop in journey.Stops)

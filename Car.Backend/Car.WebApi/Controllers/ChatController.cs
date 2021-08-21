@@ -18,13 +18,12 @@ namespace Car.WebApi.Controllers
             this.chatService = chatService;
 
         /// <summary>
-        /// Get the user chats by Sender Id
+        /// Get the current user chats
         /// </summary>
-        /// <param name="id">Sender identifier</param>
         /// <returns>Chats of Sender by Id</returns>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserChats(int id) =>
-            Ok(await chatService.GetUserChatsAsync(id));
+        [HttpGet]
+        public async Task<IActionResult> GetUserChats() =>
+            Ok(await chatService.GetUserChatsAsync());
 
         /// <summary>
         /// Get chat by Chat Id

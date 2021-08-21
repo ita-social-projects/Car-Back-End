@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
@@ -13,6 +14,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -24,11 +26,13 @@ namespace Car.UnitTests.Services
     {
         private readonly ILocationService locationService;
         private readonly Mock<IRepository<Location>> locationRepository;
+        private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public LocationServiceTest()
         {
             locationRepository = new Mock<IRepository<Location>>();
-            locationService = new LocationService(locationRepository.Object, Mapper);
+            httpContextAccessor = new Mock<IHttpContextAccessor>();
+            locationService = new LocationService(locationRepository.Object, Mapper, httpContextAccessor.Object);
         }
 
         [Theory]
@@ -68,6 +72,8 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var user = Fixture.Create<User>();
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var locations = Fixture.Create<List<Location>>();
             var expectedLocations = Fixture.Build<Location>()
                 .With(l => l.UserId, user.Id)
@@ -78,7 +84,7 @@ namespace Car.UnitTests.Services
                 .Returns(locations.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await locationService.GetAllByUserIdAsync(user.Id);
+            var result = await locationService.GetAllByUserIdAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expectedLocations);
@@ -89,11 +95,13 @@ namespace Car.UnitTests.Services
         public async Task GetAllByUserIdAsync_WhenLocationsNotExist_ReturnsEmptyCollection(User user, List<Location> locations)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             locationRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Location, object>>[]>()))
                 .Returns(locations.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await locationService.GetAllByUserIdAsync(user.Id);
+            var result = await locationService.GetAllByUserIdAsync();
 
             // Assert
             result.Should().BeEmpty();
@@ -101,9 +109,11 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject(LocationDto locationDto)
+        public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject(LocationDto locationDto, User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var location = Mapper.Map<LocationDto, Location>(locationDto);
 
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
@@ -118,9 +128,11 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull(LocationDto locationDto)
+        public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull(LocationDto locationDto, User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync((Location)null);
 

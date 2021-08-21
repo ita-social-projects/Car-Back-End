@@ -10,6 +10,8 @@ using Car.Domain.Dto.ChatDto;
 using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.ServiceExtension;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
@@ -20,17 +22,20 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Chat> chatRepository;
         private readonly IRepository<Message> messageRepository;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public ChatService(
             IRepository<User> userRepository,
             IRepository<Chat> chatRepository,
             IRepository<Message> messageRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.userRepository = userRepository;
             this.chatRepository = chatRepository;
             this.messageRepository = messageRepository;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId)
@@ -66,8 +71,9 @@ namespace Car.Domain.Services.Implementation
             return addedChat;
         }
 
-        public async Task<IEnumerable<ChatDto>> GetUserChatsAsync(int userId)
+        public async Task<IEnumerable<ChatDto>> GetUserChatsAsync()
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var user = await userRepository.Query()
                 .IncludeChats()
                 .FirstOrDefaultAsync(u => u.Id == userId);

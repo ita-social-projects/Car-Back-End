@@ -26,12 +26,21 @@ namespace Car.WebApi.Controllers
             Ok(await userService.GetUserByIdAsync(id));
 
         /// <summary>
-        /// Updates a user with the identifier asynchronously.
+        /// Updates a users image with the identifier asynchronously.
         /// </summary>
-        /// <param name="updateUserDto">User object to update.</param>
+        /// <param name="updateUserImageDto">User object to update.</param>
         /// <returns>Updated user.</returns>
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDto updateUserDto) =>
-            Ok(await userService.UpdateUserAsync(updateUserDto));
+        [HttpPut("image")]
+        public async Task<IActionResult> UpdateUserImage([FromForm] UpdateUserImageDto updateUserImageDto) =>
+            Ok(await userService.UpdateUserImageAsync(updateUserImageDto));
+
+        /// <summary>
+        /// Updates a users fcmtoken with the identifier asynchronously.
+        /// </summary>
+        /// <param name="updateUserFcmtokenDto">User object to update.</param>
+        /// <returns>Updated user.</returns>
+        [HttpPut("fcmtoken")]
+        public async Task<IActionResult> UpdateUserFcmtoken([FromForm] UpdateUserFcmtokenDto updateUserFcmtokenDto) =>
+            Ok(await userService.UpdateUserFcmtokenAsync(updateUserFcmtokenDto));
     }
 }
