@@ -32,6 +32,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IRequestService, RequestService>();
             services.AddScoped<ILocationTypeService, LocationTypeService>();
+            services.AddScoped<IJourneyUserService, JourneyUserService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Data.Entities.Car>, Repository<Data.Entities.Car>>();
@@ -47,6 +48,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<Request>, Repository<Request>>();
             services.AddScoped<IRepository<Stop>, Repository<Stop>>();
             services.AddScoped<IRepository<JourneyPoint>, Repository<JourneyPoint>>();
+            services.AddScoped<IRepository<JourneyUser>, Repository<JourneyUser>>();
         }
 
         public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)

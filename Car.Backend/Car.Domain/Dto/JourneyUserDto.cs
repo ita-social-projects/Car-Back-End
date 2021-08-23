@@ -1,11 +1,12 @@
 ﻿namespace Car.Domain.Dto
 {
-    public sealed class ParticipantDto
+    public sealed class JourneyUserDto
     {
         public int JourneyId { get; set; }
 
         public int UserId { get; set; }
 
-        public bool HasLuggage { get; set; }
+        public bool WithBaggage { get; set; }
     }
 }
+

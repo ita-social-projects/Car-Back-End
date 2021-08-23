@@ -175,12 +175,14 @@ namespace Car.UnitTests.Services
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
                 .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .CreateMany()
                 .ToList();
             var upcomingJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.OrganizerId, organizer.Id)
                 .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
@@ -310,10 +312,12 @@ namespace Car.UnitTests.Services
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
                 .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .CreateMany().ToList();
             var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.OrganizerId, organizer.Id)
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);

@@ -20,6 +20,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddTransient<IValidator<UserPreferencesDto>, UserPreferencesDtoValidator>();
             services.AddTransient<IValidator<NotificationDto>, NotificationDtoValidator>();
             services.AddTransient<IValidator<CreateNotificationDto>, CreateNotificationDtoValidator>();
+            services.AddTransient<IValidator<JourneyUserDto>, JourneyUserDtoValidator>();
         }
     }
 }

@@ -1,16 +1,21 @@
-﻿using Car.Domain.FluentValidation;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Car.Data.FluentValidation;
 using FluentValidation.TestHelper;
 using Xunit;
 
 namespace Car.UnitTests.FluentValidationTests.Journey
 {
-    public class ParticipantDtoValidatorTest
+    public class JourneyUserValidatorTest
     {
-        private readonly ParticipantDtoValidator validator;
+        private readonly JourneyUserValidator validator;
 
-        public ParticipantDtoValidatorTest()
+        public JourneyUserValidatorTest()
         {
-            validator = new ParticipantDtoValidator();
+            validator = new JourneyUserValidator();
         }
 
         [Xunit.Theory]
@@ -18,7 +23,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(-1)]
         public void JourneyId_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(participantDto => participantDto.JourneyId, value);
+            validator.ShouldHaveValidationErrorFor(journeyUser => journeyUser.JourneyId, value);
         }
 
         [Xunit.Theory]
@@ -26,7 +31,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(10)]
         public void JourneyId_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(participantDto => participantDto.JourneyId, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyUser => journeyUser.JourneyId, value);
         }
 
         [Xunit.Theory]
@@ -34,7 +39,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(-1)]
         public void UserId_IsNotValid_GeneratesValidationError(int value)
         {
-            validator.ShouldHaveValidationErrorFor(participantDto => participantDto.UserId, value);
+            validator.ShouldHaveValidationErrorFor(journeyUser => journeyUser.UserId, value);
         }
 
         [Xunit.Theory]
@@ -42,7 +47,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(10)]
         public void UserId_IsSpecified_NotGeneratesValidationError(int value)
         {
-            validator.ShouldNotHaveValidationErrorFor(participantDto => participantDto.UserId, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyUser => journeyUser.UserId, value);
         }
 
         [Xunit.Theory]
@@ -50,7 +55,7 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         [InlineData(false)]
         public void HasLuggage__IsSpecified_NotGeneratesValidationError(bool value)
         {
-            validator.ShouldNotHaveValidationErrorFor(participantDto => participantDto.HasLuggage, value);
+            validator.ShouldNotHaveValidationErrorFor(journeyUser => journeyUser.WithBaggage, value);
         }
     }
 }
