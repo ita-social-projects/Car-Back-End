@@ -10,8 +10,6 @@ namespace Car.Data.Entities
 
         public DateTime CreatedAt { get; set; }
 
-        public bool IsRead { get; set; }
-
         public int SenderId { get; set; }
 
         public int ChatId { get; set; }
@@ -19,5 +17,7 @@ namespace Car.Data.Entities
         public User? Sender { get; set; }
 
         public Chat? Chat { get; set; }
+
+        public bool IsRead { get; set; } = false;
     }
 }
