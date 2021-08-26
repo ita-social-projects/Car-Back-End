@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
@@ -11,6 +12,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -23,12 +25,14 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<INotificationService> notificationService;
         private readonly IRequestService requestService;
+        private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public RequestServiceTest()
         {
             requestRepository = new Mock<IRepository<Request>>();
             notificationService = new Mock<INotificationService>();
-            requestService = new RequestService(notificationService.Object, requestRepository.Object, Mapper);
+            httpContextAccessor = new Mock<IHttpContextAccessor>();
+            requestService = new RequestService(notificationService.Object, requestRepository.Object, Mapper, httpContextAccessor.Object);
         }
 
         [Theory]
@@ -65,13 +69,36 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenRequestExists_SaveChangesExecutesOnce(int requestIdToDelete)
+        public async Task DeleteAsync_WhenRequestExistsAndUserIsOwner_SaveChangesExecutesOnce(RequestDto requestDto)
         {
+            // Arrange
+            Request request = Mapper.Map<RequestDto, Request>(requestDto);
+            requestRepository.Setup(repo => repo.GetByIdAsync(request.Id)).ReturnsAsync(request);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, request.UserId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             // Act
-            await requestService.DeleteAsync(requestIdToDelete);
+            await requestService.DeleteAsync(request.Id);
 
             // Assert
             requestRepository.Verify(r => r.SaveChangesAsync(), Times.Once());
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenRequestExistsAndUserIsNotOwner_SaveChangesExecutesNever(RequestDto requestDto)
+        {
+            // Arrange
+            Request request = Mapper.Map<RequestDto, Request>(requestDto);
+            requestRepository.Setup(repo => repo.GetByIdAsync(request.Id)).ReturnsAsync(request);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (request.UserId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            // Act
+            await requestService.DeleteAsync(request.Id);
+
+            // Assert
+            requestRepository.Verify(r => r.SaveChangesAsync(), Times.Never());
         }
 
         [Theory]
@@ -91,13 +118,17 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenRequestDoesntExist_ThrowsDbUpdateConcurrencyException(int requestIdToDelete)
+        public async Task DeleteAsync_WhenRequestDoesntExist_ThrowsDbUpdateConcurrencyException(RequestDto requestDto)
         {
             // Arrange
+            Request request = Mapper.Map<RequestDto, Request>(requestDto);
+            requestRepository.Setup(repo => repo.GetByIdAsync(request.Id)).ReturnsAsync(request);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, request.UserId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             requestRepository.Setup(r => r.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
-            var result = requestService.Invoking(s => s.DeleteAsync(requestIdToDelete));
+            var result = requestService.Invoking(s => s.DeleteAsync(request.Id));
 
             // Assert
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
@@ -157,6 +188,8 @@ namespace Car.UnitTests.Services
         public async Task GetRequestsByUserIdAsync_WhenRequestExists_ReturnsRequestCollection(User user, List<Request> requests)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var expectedResult = Fixture.Build<Request>()
                 .With(r => r.UserId, user.Id)
                 .CreateMany();
@@ -166,7 +199,7 @@ namespace Car.UnitTests.Services
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await requestService.GetRequestsByUserIdAsync(user.Id);
+            var result = await requestService.GetRequestsByUserIdAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
@@ -177,11 +210,13 @@ namespace Car.UnitTests.Services
         public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection(User user, List<Request> requests)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await requestService.GetRequestsByUserIdAsync(user.Id);
+            var result = await requestService.GetRequestsByUserIdAsync();
 
             // Assert
             result.Should().BeEmpty();

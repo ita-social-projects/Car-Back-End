@@ -77,10 +77,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task Delete_WhenRequestExists_ReturnsOkObjectResult(Request request)
+        public async Task Delete_WhenRequestExistsAndIsAllowed_ReturnsOkObjectResult(Request request)
         {
             // Arrange
-            requestService.Setup(r => r.DeleteAsync(It.IsAny<int>()));
+            requestService.Setup(r => r.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
 
             // Act
             var result = await requestController.Delete(request.Id);
@@ -88,6 +88,21 @@ namespace Car.UnitTests.Controllers
             // Assert
             requestService.Verify(r => r.DeleteAsync(request.Id), Times.Once);
             result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task Delete_WhenRequestExistsAndIsForbidden_ReturnsOkObjectResult(Request request)
+        {
+            // Arrange
+            requestService.Setup(r => r.DeleteAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await requestController.Delete(request.Id);
+
+            // Assert
+            requestService.Verify(r => r.DeleteAsync(request.Id), Times.Once);
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]
@@ -107,14 +122,14 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetByUserId_WhenRequestsExist_ReturnsRequestsCollection(User user, List<Request> requests)
+        public async Task GetByUserId_WhenRequestsExist_ReturnsRequestsCollection(List<Request> requests)
         {
             // Arrange
-            requestService.Setup(r => r.GetRequestsByUserIdAsync(user.Id))
+            requestService.Setup(r => r.GetRequestsByUserIdAsync())
                 .ReturnsAsync(requests);
 
             // Act
-            var result = await requestController.GetByUserId(user.Id);
+            var result = await requestController.GetByUserId();
 
             // Assert
             (result as OkObjectResult)?.StatusCode.Should().Be(Constants.OkStatusCode);
@@ -123,14 +138,14 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection(User user, IEnumerable<Request> requests)
+        public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection(IEnumerable<Request> requests)
         {
             // Arrange
-            requestService.Setup(r => r.GetRequestsByUserIdAsync(user.Id))
+            requestService.Setup(r => r.GetRequestsByUserIdAsync())
                 .ReturnsAsync(requests);
 
             // Act
-            var result = await requestController.GetByUserId(user.Id);
+            var result = await requestController.GetByUserId();
 
             // Assert
             (result as OkObjectResult)?.Value.Should().BeEquivalentTo(requests);

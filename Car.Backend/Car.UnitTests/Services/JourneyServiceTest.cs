@@ -645,12 +645,16 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenJourneyExist_ExecuteOnce(int journeyIdToDelete)
+        public async Task DeleteAsync_WhenJourneyExistAndUserIsOrganizer_ExecuteOnce(JourneyDto journeyDto)
         {
             // Arrange
+            Journey journey = Mapper.Map<JourneyDto, Journey>(journeyDto);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journey.OrganizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Participants, null as List<User>)
-                .With(j => j.Id, journeyIdToDelete)
+                .With(j => j.Id, journey.Id)
+                .With(j => j.OrganizerId, journey.OrganizerId)
                 .CreateMany(1);
 
             notificationService.Setup(s => s.NotifyParticipantsAboutCancellationAsync(It.IsAny<Journey>())).Returns(Task.CompletedTask);
@@ -658,10 +662,35 @@ namespace Car.UnitTests.Services
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            await journeyService.DeleteAsync(journeyIdToDelete);
+            await journeyService.DeleteAsync(journey.Id);
 
             // Assert
             journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenJourneyExistAndUserIsNotOrganizer_ExecuteNever(JourneyDto journeyDto)
+        {
+            // Arrange
+            Journey journey = Mapper.Map<JourneyDto, Journey>(journeyDto);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (journey.OrganizerId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Participants, null as List<User>)
+                .With(j => j.Id, journey.Id)
+                .With(j => j.OrganizerId, journey.OrganizerId)
+                .CreateMany(1);
+
+            notificationService.Setup(s => s.NotifyParticipantsAboutCancellationAsync(It.IsAny<Journey>())).Returns(Task.CompletedTask);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.DeleteAsync(journey.Id);
+
+            // Assert
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
         }
 
         [Theory]
@@ -920,6 +949,9 @@ namespace Car.UnitTests.Services
         public async Task DeleteUserFromJourney_WhenUserExists_ExecuteOnce(int journeyId, int userId)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             var user = Fixture.Build<User>()
                 .With(u => u.Id, userId)
                 .Create();
