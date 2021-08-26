@@ -80,10 +80,23 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<CarEntity, UpdateCarDto>(car!);
         }
 
-        public async Task DeleteAsync(int carId)
+        public async Task<bool> DeleteAsync(int carId)
         {
-            carRepository.Delete(new CarEntity() { Id = carId });
-            await carRepository.SaveChangesAsync();
+            var car = await carRepository.GetByIdAsync(carId);
+
+            if (car != null)
+            {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                if (userId != car.OwnerId)
+                {
+                    return false;
+                }
+
+                carRepository.Delete(car);
+                await carRepository.SaveChangesAsync();
+            }
+
+            return true;
         }
     }
 }

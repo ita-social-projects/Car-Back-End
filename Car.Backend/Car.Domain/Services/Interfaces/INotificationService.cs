@@ -17,7 +17,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<NotificationDto> AddNotificationAsync(NotificationDto notification);
 
-        Task DeleteAsync(int notificationId);
+        Task<bool> DeleteAsync(int notificationId);
 
         Task<NotificationDto> CreateNewNotificationAsync(CreateNotificationDto createNotificationDto);
 

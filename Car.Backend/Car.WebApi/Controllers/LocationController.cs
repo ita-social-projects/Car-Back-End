@@ -62,8 +62,8 @@ namespace Car.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            await locationService.DeleteAsync(id);
-            return Ok();
+            bool isLocationDeleted = await locationService.DeleteAsync(id);
+            return isLocationDeleted ? Ok() : Forbid();
         }
     }
 }

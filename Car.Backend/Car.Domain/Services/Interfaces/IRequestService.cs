@@ -11,11 +11,11 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<RequestDto>> GetAllAsync();
 
-        Task<IEnumerable<Request>> GetRequestsByUserIdAsync(int userId);
+        Task<IEnumerable<Request>> GetRequestsByUserIdAsync();
 
         Task<RequestDto> AddRequestAsync(RequestDto request);
 
-        Task DeleteAsync(int requestId);
+        Task<bool> DeleteAsync(int requestId);
 
         Task DeleteOutdatedAsync();
 

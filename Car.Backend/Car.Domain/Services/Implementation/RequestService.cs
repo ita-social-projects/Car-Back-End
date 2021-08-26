@@ -10,6 +10,8 @@ using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.ServiceExtension;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
@@ -19,15 +21,18 @@ namespace Car.Domain.Services.Implementation
         private readonly INotificationService notificationService;
         private readonly IRepository<Request> requestRepository;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public RequestService(
             INotificationService notificationService,
             IRepository<Request> requestRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.notificationService = notificationService;
             this.requestRepository = requestRepository;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<RequestDto> AddRequestAsync(RequestDto request)
@@ -40,10 +45,23 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Request, RequestDto>(addedRequest);
         }
 
-        public async Task DeleteAsync(int requestId)
+        public async Task<bool> DeleteAsync(int requestId)
         {
-            requestRepository.Delete(new Request() { Id = requestId });
-            await requestRepository.SaveChangesAsync();
+            var request = await requestRepository.GetByIdAsync(requestId);
+
+            if (request != null)
+            {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                if (userId != request.UserId)
+                {
+                    return false;
+                }
+
+                requestRepository.Delete(request);
+                await requestRepository.SaveChangesAsync();
+            }
+
+            return true;
         }
 
         public async Task DeleteOutdatedAsync()
@@ -74,8 +92,10 @@ namespace Car.Domain.Services.Implementation
             return request;
         }
 
-        public async Task<IEnumerable<Request>> GetRequestsByUserIdAsync(int userId)
+        public async Task<IEnumerable<Request>> GetRequestsByUserIdAsync()
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
             var userRequests = await requestRepository
                 .Query()
                 .Where(request => request.UserId == userId)
