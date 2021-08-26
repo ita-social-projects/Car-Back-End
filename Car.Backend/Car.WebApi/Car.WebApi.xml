@@ -330,11 +330,18 @@
             <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.UpdateUser(Car.Domain.Dto.UpdateUserDto)">
+        <member name="M:Car.WebApi.Controllers.UserController.UpdateUserImage(Car.Domain.Dto.UpdateUserImageDto)">
             <summary>
-            Updates a user with the identifier asynchronously.
+            Updates a users image with the identifier asynchronously.
             </summary>
-            <param name="updateUserDto">User object to update.</param>
+            <param name="updateUserImageDto">User object to update.</param>
+            <returns>Updated user.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.UserController.UpdateUserFcmtoken(Car.Domain.Dto.UpdateUserFcmtokenDto)">
+            <summary>
+            Updates a users fcmtoken with the identifier asynchronously.
+            </summary>
+            <param name="updateUserFcmtokenDto">User object to update.</param>
             <returns>Updated user.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.GetPreferences(System.Int32)">
