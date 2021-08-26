@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
 using Car.Domain.Filters;
+using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -153,15 +154,24 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Adds user to journey
         /// </summary>
-        /// <param name="journeyId">journey Id</param>
-        /// <param name="userId">user Id</param>
-        /// <param name="applicantStops">applicant stops</param>
+        /// <param name="journeyApply">Journey Apply Model</param>
         /// <returns>OkResult</returns>
-        [HttpPut("add-user/{journeyId}/{userId}")]
-        public async Task<IActionResult> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
+        [HttpPut("add-user/")]
+        public async Task<IActionResult> AddUserToJourney([FromBody] JourneyApplyModel journeyApply)
         {
-            var isUserAdded = await journeyService.AddUserToJourney(journeyId, userId, applicantStops);
+            var isUserAdded = await journeyService.AddUserToJourney(journeyApply);
             return Ok(isUserAdded);
+        }
+
+        [HttpGet("journey-user/{journeyId}/{userId}/{withCancelledStops}")]
+        public async Task<IActionResult> GetJourneyWithJourneyUser(
+            int journeyId,
+            int userId,
+            bool withCancelledStops = false)
+        {
+            var journeyWithUser =
+                await journeyService.GetJourneyWithJourneyUserByIdAsync(journeyId, userId, withCancelledStops);
+            return Ok(journeyWithUser);
         }
     }
 }

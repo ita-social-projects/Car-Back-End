@@ -23,6 +23,7 @@ namespace Car.Domain.Services.Implementation
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
         private readonly ILocationService locationService;
+        private readonly IJourneyUserService journeyUserService;
         private readonly IMapper mapper;
 
         public JourneyService(
@@ -32,6 +33,7 @@ namespace Car.Domain.Services.Implementation
             INotificationService notificationService,
             IRequestService requestService,
             ILocationService locationService,
+            IJourneyUserService journeyUserService,
             IMapper mapper)
         {
             this.journeyRepository = journeyRepository;
@@ -40,6 +42,7 @@ namespace Car.Domain.Services.Implementation
             this.notificationService = notificationService;
             this.requestService = requestService;
             this.locationService = locationService;
+            this.journeyUserService = journeyUserService;
             this.mapper = mapper;
         }
 
@@ -301,12 +304,16 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<bool> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
+        public async Task<bool> AddUserToJourney(JourneyApplyModel journeyApply)
         {
+            var journeyId = journeyApply.JourneyUser?.JourneyId;
+
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
+
+            var userId = journeyApply.JourneyUser?.UserId;
 
             var userToAdd = await userRepository
                 .Query()
@@ -320,20 +327,33 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
-            var stops = mapper.Map<IEnumerable<Stop>>(applicantStops);
+            var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
             journey.Participants.Add(userToAdd);
 
             foreach (var stop in stops)
             {
-                stop.UserId = userId;
-                stop.JourneyId = journeyId;
+                stop.UserId = userId ?? default(int);
+                stop.JourneyId = journeyId ?? default(int);
                 journey.Stops.Add(stop);
             }
 
             await journeyRepository.SaveChangesAsync();
+            if (journeyApply.JourneyUser is not null)
+            {
+                await journeyUserService.UpdateJourneyUserAsync(journeyApply.JourneyUser);
+            }
 
             return true;
+        }
+
+        public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(int journeyId, int userId, bool withCancelledStops = false)
+        {
+            var journey = await GetJourneyByIdAsync(journeyId, withCancelledStops);
+
+            var journeyUser = await journeyUserService.GetJourneyUserByIdAsync(journeyId, userId);
+
+            return (journey, journeyUser);
         }
 
         private static IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)

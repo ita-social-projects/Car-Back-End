@@ -9,4 +9,3 @@
         public bool WithBaggage { get; set; }
     }
 }
-
