@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -15,6 +16,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
@@ -28,11 +30,13 @@ namespace Car.UnitTests.Services
     public class NotificationServiceTest : TestBase
     {
         private readonly INotificationService notificationService;
+        private readonly Mock<IPushNotificationService> pushNotificationService;
         private readonly Mock<IHubContext<SignalRHub>> hubContext;
         private readonly Mock<IHubCallerClients> hubClients;
         private readonly Mock<IClientProxy> clientProxy;
         private readonly Mock<IRepository<Notification>> notificationRepository;
         private readonly Mock<IRepository<User>> userRepository;
+        private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public NotificationServiceTest()
         {
@@ -41,10 +45,14 @@ namespace Car.UnitTests.Services
             userRepository = new Mock<IRepository<User>>();
             hubClients = new Mock<IHubCallerClients>();
             clientProxy = new Mock<IClientProxy>();
+            pushNotificationService = new Mock<IPushNotificationService>();
+            httpContextAccessor = new Mock<IHttpContextAccessor>();
             notificationService = new NotificationService(
                 notificationRepository.Object,
                 hubContext.Object,
-                Mapper);
+                pushNotificationService.Object,
+                Mapper,
+                httpContextAccessor.Object);
         }
 
         [Xunit.Theory]
@@ -76,6 +84,8 @@ namespace Car.UnitTests.Services
             // Arrange
             var users = Fixture.CreateMany<User>(10).ToList();
             var user = users.First();
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var notifications = Fixture
                 .Build<Notification>()
                 .With(n => n.ReceiverId, user.Id)
@@ -94,7 +104,7 @@ namespace Car.UnitTests.Services
                 .Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await notificationService.GetNotificationsAsync(user.Id);
+            var result = await notificationService.GetNotificationsAsync();
 
             // Assert
             CollectionAssert.AreEquivalent(result, expectedNotifications);
@@ -106,6 +116,8 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var user = users.First();
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var notifications = Fixture
                 .Build<Notification>()
                 .With(n => n.ReceiverId, user.Id)
@@ -124,7 +136,7 @@ namespace Car.UnitTests.Services
                 .Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await notificationService.GetUnreadNotificationsNumberAsync(user.Id);
+            var result = await notificationService.GetUnreadNotificationsNumberAsync();
 
             // Assert
             result.Should().Be(expectedNotificationsNumber);
@@ -157,9 +169,11 @@ namespace Car.UnitTests.Services
         [Xunit.Theory]
         [AutoEntityData]
         public async Task AddNotificationAsync_WhenNotificationExist_ReturnsAddedNotification(
-            Notification notification, IEnumerable<Notification> notifications)
+            Notification notification, IEnumerable<Notification> notifications, User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             notificationRepository.Setup(repo => repo.AddAsync(notification)).ReturnsAsync(notification);
             notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
@@ -256,9 +270,11 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoEntityData]
-        public async Task MarkNotificationAsReadAsync_WhenNotificationExist_ReturnsReadNotification(List<Notification> notifications)
+        public async Task MarkNotificationAsReadAsync_WhenNotificationExist_ReturnsReadNotification(List<Notification> notifications, User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var notification = notifications.First();
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
@@ -289,10 +305,13 @@ namespace Car.UnitTests.Services
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
         }
 
-        [Fact]
-        public async Task NotifyParticipantsAboutCancellationAsync_WhenJourneyHasParticipants_ExecuteSaveChangesAtLeastOnce()
+        [Theory]
+        [AutoEntityData]
+        public async Task NotifyParticipantsAboutCancellationAsync_WhenJourneyHasParticipants_ExecuteSaveChangesAtLeastOnce(User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journey = Fixture.Create<Journey>();
             var notifications = Fixture.CreateMany<Notification>();
 
@@ -305,10 +324,13 @@ namespace Car.UnitTests.Services
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.AtLeastOnce);
         }
 
-        [Fact]
-        public async Task JourneyUpdateNotifyUserAsync_WhenJourneyHasParticipants_ExecuteSaveChangesAtLeastOnce()
+        [Theory]
+        [AutoEntityData]
+        public async Task JourneyUpdateNotifyUserAsync_WhenJourneyHasParticipants_ExecuteSaveChangesAtLeastOnce(User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journey = Fixture.Create<Journey>();
             var notifications = Fixture.CreateMany<Notification>();
 
@@ -365,9 +387,11 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task NotifyDriverAboutParticipantWithdrawal_SaveChangesOnce(Journey journey, int participantId)
+        public async Task NotifyDriverAboutParticipantWithdrawal_SaveChangesOnce(Journey journey, int participantId, User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var notifications = Fixture.CreateMany<Notification>();
 
             NotificationInitializer(journey, notifications);

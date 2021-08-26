@@ -2,7 +2,7 @@
 
 namespace Car.Domain.Dto
 {
-    public class UpdateUserDto
+    public class UpdateUserImageDto
     {
         public int Id { get; set; }
 

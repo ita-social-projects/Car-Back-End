@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
@@ -9,6 +10,7 @@ using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
+using Car.WebApi.ServiceExtension;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -24,18 +26,23 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<CarEntity>> carRepository;
         private readonly CarService carService;
         private readonly Mock<IImageService> imageService;
+        private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public CarServiceTest()
         {
             carRepository = new Mock<IRepository<CarEntity>>();
             imageService = new Mock<IImageService>();
-            carService = new CarService(carRepository.Object, imageService.Object, Mapper);
+            httpContextAccessor = new Mock<IHttpContextAccessor>();
+            carService = new CarService(carRepository.Object, imageService.Object, Mapper, httpContextAccessor.Object);
         }
 
-        [Fact]
-        public async Task AddCarAsync_WhenCarIsValid_ReturnsCarObject()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddCarAsync_WhenCarIsValid_ReturnsCarObject(User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var createCarModel = Fixture.Build<CreateCarDto>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
@@ -51,10 +58,13 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(createCarModel, options => options.ExcludingMissingMembers());
         }
 
-        [Fact]
-        public async Task AddCarAsync_WhenCarIsNotValid_ReturnsNull()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddCarAsync_WhenCarIsNotValid_ReturnsNull(User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var createCarModel = Fixture.Build<CreateCarDto>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
@@ -107,6 +117,8 @@ namespace Car.UnitTests.Services
         public async Task GetAllByUserIdAsync_WhenCarsExist_ReturnsCarsCollection(User owner, List<CarEntity> cars)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, owner.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var ownCars = Fixture.Build<CarEntity>()
                 .With(c => c.OwnerId, owner.Id)
                 .CreateMany();
@@ -117,7 +129,7 @@ namespace Car.UnitTests.Services
                 .Returns(cars.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await carService.GetAllByUserIdAsync(owner.Id);
+            var result = await carService.GetAllByUserIdAsync();
 
             // Assert
             result.Should().BeEquivalentTo(carsToGet);
@@ -128,6 +140,8 @@ namespace Car.UnitTests.Services
         public async Task GetAllByUserIdAsync_WhenCarsNotExist_ReturnsEmptyCollection(User owner)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, owner.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var cars = Fixture.Build<CarEntity>()
                 .With(c => c.OwnerId, owner.Id + 1)
                 .CreateMany();
@@ -136,7 +150,7 @@ namespace Car.UnitTests.Services
                 .Returns(cars.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await carService.GetAllByUserIdAsync(owner.Id);
+            var result = await carService.GetAllByUserIdAsync();
 
             // Assert
             result.Should().BeEmpty();

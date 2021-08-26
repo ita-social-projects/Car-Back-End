@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Dsl;
@@ -17,6 +18,7 @@ using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -35,6 +37,7 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
         private readonly Mock<IRepository<User>> userRepository;
+        private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public JourneyServiceTest()
         {
@@ -44,6 +47,7 @@ namespace Car.UnitTests.Services
             locationService = new Mock<ILocationService>();
             journeyUserService = new Mock<IJourneyUserService>();
             userRepository = new Mock<IRepository<User>>();
+            httpContextAccessor = new Mock<IHttpContextAccessor>();
 
             notificationService = new Mock<INotificationService>();
             journeyService = new JourneyService(
@@ -54,7 +58,8 @@ namespace Car.UnitTests.Services
                 requestService.Object,
                 locationService.Object,
                 journeyUserService.Object,
-                Mapper);
+                Mapper,
+                httpContextAccessor.Object);
         }
 
         [Theory]
@@ -99,6 +104,8 @@ namespace Car.UnitTests.Services
         public async Task GetPastJourneysAsync_PastJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days, User participant)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, participant.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
@@ -117,7 +124,7 @@ namespace Car.UnitTests.Services
             var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(pastJourneys);
 
             // Act
-            var result = await journeyService.GetPastJourneysAsync(participant.Id);
+            var result = await journeyService.GetPastJourneysAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -128,6 +135,8 @@ namespace Car.UnitTests.Services
         public async Task GetPastJourneysAsync_PastJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days, User participant)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, participant.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
@@ -138,7 +147,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetPastJourneysAsync(participant.Id);
+            var result = await journeyService.GetPastJourneysAsync();
 
             // Assert
             result.Should().BeEmpty();
@@ -160,11 +169,14 @@ namespace Car.UnitTests.Services
                     journeys.SelectMany(j => j.Participants.Select(p => p.Id)).Union(journeys.Select(j => j.OrganizerId)).Max() + 1)
                 .Create();
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetPastJourneysAsync(user.Id);
+            var result = await journeyService.GetPastJourneysAsync();
 
             // Assert
             result.Should().BeEmpty();
@@ -175,6 +187,8 @@ namespace Car.UnitTests.Services
         public async Task GetUpcomingJourneysAsync_UpcomingJourneysExistForOrganizer_ReturnsJourneyCollection([Range(1, 3)] int days, User organizer)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
@@ -195,7 +209,7 @@ namespace Car.UnitTests.Services
             var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys);
 
             // Act
-            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -206,6 +220,8 @@ namespace Car.UnitTests.Services
         public async Task GetUpcomingJourneysAsync_UpcomingJourneysExistForParticipant_ReturnsJourneyCollection([Range(1, 3)] int days, User participant)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, participant.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
@@ -224,7 +240,7 @@ namespace Car.UnitTests.Services
             var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(upcomingJourneys);
 
             // Act
-            var result = await journeyService.GetUpcomingJourneysAsync(participant.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -235,6 +251,8 @@ namespace Car.UnitTests.Services
         public async Task GetUpcomingJourneysAsync_UpcomingJourneysNotExistForOrganizer_ReturnsEmptyCollection([Range(1, 3)] int days, User organizer)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
@@ -245,7 +263,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync();
 
             // Assert
             result.Should().BeEmpty();
@@ -257,6 +275,8 @@ namespace Car.UnitTests.Services
             [Range(1, 3)] int days, User organizer, User anotherUser)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
@@ -272,7 +292,7 @@ namespace Car.UnitTests.Services
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetUpcomingJourneysAsync(organizer.Id);
+            var result = await journeyService.GetUpcomingJourneysAsync();
 
             // Assert
             result.Should().BeEmpty();
@@ -283,6 +303,8 @@ namespace Car.UnitTests.Services
         public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForParticipant_ReturnsJourneyCollection(User participant)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, participant.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.Participants, new List<User>() { participant })
@@ -301,7 +323,7 @@ namespace Car.UnitTests.Services
             var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys);
 
             // Act
-            var result = await journeyService.GetScheduledJourneysAsync(participant.Id);
+            var result = await journeyService.GetScheduledJourneysAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -312,6 +334,8 @@ namespace Car.UnitTests.Services
         public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForOrganizer_ReturnsJourneyCollection(User organizer)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
@@ -332,7 +356,7 @@ namespace Car.UnitTests.Services
             var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(scheduledJourneys);
 
             // Act
-            var result = await journeyService.GetScheduledJourneysAsync(organizer.Id);
+            var result = await journeyService.GetScheduledJourneysAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expected);
@@ -343,6 +367,8 @@ namespace Car.UnitTests.Services
         public async Task GetScheduledJourneysAsync_ScheduledJourneysNotExist_ReturnsEmptyCollection(User organizer)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
@@ -357,7 +383,7 @@ namespace Car.UnitTests.Services
              .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetScheduledJourneysAsync(organizer.Id);
+            var result = await journeyService.GetScheduledJourneysAsync();
 
             // Assert
             result.Should().BeEmpty();
@@ -369,6 +395,8 @@ namespace Car.UnitTests.Services
             [Range(1, 10)] int journeyCount, [Range(1, 5)] int countToTake, User organizer)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var recentJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.OrganizerId, organizer.Id + 1)
                 .CreateMany(journeyCount);
@@ -377,7 +405,7 @@ namespace Car.UnitTests.Services
                 .Returns(recentJourneys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetStopsFromRecentJourneysAsync(organizer.Id, countToTake);
+            var result = await journeyService.GetStopsFromRecentJourneysAsync(countToTake);
 
             // Assert
             result.Should().HaveCountLessOrEqualTo(countToTake);
@@ -388,11 +416,13 @@ namespace Car.UnitTests.Services
         public async Task GetStopsFromRecentJourneysAsync_RecentJourneysNotExist_ReturnsEmptyCollection(User organizer, List<Journey> recentJourneys)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             journeyRepository.Setup(r => r.Query())
                 .Returns(recentJourneys.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.GetStopsFromRecentJourneysAsync(organizer.Id);
+            var result = await journeyService.GetStopsFromRecentJourneysAsync();
 
             // Assert
             result.Should().BeEmpty();

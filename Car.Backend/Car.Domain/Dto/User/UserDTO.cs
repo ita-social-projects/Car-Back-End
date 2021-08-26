@@ -23,6 +23,8 @@ namespace Car.Domain.Dto
 
         public string Token { get; set; } = string.Empty;
 
+        public string? FCMToken { get; set; }
+
         public int JourneyCount { get; set; }
     }
 }

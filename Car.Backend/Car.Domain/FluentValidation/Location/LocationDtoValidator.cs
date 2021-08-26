@@ -10,7 +10,6 @@ namespace Car.Domain.FluentValidation
             RuleFor(location => location.Address).SetValidator(new AddressDtoValidator()!);
             RuleFor(location => location.Name).NotNull().NotEmpty();
             RuleFor(location => location.TypeId).GreaterThan(Constants.IdLength);
-            RuleFor(location => location.UserId).GreaterThan(Constants.IdLength);
         }
     }
 }

@@ -51,10 +51,10 @@ namespace Car.UnitTests.Controllers
         public async Task GetNotificationsAsync_WhenNotificationsExist_ReturnsOkObjectResult(List<Notification> notifications, User user)
         {
             // Arrange
-            notificationService.Setup(service => service.GetNotificationsAsync(user.Id)).ReturnsAsync(notifications);
+            notificationService.Setup(service => service.GetNotificationsAsync()).ReturnsAsync(notifications);
 
             // Act
-            var result = await notificationController.GetNotificationsAsync(user.Id);
+            var result = await notificationController.GetNotificationsAsync();
 
             // Assert
             using (new AssertionScope())
@@ -69,10 +69,10 @@ namespace Car.UnitTests.Controllers
         public async Task GetUnreadNotificationsNumberAsync_WhenNotificationsExist_ReturnsOkObjectResult(List<Notification> notifications, User user)
         {
             // Arrange
-            notificationService.Setup(service => service.GetUnreadNotificationsNumberAsync(user.Id)).ReturnsAsync(notifications.Count);
+            notificationService.Setup(service => service.GetUnreadNotificationsNumberAsync()).ReturnsAsync(notifications.Count);
 
             // Act
-            var result = await notificationController.GetUnreadNotificationsNumberAsync(user.Id);
+            var result = await notificationController.GetUnreadNotificationsNumberAsync();
 
             // Assert
             using (new AssertionScope())

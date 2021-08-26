@@ -43,17 +43,37 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateUser_WhenUserExists_ReturnsOkObjectResult()
+        public async Task UpdateUserImage_WhenUserExists_ReturnsOkObjectResult()
         {
             // Arrange
-            var updateUserDto = Fixture.Build<UpdateUserDto>()
+            var updateUserDto = Fixture.Build<UpdateUserImageDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
-            var expectedUser = Mapper.Map<UpdateUserDto, UserDto>(updateUserDto);
+            var expectedUser = Mapper.Map<UpdateUserImageDto, UserDto>(updateUserDto);
 
-            userService.Setup(service => service.UpdateUserAsync(updateUserDto)).ReturnsAsync(expectedUser);
+            userService.Setup(service => service.UpdateUserImageAsync(updateUserDto)).ReturnsAsync(expectedUser);
 
             // Act
-            var result = await userController.UpdateUser(updateUserDto);
+            var result = await userController.UpdateUserImage(updateUserDto);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(expectedUser);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateUserFcmtoken_WhenUserExists_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var updateUserDto = Fixture.Build<UpdateUserFcmtokenDto>().Create();
+            var expectedUser = Mapper.Map<UpdateUserFcmtokenDto, UserDto>(updateUserDto);
+
+            userService.Setup(service => service.UpdateUserFcmtokenAsync(updateUserDto)).ReturnsAsync(expectedUser);
+
+            // Act
+            var result = await userController.UpdateUserFcmtoken(updateUserDto);
 
             // Assert
             using (new AssertionScope())
