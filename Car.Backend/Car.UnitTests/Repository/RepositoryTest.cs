@@ -98,7 +98,7 @@ namespace Car.UnitTests.Repository
 
         [Theory]
         [AutoEntityData]
-        public async Task Detach_SetsEntityStateToDetached(User entity)
+        public void Detach_SetsEntityStateToDetached(User entity)
         {
             // Act
             repository.Detach(entity);

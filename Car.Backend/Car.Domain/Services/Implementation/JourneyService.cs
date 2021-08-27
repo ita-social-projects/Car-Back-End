@@ -28,7 +28,6 @@ namespace Car.Domain.Services.Implementation
         private readonly IJourneyUserService journeyUserService;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IRepository<JourneyUser> journeyUserRepository;
 
         public JourneyService(
             IRepository<Journey> journeyRepository,
@@ -39,8 +38,7 @@ namespace Car.Domain.Services.Implementation
             ILocationService locationService,
             IJourneyUserService journeyUserService,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor,
-            IRepository<JourneyUser> journeyUserRepository)
+            IHttpContextAccessor httpContextAccessor)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
@@ -51,7 +49,6 @@ namespace Car.Domain.Services.Implementation
             this.journeyUserService = journeyUserService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
-            this.journeyUserRepository = journeyUserRepository;
         }
 
         public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false)
