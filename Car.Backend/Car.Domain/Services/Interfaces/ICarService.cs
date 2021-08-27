@@ -15,6 +15,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel);
 
-        Task DeleteAsync(int carId);
+        Task<bool> DeleteAsync(int carId);
     }
 }

@@ -91,8 +91,8 @@ namespace Car.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await journeyService.DeleteAsync(id);
-            return Ok();
+            bool isJourneyDeleted = await journeyService.DeleteAsync(id);
+            return isJourneyDeleted ? Ok() : Forbid();
         }
 
         /// <summary>
@@ -143,8 +143,8 @@ namespace Car.WebApi.Controllers
         [HttpDelete("delete-user/{journeyId}/{userId}")]
         public async Task<IActionResult> DeleteUserFromJourney(int journeyId, int userId)
         {
-            await journeyService.DeleteUserFromJourney(journeyId, userId);
-            return Ok();
+            bool isUserDeletedFromJourney = await journeyService.DeleteUserFromJourney(journeyId, userId);
+            return isUserDeletedFromJourney ? Ok() : Forbid();
         }
 
         /// <summary>

@@ -67,10 +67,23 @@ namespace Car.Domain.Services.Implementation
             return updatedLocation;
         }
 
-        public async Task DeleteAsync(int locationId)
+        public async Task<bool> DeleteAsync(int locationId)
         {
-            locationRepository.Delete(new Location() { Id = locationId });
-            await locationRepository.SaveChangesAsync();
+            var location = await locationRepository.GetByIdAsync(locationId);
+
+            if (location != null)
+            {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                if (userId != location.UserId)
+                {
+                    return false;
+                }
+
+                locationRepository.Delete(location);
+                await locationRepository.SaveChangesAsync();
+            }
+
+            return true;
         }
     }
 }

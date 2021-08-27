@@ -44,17 +44,16 @@ namespace Car.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await requestService.DeleteAsync(id);
-            return Ok();
+            bool isRequestDeleted = await requestService.DeleteAsync(id);
+            return isRequestDeleted ? Ok() : Forbid();
         }
 
         /// <summary>
-        /// Gets requests by user identifier.
+        /// Gets requests of current user.
         /// </summary>
-        /// <param name="id">User's unique identifier.</param>
         /// <returns>Collection of requests</returns>
-        [HttpGet("by-user/{id}")]
-        public async Task<IActionResult> GetByUserId(int id) =>
-            Ok(await requestService.GetRequestsByUserIdAsync(id));
+        [HttpGet("by-user")]
+        public async Task<IActionResult> GetByUserId() =>
+            Ok(await requestService.GetRequestsByUserIdAsync());
     }
 }

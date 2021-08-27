@@ -197,13 +197,17 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException(int idCarToDelete)
+        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException(CarDto carDto)
         {
             // Arrange
+            CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
+            carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, car.OwnerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
-            var result = carService.Invoking(service => service.DeleteAsync(idCarToDelete));
+            var result = carService.Invoking(service => service.DeleteAsync(car.Id));
 
             // Assert
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
@@ -211,10 +215,16 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenCarExist_ExecuteOnce(int idCarToDelete)
+        public async Task DeleteAsync_WhenCarExistAndUserIsOwner_ExecuteOnce(CarDto carDto)
         {
+            // Arrange
+            CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
+            carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, car.OwnerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             // Act
-            await carService.DeleteAsync(idCarToDelete);
+            await carService.DeleteAsync(car.Id);
 
             // Assert
             carRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
@@ -222,13 +232,34 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException(int idCarToDelete)
+        public async Task DeleteAsync_WhenCarExistAndUserIsNotOwner_ExecuteNever(CarDto carDto)
         {
             // Arrange
+            CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
+            carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (car.OwnerId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            // Act
+            await carService.DeleteAsync(car.Id);
+
+            // Assert
+            carRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenCarIsInJourney_ThrowDbUpdateException(CarDto carDto)
+        {
+            // Arrange
+            CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
+            carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, car.OwnerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateException>();
 
             // Act
-            var result = carService.Invoking(service => service.DeleteAsync(idCarToDelete));
+            var result = carService.Invoking(service => service.DeleteAsync(car.Id));
 
             // Assert
             await result.Should().ThrowAsync<DbUpdateException>();

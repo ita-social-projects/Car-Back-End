@@ -347,11 +347,10 @@
             <param name="id">Unique identifier.</param>
             <returns>Ok result.</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.RequestController.GetByUserId(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.RequestController.GetByUserId">
             <summary>
-            Gets requests by user identifier.
+            Gets requests of current user.
             </summary>
-            <param name="id">User's unique identifier.</param>
             <returns>Collection of requests</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.GetUserById(System.Int32)">
