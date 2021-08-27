@@ -90,6 +90,12 @@ namespace Car.Data.Infrastructure
         /// <param name="entity">entity</param>
         public void Delete(TEntity entity) => context.Entry(entity).State = EntityState.Deleted;
 
+        /// <summary>
+        /// Detaches entity
+        /// </summary>
+        /// <param name="entity">entity</param>
+        public void Detach(TEntity entity) => context.Entry(entity).State = EntityState.Detached;
+
         private static void CheckEntityForNull(TEntity entity)
         {
             if (entity == null)

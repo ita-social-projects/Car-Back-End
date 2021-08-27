@@ -28,6 +28,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IJourneyUserService journeyUserService;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IRepository<JourneyUser> journeyUserRepository;
 
         public JourneyService(
             IRepository<Journey> journeyRepository,
@@ -37,9 +38,9 @@ namespace Car.Domain.Services.Implementation
             IRequestService requestService,
             ILocationService locationService,
             IJourneyUserService journeyUserService,
-
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IRepository<JourneyUser> journeyUserRepository)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
@@ -50,6 +51,7 @@ namespace Car.Domain.Services.Implementation
             this.journeyUserService = journeyUserService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
+            this.journeyUserRepository = journeyUserRepository;
         }
 
         public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false)
@@ -314,14 +316,14 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<bool> AddUserToJourney(JourneyApplyModel journeyApply)
         {
-            var journeyId = journeyApply.JourneyUser?.JourneyId;
+            var journeyId = journeyApply.JourneyUser?.JourneyId ?? default(int);
 
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
-            var userId = journeyApply.JourneyUser?.UserId;
+            var userId = journeyApply.JourneyUser?.UserId ?? default(int);
 
             var userToAdd = await userRepository
                 .Query()
@@ -341,8 +343,8 @@ namespace Car.Domain.Services.Implementation
 
             foreach (var stop in stops)
             {
-                stop.UserId = userId ?? default(int);
-                stop.JourneyId = journeyId ?? default(int);
+                stop.UserId = userId;
+                stop.JourneyId = journeyId;
                 journey.Stops.Add(stop);
             }
 

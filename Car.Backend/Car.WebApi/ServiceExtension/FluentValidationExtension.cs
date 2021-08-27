@@ -1,7 +1,9 @@
 using Car.Domain.Dto;
 using Car.Domain.Dto.Location;
 using Car.Domain.FluentValidation;
+using Car.Domain.FluentValidation.Journey;
 using Car.Domain.FluentValidation.User;
+using Car.Domain.Models.Journey;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +25,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddTransient<IValidator<NotificationDto>, NotificationDtoValidator>();
             services.AddTransient<IValidator<CreateNotificationDto>, CreateNotificationDtoValidator>();
             services.AddTransient<IValidator<JourneyUserDto>, JourneyUserDtoValidator>();
+            services.AddTransient<IValidator<JourneyApplyModel>, JourneyApplyModelValidator>();
         }
     }
 }

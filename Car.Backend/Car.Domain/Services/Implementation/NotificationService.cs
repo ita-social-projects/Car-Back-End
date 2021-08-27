@@ -23,19 +23,22 @@ namespace Car.Domain.Services.Implementation
         private readonly IMapper mapper;
         private readonly IPushNotificationService pushNotificationService;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IJourneyUserService journeyUserService;
 
         public NotificationService(
             IRepository<Notification> notificationRepository,
             IHubContext<SignalRHub> notificationHub,
             IPushNotificationService pushNotificationService,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IJourneyUserService journeyUserService)
         {
             this.notificationRepository = notificationRepository;
             this.notificationHub = notificationHub;
             this.pushNotificationService = pushNotificationService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
+            this.journeyUserService = journeyUserService;
         }
 
         public async Task<NotificationDto> GetNotificationAsync(int notificationId) =>
@@ -155,17 +158,25 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task NotifyDriverAboutParticipantWithdrawal(Journey journey, int participantId) =>
+        public async Task NotifyDriverAboutParticipantWithdrawal(Journey journey, int participantId)
+        {
+            var journeyUser = await journeyUserService.GetJourneyUserByIdAsync(journey.Id, participantId);
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
+
             await AddNotificationAsync(new NotificationDto()
-                {
-                    SenderId = participantId,
-                    ReceiverId = journey.Organizer!.Id,
-                    Type = NotificationType.PassengerWithdrawal,
-                    CreatedAt = DateTime.UtcNow,
-                    IsRead = false,
-                    JourneyId = journey.Id,
-                    JsonData = JsonSerializer.Serialize(new { }),
-                });
+            {
+                SenderId = participantId,
+                ReceiverId = journey.Organizer!.Id,
+                Type = NotificationType.PassengerWithdrawal,
+                CreatedAt = DateTime.UtcNow,
+                IsRead = false,
+                JourneyId = journey.Id,
+                JsonData = JsonSerializer.Serialize(new { JourneyUser = journeyUser }, serializeOptions),
+            });
+        }
 
         private async Task NotifyClientAsync(NotificationDto notification)
         {

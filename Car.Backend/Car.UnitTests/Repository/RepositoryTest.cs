@@ -95,5 +95,16 @@ namespace Car.UnitTests.Repository
             // Assert
             await Assert.ThrowsAsync<ArgumentNullException>(result);
         }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task Detach_SetsEntityStateToDetached(User entity)
+        {
+            // Act
+            repository.Detach(entity);
+
+            // Assert
+            dbContext.Entry(entity).State.Should().Be(EntityState.Detached);
+        }
     }
 }

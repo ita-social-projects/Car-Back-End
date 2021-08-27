@@ -25,5 +25,7 @@ namespace Car.Data.Infrastructure
         ValueTask<TEntity> GetByIdAsync(params object[] keys);
 
         void Delete(TEntity entity);
+
+        void Detach(TEntity entity);
     }
 }

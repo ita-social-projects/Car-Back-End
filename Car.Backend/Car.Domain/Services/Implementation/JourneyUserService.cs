@@ -53,6 +53,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journeyUser is not null)
             {
+                journeyUserRepository.Detach(journeyUser);
                 journeyUser = await journeyUserRepository.UpdateAsync(updatedJourneyUser);
                 await journeyUserRepository.SaveChangesAsync();
             }
