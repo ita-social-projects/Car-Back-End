@@ -29,7 +29,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetUserChats_WhenUserExists_ReturnsOkObjectResult(User user, List<ChatDto> chats)
+        public async Task GetUserChats_WhenUserExists_ReturnsOkObjectResult(List<ChatDto> chats)
         {
             // Arrange
             chatService.Setup(x => x.GetUserChatsAsync())
@@ -43,9 +43,8 @@ namespace Car.UnitTests.Controllers
             (result as OkObjectResult)?.Value.Should().BeEquivalentTo(chats);
         }
 
-        [Theory]
-        [AutoEntityData]
-        public async Task GetUserChats_WhenUserNotExist_ReturnsOkObjectResult(User user)
+        [Fact]
+        public async Task GetUserChats_WhenUserNotExist_ReturnsOkObjectResult()
         {
             // Arrange
             chatService.Setup(x => x.GetUserChatsAsync())

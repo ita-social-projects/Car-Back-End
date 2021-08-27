@@ -165,21 +165,26 @@ namespace Car.Domain.Services.Implementation
                 .IncludeJourneyPoints()
                 .FilterUnsuitableJourneys(filter);
 
-        public async Task DeleteAsync(int journeyId)
+        public async Task<bool> DeleteAsync(int journeyId)
         {
             var journeyToDelete = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
-            if (journeyToDelete is null)
+            if (journeyToDelete != null)
             {
-                return;
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                if (userId != journeyToDelete.OrganizerId)
+                {
+                    return false;
+                }
+
+                journeyRepository.Delete(journeyToDelete);
+                await journeyRepository.SaveChangesAsync();
             }
 
-            journeyRepository.Delete(journeyToDelete);
-
-            await journeyRepository.SaveChangesAsync();
+            return true;
         }
 
         public async Task CancelAsync(int journeyId)
@@ -290,7 +295,7 @@ namespace Car.Domain.Services.Implementation
             return journey?.IsCancelled ?? true;
         }
 
-        public async Task DeleteUserFromJourney(int journeyId, int userId)
+        public async Task<bool> DeleteUserFromJourney(int journeyId, int userId)
         {
             var journey = await journeyRepository
                 .Query()
@@ -299,16 +304,27 @@ namespace Car.Domain.Services.Implementation
 
             var userToDelete = journey?.Participants.FirstOrDefault(u => u.Id == userId);
 
-            if (journey?.Participants.Remove(userToDelete!) ?? false)
+            if (journey != null && userToDelete != null)
             {
-                journey!.Stops
-                    .Where(stop => stop.UserId == userToDelete!.Id)
-                    .ToList()
-                    .ForEach(stop => stop.IsCancelled = true);
+                int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                if (currentUserId != journey.OrganizerId && currentUserId != userId)
+                {
+                    return false;
+                }
 
-                await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
-                await journeyRepository.SaveChangesAsync();
+                if (journey?.Participants.Remove(userToDelete!) ?? false)
+                {
+                    journey!.Stops
+                        .Where(stop => stop.UserId == userToDelete!.Id)
+                        .ToList()
+                        .ForEach(stop => stop.IsCancelled = true);
+
+                    await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
+                    await journeyRepository.SaveChangesAsync();
+                }
             }
+
+            return true;
         }
 
         public async Task<bool> AddUserToJourney(JourneyApplyModel journeyApply)

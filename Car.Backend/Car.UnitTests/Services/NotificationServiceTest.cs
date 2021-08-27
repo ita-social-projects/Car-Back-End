@@ -210,13 +210,17 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException(int idNotificationToDelete)
+        public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException(CreateNotificationDto notificationDto)
         {
             // Arrange
+            Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
+            notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             notificationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
-            var result = notificationService.Invoking(service => service.DeleteAsync(idNotificationToDelete));
+            var result = notificationService.Invoking(service => service.DeleteAsync(notification.Id));
 
             // Assert
             await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
@@ -224,13 +228,36 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenNotificationExist_ExecuteOnce(int idNotificationToDelete)
+        public async Task DeleteAsync_WhenNotificationExistAndUserIsReceiver_ExecuteOnce(CreateNotificationDto notificationDto)
         {
+            // Arrange
+            Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
+            notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             // Act
-            await notificationService.DeleteAsync(idNotificationToDelete);
+            await notificationService.DeleteAsync(notification.Id);
 
             // Assert
             notificationRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
+
+        [Xunit.Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenNotificationExistAndUserIsNotReceiver_ExecuteNever(CreateNotificationDto notificationDto)
+        {
+            // Arrange
+            Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
+            notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (notification.ReceiverId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            // Act
+            await notificationService.DeleteAsync(notification.Id);
+
+            // Assert
+            notificationRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
         }
 
         [Xunit.Theory]

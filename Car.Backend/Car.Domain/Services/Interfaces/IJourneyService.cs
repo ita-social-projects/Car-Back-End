@@ -25,7 +25,7 @@ namespace Car.Domain.Services.Interfaces
 
         IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter);
 
-        Task DeleteAsync(int journeyId);
+        Task<bool> DeleteAsync(int journeyId);
 
         Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto);
 
@@ -39,7 +39,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> IsCanceled(int journeyId);
 
-        Task DeleteUserFromJourney(int journeyId, int userId);
+        Task<bool> DeleteUserFromJourney(int journeyId, int userId);
 
         Task<bool> AddUserToJourney(JourneyApplyModel journeyApply);
 
