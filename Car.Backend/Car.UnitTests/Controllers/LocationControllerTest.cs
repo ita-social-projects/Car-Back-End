@@ -116,14 +116,32 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteAsync_WhenLocationExists_ReturnsOkResult(Location location)
+        public async Task DeleteAsync_WhenLocationExistsAndIsAllowed_ReturnsOkResult(Location location)
         {
+            // Arrange
+            locationService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
+
             // Act
             var result = await locationController.DeleteAsync(location.Id);
 
             // Assert
             locationService.Verify(service => service.DeleteAsync(location.Id), Times.Once());
             result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenLocationExistsAndIsForbidden_ReturnsOkResult(Location location)
+        {
+            // Arrange
+            locationService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await locationController.DeleteAsync(location.Id);
+
+            // Assert
+            locationService.Verify(service => service.DeleteAsync(location.Id), Times.Once());
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]

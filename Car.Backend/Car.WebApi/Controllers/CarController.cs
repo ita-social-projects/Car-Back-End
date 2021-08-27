@@ -61,8 +61,8 @@ namespace Car.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-           await carService.DeleteAsync(id);
-           return Ok();
+            bool isCarDeleted = await carService.DeleteAsync(id);
+            return isCarDeleted ? Ok() : Forbid();
         }
     }
 }

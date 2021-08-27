@@ -81,10 +81,23 @@ namespace Car.Domain.Services.Implementation
             return notification;
         }
 
-        public async Task DeleteAsync(int notificationId)
+        public async Task<bool> DeleteAsync(int notificationId)
         {
-            notificationRepository.Delete(new Notification() { Id = notificationId });
-            await notificationRepository.SaveChangesAsync();
+            var notification = await notificationRepository.GetByIdAsync(notificationId);
+
+            if (notification != null)
+            {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                if (userId != notification.ReceiverId)
+                {
+                    return false;
+                }
+
+                notificationRepository.Delete(notification);
+                await notificationRepository.SaveChangesAsync();
+            }
+
+            return true;
         }
 
         public async Task<NotificationDto> MarkNotificationAsReadAsync(int notificationId)
