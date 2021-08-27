@@ -43,7 +43,7 @@ namespace Car.Domain.Services.Implementation
             return journeyUser is not null && journeyUser.WithBaggage;
         }
 
-        public async Task<JourneyUserDto> UpdateJourneyUserAsync(JourneyUserDto updateJourneyUserDto)
+        public async Task<JourneyUserDto?> UpdateJourneyUserAsync(JourneyUserDto updateJourneyUserDto)
         {
             var journeyUser = await journeyUserRepository
                 .Query()
@@ -56,12 +56,13 @@ namespace Car.Domain.Services.Implementation
                 journeyUserRepository.Detach(journeyUser);
                 journeyUser = await journeyUserRepository.UpdateAsync(updatedJourneyUser);
                 await journeyUserRepository.SaveChangesAsync();
+                return mapper.Map<JourneyUser, JourneyUserDto>(journeyUser);
             }
 
-            return mapper.Map<JourneyUser, JourneyUserDto>(journeyUser);
+            return null;
         }
 
-        public async Task<JourneyUserDto> SetWithBaggageAsync(int journeyId, int userId, bool withBaggage)
+        public async Task<JourneyUserDto?> SetWithBaggageAsync(int journeyId, int userId, bool withBaggage)
         {
             var journeyUser = await journeyUserRepository
                 .Query()
@@ -71,9 +72,10 @@ namespace Car.Domain.Services.Implementation
             {
                 journeyUser.WithBaggage = withBaggage;
                 await journeyUserRepository.SaveChangesAsync();
+                return mapper.Map<JourneyUser, JourneyUserDto>(journeyUser);
             }
 
-            return mapper.Map<JourneyUser, JourneyUserDto>(journeyUser);
+            return null;
         }
     }
 }
