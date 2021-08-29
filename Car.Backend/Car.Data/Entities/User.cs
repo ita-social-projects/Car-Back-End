@@ -49,6 +49,8 @@ namespace Car.Data.Entities
 
         public ICollection<Journey> ParticipantJourneys { get; set; } = new List<Journey>();
 
+        public ICollection<JourneyUser> JourneyUsers { get; set; } = new List<JourneyUser>();
+
         public ICollection<Message> SentMessages { get; set; } = new List<Message>();
 
         public ICollection<Request> Requests { get; set; } = new List<Request>();

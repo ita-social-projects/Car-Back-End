@@ -161,13 +161,43 @@
             <param name="userId">user Id</param>
             <returns>OkResult</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.AddUserToJourney(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{Car.Domain.Dto.StopDto})">
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddUserToJourney(Car.Domain.Models.Journey.JourneyApplyModel)">
             <summary>
             Adds user to journey
             </summary>
-            <param name="journeyId">journey Id</param>
-            <param name="userId">user Id</param>
-            <param name="applicantStops">applicant stops</param>
+            <param name="journeyApply">Journey Apply Model</param>
+            <returns>OkResult</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyUserController.GetJourneyUserById(System.Int32,System.Int32)">
+            <summary>
+            Get JourneyUser by identifiers.
+            </summary>
+            <param name="journeyId">Journey identifier</param>
+            <param name="userId">User identifier</param>
+            <returns>JourneyUserDTO</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyUserController.HasBaggage(System.Int32,System.Int32)">
+            <summary>
+            Defines if JourneyUser has a baggage
+            </summary>
+            <param name="journeyId">Journey identifier</param>
+            <param name="userId">User identifier</param>
+            <returns>bool value that indicates whether JourneyUser has a baggage</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyUserController.Update(Car.Domain.Dto.JourneyUserDto)">
+            <summary>
+            Updates the JourneyUser asynchronously
+            </summary>
+            <param name="journeyUser">JourneyUser DTO</param>
+            <returns>OkResult with updated JourneyUser</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyUserController.UpdateWithBaggage(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Set value of the withBaggage property
+            </summary>
+            <param name="journeyId">Journey identifier</param>
+            <param name="userId">User identifier</param>
+            <param name="withBaggage">New value of the withBaggage property</param>
             <returns>OkResult</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.LocationController.GetAllByUserId">

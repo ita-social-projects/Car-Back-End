@@ -22,7 +22,19 @@ namespace Car.Data.EntityConfigurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(journey => journey.Participants)
-                .WithMany(user => user.ParticipantJourneys);
+                .WithMany(user => user.ParticipantJourneys)
+                .UsingEntity<JourneyUser>(
+                    juBuilder => juBuilder.HasOne(ju => ju.User!)
+                        .WithMany(u => u.JourneyUsers)
+                        .HasForeignKey(ju => ju.UserId),
+                    juBuilder => juBuilder.HasOne(ju => ju.Journey!)
+                        .WithMany(j => j.JourneyUsers)
+                        .HasForeignKey(ju => ju.JourneyId),
+                    juBuilder =>
+                    {
+                        juBuilder.ToTable("JourneyUser");
+                        juBuilder.HasKey(ju => new { ju.JourneyId, ju.UserId });
+                    });
 
             builder.HasOne(journey => journey.Chat)
                 .WithOne(chat => chat!.Journey!)

@@ -37,6 +37,7 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<Notification>> notificationRepository;
         private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
+        private readonly Mock<IJourneyUserService> journeyUserService;
 
         public NotificationServiceTest()
         {
@@ -47,12 +48,14 @@ namespace Car.UnitTests.Services
             clientProxy = new Mock<IClientProxy>();
             pushNotificationService = new Mock<IPushNotificationService>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
+            journeyUserService = new Mock<IJourneyUserService>();
             notificationService = new NotificationService(
                 notificationRepository.Object,
                 hubContext.Object,
                 pushNotificationService.Object,
                 Mapper,
-                httpContextAccessor.Object);
+                httpContextAccessor.Object,
+                journeyUserService.Object);
         }
 
         [Xunit.Theory]

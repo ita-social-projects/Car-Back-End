@@ -25,6 +25,7 @@ namespace Car.Domain.Services.Implementation
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
         private readonly ILocationService locationService;
+        private readonly IJourneyUserService journeyUserService;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
@@ -35,6 +36,7 @@ namespace Car.Domain.Services.Implementation
             INotificationService notificationService,
             IRequestService requestService,
             ILocationService locationService,
+            IJourneyUserService journeyUserService,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -44,6 +46,7 @@ namespace Car.Domain.Services.Implementation
             this.notificationService = notificationService;
             this.requestService = requestService;
             this.locationService = locationService;
+            this.journeyUserService = journeyUserService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
         }
@@ -324,12 +327,16 @@ namespace Car.Domain.Services.Implementation
             return true;
         }
 
-        public async Task<bool> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
+        public async Task<bool> AddUserToJourney(JourneyApplyModel journeyApply)
         {
+            var journeyId = journeyApply.JourneyUser?.JourneyId ?? default(int);
+
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
+
+            var userId = journeyApply.JourneyUser?.UserId ?? default(int);
 
             var userToAdd = await userRepository
                 .Query()
@@ -343,7 +350,7 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
-            var stops = mapper.Map<IEnumerable<Stop>>(applicantStops);
+            var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
             journey.Participants.Add(userToAdd);
 
@@ -355,8 +362,21 @@ namespace Car.Domain.Services.Implementation
             }
 
             await journeyRepository.SaveChangesAsync();
+            if (journeyApply.JourneyUser is not null)
+            {
+                await journeyUserService.UpdateJourneyUserAsync(journeyApply.JourneyUser);
+            }
 
             return true;
+        }
+
+        public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(int journeyId, int userId, bool withCancelledStops = false)
+        {
+            var journey = await GetJourneyByIdAsync(journeyId, withCancelledStops);
+
+            var journeyUser = await journeyUserService.GetJourneyUserByIdAsync(journeyId, userId);
+
+            return (journey, journeyUser);
         }
 
         private static IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)

@@ -41,6 +41,8 @@ namespace Car.Data.Entities
 
         public ICollection<User> Participants { get; set; } = new List<User>();
 
+        public ICollection<JourneyUser> JourneyUsers { get; set; } = new List<JourneyUser>();
+
         public ICollection<Stop> Stops { get; set; } = new List<Stop>();
 
         public ICollection<JourneyPoint> JourneyPoints { get; set; } = new List<JourneyPoint>();

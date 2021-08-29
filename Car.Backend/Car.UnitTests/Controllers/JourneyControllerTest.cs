@@ -351,21 +351,41 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_ReturnsOkObjectResult(int journeyId, int userId, IEnumerable<StopDto> applicantStops, bool expectedResult)
+        public async Task AddUserToJourney_ReturnsOkObjectResult(JourneyApplyModel journeyApply, bool expectedResult)
         {
             // Arrange
             journeyService
-                .Setup(service => service.AddUserToJourney(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<IEnumerable<StopDto>>()))
+                .Setup(service => service.AddUserToJourney(It.IsAny<JourneyApplyModel>()))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await journeyController.AddUserToJourney(journeyId, userId, applicantStops);
+            var result = await journeyController.AddUserToJourney(journeyApply);
 
             // Assert
             using (new AssertionScope())
             {
                 (result as OkObjectResult)?.StatusCode.Should().Be(200);
                 (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetJourneyWithJourneyUser_ReturnsOkObjectResult(int journeyId, int userId, bool withCancelledStops, (JourneyModel Journey, JourneyUserDto JourneyUser) journeyWithUser)
+        {
+            // Arrange
+            journeyService
+                .Setup(service => service.GetJourneyWithJourneyUserByIdAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                .ReturnsAsync(journeyWithUser);
+
+            // Act
+            var result = await journeyController.GetJourneyWithJourneyUser(journeyId, userId, withCancelledStops);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                (result as OkObjectResult)?.StatusCode.Should().Be(200);
+                (result as OkObjectResult)?.Value.Should().BeEquivalentTo(journeyWithUser);
             }
         }
     }

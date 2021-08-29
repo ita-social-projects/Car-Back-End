@@ -3,13 +3,13 @@ using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class ParticipantDtoValidator : AbstractValidator<Dto.ParticipantDto>
+    public class JourneyUserDtoValidator : AbstractValidator<Dto.JourneyUserDto>
     {
-        public ParticipantDtoValidator()
+        public JourneyUserDtoValidator()
         {
             RuleFor(participant => participant.JourneyId).GreaterThan(Constants.IdLength);
             RuleFor(participant => participant.UserId).GreaterThan(Constants.IdLength);
-            RuleFor(participant => participant.HasLuggage).NotNull();
+            RuleFor(participant => participant.WithBaggage).NotNull();
         }
     }
 }

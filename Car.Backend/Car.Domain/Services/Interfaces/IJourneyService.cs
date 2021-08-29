@@ -41,6 +41,11 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> DeleteUserFromJourney(int journeyId, int userId);
 
-        Task<bool> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops);
+        Task<bool> AddUserToJourney(JourneyApplyModel journeyApply);
+
+        Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
+            int journeyId,
+            int userId,
+            bool withCancelledStops = false);
     }
 }
