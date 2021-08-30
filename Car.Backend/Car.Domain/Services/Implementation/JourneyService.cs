@@ -388,7 +388,8 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefaultAsync(c => c.Id == journeyId);
 
             return unreadMessagesInChat.Messages.Count();
-
+        }
+        
         public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(int journeyId, int userId, bool withCancelledStops = false)
         {
             var journey = await GetJourneyByIdAsync(journeyId, withCancelledStops);
