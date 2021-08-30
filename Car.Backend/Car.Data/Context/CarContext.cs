@@ -38,6 +38,8 @@ namespace Car.Data.Context
 
         public DbSet<Request>? Requests { get; set; }
 
+        public DbSet<ReceivedMessages>? ReceivedMessages { get; set; }
+
         public CarContext(DbContextOptions<CarContext> options)
             : base(options)
         {

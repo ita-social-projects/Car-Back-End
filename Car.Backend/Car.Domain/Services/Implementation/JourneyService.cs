@@ -22,6 +22,9 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
         private readonly IRepository<User> userRepository;
+        private readonly IRepository<ReceivedMessages> receivedRepository;
+        private readonly IRepository<Message> messageRepository;
+        private readonly IRepository<Chat> chatRepository;
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
         private readonly ILocationService locationService;
@@ -32,6 +35,9 @@ namespace Car.Domain.Services.Implementation
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
             IRepository<User> userRepository,
+            IRepository<Message> messageRepository,
+            IRepository<ReceivedMessages> receivedRepository,
+            IRepository<Chat> chatRepository,
             INotificationService notificationService,
             IRequestService requestService,
             ILocationService locationService,
@@ -41,7 +47,10 @@ namespace Car.Domain.Services.Implementation
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
             this.userRepository = userRepository;
+            this.messageRepository = messageRepository;
+            this.receivedRepository = receivedRepository;
             this.notificationService = notificationService;
+            this.chatRepository = chatRepository;
             this.requestService = requestService;
             this.locationService = locationService;
             this.mapper = mapper;
@@ -327,6 +336,9 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
+            userToAdd.ReceivedMessages.FirstOrDefault(rm => rm.ChatId == journeyId)!
+                .UnreadMessagesCount = await SetUnreadMessagesForNewUser(journeyId);
+
             var stops = mapper.Map<IEnumerable<Stop>>(applicantStops);
 
             journey.Participants.Add(userToAdd);
@@ -339,8 +351,17 @@ namespace Car.Domain.Services.Implementation
             }
 
             await journeyRepository.SaveChangesAsync();
+            await receivedRepository.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<int> SetUnreadMessagesForNewUser(int journeyId)
+        {
+            var unreadMessagesInChat = await chatRepository.Query()
+                .FirstOrDefaultAsync(c => c.Id == journeyId);
+
+            return unreadMessagesInChat.Messages.Count();
         }
 
         private static IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)

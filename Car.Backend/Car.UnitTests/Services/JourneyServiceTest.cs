@@ -19,6 +19,8 @@ using Car.UnitTests.Base;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
+using Microsoft.VisualBasic;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -34,6 +36,9 @@ namespace Car.UnitTests.Services
         private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
+        private readonly Mock<IRepository<ReceivedMessages>> receivedMessagesRepository;
+        private readonly Mock<IRepository<Message>> messageRepository;
+        private readonly Mock<IRepository<Chat>> chatRepository;
         private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
@@ -44,6 +49,9 @@ namespace Car.UnitTests.Services
             requestService = new Mock<IRequestService>();
             locationService = new Mock<ILocationService>();
             userRepository = new Mock<IRepository<User>>();
+            chatRepository = new Mock<IRepository<Chat>>();
+            messageRepository = new Mock<IRepository<Message>>();
+            receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
 
             notificationService = new Mock<INotificationService>();
@@ -51,6 +59,9 @@ namespace Car.UnitTests.Services
                 journeyRepository.Object,
                 requestRepository.Object,
                 userRepository.Object,
+                messageRepository.Object,
+                receivedMessagesRepository.Object,
+                chatRepository.Object,
                 notificationService.Object,
                 requestService.Object,
                 locationService.Object,
@@ -962,16 +973,19 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(int journeyId, int userId, User[] participants, IEnumerable<StopDto> applicantStops)
+        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyId + 1)
                 .With(j => j.Participants, new List<User>())
                 .CreateMany(1);
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, userId)
+                .CreateMany(1)
+                .ToList();
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
             userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
-
             // Act
             var result = await journeyService.AddUserToJourney(journeyId, userId, applicantStops);
 
@@ -984,22 +998,57 @@ namespace Car.UnitTests.Services
         public async Task AddUserToJourney_WhenJourneyAndUserAreValid_ReturnsTrue(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
         {
             // Arrange
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.ChatId, journeyId)
+                .CreateMany(1)
+                .ToList();
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, userId)
+                .With(p => p.ReceivedMessages, receivedMessages)
+                .CreateMany(1)
+                .ToList();
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyId)
                 .With(j => j.Participants, new List<User>())
                 .With(j => j.CountOfSeats, 4).
                 CreateMany(1);
-            var participants = Fixture.Build<User>()
-                .With(p => p.Id, userId)
-                .CreateMany(1);
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyId)
+                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
+                .CreateMany(1)
+                .ToList();
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
             userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
-
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+            receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
             // Act
             var result = await journeyService.AddUserToJourney(journeyId, userId, applicantStops);
 
             // Assert
             result.Should().Be(true);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task SetUnreadMessagesForNewUser_UserGainsUnreadMessagesEqualsToTotalMessages(int journeyId)
+        {
+            // Arrange
+            var messages = Fixture.Build<Message>()
+                .With(m => m.ChatId, journeyId)
+                .CreateMany(5)
+                .ToList();
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyId)
+                .With(c => c.Messages, messages)
+                .CreateMany(1)
+                .ToList();
+            messageRepository.Setup(r => r.Query()).Returns(messages.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+            var expected = messages.Count();
+            // Act
+            var result = await journeyService.SetUnreadMessagesForNewUser(journeyId);
+            // Assert
+            result.Should().Be(expected);
         }
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()

@@ -123,22 +123,5 @@ namespace Car.Domain.Services.Implementation
         {
             return await chatRepository.GetByIdAsync(chatId);
         }
-
-        public async Task MarkMessageAsReadAsync(int chatId, int userId)
-        {
-            await messageRepository.Query()
-                .Where(message => message.ChatId == chatId && message.SenderId == userId)
-                .ForEachAsync(message => message.IsRead = true);
-
-            await messageRepository.SaveChangesAsync();
-        }
-
-        public Task<int> GetUnreadMessagesNumberAsync(int chatId, int userId) =>
-            messageRepository.Query()
-                .CountAsync(p => p.SenderId != userId && p.ChatId == chatId && !p.IsRead);
-
-        public Task<int> GetAllUnreadMessagesNumberAsync(int userId) =>
-            messageRepository.Query()
-                .CountAsync(message => message.SenderId == userId && !message.IsRead);
     }
 }

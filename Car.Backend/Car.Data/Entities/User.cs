@@ -49,6 +49,8 @@ namespace Car.Data.Entities
 
         public ICollection<Message> SentMessages { get; set; } = new List<Message>();
 
+        public ICollection<ReceivedMessages> ReceivedMessages { get; set; } = new List<ReceivedMessages>();
+
         public ICollection<Request> Requests { get; set; } = new List<Request>();
     }
 }
