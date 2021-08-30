@@ -350,14 +350,14 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .CreateMany().ToList();
             var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.OrganizerId, organizer.Id)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);
 
@@ -1026,6 +1026,7 @@ namespace Car.UnitTests.Services
                 .ToList();
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
             userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+
             // Act
             var result = await journeyService.AddUserToJourney(journeyApply);
 
@@ -1062,6 +1063,7 @@ namespace Car.UnitTests.Services
             userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
             chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
             receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
             // Act
             var result = await journeyService.AddUserToJourney(journeyApply);
 
@@ -1086,12 +1088,16 @@ namespace Car.UnitTests.Services
             messageRepository.Setup(r => r.Query()).Returns(messages.AsQueryable().BuildMock().Object);
             chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
             var expected = messages.Count();
+
             // Act
             var result = await journeyService.SetUnreadMessagesForNewUser(journeyId);
+
             // Assert
             result.Should().Be(expected);
          }
 
+        [Theory]
+        [AutoEntityData]
         public async Task GetJourneyByIdAsync_JourneyAndJourneyUserExist_ReturnsTupleWithNotNullItems(
             int journeyId,
             int userId)
