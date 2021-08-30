@@ -1090,6 +1090,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.SetUnreadMessagesForNewUser(journeyId);
             // Assert
             result.Should().Be(expected);
+         }
 
         public async Task GetJourneyByIdAsync_JourneyAndJourneyUserExist_ReturnsTupleWithNotNullItems(
             int journeyId,
