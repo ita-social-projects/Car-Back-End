@@ -361,7 +361,7 @@ namespace Car.Domain.Services.Implementation
 
             userToAdd.ReceivedMessages.FirstOrDefault(rm => rm.ChatId == journeyId)!
                 .UnreadMessagesCount = await SetUnreadMessagesForNewUser(journeyId);
-                
+
             var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
             journey.Participants.Add(userToAdd);
@@ -374,11 +374,12 @@ namespace Car.Domain.Services.Implementation
             }
 
             await journeyRepository.SaveChangesAsync();
-            
+
             if (journeyApply.JourneyUser is not null)
             {
                 await journeyUserService.UpdateJourneyUserAsync(journeyApply.JourneyUser);
             }
+
             return true;
         }
 
@@ -389,7 +390,7 @@ namespace Car.Domain.Services.Implementation
 
             return unreadMessagesInChat.Messages.Count();
         }
-        
+
         public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(int journeyId, int userId, bool withCancelledStops = false)
         {
             var journey = await GetJourneyByIdAsync(journeyId, withCancelledStops);
