@@ -200,14 +200,32 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenJourneyIdIsValid_ReturnsOkResult(int journeyIdToDelete)
+        public async Task DeleteAsync_WhenJourneyIdIsValidAndIsAllowed_ReturnsOkResult(int journeyIdToDelete)
         {
+            // Arrange
+            journeyService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
+
             // Act
             var result = await journeyController.Delete(journeyIdToDelete);
 
             // Assert
             journeyService.Verify(service => service.DeleteAsync(journeyIdToDelete), Times.Once());
             result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenJourneyIdIsValidAndIsForbidden_ReturnsOkResult(int journeyIdToDelete)
+        {
+            // Arrange
+            journeyService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await journeyController.Delete(journeyIdToDelete);
+
+            // Assert
+            journeyService.Verify(service => service.DeleteAsync(journeyIdToDelete), Times.Once());
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]
@@ -305,10 +323,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoData]
-        public async Task DeleteUserFromJourney_ReturnsOkResult(int journeyId, int userId)
+        public async Task DeleteUserFromJourney_IsAllowed_ReturnsOkResult(int journeyId, int userId)
         {
             // Arrange
-            journeyService.Setup(service => service.DeleteUserFromJourney(journeyId, userId)).Returns(Task.CompletedTask);
+            journeyService.Setup(service => service.DeleteUserFromJourney(journeyId, userId)).ReturnsAsync(true);
 
             // Act
             var result = await journeyController.DeleteUserFromJourney(journeyId, userId);
@@ -318,22 +336,56 @@ namespace Car.UnitTests.Controllers
         }
 
         [Theory]
+        [AutoData]
+        public async Task DeleteUserFromJourney_IsForbidden_ReturnsOkResult(int journeyId, int userId)
+        {
+            // Arrange
+            journeyService.Setup(service => service.DeleteUserFromJourney(journeyId, userId)).ReturnsAsync(false);
+
+            // Act
+            var result = await journeyController.DeleteUserFromJourney(journeyId, userId);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_ReturnsOkObjectResult(int journeyId, int userId, IEnumerable<StopDto> applicantStops, bool expectedResult)
+        public async Task AddUserToJourney_ReturnsOkObjectResult(JourneyApplyModel journeyApply, bool expectedResult)
         {
             // Arrange
             journeyService
-                .Setup(service => service.AddUserToJourney(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<IEnumerable<StopDto>>()))
+                .Setup(service => service.AddUserToJourney(It.IsAny<JourneyApplyModel>()))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await journeyController.AddUserToJourney(journeyId, userId, applicantStops);
+            var result = await journeyController.AddUserToJourney(journeyApply);
 
             // Assert
             using (new AssertionScope())
             {
                 (result as OkObjectResult)?.StatusCode.Should().Be(200);
                 (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetJourneyWithJourneyUser_ReturnsOkObjectResult(int journeyId, int userId, bool withCancelledStops, (JourneyModel Journey, JourneyUserDto JourneyUser) journeyWithUser)
+        {
+            // Arrange
+            journeyService
+                .Setup(service => service.GetJourneyWithJourneyUserByIdAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                .ReturnsAsync(journeyWithUser);
+
+            // Act
+            var result = await journeyController.GetJourneyWithJourneyUser(journeyId, userId, withCancelledStops);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                (result as OkObjectResult)?.StatusCode.Should().Be(200);
+                (result as OkObjectResult)?.Value.Should().BeEquivalentTo(journeyWithUser);
             }
         }
     }

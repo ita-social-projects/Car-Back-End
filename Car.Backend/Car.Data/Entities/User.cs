@@ -26,6 +26,8 @@ namespace Car.Data.Entities
 
         public int JourneyCount { get; set; }
 
+        public string? PhoneNumber { get; set; }
+
         [NotMapped]
         public string Token { get; set; } = string.Empty;
 
@@ -46,6 +48,8 @@ namespace Car.Data.Entities
         public ICollection<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
 
         public ICollection<Journey> ParticipantJourneys { get; set; } = new List<Journey>();
+
+        public ICollection<JourneyUser> JourneyUsers { get; set; } = new List<JourneyUser>();
 
         public ICollection<Message> SentMessages { get; set; } = new List<Message>();
 

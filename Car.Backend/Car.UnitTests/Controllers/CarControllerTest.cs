@@ -110,14 +110,32 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteAsync_WhenCarIsNotInJourney_ReturnsOkResult(CarEntity car)
+        public async Task DeleteAsync_WhenCarIsNotInJourneyAndIsAllowed_ReturnsOkResult(CarEntity car)
         {
+            // Arrange
+            carService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
+
             // Act
             var result = await carController.DeleteAsync(car.Id);
 
             // Assert
             carService.Verify(service => service.DeleteAsync(car.Id), Times.Once());
             result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenCarIsNotInJourneyAndIsForbidden_ReturnsOkResult(CarEntity car)
+        {
+            // Arrange
+            carService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await carController.DeleteAsync(car.Id);
+
+            // Assert
+            carService.Verify(service => service.DeleteAsync(car.Id), Times.Once());
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]

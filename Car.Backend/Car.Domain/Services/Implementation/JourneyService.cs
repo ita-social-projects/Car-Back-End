@@ -28,6 +28,7 @@ namespace Car.Domain.Services.Implementation
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
         private readonly ILocationService locationService;
+        private readonly IJourneyUserService journeyUserService;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
@@ -41,6 +42,7 @@ namespace Car.Domain.Services.Implementation
             INotificationService notificationService,
             IRequestService requestService,
             ILocationService locationService,
+            IJourneyUserService journeyUserService,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -53,6 +55,7 @@ namespace Car.Domain.Services.Implementation
             this.chatRepository = chatRepository;
             this.requestService = requestService;
             this.locationService = locationService;
+            this.journeyUserService = journeyUserService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
         }
@@ -171,21 +174,26 @@ namespace Car.Domain.Services.Implementation
                 .IncludeJourneyPoints()
                 .FilterUnsuitableJourneys(filter);
 
-        public async Task DeleteAsync(int journeyId)
+        public async Task<bool> DeleteAsync(int journeyId)
         {
             var journeyToDelete = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
-            if (journeyToDelete is null)
+            if (journeyToDelete != null)
             {
-                return;
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                if (userId != journeyToDelete.OrganizerId)
+                {
+                    return false;
+                }
+
+                journeyRepository.Delete(journeyToDelete);
+                await journeyRepository.SaveChangesAsync();
             }
 
-            journeyRepository.Delete(journeyToDelete);
-
-            await journeyRepository.SaveChangesAsync();
+            return true;
         }
 
         public async Task CancelAsync(int journeyId)
@@ -296,7 +304,7 @@ namespace Car.Domain.Services.Implementation
             return journey?.IsCancelled ?? true;
         }
 
-        public async Task DeleteUserFromJourney(int journeyId, int userId)
+        public async Task<bool> DeleteUserFromJourney(int journeyId, int userId)
         {
             var journey = await journeyRepository
                 .Query()
@@ -305,24 +313,39 @@ namespace Car.Domain.Services.Implementation
 
             var userToDelete = journey?.Participants.FirstOrDefault(u => u.Id == userId);
 
-            if (journey?.Participants.Remove(userToDelete!) ?? false)
+            if (journey != null && userToDelete != null)
             {
-                journey!.Stops
-                    .Where(stop => stop.UserId == userToDelete!.Id)
-                    .ToList()
-                    .ForEach(stop => stop.IsCancelled = true);
+                int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                if (currentUserId != journey.OrganizerId && currentUserId != userId)
+                {
+                    return false;
+                }
 
-                await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
-                await journeyRepository.SaveChangesAsync();
+                if (journey?.Participants.Remove(userToDelete!) ?? false)
+                {
+                    journey!.Stops
+                        .Where(stop => stop.UserId == userToDelete!.Id)
+                        .ToList()
+                        .ForEach(stop => stop.IsCancelled = true);
+
+                    await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
+                    await journeyRepository.SaveChangesAsync();
+                }
             }
+
+            return true;
         }
 
-        public async Task<bool> AddUserToJourney(int journeyId, int userId, IEnumerable<StopDto> applicantStops)
+        public async Task<bool> AddUserToJourney(JourneyApplyModel journeyApply)
         {
+            var journeyId = journeyApply.JourneyUser?.JourneyId ?? default(int);
+
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
+
+            var userId = journeyApply.JourneyUser?.UserId ?? default(int);
 
             var userToAdd = await userRepository
                 .Query()
@@ -338,8 +361,8 @@ namespace Car.Domain.Services.Implementation
 
             userToAdd.ReceivedMessages.FirstOrDefault(rm => rm.ChatId == journeyId)!
                 .UnreadMessagesCount = await SetUnreadMessagesForNewUser(journeyId);
-
-            var stops = mapper.Map<IEnumerable<Stop>>(applicantStops);
+                
+            var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
             journey.Participants.Add(userToAdd);
 
@@ -351,7 +374,10 @@ namespace Car.Domain.Services.Implementation
             }
 
             await journeyRepository.SaveChangesAsync();
-            await receivedRepository.SaveChangesAsync();
+            
+            if (journeyApply.JourneyUser is not null)
+            {
+                await journeyUserService.UpdateJourneyUserAsync(journeyApply.JourneyUser);
 
             return true;
         }
@@ -362,6 +388,14 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefaultAsync(c => c.Id == journeyId);
 
             return unreadMessagesInChat.Messages.Count();
+
+        public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(int journeyId, int userId, bool withCancelledStops = false)
+        {
+            var journey = await GetJourneyByIdAsync(journeyId, withCancelledStops);
+
+            var journeyUser = await journeyUserService.GetJourneyUserByIdAsync(journeyId, userId);
+
+            return (journey, journeyUser);
         }
 
         private static IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)

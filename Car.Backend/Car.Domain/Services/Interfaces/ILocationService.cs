@@ -16,6 +16,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task<Location?> UpdateAsync(UpdateLocationDto location);
 
-        public Task DeleteAsync(int locationId);
+        public Task<bool> DeleteAsync(int locationId);
     }
 }

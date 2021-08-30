@@ -26,5 +26,7 @@ namespace Car.Domain.Dto
         public string? FCMToken { get; set; }
 
         public int JourneyCount { get; set; }
+
+        public string? PhoneNumber { get; set; }
     }
 }
