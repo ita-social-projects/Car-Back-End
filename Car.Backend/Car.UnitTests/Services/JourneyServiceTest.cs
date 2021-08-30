@@ -20,6 +20,8 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
+using Microsoft.VisualBasic;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -36,6 +38,9 @@ namespace Car.UnitTests.Services
         private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
+        private readonly Mock<IRepository<ReceivedMessages>> receivedMessagesRepository;
+        private readonly Mock<IRepository<Message>> messageRepository;
+        private readonly Mock<IRepository<Chat>> chatRepository;
         private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
@@ -47,6 +52,9 @@ namespace Car.UnitTests.Services
             locationService = new Mock<ILocationService>();
             journeyUserService = new Mock<IJourneyUserService>();
             userRepository = new Mock<IRepository<User>>();
+            chatRepository = new Mock<IRepository<Chat>>();
+            messageRepository = new Mock<IRepository<Message>>();
+            receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
 
             notificationService = new Mock<INotificationService>();
@@ -54,6 +62,9 @@ namespace Car.UnitTests.Services
                 journeyRepository.Object,
                 requestRepository.Object,
                 userRepository.Object,
+                messageRepository.Object,
+                receivedMessagesRepository.Object,
+                chatRepository.Object,
                 notificationService.Object,
                 requestService.Object,
                 locationService.Object,
@@ -109,13 +120,13 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .CreateMany()
                 .ToList();
             var pastJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .CreateMany().ToList();
             journeys.AddRange(pastJourneys);
 
@@ -199,7 +210,7 @@ namespace Car.UnitTests.Services
             var upcomingJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.OrganizerId, organizer.Id)
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
@@ -225,13 +236,13 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .CreateMany()
                 .ToList();
             var upcomingJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .CreateMany();
             journeys.AddRange(upcomingJourneys);
 
@@ -308,12 +319,12 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.Participants, new List<User>() { participant })
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .CreateMany().ToList();
             var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.Participants, new List<User>() { participant })
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);
 
@@ -339,14 +350,14 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .CreateMany().ToList();
             var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.OrganizerId, organizer.Id)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.IsCancelled, false)
                 .CreateMany();
             journeys.AddRange(scheduledJourneys);
 
@@ -1002,13 +1013,17 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(User[] participants, JourneyApplyModel journeyApply)
+        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(JourneyApplyModel journeyApply)
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyApply.JourneyUser.JourneyId + 1)
                 .With(j => j.Participants, new List<User>())
                 .CreateMany(1);
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, journeyApply.JourneyUser.UserId)
+                .CreateMany(1)
+                .ToList();
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
             userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
 
@@ -1024,16 +1039,30 @@ namespace Car.UnitTests.Services
         public async Task AddUserToJourney_WhenJourneyAndUserAreValid_ReturnsTrue(JourneyApplyModel journeyApply)
         {
             // Arrange
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
+                .CreateMany(1)
+                .ToList();
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, journeyApply.JourneyUser.UserId)
+                .With(p => p.ReceivedMessages, receivedMessages)
+                .CreateMany(1)
+                .ToList();
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
                 .With(j => j.Participants, new List<User>())
                 .With(j => j.CountOfSeats, 4).
                 CreateMany(1);
-            var participants = Fixture.Build<User>()
-                .With(p => p.Id, journeyApply.JourneyUser.UserId)
-                .CreateMany(1);
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
+                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
+                .CreateMany(1)
+                .ToList();
+
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
             userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+            receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await journeyService.AddUserToJourney(journeyApply);
@@ -1041,6 +1070,31 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().Be(true);
         }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task SetUnreadMessagesForNewUser_UserGainsUnreadMessagesEqualsToTotalMessages(int journeyId)
+        {
+            // Arrange
+            var messages = Fixture.Build<Message>()
+                .With(m => m.ChatId, journeyId)
+                .CreateMany(5)
+                .ToList();
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyId)
+                .With(c => c.Messages, messages)
+                .CreateMany(1)
+                .ToList();
+            messageRepository.Setup(r => r.Query()).Returns(messages.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+            var expected = messages.Count();
+
+            // Act
+            var result = await journeyService.SetUnreadMessagesForNewUser(journeyId);
+
+            // Assert
+            result.Should().Be(expected);
+         }
 
         [Theory]
         [AutoEntityData]

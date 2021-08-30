@@ -88,9 +88,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey, bool withCancelledStops = false)
+        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey, bool withCancelledStops)
         {
             // Arrange
+            withCancelledStops = false;
             journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, withCancelledStops))
                 .ReturnsAsync(journey);
 
