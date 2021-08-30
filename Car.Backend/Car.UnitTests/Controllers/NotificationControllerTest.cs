@@ -48,7 +48,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetNotificationsAsync_WhenNotificationsExist_ReturnsOkObjectResult(List<Notification> notifications, User user)
+        public async Task GetNotificationsAsync_WhenNotificationsExist_ReturnsOkObjectResult(List<Notification> notifications)
         {
             // Arrange
             notificationService.Setup(service => service.GetNotificationsAsync()).ReturnsAsync(notifications);
@@ -66,7 +66,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetUnreadNotificationsNumberAsync_WhenNotificationsExist_ReturnsOkObjectResult(List<Notification> notifications, User user)
+        public async Task GetUnreadNotificationsNumberAsync_WhenNotificationsExist_ReturnsOkObjectResult(List<Notification> notifications)
         {
             // Arrange
             notificationService.Setup(service => service.GetUnreadNotificationsNumberAsync()).ReturnsAsync(notifications.Count);
@@ -105,14 +105,32 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteAsync_WhenNotificationExist_ReturnsOkResult(Notification notification)
+        public async Task DeleteAsync_WhenNotificationExistAndIsAllowed_ReturnsOkResult(Notification notification)
         {
+            // Arrange
+            notificationService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
+
             // Act
             var result = await notificationController.DeleteAsync(notification.Id);
 
             // Assert
             notificationService.Verify(service => service.DeleteAsync(notification.Id), Times.Once());
             result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenNotificationExistAndIsForbidden_ReturnsOkResult(Notification notification)
+        {
+            // Arrange
+            notificationService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await notificationController.DeleteAsync(notification.Id);
+
+            // Assert
+            notificationService.Verify(service => service.DeleteAsync(notification.Id), Times.Once());
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]

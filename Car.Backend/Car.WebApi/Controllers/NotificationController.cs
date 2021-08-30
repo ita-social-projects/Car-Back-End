@@ -97,8 +97,8 @@ namespace Car.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            await notificationService.DeleteAsync(id);
-            return Ok();
+            bool isNofiticationDeleted = await notificationService.DeleteAsync(id);
+            return isNofiticationDeleted ? Ok() : Forbid();
         }
 
         /// <summary>

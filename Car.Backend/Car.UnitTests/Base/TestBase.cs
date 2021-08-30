@@ -32,6 +32,7 @@ namespace Car.UnitTests.Base
                         new LocationMapper(),
                         new RequestMapper(),
                         new UserPreferencesMapper(),
+                        new JourneyUserMapper(),
                     })));
         }
     }
