@@ -378,7 +378,7 @@ namespace Car.Domain.Services.Implementation
             if (journeyApply.JourneyUser is not null)
             {
                 await journeyUserService.UpdateJourneyUserAsync(journeyApply.JourneyUser);
-
+            }
             return true;
         }
 
