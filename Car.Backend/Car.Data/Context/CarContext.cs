@@ -67,6 +67,7 @@ namespace Car.Data.Context
             modelBuilder.ApplyConfiguration(new LocationConfiguration());
             modelBuilder.ApplyConfiguration(new LocationTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RequestConfiguration());
+            modelBuilder.ApplyConfiguration(new ReceivedMessagesConfiguration());
 
             modelBuilder.Seed();
         }
