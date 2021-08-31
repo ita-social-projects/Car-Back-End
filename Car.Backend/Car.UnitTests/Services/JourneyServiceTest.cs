@@ -62,8 +62,6 @@ namespace Car.UnitTests.Services
                 journeyRepository.Object,
                 requestRepository.Object,
                 userRepository.Object,
-                messageRepository.Object,
-                receivedMessagesRepository.Object,
                 chatRepository.Object,
                 notificationService.Object,
                 requestService.Object,
