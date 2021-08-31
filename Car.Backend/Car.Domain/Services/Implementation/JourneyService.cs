@@ -34,8 +34,6 @@ namespace Car.Domain.Services.Implementation
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
             IRepository<User> userRepository,
-            IRepository<Message> messageRepository,
-            IRepository<ReceivedMessages> receivedRepository,
             IRepository<Chat> chatRepository,
             INotificationService notificationService,
             IRequestService requestService,
