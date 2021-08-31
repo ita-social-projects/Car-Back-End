@@ -314,13 +314,16 @@ namespace Car.Domain.Services.Implementation
                     return false;
                 }
 
-                journey.Stops
-                    .Where(stop => stop.UserId == userToDelete.Id)
-                    .ToList()
-                    .ForEach(stop => stop.IsCancelled = true);
+                if (journey?.Participants.Remove(userToDelete!) ?? false)
+                {
+                    journey!.Stops
+                        .Where(stop => stop.UserId == userToDelete!.Id)
+                        .ToList()
+                        .ForEach(stop => stop.IsCancelled = true);
 
-                await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
-                await journeyRepository.SaveChangesAsync();
+                    await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
+                    await journeyRepository.SaveChangesAsync();
+                }
             }
 
             return true;
