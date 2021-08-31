@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Car.Data.Enums;
 
 namespace Car.Domain.Dto
 {
@@ -26,6 +27,8 @@ namespace Car.Domain.Dto
         public int OrganizerId { get; set; }
 
         public int? CarId { get; set; }
+
+        public WeekDay? RepeatDays { get; set; }
 
         public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
 

@@ -19,17 +19,19 @@ namespace Car.Domain.Services.Interfaces
 
         Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int countToTake = 5);
 
+        Task AddFutureJourneyAsync();
+
         Task DeletePastJourneyAsync();
 
-        Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel);
+        Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel, int? parentId = null);
 
         IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter);
 
         Task<bool> DeleteAsync(int journeyId);
 
-        Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto);
+        Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated = false);
 
-        Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto);
+        Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto, bool isParentUpdated = false);
 
         IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter);
 

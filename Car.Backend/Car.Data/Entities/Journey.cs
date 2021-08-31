@@ -28,12 +28,16 @@ namespace Car.Data.Entities
 
         public int? CarId { get; set; }
 
+        public int? ParentId { get; set; }
+
         [NotMapped]
         public DateTime EndTime => DepartureTime.Add(Duration);
 
         public Car? Car { get; set; }
 
         public Schedule? Schedule { get; set; }
+
+        public Schedule? Parent { get; set; }
 
         public User? Organizer { get; set; }
 
