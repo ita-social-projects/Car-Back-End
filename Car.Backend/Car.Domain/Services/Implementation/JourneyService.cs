@@ -45,8 +45,6 @@ namespace Car.Domain.Services.Implementation
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
             this.userRepository = userRepository;
-            this.messageRepository = messageRepository;
-            this.receivedRepository = receivedRepository;
             this.notificationService = notificationService;
             this.chatRepository = chatRepository;
             this.requestService = requestService;
