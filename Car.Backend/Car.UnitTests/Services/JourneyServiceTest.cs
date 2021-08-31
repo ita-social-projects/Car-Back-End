@@ -20,8 +20,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
-using Microsoft.VisualBasic;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -323,7 +321,8 @@ namespace Car.UnitTests.Services
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.Participants, new List<User>() { participant })
                 .With(j => j.IsCancelled, false)
-                .CreateMany();
+                .CreateMany()
+                .ToList();
             journeys.AddRange(scheduledJourneys);
 
             journeyRepository.Setup(r => r.Query(journey => journey.Schedule))
@@ -350,13 +349,15 @@ namespace Car.UnitTests.Services
                 .With(journey => journey.OrganizerId, organizer.Id)
                 .With(j => j.IsCancelled, false)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
-                .CreateMany().ToList();
+                .CreateMany()
+                .ToList();
             var scheduledJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, new Schedule())
                 .With(journey => journey.OrganizerId, organizer.Id)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .With(j => j.IsCancelled, false)
-                .CreateMany();
+                .CreateMany()
+                .ToList();
             journeys.AddRange(scheduledJourneys);
 
             journeyRepository.Setup(r => r.Query(journey => journey.Schedule))
@@ -1042,8 +1043,8 @@ namespace Car.UnitTests.Services
                 .CreateMany(1)
                 .ToList();
                journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+               userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
             }
-            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await journeyService.AddUserToJourney(journeyApply);
