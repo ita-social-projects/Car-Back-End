@@ -18,6 +18,8 @@ namespace Car.Domain.Dto
 
         public string SenderSurname { get; set; } = string.Empty;
 
+        public bool IsRead { get; set; } = false;
+
         public string? ImageId { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210830191207_ReceivedMessages-table-added")]
+    partial class ReceivedMessagestableadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -454,9 +456,6 @@ namespace Car.Data.Migrations
                     b.Property<int>("OrganizerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("RouteDistance")
                         .HasColumnType("int");
 
@@ -465,8 +464,6 @@ namespace Car.Data.Migrations
                     b.HasIndex("CarId");
 
                     b.HasIndex("OrganizerId");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Journey");
                 });
@@ -495,24 +492,6 @@ namespace Car.Data.Migrations
                     b.HasIndex("JourneyId");
 
                     b.ToTable("JourneyPoints");
-                });
-
-            modelBuilder.Entity("Car.Data.Entities.JourneyUser", b =>
-                {
-                    b.Property<int>("JourneyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("WithBaggage")
-                        .HasColumnType("bit");
-
-                    b.HasKey("JourneyId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("JourneyUser");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Location", b =>
@@ -8181,8 +8160,10 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("Days")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -8262,9 +8243,6 @@ namespace Car.Data.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Position")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -8300,6 +8278,21 @@ namespace Car.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserPreferences");
+                });
+
+            modelBuilder.Entity("JourneyUser", b =>
+                {
+                    b.Property<int>("ParticipantJourneysId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParticipantsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ParticipantJourneysId", "ParticipantsId");
+
+                    b.HasIndex("ParticipantsId");
+
+                    b.ToTable("JourneyUser");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Car", b =>
@@ -8345,15 +8338,9 @@ namespace Car.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.Schedule", "Parent")
-                        .WithMany("ChildJourneys")
-                        .HasForeignKey("ParentId");
-
                     b.Navigation("Car");
 
                     b.Navigation("Organizer");
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.JourneyPoint", b =>
@@ -8365,25 +8352,6 @@ namespace Car.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Journey");
-                });
-
-            modelBuilder.Entity("Car.Data.Entities.JourneyUser", b =>
-                {
-                    b.HasOne("Car.Data.Entities.Journey", "Journey")
-                        .WithMany("JourneyUsers")
-                        .HasForeignKey("JourneyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Car.Data.Entities.User", "User")
-                        .WithMany("JourneyUsers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Journey");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Location", b =>
@@ -8598,6 +8566,21 @@ namespace Car.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JourneyUser", b =>
+                {
+                    b.HasOne("Car.Data.Entities.Journey", null)
+                        .WithMany()
+                        .HasForeignKey("ParticipantJourneysId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Car.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("ParticipantsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Car.Data.Entities.Address", b =>
                 {
                     b.Navigation("Location");
@@ -8628,8 +8611,6 @@ namespace Car.Data.Migrations
 
                     b.Navigation("JourneyPoints");
 
-                    b.Navigation("JourneyUsers");
-
                     b.Navigation("Notifications");
 
                     b.Navigation("Schedule");
@@ -8647,16 +8628,9 @@ namespace Car.Data.Migrations
                     b.Navigation("Cars");
                 });
 
-            modelBuilder.Entity("Car.Data.Entities.Schedule", b =>
-                {
-                    b.Navigation("ChildJourneys");
-                });
-
             modelBuilder.Entity("Car.Data.Entities.User", b =>
                 {
                     b.Navigation("Cars");
-
-                    b.Navigation("JourneyUsers");
 
                     b.Navigation("Locations");
 

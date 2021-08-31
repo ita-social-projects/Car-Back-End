@@ -51,6 +51,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<Stop>, Repository<Stop>>();
             services.AddScoped<IRepository<JourneyPoint>, Repository<JourneyPoint>>();
             services.AddScoped<IRepository<JourneyUser>, Repository<JourneyUser>>();
+            services.AddScoped<IRepository<ReceivedMessages>, Repository<ReceivedMessages>>();
             services.AddScoped<IRepository<Schedule>, Repository<Schedule>>();
         }
 

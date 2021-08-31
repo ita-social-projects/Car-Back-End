@@ -17,5 +17,7 @@ namespace Car.Data.Entities
         public User? Sender { get; set; }
 
         public Chat? Chat { get; set; }
+
+        public bool IsRead { get; set; } = false;
     }
 }

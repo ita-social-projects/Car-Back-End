@@ -43,6 +43,8 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> DeleteUserFromJourney(int journeyId, int userId);
 
+        Task<int> SetUnreadMessagesForNewUser(int journeyId);
+
         Task<bool> AddUserToJourney(JourneyApplyModel journeyApply);
 
         Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(

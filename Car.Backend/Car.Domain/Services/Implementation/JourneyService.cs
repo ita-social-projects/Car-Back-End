@@ -22,6 +22,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
         private readonly IRepository<User> userRepository;
+        private readonly IRepository<Chat> chatRepository;
         private readonly IRepository<Schedule> scheduleRepository;
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
@@ -35,6 +36,7 @@ namespace Car.Domain.Services.Implementation
             IRepository<Request> requestRepository,
             IRepository<User> userRepository,
             IRepository<Schedule> scheduleRepository,
+            IRepository<Chat> chatRepository,
             INotificationService notificationService,
             IRequestService requestService,
             ILocationService locationService,
@@ -47,6 +49,7 @@ namespace Car.Domain.Services.Implementation
             this.userRepository = userRepository;
             this.scheduleRepository = scheduleRepository;
             this.notificationService = notificationService;
+            this.chatRepository = chatRepository;
             this.requestService = requestService;
             this.locationService = locationService;
             this.journeyUserService = journeyUserService;
@@ -436,6 +439,9 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
+            userToAdd.ReceivedMessages.FirstOrDefault(rm => rm.ChatId == journeyId)!
+                .UnreadMessagesCount = await SetUnreadMessagesForNewUser(journeyId);
+
             var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
             journey.Participants.Add(userToAdd);
@@ -448,12 +454,21 @@ namespace Car.Domain.Services.Implementation
             }
 
             await journeyRepository.SaveChangesAsync();
+
             if (journeyApply.JourneyUser is not null)
             {
                 await journeyUserService.UpdateJourneyUserAsync(journeyApply.JourneyUser);
             }
 
             return true;
+        }
+
+        public async Task<int> SetUnreadMessagesForNewUser(int journeyId)
+        {
+            var unreadMessagesInChat = await chatRepository.Query()
+                .FirstOrDefaultAsync(c => c.Id == journeyId);
+
+            return unreadMessagesInChat.Messages.Count;
         }
 
         public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(int journeyId, int userId, bool withCancelledStops = false)

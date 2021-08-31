@@ -11,5 +11,7 @@ namespace Car.Data.Entities
         public Journey? Journey { get; set; }
 
         public ICollection<Message> Messages { get; set; } = new List<Message>();
+
+        public ICollection<ReceivedMessages> ReceivedMessages { get; set; } = new List<ReceivedMessages>();
     }
 }
