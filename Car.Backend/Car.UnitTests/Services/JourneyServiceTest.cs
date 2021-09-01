@@ -772,6 +772,8 @@ namespace Car.UnitTests.Services
             var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journey.Id)
+                .With(dto => dto.IsCancelled, false)
+                .With(dto => dto.DepartureTime, DateTime.Now.AddHours(1))
                 .CreateMany(1);
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
 
@@ -810,11 +812,15 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateRouteAsync_WhenJourneyIsValid_ReturnsJourneyObject(Journey[] journeys)
+        public async Task UpdateRouteAsync_WhenJourneyIsValid_ReturnsJourneyObject(JourneyDto updatedJourneyDto)
         {
             // Arrange
-            var updatedJourneyDto = Fixture.Build<JourneyDto>()
-                .With(dto => dto.Id, journeys.First().Id).Create();
+            var journeys = Fixture.Build<Journey>()
+                .With(dto => dto.Id, updatedJourneyDto.Id)
+                .With(dto => dto.DepartureTime, DateTime.Now.AddHours(1))
+                .With(dto => dto.IsCancelled, false)
+                .CreateMany(1);
+
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journeys.First());
             expectedJourney.Duration = updatedJourneyDto.Duration;
             expectedJourney.Stops = updatedJourneyDto.Stops;
@@ -833,12 +839,12 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateRouteAsync_WhenJourneyIsNotValid_ReturnsNull(Journey[] journeys)
+        public async Task UpdateRouteAsync_WhenJourneyIsNotValid_ReturnsNull(JourneyDto updatedJourneyDto)
         {
             // Arrange
-            var updatedJourneyDto = Fixture.Build<JourneyDto>()
-                .With(dto => dto.Id, journeys.Max(journey => journey.Id) + 1)
-                .Create();
+            var journeys = Fixture.Build<Journey>()
+                .With(dto => dto.Id, updatedJourneyDto.Id + 1)
+                .CreateMany(1);
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
