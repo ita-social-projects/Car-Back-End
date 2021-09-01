@@ -65,12 +65,11 @@ namespace Car.Domain.Services.Implementation
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints();
 
-            var journey = withCancelledStops ?
-                await journeyQueryable
+            var journey = withCancelledStops
+                ? await journeyQueryable
                     .IgnoreQueryFilters()
                     .FirstOrDefaultAsync(j => j.Id == journeyId)
-                :
-                await journeyQueryable
+                : await journeyQueryable
                     .FilterUncancelledJourneys()
                     .FirstOrDefaultAsync(j => j.Id == journeyId);
 
@@ -81,11 +80,11 @@ namespace Car.Domain.Services.Implementation
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
-                .Query()
-                .FilterUncancelledJourneys()
-                .IncludeJourneyInfo(userId)
-                .FilterPast()
-                .UseSavedAdresses(locationService))
+                    .Query()
+                    .FilterUncancelledJourneys()
+                    .IncludeJourneyInfo(userId)
+                    .FilterPast()
+                    .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -95,11 +94,11 @@ namespace Car.Domain.Services.Implementation
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
-                .Query(journey => journey!.Schedule!)
-                .FilterUncancelledJourneys()
-                .IncludeJourneyInfo(userId)
-                .Where(journey => journey.Schedule != null)
-                .UseSavedAdresses(locationService))
+                    .Query(journey => journey.Schedule!)
+                    .FilterUncancelledJourneys()
+                    .IncludeJourneyInfo(userId)
+                    .Where(journey => journey.Schedule != null)
+                    .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -109,11 +108,11 @@ namespace Car.Domain.Services.Implementation
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
-                .Query()
-                .FilterUncancelledJourneys()
-                .IncludeJourneyInfo(userId)
-                .FilterUpcoming()
-                .UseSavedAdresses(locationService))
+                    .Query()
+                    .FilterUncancelledJourneys()
+                    .IncludeJourneyInfo(userId)
+                    .FilterUpcoming()
+                    .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -256,10 +255,10 @@ namespace Car.Domain.Services.Implementation
         public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated = false)
         {
             var journey = await journeyRepository.Query()
-                    .FilterUncancelledJourneys()
-                    .IncludeStopsWithAddresses()
-                    .IncludeJourneyPoints()
-                    .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
+                .FilterUncancelledJourneys()
+                .IncludeStopsWithAddresses()
+                .IncludeJourneyPoints()
+                .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
             if (journey is null)
             {
@@ -471,7 +470,8 @@ namespace Car.Domain.Services.Implementation
             return unreadMessagesInChat.Messages.Count;
         }
 
-        public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(int journeyId, int userId, bool withCancelledStops = false)
+        public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
+            int journeyId, int userId, bool withCancelledStops = false)
         {
             var journey = await GetJourneyByIdAsync(journeyId, withCancelledStops);
 
