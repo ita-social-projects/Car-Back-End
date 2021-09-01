@@ -22,8 +22,6 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
         private readonly IRepository<User> userRepository;
-        private readonly IRepository<ReceivedMessages> receivedRepository;
-        private readonly IRepository<Message> messageRepository;
         private readonly IRepository<Chat> chatRepository;
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
@@ -36,8 +34,6 @@ namespace Car.Domain.Services.Implementation
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
             IRepository<User> userRepository,
-            IRepository<Message> messageRepository,
-            IRepository<ReceivedMessages> receivedRepository,
             IRepository<Chat> chatRepository,
             INotificationService notificationService,
             IRequestService requestService,
@@ -49,8 +45,6 @@ namespace Car.Domain.Services.Implementation
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
             this.userRepository = userRepository;
-            this.messageRepository = messageRepository;
-            this.receivedRepository = receivedRepository;
             this.notificationService = notificationService;
             this.chatRepository = chatRepository;
             this.requestService = requestService;
@@ -68,12 +62,11 @@ namespace Car.Domain.Services.Implementation
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints();
 
-            var journey = withCancelledStops ?
-                await journeyQueryable
+            var journey = withCancelledStops
+                ? await journeyQueryable
                     .IgnoreQueryFilters()
                     .FirstOrDefaultAsync(j => j.Id == journeyId)
-                :
-                await journeyQueryable
+                : await journeyQueryable
                     .FilterUncancelledJourneys()
                     .FirstOrDefaultAsync(j => j.Id == journeyId);
 
@@ -84,11 +77,11 @@ namespace Car.Domain.Services.Implementation
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
-                .Query()
-                .FilterUncancelledJourneys()
-                .IncludeJourneyInfo(userId)
-                .FilterPast()
-                .UseSavedAdresses(locationService))
+                    .Query()
+                    .FilterUncancelledJourneys()
+                    .IncludeJourneyInfo(userId)
+                    .FilterPast()
+                    .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -98,11 +91,11 @@ namespace Car.Domain.Services.Implementation
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
-                .Query(journey => journey!.Schedule!)
-                .FilterUncancelledJourneys()
-                .IncludeJourneyInfo(userId)
-                .Where(journey => journey.Schedule != null)
-                .UseSavedAdresses(locationService))
+                    .Query(journey => journey.Schedule!)
+                    .FilterUncancelledJourneys()
+                    .IncludeJourneyInfo(userId)
+                    .Where(journey => journey.Schedule != null)
+                    .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -112,11 +105,11 @@ namespace Car.Domain.Services.Implementation
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
-                .Query()
-                .FilterUncancelledJourneys()
-                .IncludeJourneyInfo(userId)
-                .FilterUpcoming()
-                .UseSavedAdresses(locationService))
+                    .Query()
+                    .FilterUncancelledJourneys()
+                    .IncludeJourneyInfo(userId)
+                    .FilterUpcoming()
+                    .UseSavedAdresses(locationService))
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -217,10 +210,10 @@ namespace Car.Domain.Services.Implementation
         public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
         {
             var journey = await journeyRepository.Query()
-                    .FilterUncancelledJourneys()
-                    .IncludeStopsWithAddresses()
-                    .IncludeJourneyPoints()
-                    .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
+                .FilterUncancelledJourneys()
+                .IncludeStopsWithAddresses()
+                .IncludeJourneyPoints()
+                .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
             if (journey is null)
             {
@@ -388,10 +381,11 @@ namespace Car.Domain.Services.Implementation
             var unreadMessagesInChat = await chatRepository.Query()
                 .FirstOrDefaultAsync(c => c.Id == journeyId);
 
-            return unreadMessagesInChat.Messages.Count();
+            return unreadMessagesInChat.Messages.Count;
         }
 
-        public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(int journeyId, int userId, bool withCancelledStops = false)
+        public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
+            int journeyId, int userId, bool withCancelledStops = false)
         {
             var journey = await GetJourneyByIdAsync(journeyId, withCancelledStops);
 
