@@ -27,9 +27,9 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> DeleteAsync(int journeyId);
 
-        Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto);
+        Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto);
 
-        Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto);
+        Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto);
 
         IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter);
 
