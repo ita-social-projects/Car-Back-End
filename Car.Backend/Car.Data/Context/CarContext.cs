@@ -10,6 +10,8 @@ namespace Car.Data.Context
 
         public DbSet<Entities.Car>? Cars { get; set; }
 
+        public DbSet<Invitation>? Invitations { get; set; }
+
         public DbSet<Journey>? Journeys { get; set; }
 
         public DbSet<JourneyPoint>? JourneyPoints { get; set; }
