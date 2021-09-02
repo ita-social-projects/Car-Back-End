@@ -795,7 +795,7 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
-                .With(j => j.Id, updatedJourneyDto.Id)
+                .With(j => j.Id, updatedJourneyDto.Id + 1)
                 .CreateMany(1);
 
             journeyRepository.Setup(repo =>
