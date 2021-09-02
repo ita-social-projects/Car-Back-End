@@ -207,17 +207,18 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
+        public async Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto)
         {
             var journey = await journeyRepository.Query()
                 .FilterUncancelledJourneys()
+                .FilterUpcoming()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
             if (journey is null)
             {
-                return null!;
+                return null;
             }
 
             var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
@@ -234,22 +235,33 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
-        public async Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto)
+        public async Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto)
         {
-            var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
+            var journey = await journeyRepository.Query()
+                .AsNoTracking()
+                .FilterUncancelledJourneys()
+                .FilterUpcoming()
+                .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
-            journey = await journeyRepository.UpdateAsync(journey);
+            if (journey is null)
+            {
+                return null;
+            }
+
+            var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
+
+            updatedJourney = await journeyRepository.UpdateAsync(updatedJourney);
             await journeyRepository.SaveChangesAsync();
 
-            if (journey != null)
+            if (updatedJourney != null)
             {
                 await notificationService.JourneyUpdateNotifyUserAsync(await journeyRepository
                     .Query()
                     .IncludeAllParticipants()
-                    .FirstOrDefaultAsync(j => j.Id == journey.Id));
+                    .FirstOrDefaultAsync(j => j.Id == updatedJourney.Id));
             }
 
-            return mapper.Map<Journey, JourneyModel>(journey!);
+            return mapper.Map<Journey, JourneyModel>(updatedJourney!);
         }
 
         public IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter)
