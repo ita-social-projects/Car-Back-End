@@ -28,7 +28,6 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<Chat>> chatRepository;
         private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IRepository<Message>> messageRepository;
-        private readonly Mock<IRepository<Journey>> journeyRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public ChatServiceTest()
@@ -36,13 +35,11 @@ namespace Car.UnitTests.Services
             chatRepository = new Mock<IRepository<Chat>>();
             userRepository = new Mock<IRepository<User>>();
             messageRepository = new Mock<IRepository<Message>>();
-            journeyRepository = new Mock<IRepository<Journey>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
             chatService = new ChatService(
                 userRepository.Object,
                 chatRepository.Object,
                 messageRepository.Object,
-                journeyRepository.Object,
                 Mapper,
                 httpContextAccessor.Object);
         }

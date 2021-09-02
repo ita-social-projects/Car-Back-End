@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Internal;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
@@ -23,20 +22,17 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Message> messageRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IRepository<Journey> journeyRepository;
 
         public ChatService(
             IRepository<User> userRepository,
             IRepository<Chat> chatRepository,
             IRepository<Message> messageRepository,
-            IRepository<Journey> journeyRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
             this.userRepository = userRepository;
             this.chatRepository = chatRepository;
             this.messageRepository = messageRepository;
-            this.journeyRepository = journeyRepository;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
         }
