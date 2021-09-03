@@ -17,6 +17,8 @@ namespace Car.Domain.Services.Interfaces
 
         Task<Message> AddMessageAsync(Message message);
 
+        Task IncrementUnreadMessagesAsync(int chatId);
+
         Task<IEnumerable<ChatDto>> GetFilteredChatsAsync(ChatFilter filter);
 
         Task<Chat> GetChatByIdAsync(int chatId);
