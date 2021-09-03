@@ -1102,7 +1102,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task SetUnreadMessagesForNewUser_UserGainsUnreadMessagesEqualsToTotalMessages(int journeyId)
+        public async Task GetUnreadMessagesCountForNewUser_UserGainsUnreadMessagesEqualsToTotalMessages(int journeyId)
         {
             // Arrange
             var messages = Fixture.Build<Message>()
@@ -1119,7 +1119,7 @@ namespace Car.UnitTests.Services
             var expected = messages.Count();
 
             // Act
-            var result = await journeyService.SetUnreadMessagesForNewUser(journeyId);
+            var result = await journeyService.GetUnreadMessagesCountForNewUser(journeyId);
 
             // Assert
             result.Should().Be(expected);
