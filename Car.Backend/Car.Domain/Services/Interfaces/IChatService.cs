@@ -17,10 +17,12 @@ namespace Car.Domain.Services.Interfaces
 
         Task<Message> AddMessageAsync(Message message);
 
-        Task IncrementUnreadMessagesAsync(int chatId);
+        Task IncrementUnreadMessagesAsync(int chatId, int senderId);
 
         Task<IEnumerable<ChatDto>> GetFilteredChatsAsync(ChatFilter filter);
 
         Task<Chat> GetChatByIdAsync(int chatId);
+
+        public Task<int> GetAllUnreadMessagesNumber(int userId);
     }
 }

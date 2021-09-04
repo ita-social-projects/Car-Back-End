@@ -1,10 +1,8 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using User = Car.Data.Entities.User;
 

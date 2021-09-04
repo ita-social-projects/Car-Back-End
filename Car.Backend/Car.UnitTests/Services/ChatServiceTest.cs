@@ -15,7 +15,6 @@ using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Storage;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -28,6 +27,7 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<Chat>> chatRepository;
         private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IRepository<Message>> messageRepository;
+        private readonly Mock<IRepository<ReceivedMessages>> receivedMessagesRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public ChatServiceTest()
@@ -35,11 +35,13 @@ namespace Car.UnitTests.Services
             chatRepository = new Mock<IRepository<Chat>>();
             userRepository = new Mock<IRepository<User>>();
             messageRepository = new Mock<IRepository<Message>>();
+            receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
             chatService = new ChatService(
                 userRepository.Object,
                 chatRepository.Object,
                 messageRepository.Object,
+                receivedMessagesRepository.Object,
                 Mapper,
                 httpContextAccessor.Object);
         }
@@ -196,6 +198,31 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetAllUnreadMessages_Returns_messageCount_from_all_chats(int userId)
+        {
+            // Arrange
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.UserId, userId)
+                .CreateMany(3)
+                .ToList();
+
+            receivedMessagesRepository
+                .Setup(repo => repo.Query())
+                .Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
+            var expected = receivedMessages
+                .Where(rm => rm.UserId == userId)
+                .Sum(rm => rm.UnreadMessagesCount);
+
+            // Act
+            var result = await chatService.GetAllUnreadMessagesNumber(userId);
+
+            // Assert
+            result.Should().Be(expected);
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddMessageAsync_WhenMessageIsValid_ReturnsMessageObject(Message message)
         {
             // Arrange
@@ -262,7 +289,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task IncrementUnreadMessagesAsync_Increments_Unread_Messages_In_The_Chat(int chatId)
+        public async Task IncrementUnreadMessagesAsync_Increments_Unread_Messages_In_The_Chat(int chatId, int senderId)
         {
             // Arrange
             var receivedMessages = Fixture.Build<ReceivedMessages>()
@@ -291,7 +318,7 @@ namespace Car.UnitTests.Services
                 .Returns(chat.AsQueryable().BuildMock().Object);
 
             // Act
-            await chatService.IncrementUnreadMessagesAsync(chatId);
+            await chatService.IncrementUnreadMessagesAsync(chatId, senderId);
 
             // Assert
             users.First().ReceivedMessages.FirstOrDefault()!.UnreadMessagesCount.Should().Be(expected);
