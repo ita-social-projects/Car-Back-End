@@ -348,6 +348,7 @@ namespace Car.Domain.Services.Implementation
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
+                .Include(j => j.Chat)
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             var userId = journeyApply.JourneyUser?.UserId ?? default(int);
@@ -364,8 +365,17 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
-            userToAdd.ReceivedMessages.FirstOrDefault(rm => rm.ChatId == journeyId)!
-                .UnreadMessagesCount = await SetUnreadMessagesForNewUser(journeyId);
+            if (journey.Chat is not null)
+            {
+                var receivedMessages = new ReceivedMessages
+                {
+                    ChatId = journey.Chat.Id,
+                    UserId = userToAdd.Id,
+                    UnreadMessagesCount = await GetUnreadMessagesCountForNewUser(journeyId),
+                };
+
+                userToAdd.ReceivedMessages.Add(receivedMessages);
+            }
 
             var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
@@ -388,12 +398,12 @@ namespace Car.Domain.Services.Implementation
             return true;
         }
 
-        public async Task<int> SetUnreadMessagesForNewUser(int journeyId)
+        public async Task<int> GetUnreadMessagesCountForNewUser(int journeyId)
         {
             var unreadMessagesInChat = await chatRepository.Query()
                 .FirstOrDefaultAsync(c => c.Id == journeyId);
 
-            return unreadMessagesInChat.Messages.Count;
+            return unreadMessagesInChat?.Messages?.Count ?? 0;
         }
 
         public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
