@@ -139,8 +139,9 @@ namespace Car.Domain.Services.Implementation
             await chatRepository.SaveChangesAsync();
         }
 
-        public async Task<int> GetAllUnreadMessagesNumber(int userId)
+        public async Task<int> GetAllUnreadMessagesNumber()
         {
+            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             return await receivedMessagesRepository
                 .Query()
                 .Where(repo => repo.UserId == userId)

@@ -198,11 +198,14 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetAllUnreadMessages_Returns_messageCount_from_all_chats(int userId)
+        public async Task GetAllUnreadMessages_Returns_messageCount_from_all_chats(User user)
         {
             // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             var receivedMessages = Fixture.Build<ReceivedMessages>()
-                .With(rm => rm.UserId, userId)
+                .With(rm => rm.UserId, user.Id)
                 .CreateMany(3)
                 .ToList();
 
@@ -211,11 +214,11 @@ namespace Car.UnitTests.Services
                 .Returns(receivedMessages.AsQueryable().BuildMock().Object);
 
             var expected = receivedMessages
-                .Where(rm => rm.UserId == userId)
+                .Where(rm => rm.UserId == user.Id)
                 .Sum(rm => rm.UnreadMessagesCount);
 
             // Act
-            var result = await chatService.GetAllUnreadMessagesNumber(userId);
+            var result = await chatService.GetAllUnreadMessagesNumber();
 
             // Assert
             result.Should().Be(expected);
