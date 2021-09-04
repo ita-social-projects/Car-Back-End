@@ -72,7 +72,7 @@
             <param name="filter">Chat filter parameters</param>
             <returns>Messages</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.GetAllUnreadMessages(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.ChatController.GetAllUnreadMessagesNumber">
             <summary>
             Counts number of all unread messages of the user
             </summary>
