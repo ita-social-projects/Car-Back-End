@@ -17,8 +17,6 @@ namespace Car.Data.EntityConfigurations
 
             builder.HasOne(receivedMessages => receivedMessages.User)
                 .WithMany(user => user!.ReceivedMessages);
-
-            builder.Property(rm => rm.UnreadMessagesCount).HasDefaultValue(default(int));
         }
     }
 }

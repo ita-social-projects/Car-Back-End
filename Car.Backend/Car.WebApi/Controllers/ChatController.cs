@@ -61,7 +61,6 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Counts number of all unread messages of the user
         /// </summary>
-        /// <param name="userId">User id parameter</param>
         /// <returns>Number of all unread messages</returns>
         [HttpGet("unreadNumber")]
         public async Task<IActionResult> GetAllUnreadMessagesNumber() =>
