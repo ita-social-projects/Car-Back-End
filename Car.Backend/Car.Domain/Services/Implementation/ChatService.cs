@@ -139,7 +139,7 @@ namespace Car.Domain.Services.Implementation
             await chatRepository.SaveChangesAsync();
         }
 
-        public async Task<int> GetAllUnreadMessages(int userId)
+        public async Task<int> GetAllUnreadMessagesNumber(int userId)
         {
             return await receivedMessagesRepository
                 .Query()

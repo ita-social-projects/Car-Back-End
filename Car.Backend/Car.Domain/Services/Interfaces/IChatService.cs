@@ -23,6 +23,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task<Chat> GetChatByIdAsync(int chatId);
 
-        public Task<int> GetAllUnreadMessages(int userId);
+        public Task<int> GetAllUnreadMessagesNumber(int userId);
     }
 }

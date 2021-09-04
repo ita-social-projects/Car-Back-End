@@ -15,7 +15,6 @@ using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Storage;
 using MockQueryable.Moq;
 using Moq;
 using Xunit;
@@ -216,7 +215,7 @@ namespace Car.UnitTests.Services
                 .Sum(rm => rm.UnreadMessagesCount);
 
             // Act
-            var result = await chatService.GetAllUnreadMessages(userId);
+            var result = await chatService.GetAllUnreadMessagesNumber(userId);
 
             // Assert
             result.Should().Be(expected);
