@@ -299,32 +299,20 @@ namespace Car.UnitTests.Services
                 .With(rm => rm.ChatId, chatId)
                 .CreateMany(1)
                 .ToList();
-            var users = Fixture.Build<User>()
-                .With(u => u.ReceivedMessages, receivedMessages)
-                .CreateMany(1)
-                .ToList();
-            var journey = Fixture.Build<Journey>()
-                .With(j => j.Id, chatId)
-                .With(j => j.Participants, users)
-                .CreateMany(1)
-                .ToList();
-            var chat = Fixture.Build<Chat>()
-                .With(chat => chat.Id, chatId)
-                .With(chat => chat.Journey, journey.First())
-                .CreateMany(1)
-                .ToList();
 
-            var expected = users.First().ReceivedMessages
-                .FirstOrDefault(rm => rm.ChatId == chatId)!.UnreadMessagesCount + 1;
+            var expected = receivedMessages
+                .FirstOrDefault(rm => rm.ChatId == chatId && rm.UserId != senderId)!.UnreadMessagesCount + 1;
 
-            chatRepository.Setup(repo => repo.Query())
-                .Returns(chat.AsQueryable().BuildMock().Object);
+            receivedMessagesRepository.Setup(repo => repo.Query())
+                .Returns(receivedMessages.AsQueryable().BuildMock().Object);
 
             // Act
             await chatService.IncrementUnreadMessagesAsync(chatId, senderId);
+            var result = receivedMessages
+                .FirstOrDefault(rm => rm.ChatId == chatId && rm.UserId != senderId)!.UnreadMessagesCount;
 
             // Assert
-            users.First().ReceivedMessages.FirstOrDefault()!.UnreadMessagesCount.Should().Be(expected);
+            result.Should().Be(expected);
         }
 
         [Theory]

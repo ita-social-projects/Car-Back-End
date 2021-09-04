@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.Internal;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
@@ -126,14 +127,14 @@ namespace Car.Domain.Services.Implementation
 
         public async Task IncrementUnreadMessagesAsync(int chatId, int senderId)
         {
-            var chat = chatRepository
+            var receivedMessages = receivedMessagesRepository
                 .Query()
-                .FirstOrDefault(chat => chat.Id == chatId);
+                .Where(rm => rm.ChatId == chatId && rm.UserId != senderId)
+                .ToList();
 
-            foreach (var participant in chat!.Journey!.Participants.Where(user => user.Id != senderId))
+            foreach (var receivedMessage in receivedMessages)
             {
-                participant.ReceivedMessages
-                    .FirstOrDefault(receivedMessages => receivedMessages.ChatId == chat.Id)!.UnreadMessagesCount++;
+                receivedMessage.UnreadMessagesCount++;
             }
 
             await chatRepository.SaveChangesAsync();
