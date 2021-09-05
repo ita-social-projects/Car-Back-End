@@ -26,6 +26,14 @@ namespace Car.WebApi.Controllers
             Ok(await userService.GetUserByIdAsync(id));
 
         /// <summary>
+        /// Gets all users.
+        /// </summary>
+        /// <returns>All users</returns>
+        [HttpGet("all-users")]
+        public async Task<IActionResult> GetAllUsers() =>
+            Ok(await userService.GetAllUsersAsync());
+
+        /// <summary>
         /// Updates a users image with the identifier asynchronously.
         /// </summary>
         /// <param name="updateUserImageDto">User object to update.</param>
