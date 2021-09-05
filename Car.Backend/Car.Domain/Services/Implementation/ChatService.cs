@@ -74,20 +74,29 @@ namespace Car.Domain.Services.Implementation
         public async Task<Chat> AddChatAsync(CreateChatDto chat)
         {
             var addedChat = await chatRepository.AddAsync(mapper.Map<Chat>(chat));
+            if (addedChat is not null)
+            {
+                var addedReceivedMessages = await GetReceivedMessagesFromChat(addedChat.Id);
+                await receivedMessagesRepository.AddAsync(mapper.Map<ReceivedMessages>(addedReceivedMessages));
+                await receivedMessagesRepository.SaveChangesAsync();
+            }
+
             await chatRepository.SaveChangesAsync();
 
+            return addedChat;
+        }
+
+        public async Task<ReceivedMessages> GetReceivedMessagesFromChat(int chatId)
+        {
+            var userId = await journeyRepository.Query()
+                .FirstOrDefaultAsync(j => j.Id == chatId);
             var addedReceivedMessages = new ReceivedMessages()
             {
-                ChatId = chat.Id,
-                UserId = journeyRepository.Query()
-                    .FirstOrDefault(j => j.Id == chat.Id)!.OrganizerId,
-                UnreadMessagesCount = 0,
+                ChatId = chatId,
+                UserId = userId.OrganizerId,
+                UnreadMessagesCount = default(int),
             };
-
-            await receivedMessagesRepository.AddAsync(mapper.Map<ReceivedMessages>(addedReceivedMessages));
-            await receivedMessagesRepository.SaveChangesAsync();
-
-            return addedChat;
+            return addedReceivedMessages;
         }
 
         public async Task<IEnumerable<ChatDto>> GetUserChatsAsync()
