@@ -198,9 +198,56 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetAllUnreadMessages_Returns_messageCount_from_all_chats(User user)
+        {
+            // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.UserId, user.Id)
+                .CreateMany(3)
+                .ToList();
+
+            receivedMessagesRepository
+                .Setup(repo => repo.Query())
+                .Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
+            var expected = receivedMessages
+                .Where(rm => rm.UserId == user.Id)
+                .Sum(rm => rm.UnreadMessagesCount);
+
+            // Act
+            var result = await chatService.GetAllUnreadMessagesNumber();
+
+            // Assert
+            result.Should().Be(expected);
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddMessageAsync_WhenMessageIsValid_ReturnsMessageObject(Message message)
         {
             // Arrange
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(receivedMessages => receivedMessages.ChatId, message.ChatId)
+                .CreateMany()
+                .ToList();
+            var participants = Fixture.Build<User>()
+                .With(user => user.ReceivedMessages, receivedMessages)
+                .CreateMany(1)
+                .ToList();
+            var journey = Fixture.Build<Journey>()
+                .With(journey => journey.Id, message.ChatId)
+                .With(journey => journey.Participants, participants)
+                .Create();
+            var chat = Fixture.Build<Chat>()
+                .With(chat => chat.Id, message.ChatId)
+                .With(chat => chat.Journey, journey)
+                .CreateMany(1);
+
+            chatRepository.Setup(repo => repo.Query())
+                .Returns(chat.AsQueryable().BuildMock().Object);
             messageRepository.Setup(repo => repo.AddAsync(message)).ReturnsAsync(message);
 
             // Act
@@ -215,13 +262,57 @@ namespace Car.UnitTests.Services
         public async Task AddMessageAsync_WhenMessageIsNotValid_ReturnsNull(Message message)
         {
             // Arrange
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(receivedMessages => receivedMessages.ChatId, message.ChatId)
+                .CreateMany()
+                .ToList();
+            var participants = Fixture.Build<User>()
+                .With(user => user.ReceivedMessages, receivedMessages)
+                .CreateMany(1)
+                .ToList();
+            var journey = Fixture.Build<Journey>()
+                .With(journey => journey.Id, message.ChatId)
+                .With(journey => journey.Participants, participants)
+                .Create();
+            var chat = Fixture.Build<Chat>()
+                .With(chat => chat.Id, message.ChatId)
+                .With(chat => chat.Journey, journey)
+                .CreateMany(1);
+
             messageRepository.Setup(repo => repo.AddAsync(message)).ReturnsAsync((Message)null);
+            chatRepository.Setup(repo => repo.Query())
+                .Returns(chat.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.AddMessageAsync(message);
 
             // Assert
             result.Should().BeNull();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task IncrementUnreadMessagesAsync_Increments_Unread_Messages_In_The_Chat(int chatId, int senderId)
+        {
+            // Arrange
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.ChatId, chatId)
+                .CreateMany(1)
+                .ToList();
+
+            var expected = receivedMessages
+                .FirstOrDefault(rm => rm.ChatId == chatId && rm.UserId != senderId)!.UnreadMessagesCount + 1;
+
+            receivedMessagesRepository.Setup(repo => repo.Query())
+                .Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
+            // Act
+            await chatService.IncrementUnreadMessagesAsync(chatId, senderId);
+            var result = receivedMessages
+                .FirstOrDefault(rm => rm.ChatId == chatId && rm.UserId != senderId)!.UnreadMessagesCount;
+
+            // Assert
+            result.Should().Be(expected);
         }
 
         [Theory]

@@ -57,5 +57,13 @@ namespace Car.WebApi.Controllers
         [HttpPost("filter/")]
         public async Task<IActionResult> GetFiltered([FromBody] ChatFilter filter) =>
             Ok(await chatService.GetFilteredChatsAsync(filter));
+
+        /// <summary>
+        /// Counts number of all unread messages of the user
+        /// </summary>
+        /// <returns>Number of all unread messages</returns>
+        [HttpGet("unreadNumber")]
+        public async Task<IActionResult> GetAllUnreadMessagesNumber() =>
+            Ok(await chatService.GetAllUnreadMessagesNumber());
     }
 }

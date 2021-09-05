@@ -213,17 +213,18 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto)
+        public async Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto)
         {
             var journey = await journeyRepository.Query()
                 .FilterUncancelledJourneys()
+                .FilterUpcoming()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
             if (journey is null)
             {
-                return null!;
+                return null;
             }
 
             var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
@@ -240,22 +241,33 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
-        public async Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto)
+        public async Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto)
         {
-            var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
+            var journey = await journeyRepository.Query()
+                .AsNoTracking()
+                .FilterUncancelledJourneys()
+                .FilterUpcoming()
+                .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
-            journey = await journeyRepository.UpdateAsync(journey);
+            if (journey is null)
+            {
+                return null;
+            }
+
+            var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
+
+            updatedJourney = await journeyRepository.UpdateAsync(updatedJourney);
             await journeyRepository.SaveChangesAsync();
 
-            if (journey != null)
+            if (updatedJourney != null)
             {
                 await notificationService.JourneyUpdateNotifyUserAsync(await journeyRepository
                     .Query()
                     .IncludeAllParticipants()
-                    .FirstOrDefaultAsync(j => j.Id == journey.Id));
+                    .FirstOrDefaultAsync(j => j.Id == updatedJourney.Id));
             }
 
-            return mapper.Map<Journey, JourneyModel>(journey!);
+            return mapper.Map<Journey, JourneyModel>(updatedJourney!);
         }
 
         public async Task<InvitationDto> UpdateInvitationAsync(InvitationDto invitationDto)
@@ -384,6 +396,7 @@ namespace Car.Domain.Services.Implementation
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
+                .Include(j => j.Chat)
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             var userId = journeyApply.JourneyUser?.UserId ?? default(int);
@@ -400,8 +413,17 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
-            userToAdd.ReceivedMessages.FirstOrDefault(rm => rm.ChatId == journeyId)!
-                .UnreadMessagesCount = await SetUnreadMessagesForNewUser(journeyId);
+            if (journey.Chat is not null)
+            {
+                var receivedMessages = new ReceivedMessages
+                {
+                    ChatId = journey.Chat.Id,
+                    UserId = userToAdd.Id,
+                    UnreadMessagesCount = await GetUnreadMessagesCountForNewUser(journeyId),
+                };
+
+                userToAdd.ReceivedMessages.Add(receivedMessages);
+            }
 
             var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
@@ -424,12 +446,12 @@ namespace Car.Domain.Services.Implementation
             return true;
         }
 
-        public async Task<int> SetUnreadMessagesForNewUser(int journeyId)
+        public async Task<int> GetUnreadMessagesCountForNewUser(int journeyId)
         {
             var unreadMessagesInChat = await chatRepository.Query()
                 .FirstOrDefaultAsync(c => c.Id == journeyId);
 
-            return unreadMessagesInChat.Messages.Count;
+            return unreadMessagesInChat?.Messages?.Count ?? 0;
         }
 
         public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(

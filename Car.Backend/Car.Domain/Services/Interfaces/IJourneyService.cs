@@ -27,9 +27,9 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> DeleteAsync(int journeyId);
 
-        Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto);
+        Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto);
 
-        Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto);
+        Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto);
 
         Task<InvitationDto> UpdateInvitationAsync(InvitationDto invitationDto);
 
@@ -45,7 +45,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> DeleteUserFromJourney(int journeyId, int userId);
 
-        Task<int> SetUnreadMessagesForNewUser(int journeyId);
+        Task<int> GetUnreadMessagesCountForNewUser(int journeyId);
 
         Task<bool> AddUserToJourney(JourneyApplyModel journeyApply);
 
