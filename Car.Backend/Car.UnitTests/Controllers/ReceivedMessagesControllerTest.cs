@@ -44,7 +44,6 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-
         [Theory]
         [AutoEntityData]
         public async Task GetUnreadMessageForChat_ReturnsInt(int userId, int chatId)
