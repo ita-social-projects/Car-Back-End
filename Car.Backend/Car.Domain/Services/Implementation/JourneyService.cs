@@ -158,10 +158,13 @@ namespace Car.Domain.Services.Implementation
             var addedJourney = await journeyRepository.AddAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            await CheckForSuitableRequests(addedJourney);
-            await NotifyInvitedUsers(addedJourney);
+            if (addedJourney is not null)
+            {
+                await CheckForSuitableRequests(addedJourney);
+                await NotifyInvitedUsers(addedJourney.Invitations, addedJourney.OrganizerId, addedJourney.Id);
+            }
 
-            return mapper.Map<Journey, JourneyModel>(addedJourney);
+            return mapper.Map<Journey, JourneyModel>(addedJourney!);
         }
 
         public IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter) =>
@@ -244,10 +247,13 @@ namespace Car.Domain.Services.Implementation
         public async Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto)
         {
             var journey = await journeyRepository.Query()
+                .IncludeJourneyInvitations()
                 .AsNoTracking()
                 .FilterUncancelledJourneys()
                 .FilterUpcoming()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
+
+            var existingInvitations = journey.Invitations;
 
             if (journey is null)
             {
@@ -265,6 +271,9 @@ namespace Car.Domain.Services.Implementation
                     .Query()
                     .IncludeAllParticipants()
                     .FirstOrDefaultAsync(j => j.Id == updatedJourney.Id));
+
+                var newInvitations = updatedJourney.Invitations.Except(existingInvitations).ToList();
+                await NotifyInvitedUsers(newInvitations, updatedJourney.OrganizerId, updatedJourney.Id);
             }
 
             return mapper.Map<Journey, JourneyModel>(updatedJourney!);
@@ -324,24 +333,19 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task NotifyInvitedUsers(Journey journey)
+        public async Task NotifyInvitedUsers(ICollection<Invitation> invitations, int senderId, int journeyId)
         {
-            if (journey is null)
-            {
-                return;
-            }
-
-            foreach (var invitation in journey.Invitations)
+            foreach (var invitation in invitations)
             {
                 var notification = new Notification()
                 {
-                    SenderId = journey.OrganizerId,
+                    SenderId = senderId,
                     ReceiverId = invitation.InvitedUserId,
                     Type = NotificationType.JourneyInvitation,
                     IsRead = false,
                     CreatedAt = DateTime.UtcNow,
                     JsonData = JsonSerializer.Serialize(new { }),
-                    JourneyId = journey.Id,
+                    JourneyId = journeyId,
                 };
 
                 await notificationService.AddNotificationAsync(mapper.Map<Notification, NotificationDto>(notification));
