@@ -44,6 +44,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<Chat>, Repository<Chat>>();
             services.AddScoped<IRepository<Message>, Repository<Message>>();
             services.AddScoped<IRepository<Journey>, Repository<Journey>>();
+            services.AddScoped<IRepository<Invitation>, Repository<Invitation>>();
             services.AddScoped<IRepository<Notification>, Repository<Notification>>();
             services.AddScoped<IRepository<Location>, Repository<Location>>();
             services.AddScoped<IRepository<LocationType>, Repository<LocationType>>();

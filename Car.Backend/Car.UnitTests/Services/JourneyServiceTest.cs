@@ -38,6 +38,7 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<Message>> messageRepository;
         private readonly Mock<IRepository<Chat>> chatRepository;
         private readonly Mock<IRepository<User>> userRepository;
+        private readonly Mock<IRepository<Invitation>> invitationRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public JourneyServiceTest()
@@ -48,6 +49,7 @@ namespace Car.UnitTests.Services
             var locationService = new Mock<ILocationService>();
             journeyUserService = new Mock<IJourneyUserService>();
             userRepository = new Mock<IRepository<User>>();
+            invitationRepository = new Mock<IRepository<Invitation>>();
             chatRepository = new Mock<IRepository<Chat>>();
             messageRepository = new Mock<IRepository<Message>>();
             receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
@@ -58,6 +60,7 @@ namespace Car.UnitTests.Services
                 journeyRepository.Object,
                 requestRepository.Object,
                 userRepository.Object,
+                invitationRepository.Object,
                 chatRepository.Object,
                 notificationService.Object,
                 requestService.Object,
@@ -805,6 +808,74 @@ namespace Car.UnitTests.Services
 
             // Act
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateInvitationAsync_WhenInvitationIsValid_ReturnsInvitationObject(
+            InvitationDto updatedInvitationDto,
+            JourneyDto updatedJourneyDto)
+        {
+            // Arrange
+            updatedInvitationDto.JourneyId = updatedJourneyDto.Id;
+            var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
+            var invitation = Mapper.Map<InvitationDto, Invitation>(updatedInvitationDto);
+            var invitations = Fixture.Build<Invitation>()
+                .With(i => i.Id, invitation.Id)
+                .With(i => i.InvitedUserId, invitation.InvitedUserId)
+                .CreateMany(1);
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journey.Id)
+                .With(j => j.Invitations, invitations.ToList())
+                .CreateMany(1);
+            var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
+
+            invitationRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync(invitation);
+            invitationRepository.Setup(repo =>
+                    repo.Query()).Returns(invitations.AsQueryable().BuildMock().Object);
+            journeyRepository.Setup(repo =>
+                    repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.UpdateInvitationAsync(updatedInvitationDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedInvitation);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateInvitationAsync_WhenInvitationIsNotValid_ReturnsInvitationObject(
+            InvitationDto updatedInvitationDto,
+            JourneyDto updatedJourneyDto)
+        {
+            // Arrange
+            updatedInvitationDto.JourneyId = updatedJourneyDto.Id;
+            var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
+            var invitation = Mapper.Map<InvitationDto, Invitation>(updatedInvitationDto);
+            var invitations = Fixture.Build<Invitation>()
+                .With(i => i.Id, invitation.Id)
+                .With(i => i.InvitedUserId, invitation.InvitedUserId)
+                .CreateMany(1);
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journey.Id)
+                .With(j => j.Invitations, invitations.ToList())
+                .CreateMany(1);
+            var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
+
+            invitationRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync((Invitation)null);
+            invitationRepository.Setup(repo =>
+                    repo.Query()).Returns(invitations.AsQueryable().BuildMock().Object);
+            journeyRepository.Setup(repo =>
+                    repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.UpdateInvitationAsync(updatedInvitationDto);
 
             // Assert
             result.Should().BeNull();
