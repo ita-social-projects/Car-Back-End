@@ -253,12 +253,12 @@ namespace Car.Domain.Services.Implementation
                 .FilterUpcoming()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
-            var existingInvitations = journey.Invitations;
-
             if (journey is null)
             {
                 return null;
             }
+
+            var existingInvitations = journey.Invitations;
 
             var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
 
