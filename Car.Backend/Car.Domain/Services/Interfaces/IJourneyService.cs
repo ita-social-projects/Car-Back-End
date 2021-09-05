@@ -31,6 +31,10 @@ namespace Car.Domain.Services.Interfaces
 
         Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto);
 
+        Task<InvitationDto> UpdateInvitationAsync(InvitationDto invitationDto);
+
+        Task NotifyInvitedUsers(ICollection<Invitation> invitations, int senderId, int journeyId);
+
         IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter);
 
         Task CheckForSuitableRequests(Journey journey);
