@@ -19,8 +19,12 @@ namespace Car.WebApi.Controllers
             this.receivedMessagesService = receivedMessagesService;
         }
 
-        [HttpPut("{userId}/{chatId}")]
+        [HttpPut("markasread/{chatId}/{userId}")]
         public async Task<IActionResult> MarkMessagesRead(int userId, int chatId) =>
             Ok(await receivedMessagesService.MarkMessagesReadInChatAsync(userId, chatId));
+
+        [HttpGet("getunreadmessages/{chatId}/{userId}")]
+        public async Task<IActionResult> GetUnreadMessageForChat(int userId, int chatId) =>
+            Ok(await receivedMessagesService.GetUnreadMessageForChatAsync(userId, chatId));
     }
 }

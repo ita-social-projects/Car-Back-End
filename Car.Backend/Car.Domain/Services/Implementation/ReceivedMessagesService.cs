@@ -25,5 +25,13 @@ namespace Car.Domain.Services.Implementation
             await receivedMessagesRepository.SaveChangesAsync();
             return receivedMessages.UnreadMessagesCount;
         }
+
+        public async Task<int> GetUnreadMessageForChatAsync(int userId, int chatId)
+        {
+            var receivedMessages = await receivedMessagesRepository.Query()
+                .FirstOrDefaultAsync(rm => rm.ChatId == chatId && rm.UserId == userId)!;
+
+            return receivedMessages.UnreadMessagesCount;
+        }
     }
 }
