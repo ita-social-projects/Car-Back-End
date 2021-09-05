@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
@@ -22,6 +23,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
         private readonly IRepository<User> userRepository;
+        private readonly IRepository<Invitation> invitationRepository;
         private readonly IRepository<Chat> chatRepository;
         private readonly INotificationService notificationService;
         private readonly IRequestService requestService;
@@ -34,6 +36,7 @@ namespace Car.Domain.Services.Implementation
             IRepository<Journey> journeyRepository,
             IRepository<Request> requestRepository,
             IRepository<User> userRepository,
+            IRepository<Invitation> invitationRepository,
             IRepository<Chat> chatRepository,
             INotificationService notificationService,
             IRequestService requestService,
@@ -45,6 +48,7 @@ namespace Car.Domain.Services.Implementation
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
             this.userRepository = userRepository;
+            this.invitationRepository = invitationRepository;
             this.notificationService = notificationService;
             this.chatRepository = chatRepository;
             this.requestService = requestService;
@@ -60,7 +64,8 @@ namespace Car.Domain.Services.Implementation
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
-                .IncludeJourneyPoints();
+                .IncludeJourneyPoints()
+                .IncludeJourneyInvitations();
 
             var journey = withCancelledStops
                 ? await journeyQueryable
@@ -154,6 +159,7 @@ namespace Car.Domain.Services.Implementation
             await journeyRepository.SaveChangesAsync();
 
             await CheckForSuitableRequests(addedJourney);
+            await NotifyInvitedUsers(addedJourney);
 
             return mapper.Map<Journey, JourneyModel>(addedJourney);
         }
@@ -252,6 +258,24 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey!);
         }
 
+        public async Task<InvitationDto> UpdateInvitationAsync(InvitationDto invitationDto)
+        {
+            var journey = await journeyRepository.Query()
+                .IncludeJourneyInvitations()
+                .FirstOrDefaultAsync(j => j.Id == invitationDto.JourneyId);
+            var invitation = journey.Invitations.FirstOrDefault(i => i.InvitedUserId == invitationDto.InvitedUserId);
+
+            if (invitation != null)
+            {
+                invitation.Type = invitationDto.Type;
+
+                invitation = await invitationRepository.UpdateAsync(invitation);
+                await journeyRepository.SaveChangesAsync();
+            }
+
+            return mapper.Map<Invitation, InvitationDto>(invitation!);
+        }
+
         public IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter)
         {
             var journeysResult = new List<ApplicantJourney>();
@@ -285,6 +309,30 @@ namespace Car.Domain.Services.Implementation
                     GetApplicantStops(
                         mapper.Map<Request, JourneyFilter>(request),
                         journey));
+            }
+        }
+
+        public async Task NotifyInvitedUsers(Journey journey)
+        {
+            if (journey is null)
+            {
+                return;
+            }
+
+            foreach (var invitation in journey.Invitations)
+            {
+                var notification = new Notification()
+                {
+                    SenderId = journey.OrganizerId,
+                    ReceiverId = invitation.InvitedUserId,
+                    Type = NotificationType.JourneyInvitation,
+                    IsRead = false,
+                    CreatedAt = DateTime.UtcNow,
+                    JsonData = JsonSerializer.Serialize(new { }),
+                    JourneyId = journey.Id,
+                };
+
+                await notificationService.AddNotificationAsync(mapper.Map<Notification, NotificationDto>(notification));
             }
         }
 

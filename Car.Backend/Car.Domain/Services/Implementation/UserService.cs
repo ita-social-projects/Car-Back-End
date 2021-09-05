@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Infrastructure;
@@ -28,6 +29,13 @@ namespace Car.Domain.Services.Implementation
             var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userId);
 
             return mapper.Map<User, UserDto>(user);
+        }
+
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        {
+            var users = await userRepository.Query().ToListAsync();
+
+            return mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
         }
 
         public async Task<UserDto?> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto)

@@ -139,6 +139,13 @@
             <param name="journey">The journey dto.</param>
             <returns>OkResult</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.UpdateInvitation(Car.Domain.Dto.InvitationDto)">
+            <summary>
+            Update the journey invitation asynchronously.
+            </summary>
+            <param name="invitation">The journey dto.</param>
+            <returns>OkResult</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.CancelJourney(System.Int32)">
             <summary>
             Cancels journey
@@ -359,6 +366,12 @@
             </summary>
             <param name="id">The user identifier.</param>
             <returns>The user entity</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.UserController.GetAllUsers">
+            <summary>
+            Gets all users.
+            </summary>
+            <returns>All users</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserController.UpdateUserImage(Car.Domain.Dto.UpdateUserImageDto)">
             <summary>
