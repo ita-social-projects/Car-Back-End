@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
@@ -10,6 +11,7 @@ using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -20,11 +22,13 @@ namespace Car.UnitTests.Controllers
     {
         private readonly Mock<IChatService> chatService;
         private readonly ChatController chatController;
+        private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public ChatControllerTest()
         {
             chatService = new Mock<IChatService>();
             chatController = new ChatController(chatService.Object);
+            httpContextAccessor = new Mock<IHttpContextAccessor>();
         }
 
         [Theory]
@@ -150,6 +154,27 @@ namespace Car.UnitTests.Controllers
             {
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(chats);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllUnreadMessagesNumber_ReReturnsOkObjectResult(User user, int unreadMessageCount)
+        {
+            // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            chatService.Setup(s => s.GetAllUnreadMessagesNumber())
+                .ReturnsAsync(unreadMessageCount);
+
+            // Act
+            var result = await chatController.GetAllUnreadMessagesNumber();
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(unreadMessageCount);
             }
         }
     }
