@@ -1190,7 +1190,7 @@ namespace Car.UnitTests.Services
             var expected = messages.Count();
 
             // Act
-            var result = await journeyService.GetUnreadMessagesCountForNewUser(journeyId);
+            var result = await journeyService.GetUnreadMessagesCountForNewUserAsync(journeyId);
 
             // Assert
             result.Should().Be(expected);

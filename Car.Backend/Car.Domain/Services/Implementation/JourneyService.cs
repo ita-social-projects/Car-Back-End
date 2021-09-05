@@ -423,7 +423,7 @@ namespace Car.Domain.Services.Implementation
                 {
                     ChatId = journey.Chat.Id,
                     UserId = userToAdd.Id,
-                    UnreadMessagesCount = await GetUnreadMessagesCountForNewUser(journeyId),
+                    UnreadMessagesCount = await GetUnreadMessagesCountForNewUserAsync(journeyId),
                 };
 
                 userToAdd.ReceivedMessages.Add(receivedMessages);
@@ -450,7 +450,7 @@ namespace Car.Domain.Services.Implementation
             return true;
         }
 
-        public async Task<int> GetUnreadMessagesCountForNewUser(int journeyId)
+        public async Task<int> GetUnreadMessagesCountForNewUserAsync(int journeyId)
         {
             var unreadMessagesInChat = await chatRepository.Query()
                 .FirstOrDefaultAsync(c => c.Id == journeyId);
