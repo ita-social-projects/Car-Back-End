@@ -27,13 +27,14 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task MarkMessagesReadInChatAsync_NotNull_ReturnsZero(int userId, int chatId)
+        public async Task MarkMessagesReadInChatAsync_AllCorrect_ReturnsZero(int userId, int chatId)
         {
             // Arrange
             var receivedMessages = Fixture.Build<ReceivedMessages>()
                 .With(rm => rm.ChatId, chatId)
                 .With(rm => rm.UserId, userId)
                 .CreateMany(1);
+
             receivedMessagesRepository.Setup(repo => repo.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
 
             // Act
@@ -41,6 +42,29 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().Be(default(int));
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUnreadMessageForChatAsync_AllCorrect_ReturnCorrectValue(int userId, int chatId)
+        {
+            // Arrange
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.ChatId, chatId)
+                .With(rm => rm.UserId, userId)
+                .CreateMany(1)
+                .ToList();
+
+            receivedMessagesRepository.Setup(repo => repo.Query())
+                .Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
+            var expected = receivedMessages.FirstOrDefault()!.UnreadMessagesCount;
+
+            // Act
+            var result = await receivedMessagesService.GetUnreadMessageForChatAsync(userId, chatId);
+
+            // Assert
+            result.Should().Be(expected);
         }
     }
 }

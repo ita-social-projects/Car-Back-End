@@ -13,7 +13,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId);
 
-        Task<Chat> AddChatAsync(CreateChatDto chat);
+        Task<Chat?> AddChatAsync(CreateChatDto chat);
 
         Task<Message> AddMessageAsync(Message message);
 

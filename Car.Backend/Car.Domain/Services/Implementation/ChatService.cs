@@ -71,7 +71,7 @@ namespace Car.Domain.Services.Implementation
             return chat;
         }
 
-        public async Task<Chat> AddChatAsync(CreateChatDto chat)
+        public async Task<Chat?> AddChatAsync(CreateChatDto chat)
         {
             var addedChat = await chatRepository.AddAsync(mapper.Map<Chat>(chat));
             if (addedChat is not null)
