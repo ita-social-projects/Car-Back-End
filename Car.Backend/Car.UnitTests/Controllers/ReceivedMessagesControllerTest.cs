@@ -28,13 +28,13 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task MarkAsRead_ReturnsInt(int userId, int chatId)
+        public async Task MarkAsRead_ReturnsInt(int chatId)
         {
             // Arrange
-            receivedMessagesService.Setup(rm => rm.MarkMessagesReadInChatAsync(userId, chatId)).ReturnsAsync(0);
+            receivedMessagesService.Setup(rm => rm.MarkMessagesReadInChatAsync(chatId)).ReturnsAsync(0);
 
             // Act
-            var result = await receivedMessagesController.MarkMessagesRead(userId, chatId);
+            var result = await receivedMessagesController.MarkMessagesRead(chatId);
 
             // Assert
             using (new AssertionScope())
@@ -49,7 +49,7 @@ namespace Car.UnitTests.Controllers
         public async Task GetUnreadMessageForChat_ReturnsInt(int userId, int chatId)
         {
             // Arrange
-            receivedMessagesService.Setup(rm => rm.GetUnreadMessageForChatAsync(userId, chatId)).ReturnsAsync(0);
+            receivedMessagesService.Setup(rm => rm.GetUnreadMessageForChatAsync(chatId)).ReturnsAsync(0);
 
             // Act
             var result = await receivedMessagesController.GetUnreadMessageForChat(userId, chatId);
