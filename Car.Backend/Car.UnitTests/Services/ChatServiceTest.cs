@@ -14,6 +14,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Http;
 using MockQueryable.Moq;
 using Moq;
@@ -28,6 +29,7 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IRepository<Message>> messageRepository;
         private readonly Mock<IRepository<ReceivedMessages>> receivedMessagesRepository;
+        private readonly Mock<IRepository<Journey>> journeyRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public ChatServiceTest()
@@ -36,12 +38,14 @@ namespace Car.UnitTests.Services
             userRepository = new Mock<IRepository<User>>();
             messageRepository = new Mock<IRepository<Message>>();
             receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
+            journeyRepository = new Mock<IRepository<Journey>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
             chatService = new ChatService(
                 userRepository.Object,
                 chatRepository.Object,
                 messageRepository.Object,
                 receivedMessagesRepository.Object,
+                journeyRepository.Object,
                 Mapper,
                 httpContextAccessor.Object);
         }
@@ -88,6 +92,11 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var chatEntity = Mapper.Map<CreateChatDto, Chat>(chat);
+            var journeys = Fixture.Build<Journey>()
+                .With(repo => repo.Id, chat.Id)
+                .CreateMany(1)
+                .ToList();
+            journeyRepository.Setup(repo => repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
             chatRepository.Setup(repo => repo.AddAsync(It.IsAny<Chat>())).ReturnsAsync(chatEntity);
 
             // Act
@@ -99,11 +108,34 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetReceivedMessagesFromChat_ReceivedMessagesAreCorrect(Chat chat)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(repo => repo.Id, chat.Id)
+                .CreateMany(1)
+                .ToList();
+            journeyRepository.Setup(repo => repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await chatService.GetReceivedMessagesFromChat(chat.Id);
+
+            // Assert
+            result.UnreadMessagesCount.Should().Be(0);
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddChatAsync_WhenChatIsNotValid_ReturnsNull(CreateChatDto chat)
         {
             // Arrange
             var chatEntity = Mapper.Map<CreateChatDto, Chat>(chat);
+            var journeys = Fixture.Build<Journey>()
+                .With(repo => repo.Id, chat.Id)
+                .CreateMany(1)
+                .ToList();
             chatRepository.Setup(repo => repo.AddAsync(chatEntity)).ReturnsAsync((Chat)null);
+            journeyRepository.Setup(repo => repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.AddChatAsync(chat);

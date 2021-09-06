@@ -22,6 +22,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Chat> chatRepository;
         private readonly IRepository<Message> messageRepository;
         private readonly IRepository<ReceivedMessages> receivedMessagesRepository;
+        private readonly IRepository<Journey> journeyRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
@@ -30,6 +31,7 @@ namespace Car.Domain.Services.Implementation
             IRepository<Chat> chatRepository,
             IRepository<Message> messageRepository,
             IRepository<ReceivedMessages> receivedMessagesRepository,
+            IRepository<Journey> journeyRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -37,6 +39,7 @@ namespace Car.Domain.Services.Implementation
             this.chatRepository = chatRepository;
             this.messageRepository = messageRepository;
             this.receivedMessagesRepository = receivedMessagesRepository;
+            this.journeyRepository = journeyRepository;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
         }
@@ -68,12 +71,32 @@ namespace Car.Domain.Services.Implementation
             return chat;
         }
 
-        public async Task<Chat> AddChatAsync(CreateChatDto chat)
+        public async Task<Chat?> AddChatAsync(CreateChatDto chat)
         {
             var addedChat = await chatRepository.AddAsync(mapper.Map<Chat>(chat));
+            if (addedChat is not null)
+            {
+                var addedReceivedMessages = await GetReceivedMessagesFromChat(addedChat.Id);
+                await receivedMessagesRepository.AddAsync(mapper.Map<ReceivedMessages>(addedReceivedMessages));
+                await receivedMessagesRepository.SaveChangesAsync();
+            }
+
             await chatRepository.SaveChangesAsync();
 
             return addedChat;
+        }
+
+        public async Task<ReceivedMessages> GetReceivedMessagesFromChat(int chatId)
+        {
+            var userId = await journeyRepository.Query()
+                .FirstOrDefaultAsync(j => j.Id == chatId);
+            var addedReceivedMessages = new ReceivedMessages()
+            {
+                ChatId = chatId,
+                UserId = userId.OrganizerId,
+                UnreadMessagesCount = default(int),
+            };
+            return addedReceivedMessages;
         }
 
         public async Task<IEnumerable<ChatDto>> GetUserChatsAsync()
