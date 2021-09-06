@@ -262,26 +262,7 @@ namespace Car.UnitTests.Services
         public async Task AddMessageAsync_WhenMessageIsNotValid_ReturnsNull(Message message)
         {
             // Arrange
-            var receivedMessages = Fixture.Build<ReceivedMessages>()
-                .With(receivedMessages => receivedMessages.ChatId, message.ChatId)
-                .CreateMany()
-                .ToList();
-            var participants = Fixture.Build<User>()
-                .With(user => user.ReceivedMessages, receivedMessages)
-                .CreateMany(1)
-                .ToList();
-            var journey = Fixture.Build<Journey>()
-                .With(journey => journey.Id, message.ChatId)
-                .With(journey => journey.Participants, participants)
-                .Create();
-            var chat = Fixture.Build<Chat>()
-                .With(chat => chat.Id, message.ChatId)
-                .With(chat => chat.Journey, journey)
-                .CreateMany(1);
-
             messageRepository.Setup(repo => repo.AddAsync(message)).ReturnsAsync((Message)null);
-            chatRepository.Setup(repo => repo.Query())
-                .Returns(chat.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.AddMessageAsync(message);
