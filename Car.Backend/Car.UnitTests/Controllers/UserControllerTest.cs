@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
@@ -39,6 +40,24 @@ namespace Car.UnitTests.Controllers
             {
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(user);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetAllUsers_WhenUsersExist_ReturnsOkObjectResult(List<UserDto> users)
+        {
+            // Arrange
+            userService.Setup(service => service.GetAllUsersAsync()).ReturnsAsync(users);
+
+            // Act
+            var result = await userController.GetAllUsers();
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(users);
             }
         }
 

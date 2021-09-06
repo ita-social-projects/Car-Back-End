@@ -65,6 +65,21 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetAllUsersAsync_WhenUsersExist_ReturnsUsersEnumerable(IEnumerable<UserDto> usersDto)
+        {
+            // Arrange
+            var users = Mapper.Map<IEnumerable<UserDto>, IEnumerable<User>>(usersDto);
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await userService.GetAllUsersAsync();
+
+            // Assert
+            result.Should().BeEquivalentTo(usersDto, options => options.Excluding(u => u.ImageId));
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task UpdateUserImageAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
         {
             // Arrange
