@@ -121,6 +121,7 @@ namespace Car.Domain.Services.Implementation
                     .Contains(msg.ChatId))
                 .Where(msg => msg.Text
                     .Contains(filter.SearchText))
+                .OrderByDescending(message => message.CreatedAt)
                 .ToListAsync();
 
             var result = messages
