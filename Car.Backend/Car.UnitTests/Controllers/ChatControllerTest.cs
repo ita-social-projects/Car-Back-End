@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
@@ -11,7 +10,6 @@ using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -22,13 +20,11 @@ namespace Car.UnitTests.Controllers
     {
         private readonly Mock<IChatService> chatService;
         private readonly ChatController chatController;
-        private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public ChatControllerTest()
         {
             chatService = new Mock<IChatService>();
             chatController = new ChatController(chatService.Object);
-            httpContextAccessor = new Mock<IHttpContextAccessor>();
         }
 
         [Theory]
