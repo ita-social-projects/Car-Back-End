@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Internal;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
@@ -43,9 +42,19 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId)
         {
-            var chat = await messageRepository.Query()
+            var messages = messageRepository
+                .Query()
+                .Where(message => message.ChatId == chatId);
+            var maxId = messages.Any()
+                ? messages.Max(message => message.Id) + 1
+                : default;
+            var chat = await messageRepository
+                .Query()
                 .Include(user => user.Sender)
-                .Where(message => message.ChatId == chatId)
+                .Where(message => message.ChatId == chatId
+                                  && message.Id < (previousMessageId == 0
+                                      ? maxId
+                                      : previousMessageId))
                 .Select(message => new MessageDto()
                 {
                     Id = message.Id,
@@ -56,15 +65,11 @@ namespace Car.Domain.Services.Implementation
                     SenderName = message.Sender.Name,
                     SenderSurname = message.Sender.Surname,
                     ImageId = message.Sender.ImageId,
-                }).OrderByDescending(messageDto => messageDto.CreatedAt)
-                .Where(messageDto => messageDto.Id < (previousMessageId == 0
-                    ? messageRepository
-                        .Query()
-                        .Where(message => message.ChatId == chatId)
-                        .Max(message => message.Id) + 1
-                    : previousMessageId))
+                })
+                .OrderByDescending(messageDto => messageDto.CreatedAt)
                 .Take(50)
                 .ToListAsync();
+
             return chat;
         }
 
