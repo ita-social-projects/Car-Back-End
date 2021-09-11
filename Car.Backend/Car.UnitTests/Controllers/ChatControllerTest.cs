@@ -156,26 +156,5 @@ namespace Car.UnitTests.Controllers
                 (result as OkObjectResult)?.Value.Should().Be(chats);
             }
         }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task GetAllUnreadMessagesNumber_ReReturnsOkObjectResult(User user, int unreadMessageCount)
-        {
-            // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            chatService.Setup(s => s.GetAllUnreadMessagesNumber())
-                .ReturnsAsync(unreadMessageCount);
-
-            // Act
-            var result = await chatController.GetAllUnreadMessagesNumber();
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(unreadMessageCount);
-            }
-        }
     }
 }
