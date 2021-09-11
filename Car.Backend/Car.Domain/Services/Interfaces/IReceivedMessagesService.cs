@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Car.Data.Entities;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -12,6 +10,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task<int> GetUnreadMessageForChatAsync(int chatId);
 
-        Task<IEnumerable<int>> GetAllUnreadMessagesForUserAsync();
+        Task<IEnumerable<ReceivedMessages>?> GetAllUnreadMessagesForUserAsync();
     }
 }
