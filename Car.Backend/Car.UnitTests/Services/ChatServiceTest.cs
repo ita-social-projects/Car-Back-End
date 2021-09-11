@@ -14,7 +14,6 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Http;
 using MockQueryable.Moq;
 using Moq;
@@ -58,7 +57,8 @@ namespace Car.UnitTests.Services
             var chatList = chats.ToList();
             var chat = chatList.First();
 
-            messageRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Message, object>>[]>()))
+            messageRepository.Setup(repo => repo
+                    .Query(It.IsAny<Expression<Func<Message, object>>[]>()))
                 .Returns(chatList.AsQueryable().BuildMock().Object);
 
             // Act
@@ -76,11 +76,13 @@ namespace Car.UnitTests.Services
             var chatList = chats.ToList();
             var id = chatList.Max(chat => chat.Id) + 1;
 
-            messageRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Message, object>>[]>()))
+            messageRepository.Setup(repo => repo
+                    .Query(It.IsAny<Expression<Func<Message, object>>[]>()))
                 .Returns(chatList.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await chatService.GetMessagesByChatIdAsync(id, chatList.First().Id);
+            var result = await chatService
+                .GetMessagesByChatIdAsync(id, chatList.First().Id);
 
             // Assert
             result.Should().BeEmpty();
@@ -96,8 +98,12 @@ namespace Car.UnitTests.Services
                 .With(repo => repo.Id, chat.Id)
                 .CreateMany(1)
                 .ToList();
-            journeyRepository.Setup(repo => repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
-            chatRepository.Setup(repo => repo.AddAsync(It.IsAny<Chat>())).ReturnsAsync(chatEntity);
+            journeyRepository.Setup(repo => repo
+                .Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(repo => repo
+                .AddAsync(It.IsAny<Chat>()))
+                .ReturnsAsync(chatEntity);
 
             // Act
             var result = await chatService.AddChatAsync(chat);
@@ -115,7 +121,9 @@ namespace Car.UnitTests.Services
                 .With(repo => repo.Id, chat.Id)
                 .CreateMany(1)
                 .ToList();
-            journeyRepository.Setup(repo => repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            journeyRepository.Setup(repo => repo
+                .Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.GetReceivedMessagesFromChat(chat.Id);
@@ -134,8 +142,12 @@ namespace Car.UnitTests.Services
                 .With(repo => repo.Id, chat.Id)
                 .CreateMany(1)
                 .ToList();
-            chatRepository.Setup(repo => repo.AddAsync(chatEntity)).ReturnsAsync((Chat)null);
-            journeyRepository.Setup(repo => repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(repo => repo
+                .AddAsync(chatEntity))
+                .ReturnsAsync((Chat)null);
+            journeyRepository.Setup(repo => repo
+                .Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.AddChatAsync(chat);
@@ -226,34 +238,6 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeEmpty();
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task GetAllUnreadMessages_Returns_messageCount_from_all_chats(User user)
-        {
-            // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-
-            var receivedMessages = Fixture.Build<ReceivedMessages>()
-                .With(rm => rm.UserId, user.Id)
-                .CreateMany(3)
-                .ToList();
-
-            receivedMessagesRepository
-                .Setup(repo => repo.Query())
-                .Returns(receivedMessages.AsQueryable().BuildMock().Object);
-
-            var expected = receivedMessages
-                .Where(rm => rm.UserId == user.Id)
-                .Sum(rm => rm.UnreadMessagesCount);
-
-            // Act
-            var result = await chatService.GetAllUnreadMessagesNumber();
-
-            // Assert
-            result.Should().Be(expected);
         }
 
         [Theory]
