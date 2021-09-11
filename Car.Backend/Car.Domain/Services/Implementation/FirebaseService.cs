@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Car.Domain.Configurations;
 using Car.Domain.Services.Interfaces;
@@ -16,9 +12,9 @@ namespace Car.Domain.Services.Implementation
 {
     public class FirebaseService : IFirebaseService
     {
-        public FirebaseApp App { get; set; }
+        private FirebaseMessaging Messaging { get; set; }
 
-        public FirebaseMessaging Messaging { get; set; }
+        private FirebaseApp App { get; set; }
 
         public FirebaseService(
             IWebHostEnvironment webHostEnvironment,
@@ -28,7 +24,7 @@ namespace Car.Domain.Services.Implementation
                 webHostEnvironment.WebRootPath,
                 firebaseOptions.Value.CredentialsPath!);
 
-            var stream = new FileStream(keyFilePath, FileMode.Open, FileAccess.Read);
+            using var stream = new FileStream(keyFilePath, FileMode.Open, FileAccess.Read);
             var credential = GoogleCredential.FromStream(stream);
             credential = credential.CreateScoped("https://www.googleapis.com/auth/firebase.messaging");
 

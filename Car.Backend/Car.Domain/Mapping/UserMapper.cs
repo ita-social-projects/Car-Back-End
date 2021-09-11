@@ -10,8 +10,9 @@ namespace Car.Domain.Mapping
         {
             CreateMap<UpdateUserImageDto, User>().ReverseMap();
             CreateMap<UpdateUserImageDto, UserDto>().ReverseMap();
-            CreateMap<UpdateUserFcmtokenDto, UserDto>().ReverseMap();
+            CreateMap<UserFCMTokenDto, FCMToken>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserEmailDto>().ReverseMap();
         }
     }
 }
