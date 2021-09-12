@@ -26,6 +26,9 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> IncludeJourneyPoints(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.JourneyPoints.OrderBy(point => point.Index));
 
+        public static IQueryable<Journey> IncludeJourneyInvitations(this IQueryable<Journey> journeys) =>
+            journeys.Include(journey => journey.Invitations);
+
         public static IQueryable<Journey> IncludeAllParticipants(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.Organizer)
                 .Include(journey => journey.Participants);
