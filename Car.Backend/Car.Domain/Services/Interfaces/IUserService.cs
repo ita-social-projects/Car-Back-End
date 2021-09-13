@@ -8,10 +8,12 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<UserDto> GetUserByIdAsync(int userId);
 
-        Task<IEnumerable<UserDto>> GetAllUsersAsync();
+        Task<IEnumerable<UserEmailDto>> GetAllUsersAsync();
 
         Task<UserDto?> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto);
 
-        Task<UserDto?> UpdateUserFcmtokenAsync(UpdateUserFcmtokenDto updateUserFcmtokenDto);
+        Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto);
+
+        Task<bool> DeleteUserFcmtokenAsync(string tokenToDelete);
     }
 }
