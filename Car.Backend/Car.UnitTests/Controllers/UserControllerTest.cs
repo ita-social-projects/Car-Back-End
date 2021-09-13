@@ -45,7 +45,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetAllUsers_WhenUsersExist_ReturnsOkObjectResult(List<UserDto> users)
+        public async Task GetAllUsers_WhenUsersExist_ReturnsOkObjectResult(List<UserEmailDto> users)
         {
             // Arrange
             userService.Setup(service => service.GetAllUsersAsync()).ReturnsAsync(users);
@@ -82,24 +82,51 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Fact]
-        public async Task UpdateUserFcmtoken_WhenUserExists_ReturnsOkObjectResult()
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserFcmtoken_WhenUserExists_ReturnsOkObjectResult(UserFcmTokenDto userFCMTokenDto)
         {
             // Arrange
-            var updateUserDto = Fixture.Build<UpdateUserFcmtokenDto>().Create();
-            var expectedUser = Mapper.Map<UpdateUserFcmtokenDto, UserDto>(updateUserDto);
-
-            userService.Setup(service => service.UpdateUserFcmtokenAsync(updateUserDto)).ReturnsAsync(expectedUser);
+            var expectedFCM = userFCMTokenDto;
+            userService.Setup(service => service.AddUserFcmtokenAsync(userFCMTokenDto)).ReturnsAsync(expectedFCM);
 
             // Act
-            var result = await userController.UpdateUserFcmtoken(updateUserDto);
+            var result = await userController.AddUserFcmtoken(userFCMTokenDto);
 
             // Assert
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(expectedUser);
+                (result as OkObjectResult)?.Value.Should().Be(expectedFCM);
             }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteUserFcmtoken_WhenIsAllowed_ReturnsOkObjectResult(string token)
+        {
+            // Arrange
+            userService.Setup(service => service.DeleteUserFcmtokenAsync(token)).ReturnsAsync(true);
+
+            // Act
+            var result = await userController.DeleteUserFcmtoken(token);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteUserFcmtoken_WhenIsNotAllowed_ReturnsOkObjectResult(string token)
+        {
+            // Arrange
+            userService.Setup(service => service.DeleteUserFcmtokenAsync(token)).ReturnsAsync(false);
+
+            // Act
+            var result = await userController.DeleteUserFcmtoken(token);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
         }
     }
 }

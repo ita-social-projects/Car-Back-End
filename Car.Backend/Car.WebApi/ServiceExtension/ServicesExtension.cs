@@ -43,6 +43,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<Brand>, Repository<Brand>>();
             services.AddScoped<IRepository<Model>, Repository<Model>>();
             services.AddScoped<IRepository<Chat>, Repository<Chat>>();
+            services.AddScoped<IRepository<FcmToken>, Repository<FcmToken>>();
             services.AddScoped<IRepository<Message>, Repository<Message>>();
             services.AddScoped<IRepository<Journey>, Repository<Journey>>();
             services.AddScoped<IRepository<Invitation>, Repository<Invitation>>();
