@@ -386,11 +386,18 @@
             <param name="updateUserImageDto">User object to update.</param>
             <returns>Updated user.</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.UpdateUserFcmtoken(Car.Domain.Dto.UpdateUserFcmtokenDto)">
+        <member name="M:Car.WebApi.Controllers.UserController.AddUserFcmtoken(Car.Domain.Dto.UserFcmTokenDto)">
             <summary>
-            Updates a users fcmtoken with the identifier asynchronously.
+            Adds fcmtoken to user asynchronously.
             </summary>
-            <param name="updateUserFcmtokenDto">User object to update.</param>
+            <param name="userFCMTokenDto">fcm token to add.</param>
+            <returns>Updated user.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.UserController.DeleteUserFcmtoken(System.String)">
+            <summary>
+            Removes fcmtoken from user asynchronously.
+            </summary>
+            <param name="token">fcm token to delete.</param>
             <returns>Updated user.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.GetPreferences(System.Int32)">
