@@ -16,12 +16,12 @@ namespace Car.Domain.Services.Implementation
     public class UserService : IUserService
     {
         private readonly IRepository<User> userRepository;
-        private readonly IRepository<FCMToken> fcmTokenRepository;
+        private readonly IRepository<FcmToken> fcmTokenRepository;
         private readonly IImageService imageService;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UserService(IRepository<User> userRepository, IRepository<FCMToken> fcmTokenRepository, IImageService imageService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public UserService(IRepository<User> userRepository, IRepository<FcmToken> fcmTokenRepository, IImageService imageService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.userRepository = userRepository;
             this.fcmTokenRepository = fcmTokenRepository;
@@ -62,9 +62,9 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<User, UserDto>(user);
         }
 
-        public async Task<UserFCMTokenDto?> AddUserFcmtokenAsync(UserFCMTokenDto userFcmtokenDto)
+        public async Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto)
         {
-            var fcmToken = mapper.Map<UserFCMTokenDto, FCMToken>(userFcmtokenDto);
+            var fcmToken = mapper.Map<UserFcmTokenDto, FcmToken>(userFcmtokenDto);
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
             fcmToken.UserId = userId;
@@ -72,7 +72,7 @@ namespace Car.Domain.Services.Implementation
             var addedToken = await fcmTokenRepository.AddAsync(fcmToken);
             await fcmTokenRepository.SaveChangesAsync();
 
-            return mapper.Map<FCMToken, UserFCMTokenDto>(addedToken);
+            return mapper.Map<FcmToken, UserFcmTokenDto>(addedToken);
         }
 
         public async Task<bool> DeleteUserFcmtokenAsync(string tokenToDelete)

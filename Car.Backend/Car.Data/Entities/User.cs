@@ -31,7 +31,7 @@ namespace Car.Data.Entities
         [NotMapped]
         public string Token { get; set; } = string.Empty;
 
-        public ICollection<FCMToken> FCMTokens { get; set; } = new List<FCMToken>();
+        public ICollection<FcmToken> FCMTokens { get; set; } = new List<FcmToken>();
 
         public ICollection<Car> Cars { get; set; } = new List<Car>();
 

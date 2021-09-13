@@ -1,6 +1,6 @@
 ﻿namespace Car.Domain.Dto
 {
-    public class UserFCMTokenDto
+    public class UserFcmTokenDto
     {
         public string? Token { get; set; }
     }

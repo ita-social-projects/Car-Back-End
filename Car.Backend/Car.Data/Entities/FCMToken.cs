@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Car.Data.Entities
 {
-    public class FCMToken : IEntity
+    public class FcmToken : IEntity
     {
         public int Id { get; set; }
 

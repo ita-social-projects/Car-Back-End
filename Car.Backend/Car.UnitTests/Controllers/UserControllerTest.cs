@@ -84,7 +84,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserFcmtoken_WhenUserExists_ReturnsOkObjectResult(UserFCMTokenDto userFCMTokenDto)
+        public async Task AddUserFcmtoken_WhenUserExists_ReturnsOkObjectResult(UserFcmTokenDto userFCMTokenDto)
         {
             // Arrange
             var expectedFCM = userFCMTokenDto;

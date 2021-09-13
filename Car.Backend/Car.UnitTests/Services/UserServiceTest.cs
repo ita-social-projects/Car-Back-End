@@ -20,14 +20,14 @@ namespace Car.UnitTests.Services
     public class UserServiceTest : TestBase
     {
         private readonly Mock<IRepository<User>> userRepository;
-        private readonly Mock<IRepository<FCMToken>> fcmTokenRepository;
+        private readonly Mock<IRepository<FcmToken>> fcmTokenRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
         private readonly IUserService userService;
 
         public UserServiceTest()
         {
             userRepository = new Mock<IRepository<User>>();
-            fcmTokenRepository = new Mock<IRepository<FCMToken>>();
+            fcmTokenRepository = new Mock<IRepository<FcmToken>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
             userService = new UserService(userRepository.Object, fcmTokenRepository.Object, Mock.Of<IImageService>(), Mapper, httpContextAccessor.Object);
         }
@@ -120,13 +120,13 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserFcmtokenAsync_WhenTokenIsValid_ReturnsAddedToken(UserFCMTokenDto userFCMTokenDto, User user)
+        public async Task AddUserFcmtokenAsync_WhenTokenIsValid_ReturnsAddedToken(UserFcmTokenDto userFCMTokenDto, User user)
         {
             // Arrange
             var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            var fcmToken = Mapper.Map<UserFCMTokenDto, FCMToken>(userFCMTokenDto);
-            fcmTokenRepository.Setup(repo => repo.AddAsync(It.IsAny<FCMToken>())).ReturnsAsync(fcmToken);
+            var fcmToken = Mapper.Map<UserFcmTokenDto, FcmToken>(userFCMTokenDto);
+            fcmTokenRepository.Setup(repo => repo.AddAsync(It.IsAny<FcmToken>())).ReturnsAsync(fcmToken);
 
             // Act
             var result = await userService.AddUserFcmtokenAsync(userFCMTokenDto);
@@ -137,7 +137,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteUserFcmtokenAsync_WhenUserIsOwner_ExecuteOnce(FCMToken fcmToken, List<FCMToken> fcmTokens)
+        public async Task DeleteUserFcmtokenAsync_WhenUserIsOwner_ExecuteOnce(FcmToken fcmToken, List<FcmToken> fcmTokens)
         {
             // Arrange
             var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, fcmToken.UserId.ToString()) };
@@ -155,7 +155,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteUserFcmtokenAsync_WhenUserIsOwner_ExecuteNever(FCMToken fcmToken, List<FCMToken> fcmTokens)
+        public async Task DeleteUserFcmtokenAsync_WhenUserIsOwner_ExecuteNever(FcmToken fcmToken, List<FcmToken> fcmTokens)
         {
             // Arrange
             // Arrange

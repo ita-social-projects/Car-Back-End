@@ -48,7 +48,7 @@ namespace Car.WebApi.Controllers
         /// <param name="userFCMTokenDto">fcm token to add.</param>
         /// <returns>Updated user.</returns>
         [HttpPost("fcmtoken")]
-        public async Task<IActionResult> AddUserFcmtoken([FromForm] UserFCMTokenDto userFCMTokenDto) =>
+        public async Task<IActionResult> AddUserFcmtoken([FromForm] UserFcmTokenDto userFCMTokenDto) =>
             Ok(await userService.AddUserFcmtokenAsync(userFCMTokenDto));
 
         /// <summary>

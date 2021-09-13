@@ -386,7 +386,7 @@
             <param name="updateUserImageDto">User object to update.</param>
             <returns>Updated user.</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.AddUserFcmtoken(Car.Domain.Dto.UserFCMTokenDto)">
+        <member name="M:Car.WebApi.Controllers.UserController.AddUserFcmtoken(Car.Domain.Dto.UserFcmTokenDto)">
             <summary>
             Adds fcmtoken to user asynchronously.
             </summary>
