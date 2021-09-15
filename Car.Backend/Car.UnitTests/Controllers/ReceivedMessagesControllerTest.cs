@@ -47,24 +47,6 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetUnreadMessageForChat_ReturnsInt(int chatId)
-        {
-            // Arrange
-            receivedMessagesService.Setup(rm => rm.GetUnreadMessageForChatAsync(chatId)).ReturnsAsync(0);
-
-            // Act
-            var result = await receivedMessagesController.GetUnreadMessageForChat(chatId);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<int>();
-            }
-        }
-
-        [Theory]
-        [AutoEntityData]
         public async Task GetAllUnreadMessagesNumber_ReReturnsOkObjectResult(User user, int unreadMessageCount)
         {
             // Arrange
