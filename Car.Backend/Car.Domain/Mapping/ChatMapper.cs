@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using AutoMapper;
 using Car.Data.Entities;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 
 namespace Car.Domain.Mapping
 {
@@ -12,6 +13,7 @@ namespace Car.Domain.Mapping
             CreateMap<User, ChatUserDto>().ReverseMap();
             CreateMap<Journey, ChatJourneyDto>().ReverseMap();
             CreateMap<Chat, CreateChatDto>().ReverseMap();
+            CreateMap<ReceivedMessages, ChatReceivedMessagesDto>().ReverseMap();
         }
     }
 }

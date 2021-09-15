@@ -5,7 +5,7 @@ using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
@@ -108,14 +108,15 @@ namespace Car.Domain.Services.Implementation
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var user = await userRepository.Query()
-                .IncludeChats()
+                .IncludeJourney()
+                .IncludeReceivedMessages()
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            var chats = user?.OrganizerJourneys.Select(journey => journey.Chat)
-                .Union(user.ParticipantJourneys.Select(journey => journey.Chat))
+            var chats = user.ReceivedMessages.Select(rm => rm.Chat)
                 .Except(new List<Chat>() { null! });
 
-            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
+            var res = mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
+            return res;
         }
 
         public async Task<IEnumerable<ChatDto>> GetFilteredChatsAsync(ChatFilter filter)
@@ -140,6 +141,7 @@ namespace Car.Domain.Services.Implementation
                         MessageText = msg.Text,
                         MessageId = msg.Id,
                         Name = chat.Name,
+                        ReceivedMessages = chat.ReceivedMessages,
                     }))
                 .ToList();
 
