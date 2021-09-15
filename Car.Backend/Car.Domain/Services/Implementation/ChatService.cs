@@ -113,7 +113,8 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             var chats = user.ReceivedMessages.Select(rm => rm.Chat)
-                .Except(new List<Chat>() { null! });
+                .Except(new List<Chat>() { null! })
+                .OrderByDescending(chat => chat?.Journey?.DepartureTime);
 
             var res = mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
             return res;
