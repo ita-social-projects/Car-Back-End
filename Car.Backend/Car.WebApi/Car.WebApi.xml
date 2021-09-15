@@ -353,12 +353,6 @@
             <param name="chatId">Chat identifier</param>
             <returns>number of unread messages</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.GetUnreadMessageFromAllChats">
-            <summary>
-            Get number of unread messages for user from all chats
-            </summary>
-            <returns>int collection</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.RequestController.Get(System.Int32)">
             <summary>
             Gets the request by identifier.

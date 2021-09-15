@@ -13,16 +13,13 @@ namespace Car.Domain.Services.Implementation
     public class ReceivedMessagesService : IReceivedMessagesService
     {
         private readonly IRepository<ReceivedMessages> receivedMessagesRepository;
-        private readonly IRepository<User> userRepository;
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public ReceivedMessagesService(
             IRepository<ReceivedMessages> receivedMessagesRepository,
-            IRepository<User> userRepository,
             IHttpContextAccessor httpContextAccessor)
         {
             this.receivedMessagesRepository = receivedMessagesRepository;
-            this.userRepository = userRepository;
             this.httpContextAccessor = httpContextAccessor;
         }
 

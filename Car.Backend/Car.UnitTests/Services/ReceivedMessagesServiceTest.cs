@@ -26,11 +26,9 @@ namespace Car.UnitTests.Services
         public ReceivedMessagesServiceTest()
         {
             receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
-            userRepository = new Mock<IRepository<User>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
             receivedMessagesService = new ReceivedMessagesService(
                 receivedMessagesRepository.Object,
-                userRepository.Object,
                 httpContextAccessor.Object);
         }
 
