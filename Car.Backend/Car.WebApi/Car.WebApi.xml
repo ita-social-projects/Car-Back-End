@@ -58,7 +58,7 @@
             <param name="previousMessageId">Oldest message identifier</param>
             <returns>Chat</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Domain.Dto.ChatDto.CreateChatDto)">
+        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Domain.Dto.Chat.CreateChatDto)">
             <summary>
             Add the chat
             </summary>
@@ -338,6 +338,20 @@
             </summary>
             <param name="notificationId">notification Id</param>
             <returns>amended notification</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.MarkMessagesRead(System.Int32)">
+            <summary>
+            Mark specified chat messages as read
+            </summary>
+            <param name="chatId">Chat identifier</param>
+            <returns>number of marked messages</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.GetUnreadMessageForChat(System.Int32)">
+            <summary>
+            Get number of unread messages from the specified chat
+            </summary>
+            <param name="chatId">Chat identifier</param>
+            <returns>number of unread messages</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.RequestController.Get(System.Int32)">
             <summary>
