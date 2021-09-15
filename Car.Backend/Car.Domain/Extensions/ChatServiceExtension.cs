@@ -17,5 +17,22 @@ namespace Car.Domain.Extensions
                     .ThenInclude(journey => journey.Organizer)
                 .AsSplitQuery();
         }
+
+        public static IQueryable<User> IncludeReceivedMessages(this IQueryable<User> user)
+        {
+            return user
+                .Include(user => user.ReceivedMessages)
+                    .ThenInclude(rm => rm.Chat)
+                .AsSplitQuery();
+        }
+
+        public static IQueryable<User> IncludeJourney(this IQueryable<User> user)
+        {
+            return user
+                .Include(user => user.OrganizerJourneys)
+                .Include(user => user.ParticipantJourneys)
+                    .ThenInclude(journey => journey.Organizer)
+                .AsSplitQuery();
+        }
     }
 }

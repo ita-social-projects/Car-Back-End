@@ -58,7 +58,7 @@
             <param name="previousMessageId">Oldest message identifier</param>
             <returns>Chat</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Domain.Dto.ChatDto.CreateChatDto)">
+        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Domain.Dto.Chat.CreateChatDto)">
             <summary>
             Add the chat
             </summary>
