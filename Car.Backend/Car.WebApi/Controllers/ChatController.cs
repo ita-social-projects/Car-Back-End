@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;

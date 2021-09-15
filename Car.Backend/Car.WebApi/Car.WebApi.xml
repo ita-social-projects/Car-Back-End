@@ -58,7 +58,7 @@
             <param name="previousMessageId">Oldest message identifier</param>
             <returns>Chat</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Domain.Dto.ChatDto.CreateChatDto)">
+        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Domain.Dto.Chat.CreateChatDto)">
             <summary>
             Add the chat
             </summary>
@@ -338,6 +338,19 @@
             Counts number of all unread messages of the user
             </summary>
             <returns>Number of all unread messages</returns>
+        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.MarkMessagesRead(System.Int32)">
+            <summary>
+            Mark specified chat messages as read
+            </summary>
+            <param name="chatId">Chat identifier</param>
+            <returns>number of marked messages</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.GetUnreadMessageForChat(System.Int32)">
+            <summary>
+            Get number of unread messages from the specified chat
+            </summary>
+            <param name="chatId">Chat identifier</param>
+            <returns>number of unread messages</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.RequestController.Get(System.Int32)">
             <summary>
@@ -386,11 +399,18 @@
             <param name="updateUserImageDto">User object to update.</param>
             <returns>Updated user.</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.UpdateUserFcmtoken(Car.Domain.Dto.UpdateUserFcmtokenDto)">
+        <member name="M:Car.WebApi.Controllers.UserController.AddUserFcmtoken(Car.Domain.Dto.UserFcmTokenDto)">
             <summary>
-            Updates a users fcmtoken with the identifier asynchronously.
+            Adds fcmtoken to user asynchronously.
             </summary>
-            <param name="updateUserFcmtokenDto">User object to update.</param>
+            <param name="userFCMTokenDto">fcm token to add.</param>
+            <returns>Updated user.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.UserController.DeleteUserFcmtoken(System.String)">
+            <summary>
+            Removes fcmtoken from user asynchronously.
+            </summary>
+            <param name="token">fcm token to delete.</param>
             <returns>Updated user.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.GetPreferences(System.Int32)">

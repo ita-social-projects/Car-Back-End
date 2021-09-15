@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
@@ -22,8 +23,10 @@ namespace Car.Domain.Services.Implementation
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<int> MarkMessagesReadInChatAsync(int userId, int chatId)
+        public async Task<int> MarkMessagesReadInChatAsync(int chatId)
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
             var receivedMessages = await receivedMessagesRepository.Query()
                 .FirstOrDefaultAsync(rm => rm.ChatId == chatId && rm.UserId == userId)!;
             receivedMessages.UnreadMessagesCount = 0;
@@ -32,8 +35,10 @@ namespace Car.Domain.Services.Implementation
             return receivedMessages.UnreadMessagesCount;
         }
 
-        public async Task<int> GetUnreadMessageForChatAsync(int userId, int chatId)
+        public async Task<int> GetUnreadMessageForChatAsync(int chatId)
         {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
             var receivedMessages = await receivedMessagesRepository.Query()
                 .FirstOrDefaultAsync(rm => rm.ChatId == chatId && rm.UserId == userId)!;
 

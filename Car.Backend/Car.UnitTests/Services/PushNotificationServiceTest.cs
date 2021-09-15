@@ -2,29 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
-using Car.Domain.Configurations;
 using Car.Domain.Dto;
-using Car.Domain.Hubs;
-using Car.Domain.Models.Notification;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using MockQueryable.Moq;
 using Moq;
-using NUnit.Framework;
-using Xunit;
-using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Car.UnitTests.Services
 {
@@ -32,7 +21,7 @@ namespace Car.UnitTests.Services
     {
         [Xunit.Theory]
         [AutoEntityData]
-        public async Task SendNotificationAsync_WhenNotificationSenderNotExist_ReturnsNull(
+        public async Task SendNotificationAsync_WhenNotificationSenderNotExist_SendMessageNever(
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
             [Frozen] Mock<IFirebaseService> firebaseService,
@@ -44,15 +33,15 @@ namespace Car.UnitTests.Services
                 chatRepository.Object, userRepository.Object, firebaseService.Object);
 
             // Act
-            var result = await pushNotificationService.SendNotificationAsync(notification);
+            await pushNotificationService.SendNotificationAsync(notification);
 
             // Assert
-            result.Should().BeNull();
+            firebaseService.Verify(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>()), Times.Never);
         }
 
         [Xunit.Theory]
         [AutoEntityData]
-        public async Task SendNotificationAsync_WhenNotificationIsValid_ReturnsMessageId(
+        public async Task SendNotificationAsync_WhenNotificationIsValid_SendMessageOnce(
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
             [Frozen] Mock<IFirebaseService> firebaseService,
@@ -74,15 +63,15 @@ namespace Car.UnitTests.Services
                 chatRepository.Object, userRepository.Object, firebaseService.Object);
 
             // Act
-            var result = await pushNotificationService.SendNotificationAsync(notification);
+            await pushNotificationService.SendNotificationAsync(notification);
 
             // Assert
-            result.Should().NotBeNull();
+            firebaseService.Verify(p => p.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>()), Times.AtLeastOnce);
         }
 
         [Xunit.Theory]
         [AutoEntityData]
-        public async Task SendMessageAsync_WhenMessageChatExists_ReturnsTrue(
+        public async Task SendMessageAsync_WhenMessageChatExists_SendMessageOnce(
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
             [Frozen] Mock<IFirebaseService> firebaseService,
@@ -120,15 +109,15 @@ namespace Car.UnitTests.Services
                 chatRepository.Object, userRepository.Object, firebaseService.Object);
 
             // Act
-            var result = await pushNotificationService.SendNotificationAsync(message);
+            await pushNotificationService.SendNotificationAsync(message);
 
             // Assert
-            result.Should().Be(true);
+            firebaseService.Verify(p => p.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>()), Times.AtLeastOnce);
         }
 
         [Xunit.Theory]
         [AutoEntityData]
-        public async Task SendMessageAsync_WhenMessageChatNotExists_ReturnsFalse(
+        public async Task SendMessageAsync_WhenMessageChatNotExists_SendMessageNever(
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
             [Frozen] Mock<IFirebaseService> firebaseService,
@@ -154,59 +143,10 @@ namespace Car.UnitTests.Services
                 chatRepository.Object, userRepository.Object, firebaseService.Object);
 
             // Act
-            var result = await pushNotificationService.SendNotificationAsync(message);
+            await pushNotificationService.SendNotificationAsync(message);
 
             // Assert
-            result.Should().Be(false);
-        }
-
-        [Xunit.Theory]
-        [InlineAutoMoqData(NotificationType.PassengerApply)]
-        [InlineAutoMoqData(NotificationType.ApplicationApproval)]
-        [InlineAutoMoqData(NotificationType.JourneyCancellation)]
-        [InlineAutoMoqData(NotificationType.JourneyDetailsUpdate)]
-        [InlineAutoMoqData(NotificationType.JourneyInvitation)]
-        [InlineAutoMoqData(NotificationType.AcceptedInvitation)]
-        [InlineAutoMoqData(NotificationType.RejectedInvitation)]
-        [InlineAutoMoqData(NotificationType.PassengerWithdrawal)]
-        [InlineAutoMoqData(NotificationType.RequestedJourneyCreated)]
-        [InlineAutoMoqData(NotificationType.ApplicationRejection)]
-        [InlineAutoMoqData(13)]
-        public void FormatToMessage_AllNotificationTypes_ReturnsTitleAndMessage(
-            NotificationType type,
-            [Frozen] Mock<IRepository<Chat>> chatRepository,
-            [Frozen] Mock<IRepository<User>> userRepository,
-            [Frozen] Mock<IFirebaseService> firebaseService,
-            User sender,
-            NotificationDto notification)
-        {
-            // Arrange
-            firebaseService.Setup(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>())).ReturnsAsync("123");
-            (string Title, string Message)[] pushNotifications =
-            {
-                ("Your ride", $"{sender.Name} wants to join a ride"),
-                ($"{sender.Name}`s ride", "Your request has been approved"),
-                ($"{sender.Name}`s ride", $"{sender.Name}`s ride has been canceled"),
-                ($"{sender.Name}`s ride", $"{sender.Name}`s ride has been updated"),
-                ($"You recieved a ride invite", $"{sender.Name}, invited you to join a ride"),
-                ("Your journey", $"{sender.Name} accepted your invitation"),
-                ("Your journey", $"{sender.Name} rejected your invitation"),
-                ("Your journey", $"{sender.Name} withdrawed your request"),
-                ("HR marketing message", $"You have new notification from {sender.Name}"),
-                ("HR marketing survey", $"You have new notification from {sender.Name}"),
-                ("Your journey", $"{sender.Name} created requested journey"),
-                ("Your journey", $"{sender.Name} rejected your application"),
-                ("Car", $"You have new notification from {sender.Name}"),
-            };
-            PushNotificationService pushNotificationService = new PushNotificationService(
-                chatRepository.Object, userRepository.Object, firebaseService.Object);
-            notification.Type = type;
-
-            // Act
-            var result = PushNotificationService.FormatToMessage(sender, notification);
-
-            // Assert
-            result.Should().Be(pushNotifications[(int)type - 1]);
+            firebaseService.Verify(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>()), Times.Never);
         }
     }
 }
