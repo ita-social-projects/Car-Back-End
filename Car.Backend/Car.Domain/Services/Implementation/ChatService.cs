@@ -108,7 +108,6 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             var chats = user.ReceivedMessages.Select(rm => rm.Chat)
-                .Union(user.ReceivedMessages.Select(rm => rm.Chat))
                 .Except(new List<Chat>() { null! });
 
             var res = mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);

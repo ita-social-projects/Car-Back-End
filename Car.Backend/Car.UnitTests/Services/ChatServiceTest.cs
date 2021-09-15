@@ -159,7 +159,6 @@ namespace Car.UnitTests.Services
                 .CreateMany(1);
 
             var chats = user.ReceivedMessages.Select(rm => rm.Chat)
-                 .Union(user.ReceivedMessages.Select(rm => rm.Chat))
                  .Except(new List<Chat>() { null! });
             var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats);
 

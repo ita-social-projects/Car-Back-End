@@ -34,13 +34,5 @@ namespace Car.WebApi.Controllers
         [HttpGet("getunreadmessages/{chatId}")]
         public async Task<IActionResult> GetUnreadMessageForChat(int chatId) =>
             Ok(await receivedMessagesService.GetUnreadMessageForChatAsync(chatId));
-
-        /// <summary>
-        /// Get number of unread messages for user from all chats
-        /// </summary>
-        /// <returns>int collection</returns>
-        [HttpGet("getunreadmessages")]
-        public async Task<IActionResult> GetUnreadMessageFromAllChats() =>
-            Ok(await receivedMessagesService.GetAllUnreadMessagesForUserAsync());
     }
 }

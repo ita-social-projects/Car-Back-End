@@ -47,15 +47,5 @@ namespace Car.Domain.Services.Implementation
 
             return receivedMessages.UnreadMessagesCount;
         }
-
-        public async Task<IEnumerable<ReceivedMessages>?> GetAllUnreadMessagesForUserAsync()
-        {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-
-            var unreadMessages = await receivedMessagesRepository.Query().Where(rm => rm.UserId == userId)
-                .ToListAsync();
-
-            return unreadMessages;
-        }
     }
 }
