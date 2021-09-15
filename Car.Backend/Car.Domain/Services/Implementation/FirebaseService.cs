@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Car.Domain.Configurations;
 using Car.Domain.Services.Interfaces;
@@ -12,6 +14,7 @@ namespace Car.Domain.Services.Implementation
 {
     public class FirebaseService : IFirebaseService
     {
+
         private FirebaseMessaging Messaging { get; set; }
 
         private FirebaseApp App { get; set; }
@@ -32,12 +35,13 @@ namespace Car.Domain.Services.Implementation
             {
                 Credential = credential,
             });
+
             Messaging = FirebaseMessaging.GetMessaging(App);
         }
 
-        public async Task<string> SendAsync(Message message)
+        public async Task<List<bool>> SendAsync(MulticastMessage message)
         {
-            return await Messaging.SendAsync(message);
+            return (await Messaging.SendMulticastAsync(message)).Responses.Select(resp => resp.IsSuccess).ToList();
         }
     }
 }
