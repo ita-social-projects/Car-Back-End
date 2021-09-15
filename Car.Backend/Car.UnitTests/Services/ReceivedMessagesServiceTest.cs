@@ -20,7 +20,6 @@ namespace Car.UnitTests.Services
     {
         private readonly IReceivedMessagesService receivedMessagesService;
         private readonly Mock<IRepository<ReceivedMessages>> receivedMessagesRepository;
-        private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public ReceivedMessagesServiceTest()
