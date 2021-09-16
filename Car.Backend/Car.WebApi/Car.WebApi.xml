@@ -72,12 +72,6 @@
             <param name="filter">Chat filter parameters</param>
             <returns>Messages</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.GetAllUnreadMessagesNumber">
-            <summary>
-            Counts number of all unread messages of the user
-            </summary>
-            <returns>Number of all unread messages</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetPast">
             <summary>
             Looks for information about past journeys where current user is participant or driver
@@ -346,12 +340,11 @@
             <param name="chatId">Chat identifier</param>
             <returns>number of marked messages</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.GetUnreadMessageForChat(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.GetAllUnreadMessagesNumber">
             <summary>
-            Get number of unread messages from the specified chat
+            Counts number of all unread messages of the user
             </summary>
-            <param name="chatId">Chat identifier</param>
-            <returns>number of unread messages</returns>
+            <returns>Number of all unread messages</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.RequestController.Get(System.Int32)">
             <summary>
