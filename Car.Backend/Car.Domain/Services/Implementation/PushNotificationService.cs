@@ -16,15 +16,18 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<model.Chat> chatRepository;
         private readonly IRepository<model.User> userRepository;
         private readonly IFirebaseService firebaseService;
+        private readonly IUserService userService;
 
         public PushNotificationService(
             IRepository<model.Chat> chatRepository,
             IRepository<model.User> userRepository,
-            IFirebaseService firebaseService)
+            IFirebaseService firebaseService,
+            IUserService userService)
         {
             this.chatRepository = chatRepository;
             this.userRepository = userRepository;
             this.firebaseService = firebaseService;
+            this.userService = userService;
         }
 
         public async Task SendNotificationAsync(NotificationDto notification)
@@ -42,9 +45,11 @@ namespace Car.Domain.Services.Implementation
             {
                 { "navigateTab", "NotificationsTabs" },
             };
-            foreach (var fcmToken in reciever.FCMTokens)
+            var recieverTokens = reciever.FCMTokens.Select(t => t.Token);
+            if (recieverTokens.Any())
             {
-                await firebaseService.SendAsync(CreateNotification(title, message, fcmToken.Token, data));
+                var response = await firebaseService.SendAsync(CreateNotification(title, message, recieverTokens, data));
+                await DeleteIncorrectFcmTokensFromResponse(response, recieverTokens.ToList().AsReadOnly());
             }
         }
 
@@ -80,19 +85,21 @@ namespace Car.Domain.Services.Implementation
                 if (user.Id != message.Sender?.Id)
                 {
                     var senderName = (message.Sender != null) ? message.Sender.Name : "User";
-                    foreach (var fcmToken in user.FCMTokens)
+                    var recieverTokens = user.FCMTokens.Select(t => t.Token);
+                    if (recieverTokens.Any())
                     {
-                        await firebaseService.SendAsync(CreateNotification(senderName, message.Text, fcmToken.Token, data));
+                        var response = await firebaseService.SendAsync(CreateNotification(senderName, message.Text, recieverTokens, data));
+                        await DeleteIncorrectFcmTokensFromResponse(response, recieverTokens.ToList().AsReadOnly());
                     }
                 }
             }
         }
 
-        private static Message CreateNotification(string title, string notificationBody, string token, Dictionary<string, string> data)
+        private static MulticastMessage CreateNotification(string title, string notificationBody, IEnumerable<string> tokens, Dictionary<string, string> data)
         {
-            return new Message()
+            return new MulticastMessage()
             {
-                Token = token,
+                Tokens = tokens.ToList().AsReadOnly(),
                 Notification = new Notification()
                 {
                     Body = notificationBody,
@@ -100,6 +107,17 @@ namespace Car.Domain.Services.Implementation
                 },
                 Data = data,
             };
+        }
+
+        private async Task DeleteIncorrectFcmTokensFromResponse(List<bool> response, IReadOnlyList<string> tokens)
+        {
+            for (var i = 0; i < response.Count; i++)
+            {
+                if (!response[i])
+                {
+                    await userService.DeleteUserFcmtokenAsync(tokens[i]);
+                }
+            }
         }
     }
 }

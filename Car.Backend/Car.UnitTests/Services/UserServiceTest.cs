@@ -137,7 +137,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteUserFcmtokenAsync_WhenUserIsOwner_ExecuteOnce(FcmToken fcmToken, List<FcmToken> fcmTokens)
+        public async Task DeleteUserFcmtokenAsync_WhenTokenExists_ExecuteOnce(FcmToken fcmToken, List<FcmToken> fcmTokens)
         {
             // Arrange
             var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, fcmToken.UserId.ToString()) };
@@ -151,25 +151,6 @@ namespace Car.UnitTests.Services
 
             // Assert
             fcmTokenRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task DeleteUserFcmtokenAsync_WhenUserIsOwner_ExecuteNever(FcmToken fcmToken, List<FcmToken> fcmTokens)
-        {
-            // Arrange
-            // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (fcmToken.UserId + 1).ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            fcmTokens.Add(fcmToken);
-            fcmTokenRepository.Setup(repo => repo.Query())
-                .Returns(fcmTokens.AsQueryable().BuildMock().Object);
-
-            // Act
-            await userService.DeleteUserFcmtokenAsync(fcmToken.Token);
-
-            // Assert
-            fcmTokenRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never());
         }
     }
 }
