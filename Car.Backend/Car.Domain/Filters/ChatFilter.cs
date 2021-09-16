@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 
 namespace Car.Domain.Filters
 {

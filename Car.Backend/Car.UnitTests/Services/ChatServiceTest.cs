@@ -8,7 +8,7 @@ using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 using Car.Domain.Filters;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
@@ -153,79 +153,26 @@ namespace Car.UnitTests.Services
             var user = userList.First();
             var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            var organizerJourneys = Fixture.Build<Journey>()
-                .With(j => j.Organizer, user)
-                .With(j => j.OrganizerId, user.Id)
-                .CreateMany()
-                .ToList();
-            var participantJourneys = Fixture.Build<Journey>()
-                .With(j => j.Participants, new List<User>() { user })
-                .CreateMany()
-                .ToList();
-            user.OrganizerJourneys = organizerJourneys.ToList();
-            user.ParticipantJourneys = participantJourneys.ToList();
 
-            var chats = organizerJourneys.Select(j => j.Chat)
-                .Union(participantJourneys.Select(j => j.Chat))
-                .Except(new List<Chat>() { null });
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.UserId, user.Id)
+                .CreateMany(1);
+
+            var chats = user.ReceivedMessages.Select(rm => rm.Chat)
+                 .Except(new List<Chat>() { null! });
             var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats);
+
             userRepository.Setup(repo => repo.Query())
                 .Returns(userList.AsQueryable().BuildMock().Object);
+
+            receivedMessagesRepository.Setup(rm => rm.Query())
+                .Returns(receivedMessages.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.GetUserChatsAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expectedChats);
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task GetUserChatsAsync_WhenChatsNotExist_ReturnsEmptyCollection(IEnumerable<User> users)
-        {
-            // Arrange
-            var userList = users.ToList();
-            var user = userList.First();
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            var organizerJourneys = Fixture.Build<Journey>()
-                .With(j => j.Organizer, user)
-                .With(j => j.OrganizerId, user.Id)
-                .With(j => j.Chat, (Chat)null).CreateMany();
-            var participantJourneys = Fixture.Build<Journey>()
-                .With(j => j.Participants, new List<User>() { user })
-                .With(j => j.Chat, (Chat)null).CreateMany();
-            user.OrganizerJourneys = organizerJourneys.ToList();
-            user.ParticipantJourneys = participantJourneys.ToList();
-
-            userRepository.Setup(repo => repo.Query())
-                .Returns(userList.AsQueryable().BuildMock().Object);
-
-            // Act
-            var result = await chatService.GetUserChatsAsync();
-
-            // Assert
-            result.Should().BeEmpty();
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task GetUserChatsAsync_WhenUserNotExist_ReturnsNull(IEnumerable<User> users)
-        {
-            // Arrange
-            var userList = users.ToList();
-            var user = Fixture.Build<User>().With(user => user.Id, userList.Max(user => user.Id) + 1).Create();
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-
-            userRepository.Setup(repo => repo.Query())
-                .Returns(userList.AsQueryable().BuildMock().Object);
-
-            // Act
-            var result = await chatService.GetUserChatsAsync();
-
-            // Assert
-            result.Should().BeEmpty();
         }
 
         [Theory]
@@ -294,26 +241,7 @@ namespace Car.UnitTests.Services
         public async Task AddMessageAsync_WhenMessageIsNotValid_ReturnsNull(Message message)
         {
             // Arrange
-            var receivedMessages = Fixture.Build<ReceivedMessages>()
-                .With(receivedMessages => receivedMessages.ChatId, message.ChatId)
-                .CreateMany()
-                .ToList();
-            var participants = Fixture.Build<User>()
-                .With(user => user.ReceivedMessages, receivedMessages)
-                .CreateMany(1)
-                .ToList();
-            var journey = Fixture.Build<Journey>()
-                .With(journey => journey.Id, message.ChatId)
-                .With(journey => journey.Participants, participants)
-                .Create();
-            var chat = Fixture.Build<Chat>()
-                .With(chat => chat.Id, message.ChatId)
-                .With(chat => chat.Journey, journey)
-                .CreateMany(1);
-
             messageRepository.Setup(repo => repo.AddAsync(message)).ReturnsAsync((Message)null);
-            chatRepository.Setup(repo => repo.Query())
-                .Returns(chat.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.AddMessageAsync(message);
