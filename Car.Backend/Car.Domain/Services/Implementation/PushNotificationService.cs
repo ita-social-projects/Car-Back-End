@@ -46,7 +46,7 @@ namespace Car.Domain.Services.Implementation
                 { "navigateTab", "NotificationsTabs" },
             };
             var recieverTokens = reciever.FCMTokens.Select(t => t.Token);
-            if (recieverTokens.Count() > 0)
+            if (recieverTokens.Any())
             {
                 var response = await firebaseService.SendAsync(CreateNotification(title, message, recieverTokens, data));
                 await DeleteIncorrectFcmTokensFromResponse(response, recieverTokens.ToList().AsReadOnly());
@@ -86,7 +86,7 @@ namespace Car.Domain.Services.Implementation
                 {
                     var senderName = (message.Sender != null) ? message.Sender.Name : "User";
                     var recieverTokens = user.FCMTokens.Select(t => t.Token);
-                    if (recieverTokens.Count() > 0)
+                    if (recieverTokens.Any())
                     {
                         var response = await firebaseService.SendAsync(CreateNotification(senderName, message.Text, recieverTokens, data));
                         await DeleteIncorrectFcmTokensFromResponse(response, recieverTokens.ToList().AsReadOnly());
@@ -111,7 +111,7 @@ namespace Car.Domain.Services.Implementation
 
         private async Task DeleteIncorrectFcmTokensFromResponse(List<bool> response, IReadOnlyList<string> tokens)
         {
-            for (var i = 0; i < response.Count(); i++)
+            for (var i = 0; i < response.Count; i++)
             {
                 if (!response[i])
                 {
