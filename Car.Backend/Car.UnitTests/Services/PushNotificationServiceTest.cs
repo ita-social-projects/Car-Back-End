@@ -11,6 +11,7 @@ using Car.Domain.Dto;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
+using FirebaseAdmin.Messaging;
 using FluentAssertions;
 using MockQueryable.Moq;
 using Moq;
@@ -25,18 +26,19 @@ namespace Car.UnitTests.Services
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
             [Frozen] Mock<IFirebaseService> firebaseService,
+            [Frozen] Mock<IUserService> userService,
             NotificationDto notification)
         {
             // Arrange
             notification.Sender = null;
             PushNotificationService pushNotificationService = new PushNotificationService(
-                chatRepository.Object, userRepository.Object, firebaseService.Object);
+                chatRepository.Object, userRepository.Object, firebaseService.Object, userService.Object);
 
             // Act
             await pushNotificationService.SendNotificationAsync(notification);
 
             // Assert
-            firebaseService.Verify(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>()), Times.Never);
+            firebaseService.Verify(f => f.SendAsync(It.IsAny<MulticastMessage>()), Times.Never);
         }
 
         [Xunit.Theory]
@@ -45,13 +47,15 @@ namespace Car.UnitTests.Services
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
             [Frozen] Mock<IFirebaseService> firebaseService,
+            [Frozen] Mock<IUserService> userService,
             List<User> users,
+            List<bool> response,
             NotificationDto notification)
         {
             // Arrange
             notification.SenderId = users[0].Id;
             notification.ReceiverId = users[1].Id;
-            firebaseService.Setup(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>())).ReturnsAsync("123");
+            firebaseService.Setup(f => f.SendAsync(It.IsAny<MulticastMessage>())).ReturnsAsync(response);
             userRepository.Setup(
                     repository => repository
                         .Query(
@@ -60,13 +64,13 @@ namespace Car.UnitTests.Services
                             >()))
                 .Returns(users.AsQueryable().BuildMock().Object);
             PushNotificationService pushNotificationService = new PushNotificationService(
-                chatRepository.Object, userRepository.Object, firebaseService.Object);
+                chatRepository.Object, userRepository.Object, firebaseService.Object, userService.Object);
 
             // Act
             await pushNotificationService.SendNotificationAsync(notification);
 
             // Assert
-            firebaseService.Verify(p => p.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>()), Times.AtLeastOnce);
+            firebaseService.Verify(p => p.SendAsync(It.IsAny<MulticastMessage>()), Times.AtLeastOnce);
         }
 
         [Xunit.Theory]
@@ -75,10 +79,12 @@ namespace Car.UnitTests.Services
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
             [Frozen] Mock<IFirebaseService> firebaseService,
-            Message message)
+            [Frozen] Mock<IUserService> userService,
+            List<bool> response,
+            Data.Entities.Message message)
         {
             // Arrange
-            firebaseService.Setup(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>())).ReturnsAsync("123");
+            firebaseService.Setup(f => f.SendAsync(It.IsAny<MulticastMessage>())).ReturnsAsync(response);
             var chats = Fixture
                 .Build<Chat>()
                 .With(c => c.Id, message.ChatId)
@@ -106,13 +112,13 @@ namespace Car.UnitTests.Services
                 .Returns(users.AsQueryable().BuildMock().Object);
 
             PushNotificationService pushNotificationService = new PushNotificationService(
-                chatRepository.Object, userRepository.Object, firebaseService.Object);
+                chatRepository.Object, userRepository.Object, firebaseService.Object, userService.Object);
 
             // Act
             await pushNotificationService.SendNotificationAsync(message);
 
             // Assert
-            firebaseService.Verify(p => p.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>()), Times.AtLeastOnce);
+            firebaseService.Verify(p => p.SendAsync(It.IsAny<MulticastMessage>()), Times.AtLeastOnce);
         }
 
         [Xunit.Theory]
@@ -121,12 +127,14 @@ namespace Car.UnitTests.Services
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
             [Frozen] Mock<IFirebaseService> firebaseService,
+            [Frozen] Mock<IUserService> userService,
             List<Chat> chats,
             List<User> users,
-            Message message)
+            List<bool> response,
+            Data.Entities.Message message)
         {
             // Arrange
-            firebaseService.Setup(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>())).ReturnsAsync("123");
+            firebaseService.Setup(f => f.SendAsync(It.IsAny<MulticastMessage>())).ReturnsAsync(response);
 
             message.Chat = null;
             chatRepository.Setup(
@@ -140,13 +148,13 @@ namespace Car.UnitTests.Services
                 .Returns(users.AsQueryable().BuildMock().Object);
 
             PushNotificationService pushNotificationService = new PushNotificationService(
-                chatRepository.Object, userRepository.Object, firebaseService.Object);
+                chatRepository.Object, userRepository.Object, firebaseService.Object, userService.Object);
 
             // Act
             await pushNotificationService.SendNotificationAsync(message);
 
             // Assert
-            firebaseService.Verify(f => f.SendAsync(It.IsAny<FirebaseAdmin.Messaging.Message>()), Times.Never);
+            firebaseService.Verify(f => f.SendAsync(It.IsAny<MulticastMessage>()), Times.Never);
         }
     }
 }

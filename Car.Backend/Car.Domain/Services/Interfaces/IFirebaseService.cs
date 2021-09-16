@@ -10,6 +10,6 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface IFirebaseService
     {
-        public Task<string> SendAsync(Message message);
+        public Task<List<bool>> SendAsync(MulticastMessage message);
     }
 }

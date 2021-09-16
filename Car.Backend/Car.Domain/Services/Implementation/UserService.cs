@@ -75,23 +75,15 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<FcmToken, UserFcmTokenDto>(addedToken);
         }
 
-        public async Task<bool> DeleteUserFcmtokenAsync(string tokenToDelete)
+        public async Task DeleteUserFcmtokenAsync(string tokenToDelete)
         {
             var fcmToken = fcmTokenRepository.Query().Where(token => token.Token == tokenToDelete).FirstOrDefault();
 
             if (fcmToken != null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-                if (userId != fcmToken.UserId)
-                {
-                    return false;
-                }
-
                 fcmTokenRepository.Delete(fcmToken);
                 await fcmTokenRepository.SaveChangesAsync();
             }
-
-            return true;
         }
     }
 }
