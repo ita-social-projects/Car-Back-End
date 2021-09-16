@@ -14,7 +14,6 @@ namespace Car.Domain.Services.Implementation
 {
     public class FirebaseService : IFirebaseService
     {
-
         private FirebaseMessaging Messaging { get; set; }
 
         private FirebaseApp App { get; set; }
@@ -41,7 +40,9 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<List<bool>> SendAsync(MulticastMessage message)
         {
-            return (await Messaging.SendMulticastAsync(message)).Responses.Select(resp => resp.IsSuccess).ToList();
+            return (await Messaging.SendMulticastAsync(message)).Responses
+                .Select(resp => resp.IsSuccess)
+                .ToList();
         }
     }
 }

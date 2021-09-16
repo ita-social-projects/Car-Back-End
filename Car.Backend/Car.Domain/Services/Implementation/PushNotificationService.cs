@@ -46,8 +46,11 @@ namespace Car.Domain.Services.Implementation
                 { "navigateTab", "NotificationsTabs" },
             };
             var recieverTokens = reciever.FCMTokens.Select(t => t.Token);
-            var response = await firebaseService.SendAsync(CreateNotification(title, message, recieverTokens, data));
-            await DeleteIncorrectFcmTokensFromResponse(response, recieverTokens.ToList().AsReadOnly());
+            if (recieverTokens.Count() > 0)
+            {
+                var response = await firebaseService.SendAsync(CreateNotification(title, message, recieverTokens, data));
+                await DeleteIncorrectFcmTokensFromResponse(response, recieverTokens.ToList().AsReadOnly());
+            }
         }
 
         public async Task SendNotificationAsync(model.Message message)
@@ -83,8 +86,11 @@ namespace Car.Domain.Services.Implementation
                 {
                     var senderName = (message.Sender != null) ? message.Sender.Name : "User";
                     var recieverTokens = user.FCMTokens.Select(t => t.Token);
-                    var response = await firebaseService.SendAsync(CreateNotification(senderName, message.Text, recieverTokens, data));
-                    await DeleteIncorrectFcmTokensFromResponse(response, recieverTokens.ToList().AsReadOnly());
+                    if (recieverTokens.Count() > 0)
+                    {
+                        var response = await firebaseService.SendAsync(CreateNotification(senderName, message.Text, recieverTokens, data));
+                        await DeleteIncorrectFcmTokensFromResponse(response, recieverTokens.ToList().AsReadOnly());
+                    }
                 }
             }
         }
