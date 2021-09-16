@@ -35,16 +35,6 @@ namespace Car.Domain.Services.Implementation
             return receivedMessages.UnreadMessagesCount;
         }
 
-        public async Task<int> GetUnreadMessageForChatAsync(int chatId)
-        {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-
-            var receivedMessages = await receivedMessagesRepository.Query()
-                .FirstOrDefaultAsync(rm => rm.ChatId == chatId && rm.UserId == userId)!;
-
-            return receivedMessages.UnreadMessagesCount;
-        }
-
         public async Task<int> GetAllUnreadMessagesNumber()
         {
             var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();

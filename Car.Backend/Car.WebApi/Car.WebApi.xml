@@ -333,11 +333,6 @@
             <param name="notificationId">notification Id</param>
             <returns>amended notification</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.GetAllUnreadMessagesNumber">
-            <summary>
-            Counts number of all unread messages of the user
-            </summary>
-            <returns>Number of all unread messages</returns>
         <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.MarkMessagesRead(System.Int32)">
             <summary>
             Mark specified chat messages as read
@@ -345,12 +340,11 @@
             <param name="chatId">Chat identifier</param>
             <returns>number of marked messages</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.GetUnreadMessageForChat(System.Int32)">
+        <member name="M:Car.WebApi.Controllers.ReceivedMessagesController.GetAllUnreadMessagesNumber">
             <summary>
-            Get number of unread messages from the specified chat
+            Counts number of all unread messages of the user
             </summary>
-            <param name="chatId">Chat identifier</param>
-            <returns>number of unread messages</returns>
+            <returns>Number of all unread messages</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.RequestController.Get(System.Int32)">
             <summary>
