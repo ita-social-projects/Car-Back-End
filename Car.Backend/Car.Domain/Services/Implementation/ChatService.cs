@@ -106,17 +106,18 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<ChatDto>> GetUserChatsAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-            var user = await userRepository.Query()
+            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            var user = await userRepository
+                .Query()
                 .IncludeJourney()
                 .IncludeReceivedMessages()
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            var chats = user.ReceivedMessages.Select(rm => rm.Chat)
-                .Except(new List<Chat>() { null! });
+            var chats = user.ReceivedMessages
+                .Select(rm => rm.Chat)
+                .OrderByDescending(chat => chat!.Journey!.DepartureTime);
 
-            var res = mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
-            return res;
+            return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
         }
 
         public async Task<IEnumerable<ChatDto>> GetFilteredChatsAsync(ChatFilter filter)
