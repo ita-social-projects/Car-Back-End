@@ -59,8 +59,8 @@ namespace Car.WebApi.Controllers
         [HttpDelete("fcmtoken/{token}")]
         public async Task<IActionResult> DeleteUserFcmtoken(string token)
         {
-            bool isTokenDeleted = await userService.DeleteUserFcmtokenAsync(token);
-            return isTokenDeleted ? Ok() : Forbid();
+            await userService.DeleteUserFcmtokenAsync(token);
+            return Ok();
         }
     }
 }

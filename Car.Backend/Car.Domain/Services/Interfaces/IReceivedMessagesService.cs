@@ -8,6 +8,6 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<int> MarkMessagesReadInChatAsync(int chatId);
 
-        Task<int> GetUnreadMessageForChatAsync(int chatId);
+        Task<int> GetAllUnreadMessagesNumber();
     }
 }

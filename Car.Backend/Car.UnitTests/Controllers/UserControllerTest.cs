@@ -105,28 +105,11 @@ namespace Car.UnitTests.Controllers
         [AutoEntityData]
         public async Task DeleteUserFcmtoken_WhenIsAllowed_ReturnsOkObjectResult(string token)
         {
-            // Arrange
-            userService.Setup(service => service.DeleteUserFcmtokenAsync(token)).ReturnsAsync(true);
-
             // Act
             var result = await userController.DeleteUserFcmtoken(token);
 
             // Assert
             result.Should().BeOfType<OkResult>();
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task DeleteUserFcmtoken_WhenIsNotAllowed_ReturnsOkObjectResult(string token)
-        {
-            // Arrange
-            userService.Setup(service => service.DeleteUserFcmtokenAsync(token)).ReturnsAsync(false);
-
-            // Act
-            var result = await userController.DeleteUserFcmtoken(token);
-
-            // Assert
-            result.Should().BeOfType<ForbidResult>();
         }
     }
 }
