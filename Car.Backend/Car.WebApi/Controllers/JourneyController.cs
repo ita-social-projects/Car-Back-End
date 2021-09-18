@@ -114,6 +114,15 @@ namespace Car.WebApi.Controllers
             Ok(await journeyService.UpdateDetailsAsync(journey));
 
         /// <summary>
+        /// Update the journey invitation asynchronously.
+        /// </summary>
+        /// <param name="invitation">The journey dto.</param>
+        /// <returns>OkResult</returns>
+        [HttpPut("update-invitation")]
+        public async Task<IActionResult> UpdateInvitation([FromBody] InvitationDto invitation) =>
+            Ok(await journeyService.UpdateInvitationAsync(invitation));
+
+        /// <summary>
         /// Cancels journey
         /// </summary>
         /// <param name="id">id of journey that should be cancelled</param>

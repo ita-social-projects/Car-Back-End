@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
@@ -22,6 +23,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Journey> journeyRepository;
         private readonly IRepository<Request> requestRepository;
         private readonly IRepository<User> userRepository;
+        private readonly IRepository<Invitation> invitationRepository;
         private readonly IRepository<Chat> chatRepository;
         private readonly IRepository<Schedule> scheduleRepository;
         private readonly INotificationService notificationService;
@@ -36,6 +38,7 @@ namespace Car.Domain.Services.Implementation
             IRepository<Request> requestRepository,
             IRepository<User> userRepository,
             IRepository<Schedule> scheduleRepository,
+            IRepository<Invitation> invitationRepository,
             IRepository<Chat> chatRepository,
             INotificationService notificationService,
             IRequestService requestService,
@@ -48,6 +51,7 @@ namespace Car.Domain.Services.Implementation
             this.requestRepository = requestRepository;
             this.userRepository = userRepository;
             this.scheduleRepository = scheduleRepository;
+            this.invitationRepository = invitationRepository;
             this.notificationService = notificationService;
             this.chatRepository = chatRepository;
             this.requestService = requestService;
@@ -65,6 +69,7 @@ namespace Car.Domain.Services.Implementation
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
                 .IncludeSchedule();
+                .IncludeJourneyInvitations();
 
             var journey = withCancelledStops
                 ? await journeyQueryable
@@ -248,6 +253,7 @@ namespace Car.Domain.Services.Implementation
                 else
                 {
                     await CheckForSuitableRequests(addedJourney);
+                    await NotifyInvitedUsers(addedJourney.Invitations, addedJourney.OrganizerId, addedJourney.Id);
                 }
             }
 
@@ -317,17 +323,18 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<JourneyModel> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated = false)
+        public async Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated = false)
         {
             var journey = await journeyRepository.Query()
                 .FilterUncancelledJourneys()
+                .FilterUpcoming()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
             if (journey is null)
             {
-                return null!;
+                return null;
             }
 
             if (!isParentUpdated)
@@ -383,21 +390,30 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<Journey, JourneyModel>(journey);
         }
 
-        public async Task<JourneyModel> UpdateDetailsAsync(JourneyDto journeyDto, bool isParentUpdated = false)
+        public async Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto, bool isParentUpdated = false)
         {
-            var journey = mapper.Map<JourneyDto, Journey>(journeyDto);
+            var journey = await journeyRepository.Query()
+                .IncludeJourneyInvitations()
+                .AsNoTracking()
+                .FilterUncancelledJourneys()
+                .FilterUpcoming()
+                .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
             if (journey is null)
             {
-                return null!;
+                return null;
             }
 
+            var existingInvitations = journey.Invitations;
+
+            var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto); 
+            
             if (!isParentUpdated)
             {
-                journey.ParentId = null;
+                updatedJourney.ParentId = null;
             }
 
-            journey = await journeyRepository.UpdateAsync(journey);
+            updatedJourney = await journeyRepository.UpdateAsync(updatedJourney);
             await journeyRepository.SaveChangesAsync();
 
             if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))
@@ -439,10 +455,31 @@ namespace Car.Domain.Services.Implementation
                 await notificationService.JourneyUpdateNotifyUserAsync(await journeyRepository
                     .Query()
                     .IncludeAllParticipants()
-                    .FirstOrDefaultAsync(j => j.Id == journeyDto.Id));
+                    .FirstOrDefaultAsync(j => j.Id == updatedJourney.Id));
+
+                var newInvitations = updatedJourney.Invitations.Except(existingInvitations).ToList();
+                await NotifyInvitedUsers(newInvitations, updatedJourney.OrganizerId, updatedJourney.Id);
             }
 
-            return mapper.Map<Journey, JourneyModel>(journey);
+            return mapper.Map<Journey, JourneyModel>(updatedJourney!);
+        }
+
+        public async Task<InvitationDto> UpdateInvitationAsync(InvitationDto invitationDto)
+        {
+            var journey = await journeyRepository.Query()
+                .IncludeJourneyInvitations()
+                .FirstOrDefaultAsync(j => j.Id == invitationDto.JourneyId);
+            var invitation = journey.Invitations.FirstOrDefault(i => i.InvitedUserId == invitationDto.InvitedUserId);
+
+            if (invitation != null)
+            {
+                invitation.Type = invitationDto.Type;
+
+                invitation = await invitationRepository.UpdateAsync(invitation);
+                await journeyRepository.SaveChangesAsync();
+            }
+
+            return mapper.Map<Invitation, InvitationDto>(invitation!);
         }
 
         public async Task UpdateScheduleAsync(int id, WeekDay? weekDay)
@@ -515,6 +552,25 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
+        public async Task NotifyInvitedUsers(ICollection<Invitation> invitations, int senderId, int journeyId)
+        {
+            foreach (var invitation in invitations)
+            {
+                var notification = new Notification()
+                {
+                    SenderId = senderId,
+                    ReceiverId = invitation.InvitedUserId,
+                    Type = NotificationType.JourneyInvitation,
+                    IsRead = false,
+                    CreatedAt = DateTime.UtcNow,
+                    JsonData = JsonSerializer.Serialize(new { }),
+                    JourneyId = journeyId,
+                };
+
+                await notificationService.AddNotificationAsync(mapper.Map<Notification, NotificationDto>(notification));
+            }
+        }
+
         public async Task<bool> IsCanceled(int journeyId)
         {
             var journey = await journeyRepository
@@ -563,6 +619,7 @@ namespace Car.Domain.Services.Implementation
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
+                .Include(j => j.Chat)
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             var userId = journeyApply.JourneyUser?.UserId ?? default(int);
@@ -579,8 +636,17 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
-            userToAdd.ReceivedMessages.FirstOrDefault(rm => rm.ChatId == journeyId)!
-                .UnreadMessagesCount = await SetUnreadMessagesForNewUser(journeyId);
+            if (journey.Chat is not null)
+            {
+                var receivedMessages = new ReceivedMessages
+                {
+                    ChatId = journey.Chat.Id,
+                    UserId = userToAdd.Id,
+                    UnreadMessagesCount = await GetUnreadMessagesCountForNewUserAsync(journeyId),
+                };
+
+                userToAdd.ReceivedMessages.Add(receivedMessages);
+            }
 
             var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
@@ -603,12 +669,12 @@ namespace Car.Domain.Services.Implementation
             return true;
         }
 
-        public async Task<int> SetUnreadMessagesForNewUser(int journeyId)
+        public async Task<int> GetUnreadMessagesCountForNewUserAsync(int journeyId)
         {
             var unreadMessagesInChat = await chatRepository.Query()
                 .FirstOrDefaultAsync(c => c.Id == journeyId);
 
-            return unreadMessagesInChat.Messages.Count;
+            return unreadMessagesInChat?.Messages?.Count ?? 0;
         }
 
         public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(

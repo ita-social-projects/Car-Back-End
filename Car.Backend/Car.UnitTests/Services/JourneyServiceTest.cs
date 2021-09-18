@@ -39,6 +39,7 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<Chat>> chatRepository;
         private readonly Mock<IRepository<Schedule>> scheduleRepository;
         private readonly Mock<IRepository<User>> userRepository;
+        private readonly Mock<IRepository<Invitation>> invitationRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
         private readonly Mock<ILocationService> locationService;
 
@@ -51,6 +52,7 @@ namespace Car.UnitTests.Services
             locationService = new Mock<ILocationService>();
             journeyUserService = new Mock<IJourneyUserService>();
             userRepository = new Mock<IRepository<User>>();
+            invitationRepository = new Mock<IRepository<Invitation>>();
             chatRepository = new Mock<IRepository<Chat>>();
             messageRepository = new Mock<IRepository<Message>>();
             receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
@@ -62,6 +64,7 @@ namespace Car.UnitTests.Services
                 requestRepository.Object,
                 userRepository.Object,
                 scheduleRepository.Object,
+                invitationRepository.Object,
                 chatRepository.Object,
                 notificationService.Object,
                 requestService.Object,
@@ -795,6 +798,8 @@ namespace Car.UnitTests.Services
             var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journey.Id)
+                .With(dto => dto.IsCancelled, false)
+                .With(dto => dto.DepartureTime, DateTime.Now.AddHours(1))
                 .CreateMany(1);
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
             var schedules = Fixture.Build<Schedule>()
@@ -821,7 +826,7 @@ namespace Car.UnitTests.Services
             // Arrange
             updatedJourneyDto.WeekDay = null;
             var journeys = Fixture.Build<Journey>()
-                .With(j => j.Id, updatedJourneyDto.Id)
+                .With(j => j.Id, updatedJourneyDto.Id + 1)
                 .CreateMany(1);
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
@@ -835,6 +840,74 @@ namespace Car.UnitTests.Services
 
             // Act
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateInvitationAsync_WhenInvitationIsValid_ReturnsInvitationObject(
+            InvitationDto updatedInvitationDto,
+            JourneyDto updatedJourneyDto)
+        {
+            // Arrange
+            updatedInvitationDto.JourneyId = updatedJourneyDto.Id;
+            var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
+            var invitation = Mapper.Map<InvitationDto, Invitation>(updatedInvitationDto);
+            var invitations = Fixture.Build<Invitation>()
+                .With(i => i.Id, invitation.Id)
+                .With(i => i.InvitedUserId, invitation.InvitedUserId)
+                .CreateMany(1);
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journey.Id)
+                .With(j => j.Invitations, invitations.ToList())
+                .CreateMany(1);
+            var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
+
+            invitationRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync(invitation);
+            invitationRepository.Setup(repo =>
+                    repo.Query()).Returns(invitations.AsQueryable().BuildMock().Object);
+            journeyRepository.Setup(repo =>
+                    repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.UpdateInvitationAsync(updatedInvitationDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedInvitation);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateInvitationAsync_WhenInvitationIsNotValid_ReturnsInvitationObject(
+            InvitationDto updatedInvitationDto,
+            JourneyDto updatedJourneyDto)
+        {
+            // Arrange
+            updatedInvitationDto.JourneyId = updatedJourneyDto.Id;
+            var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
+            var invitation = Mapper.Map<InvitationDto, Invitation>(updatedInvitationDto);
+            var invitations = Fixture.Build<Invitation>()
+                .With(i => i.Id, invitation.Id)
+                .With(i => i.InvitedUserId, invitation.InvitedUserId)
+                .CreateMany(1);
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journey.Id)
+                .With(j => j.Invitations, invitations.ToList())
+                .CreateMany(1);
+            var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
+
+            invitationRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync((Invitation)null);
+            invitationRepository.Setup(repo =>
+                    repo.Query()).Returns(invitations.AsQueryable().BuildMock().Object);
+            journeyRepository.Setup(repo =>
+                    repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.UpdateInvitationAsync(updatedInvitationDto);
 
             // Assert
             result.Should().BeNull();
@@ -1135,7 +1208,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task SetUnreadMessagesForNewUser_UserGainsUnreadMessagesEqualsToTotalMessages(int journeyId)
+        public async Task GetUnreadMessagesCountForNewUser_UserGainsUnreadMessagesEqualsToTotalMessages(int journeyId)
         {
             // Arrange
             var messages = Fixture.Build<Message>()
@@ -1152,7 +1225,7 @@ namespace Car.UnitTests.Services
             var expected = messages.Count;
 
             // Act
-            var result = await journeyService.SetUnreadMessagesForNewUser(journeyId);
+            var result = await journeyService.GetUnreadMessagesCountForNewUserAsync(journeyId);
 
             // Assert
             result.Should().Be(expected);

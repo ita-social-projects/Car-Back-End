@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Car.Domain.Dto;
 
 namespace Car.Domain.Services.Interfaces
@@ -7,8 +8,12 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<UserDto> GetUserByIdAsync(int userId);
 
+        Task<IEnumerable<UserEmailDto>> GetAllUsersAsync();
+
         Task<UserDto?> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto);
 
-        Task<UserDto?> UpdateUserFcmtokenAsync(UpdateUserFcmtokenDto updateUserFcmtokenDto);
+        Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto);
+
+        Task DeleteUserFcmtokenAsync(string tokenToDelete);
     }
 }

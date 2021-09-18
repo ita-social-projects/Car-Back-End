@@ -280,6 +280,24 @@ namespace Car.UnitTests.Controllers
         }
 
         [Theory]
+        [AutoEntityData]
+        public async Task UpdateInvitations_WhenInvitationIsValid_ReturnsOkObjectResult(
+            InvitationDto invitationDto,
+            InvitationDto expectedInvitationDto)
+        {
+            // Arrange
+            journeyService.Setup(service =>
+                service.UpdateInvitationAsync(invitationDto)).ReturnsAsync(expectedInvitationDto);
+
+            // Act
+            var result = await journeyController.UpdateInvitation(invitationDto);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+            (result as OkObjectResult)?.Value.Should().Be(expectedInvitationDto);
+        }
+
+        [Theory]
         [AutoData]
         public async Task CancelAsync_WhenJourneyExists_ReturnsOkResult(int journeyIdToCancel)
         {

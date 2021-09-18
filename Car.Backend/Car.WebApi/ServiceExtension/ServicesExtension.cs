@@ -35,6 +35,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRequestService, RequestService>();
             services.AddScoped<ILocationTypeService, LocationTypeService>();
             services.AddScoped<IJourneyUserService, JourneyUserService>();
+            services.AddScoped<IReceivedMessagesService, ReceivedMessagesService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Data.Entities.Car>, Repository<Data.Entities.Car>>();
@@ -42,8 +43,10 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<Brand>, Repository<Brand>>();
             services.AddScoped<IRepository<Model>, Repository<Model>>();
             services.AddScoped<IRepository<Chat>, Repository<Chat>>();
+            services.AddScoped<IRepository<FcmToken>, Repository<FcmToken>>();
             services.AddScoped<IRepository<Message>, Repository<Message>>();
             services.AddScoped<IRepository<Journey>, Repository<Journey>>();
+            services.AddScoped<IRepository<Invitation>, Repository<Invitation>>();
             services.AddScoped<IRepository<Notification>, Repository<Notification>>();
             services.AddScoped<IRepository<Location>, Repository<Location>>();
             services.AddScoped<IRepository<LocationType>, Repository<LocationType>>();

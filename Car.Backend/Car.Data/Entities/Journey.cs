@@ -49,6 +49,8 @@ namespace Car.Data.Entities
 
         public ICollection<Stop> Stops { get; set; } = new List<Stop>();
 
+        public ICollection<Invitation> Invitations { get; set; } = new List<Invitation>();
+
         public ICollection<JourneyPoint> JourneyPoints { get; set; } = new List<JourneyPoint>();
 
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();

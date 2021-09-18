@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Car.Domain.Configurations;
 using Car.Domain.Services.Interfaces;
@@ -16,9 +14,9 @@ namespace Car.Domain.Services.Implementation
 {
     public class FirebaseService : IFirebaseService
     {
-        public FirebaseApp App { get; set; }
+        private FirebaseMessaging Messaging { get; set; }
 
-        public FirebaseMessaging Messaging { get; set; }
+        private FirebaseApp App { get; set; }
 
         public FirebaseService(
             IWebHostEnvironment webHostEnvironment,
@@ -28,7 +26,7 @@ namespace Car.Domain.Services.Implementation
                 webHostEnvironment.WebRootPath,
                 firebaseOptions.Value.CredentialsPath!);
 
-            var stream = new FileStream(keyFilePath, FileMode.Open, FileAccess.Read);
+            using var stream = new FileStream(keyFilePath, FileMode.Open, FileAccess.Read);
             var credential = GoogleCredential.FromStream(stream);
             credential = credential.CreateScoped("https://www.googleapis.com/auth/firebase.messaging");
 
@@ -36,12 +34,15 @@ namespace Car.Domain.Services.Implementation
             {
                 Credential = credential,
             });
+
             Messaging = FirebaseMessaging.GetMessaging(App);
         }
 
-        public async Task<string> SendAsync(Message message)
+        public async Task<List<bool>> SendAsync(MulticastMessage message)
         {
-            return await Messaging.SendAsync(message);
+            return (await Messaging.SendMulticastAsync(message)).Responses
+                .Select(resp => resp.IsSuccess)
+                .ToList();
         }
     }
 }

@@ -26,6 +26,14 @@ namespace Car.WebApi.Controllers
             Ok(await userService.GetUserByIdAsync(id));
 
         /// <summary>
+        /// Gets all users.
+        /// </summary>
+        /// <returns>All users</returns>
+        [HttpGet("all-users")]
+        public async Task<IActionResult> GetAllUsers() =>
+            Ok(await userService.GetAllUsersAsync());
+
+        /// <summary>
         /// Updates a users image with the identifier asynchronously.
         /// </summary>
         /// <param name="updateUserImageDto">User object to update.</param>
@@ -35,12 +43,24 @@ namespace Car.WebApi.Controllers
             Ok(await userService.UpdateUserImageAsync(updateUserImageDto));
 
         /// <summary>
-        /// Updates a users fcmtoken with the identifier asynchronously.
+        /// Adds fcmtoken to user asynchronously.
         /// </summary>
-        /// <param name="updateUserFcmtokenDto">User object to update.</param>
+        /// <param name="userFCMTokenDto">fcm token to add.</param>
         /// <returns>Updated user.</returns>
-        [HttpPut("fcmtoken")]
-        public async Task<IActionResult> UpdateUserFcmtoken([FromForm] UpdateUserFcmtokenDto updateUserFcmtokenDto) =>
-            Ok(await userService.UpdateUserFcmtokenAsync(updateUserFcmtokenDto));
+        [HttpPost("fcmtoken")]
+        public async Task<IActionResult> AddUserFcmtoken([FromForm] UserFcmTokenDto userFCMTokenDto) =>
+            Ok(await userService.AddUserFcmtokenAsync(userFCMTokenDto));
+
+        /// <summary>
+        /// Removes fcmtoken from user asynchronously.
+        /// </summary>
+        /// <param name="token">fcm token to delete.</param>
+        /// <returns>Updated user.</returns>
+        [HttpDelete("fcmtoken/{token}")]
+        public async Task<IActionResult> DeleteUserFcmtoken(string token)
+        {
+            await userService.DeleteUserFcmtokenAsync(token);
+            return Ok();
+        }
     }
 }

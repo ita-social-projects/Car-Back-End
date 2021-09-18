@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;

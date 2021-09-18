@@ -32,6 +32,8 @@ namespace Car.Domain.Dto
 
         public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
 
+        public ICollection<InvitationDto> Invitations { get; set; } = new List<InvitationDto>();
+
         public ICollection<JourneyPointDto> JourneyPoints { get; set; } = new List<JourneyPointDto>();
     }
 }

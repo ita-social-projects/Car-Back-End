@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20210907192853_ChangeRelationshipBetweenUserAndFCMToken")]
+    partial class ChangeRelationshipBetweenUserAndFCMToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -500,9 +502,6 @@ namespace Car.Data.Migrations
                     b.Property<int>("OrganizerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("RouteDistance")
                         .HasColumnType("int");
 
@@ -511,8 +510,6 @@ namespace Car.Data.Migrations
                     b.HasIndex("CarId");
 
                     b.HasIndex("OrganizerId");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Journey");
                 });
@@ -8227,8 +8224,10 @@ namespace Car.Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("Days")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -8418,15 +8417,9 @@ namespace Car.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.Schedule", "Parent")
-                        .WithMany("ChildJourneys")
-                        .HasForeignKey("ParentId");
-
                     b.Navigation("Car");
 
                     b.Navigation("Organizer");
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.JourneyPoint", b =>
@@ -8720,11 +8713,6 @@ namespace Car.Data.Migrations
             modelBuilder.Entity("Car.Data.Entities.Model", b =>
                 {
                     b.Navigation("Cars");
-                });
-
-            modelBuilder.Entity("Car.Data.Entities.Schedule", b =>
-                {
-                    b.Navigation("ChildJourneys");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.User", b =>
