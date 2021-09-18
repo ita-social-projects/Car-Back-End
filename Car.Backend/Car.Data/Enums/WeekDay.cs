@@ -17,31 +17,31 @@ namespace Car.Data.Enums
         /// <summary>
         /// Tuesday.
         /// </summary>
-        Tuesday = 2,
+        Tuesday = 1 << 1,
 
         /// <summary>
         /// Wednesday.
         /// </summary>
-        Wednesday = 4,
+        Wednesday = 1 << 2,
 
         /// <summary>
         /// Thursday.
         /// </summary>
-        Thursday = 8,
+        Thursday = 1 << 3,
 
         /// <summary>
         /// Friday.
         /// </summary>
-        Friday = 16,
+        Friday = 1 << 4,
 
         /// <summary>
         /// Saturday.
         /// </summary>
-        Saturday = 32,
+        Saturday = 1 << 5,
 
         /// <summary>
         /// Sunday.
         /// </summary>
-        Sunday = 64,
+        Sunday = 1 << 6,
     }
 }

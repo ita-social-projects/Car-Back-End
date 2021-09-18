@@ -15,5 +15,13 @@ namespace Car.Domain.Extensions
 
         public static IQueryable<Schedule> IncludeChildJourneys(this IQueryable<Schedule> schedules) =>
             schedules.Include(schedule => schedule.ChildJourneys);
+
+        public static IQueryable<Schedule> IncludeJourneyWithRouteInfo(this IQueryable<Schedule> schedules) =>
+            schedules
+                .Include(schedule => schedule.Journey)
+                .ThenInclude(journey => journey!.JourneyPoints)
+                .Include(schedule => schedule.Journey)
+                .ThenInclude(journey => journey!.Stops)
+                .ThenInclude(stop => stop.Address);
     }
 }

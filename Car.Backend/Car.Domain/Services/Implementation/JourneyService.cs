@@ -63,7 +63,8 @@ namespace Car.Domain.Services.Implementation
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
-                .IncludeJourneyPoints();
+                .IncludeJourneyPoints()
+                .IncludeSchedule();
 
             var journey = withCancelledStops
                 ? await journeyQueryable
@@ -81,10 +82,13 @@ namespace Car.Domain.Services.Implementation
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
                     .Query()
+                    .IncludeSchedule()
                     .FilterUncancelledJourneys()
+                    .FilterUnscheduledJourneys()
                     .IncludeJourneyInfo(userId)
                     .FilterPast()
                     .UseSavedAdresses(locationService))
+                .SortByDepartureTime()
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -94,11 +98,13 @@ namespace Car.Domain.Services.Implementation
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
-                    .Query(journey => journey.Schedule!)
+                    .Query()
+                    .IncludeSchedule()
                     .FilterUncancelledJourneys()
                     .IncludeJourneyInfo(userId)
-                    .Where(journey => journey.Schedule != null)
+                    .FilterScheduledJourneys()
                     .UseSavedAdresses(locationService))
+                .SortByDepartureTime()
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -109,10 +115,13 @@ namespace Car.Domain.Services.Implementation
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
             var journeys = await (await journeyRepository
                     .Query()
+                    .IncludeSchedule()
                     .FilterUncancelledJourneys()
+                    .FilterUnscheduledJourneys()
                     .IncludeJourneyInfo(userId)
                     .FilterUpcoming()
                     .UseSavedAdresses(locationService))
+                .SortByDepartureTime()
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
@@ -150,12 +159,20 @@ namespace Car.Domain.Services.Implementation
 
         public async Task AddFutureJourneyAsync()
         {
-            var schedules = await scheduleRepository.Query().Where(schedule => !schedule.Journey!.IsCancelled).ToListAsync();
+            var schedules = await scheduleRepository
+                .Query()
+                .IncludeJourneyWithRouteInfo()
+                .IncludeChildJourneys()
+                .Where(schedule => !schedule.Journey!.IsCancelled)
+                .ToListAsync();
 
-            schedules.AsParallel().ForAll(AddFutureJourney);
+            foreach (var schedule in schedules)
+            {
+                await AddFutureJourneyAsync(schedule);
+            }
         }
 
-        public void AddFutureJourney(Schedule schedule)
+        public async Task AddFutureJourneyAsync(Schedule schedule)
         {
             var now = DateTime.Today;
             var termInDays = 14;
@@ -164,16 +181,43 @@ namespace Car.Domain.Services.Implementation
                 .Where(date =>
                     schedule.Days.ToString().Contains(date.DayOfWeek.ToString()) &&
                     !schedule.ChildJourneys.Any(journey => journey.DepartureTime.Equals(date)))
-                .ToList();
+                .ToHashSet();
 
-            dates.ForEach(async date =>
+            foreach (var date in dates)
             {
                 var journey = mapper.Map<Journey, JourneyDto>(schedule.Journey!);
 
-                journey.DepartureTime = journey.DepartureTime.AddDays((date - journey.DepartureTime).Days);
+                journey.Id = 0;
+                journey.DepartureTime = journey.DepartureTime.AddDays((date - journey.DepartureTime.Date).Days);
+                foreach (var journeyPoint in journey.JourneyPoints)
+                {
+                    journeyPoint.Id = 0;
+                }
+
+                foreach (var stop in journey.Stops)
+                {
+                    stop.Id = 0;
+                    if (stop.Address is not null)
+                    {
+                        stop.Address = stop.Address with { Id = 0 };
+                    }
+                }
 
                 await AddJourneyAsync(journey, schedule.Id);
-            });
+            }
+        }
+
+        public async Task CancelUnsuitableJourneyAsync(Schedule schedule)
+        {
+            var journeysToCancel = schedule.ChildJourneys.Where(journay =>
+                    !schedule.Days.ToString().Contains(journay.DepartureTime.DayOfWeek.ToString()))
+                .Select(journey => journey.Id)
+                .ToList();
+
+            foreach (var journeyId in journeysToCancel)
+            {
+                await CancelAsync(journeyId);
+            }
         }
 
         public async Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel, int? parentId = null)
@@ -181,32 +225,40 @@ namespace Car.Domain.Services.Implementation
             var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
-            addedJourney.ParentId = parentId;
+
+            if (addedJourney is not null)
+            {
+                addedJourney.ParentId = parentId;
+            }
 
             await journeyRepository.SaveChangesAsync();
 
-            if (journeyModel.RepeatDays is not null)
+            if (addedJourney is not null)
             {
-                var schedule = await scheduleRepository.AddAsync(new Schedule
+                if (journeyModel.WeekDay is not null)
                 {
-                    Id = addedJourney.Id,
-                    Days = (WeekDay)journeyModel.RepeatDays,
-                });
-                await scheduleRepository.SaveChangesAsync();
-                AddFutureJourney(schedule);
-            }
-            else
-            {
-                await CheckForSuitableRequests(addedJourney);
+                    var schedule = await scheduleRepository.AddAsync(new Schedule
+                    {
+                        Id = addedJourney.Id,
+                        Days = (WeekDay)journeyModel.WeekDay,
+                    });
+                    await scheduleRepository.SaveChangesAsync();
+                    await AddFutureJourneyAsync(schedule);
+                }
+                else
+                {
+                    await CheckForSuitableRequests(addedJourney);
+                }
             }
 
-            return mapper.Map<Journey, JourneyModel>(addedJourney);
+            return mapper.Map<Journey, JourneyModel>(addedJourney!);
         }
 
         public IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter) =>
             journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
+                .FilterUnscheduledJourneys()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
@@ -249,6 +301,19 @@ namespace Car.Domain.Services.Implementation
                 await journeyRepository.SaveChangesAsync();
                 await notificationService.DeleteNotificationsAsync(journeyToCancel.Notifications);
                 await notificationService.NotifyParticipantsAboutCancellationAsync(journeyToCancel);
+
+                var schedule = await scheduleRepository
+                    .Query()
+                    .IncludeChildJourneys()
+                    .AsNoTrackingWithIdentityResolution()
+                    .FirstOrDefaultAsync(schedule_ => schedule_.Id == journeyId);
+                if (schedule is not null)
+                {
+                    foreach (var childJourneyId in schedule.ChildJourneys.Select(j => j.Id))
+                    {
+                        await CancelAsync(childJourneyId);
+                    }
+                }
             }
         }
 
@@ -279,15 +344,33 @@ namespace Car.Domain.Services.Implementation
 
             await journeyRepository.SaveChangesAsync();
 
-            var schedule = await scheduleRepository.Query().FirstOrDefaultAsync(schedule_ => schedule_.Id == journey.Id);
-            if (schedule is not null)
+            if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))
             {
-                foreach (var childJourney in schedule.ChildJourneys)
+                await UpdateScheduleAsync(journeyDto.Id, journeyDto.WeekDay);
+
+                journeyDto.WeekDay = null;
+
+                var schedule = await scheduleRepository
+                    .Query()
+                    .IncludeChildJourneys()
+                    .AsNoTrackingWithIdentityResolution()
+                    .FirstOrDefaultAsync(schedule_ => schedule_.Id == journey.Id);
+
+                if (schedule is not null)
                 {
-                    journeyDto.Id = childJourney.Id;
-                    journeyDto.DepartureTime = childJourney.DepartureTime;
-                    await UpdateRouteAsync(journeyDto, true);
+                    foreach (var childJourney in schedule.ChildJourneys)
+                    {
+                        journeyDto.Id = childJourney.Id;
+                        journeyDto.DepartureTime = childJourney.DepartureTime;
+                        await UpdateRouteAsync(journeyDto, true);
+                    }
                 }
+            }
+            else if (journeyDto.WeekDay is not null)
+            {
+                var schedule = await scheduleRepository.AddAsync(new Schedule
+                    { Id = journeyDto.Id, Days = (WeekDay)journeyDto.WeekDay });
+                await AddFutureJourneyAsync(schedule);
             }
             else
             {
@@ -317,15 +400,39 @@ namespace Car.Domain.Services.Implementation
             journey = await journeyRepository.UpdateAsync(journey);
             await journeyRepository.SaveChangesAsync();
 
-            var schedule = await scheduleRepository.Query().FirstOrDefaultAsync(schedule_ => schedule_.Id == journey.Id);
-            if (schedule is not null)
+            if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))
             {
-                foreach (var childJourney in schedule.ChildJourneys)
+                await UpdateScheduleAsync(journeyDto.Id, journeyDto.WeekDay);
+
+                journeyDto.WeekDay = null;
+
+                var schedule = await scheduleRepository
+                    .Query()
+                    .IncludeChildJourneys()
+                    .AsNoTrackingWithIdentityResolution()
+                    .FirstOrDefaultAsync(schedule_ => schedule_.Id == journey.Id);
+
+                if (schedule is not null)
                 {
-                    journeyDto.Id = childJourney.Id;
-                    journeyDto.DepartureTime = childJourney.DepartureTime.Date + journeyDto.DepartureTime.TimeOfDay;
-                    await UpdateRouteAsync(journeyDto, true);
+                    foreach (var childJourney in schedule.ChildJourneys.Where(journey_ => !journey_.IsCancelled))
+                    {
+                        journeyDto.Id = childJourney.Id;
+                        journeyDto.DepartureTime = childJourney.DepartureTime.Date + journeyDto.DepartureTime.TimeOfDay;
+
+                        var childJourneyDto = mapper.Map<Journey, JourneyDto>(childJourney);
+
+                        journeyDto.Stops = childJourneyDto.Stops;
+                        journeyDto.JourneyPoints = childJourneyDto.JourneyPoints;
+
+                        await UpdateDetailsAsync(journeyDto, true);
+                    }
                 }
+            }
+            else if (journeyDto.WeekDay is not null)
+            {
+                var schedule = await scheduleRepository.AddAsync(new Schedule
+                    { Id = journeyDto.Id, Days = (WeekDay)journeyDto.WeekDay });
+                await AddFutureJourneyAsync(schedule);
             }
             else
             {
@@ -336,6 +443,40 @@ namespace Car.Domain.Services.Implementation
             }
 
             return mapper.Map<Journey, JourneyModel>(journey);
+        }
+
+        public async Task UpdateScheduleAsync(int id, WeekDay? weekDay)
+        {
+            if (weekDay is not null)
+            {
+                await scheduleRepository.UpdateAsync(new Schedule { Id = id, Days = (WeekDay)weekDay });
+                await scheduleRepository.SaveChangesAsync();
+
+                var schedule = await scheduleRepository
+                    .Query()
+                    .IncludeJourneyWithRouteInfo()
+                    .IncludeChildJourneys()
+                    .AsNoTrackingWithIdentityResolution()
+                    .FirstOrDefaultAsync(schedule_ => schedule_.Id == id);
+
+                await CancelUnsuitableJourneyAsync(schedule);
+                await AddFutureJourneyAsync(schedule);
+            }
+            else
+            {
+                scheduleRepository.Delete(await scheduleRepository.GetByIdAsync(id));
+
+                var journeyToCancel = await journeyRepository
+                    .Query()
+                    .Where(journey => journey.ParentId == id)
+                    .Select(journey => journey.Id)
+                    .ToListAsync();
+
+                foreach (var journeyId in journeyToCancel)
+                {
+                    await CancelAsync(journeyId);
+                }
+            }
         }
 
         public IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter)

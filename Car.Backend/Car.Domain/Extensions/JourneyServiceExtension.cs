@@ -36,6 +36,9 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> IncludeNotifications(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.Notifications);
 
+        public static IQueryable<Journey> IncludeSchedule(this IQueryable<Journey> journeys) =>
+            journeys.Include(journey => journey.Schedule);
+
         public static IQueryable<Journey> FilterPast(this IQueryable<Journey> journeys)
         {
             DateTime now = DateTime.UtcNow;
@@ -51,6 +54,9 @@ namespace Car.Domain.Extensions
             return journeys.Where(journey =>
                 journey.DepartureTime > now);
         }
+
+        public static IQueryable<Journey> SortByDepartureTime(this IQueryable<Journey> journeys) =>
+            journeys.OrderBy(journey => journey.DepartureTime);
 
         public static async Task<IQueryable<Journey>> UseSavedAdresses(this IQueryable<Journey> journeys, ILocationService locationService)
         {
@@ -94,6 +100,12 @@ namespace Car.Domain.Extensions
 
         public static IQueryable<Journey> FilterUncancelledJourneys(this IQueryable<Journey> journeys) =>
             journeys.Where(journey => !journey.IsCancelled);
+
+        public static IQueryable<Journey> FilterUnscheduledJourneys(this IQueryable<Journey> journeys) =>
+            journeys.Where(journey => journey.Schedule == null);
+
+        public static IQueryable<Journey> FilterScheduledJourneys(this IQueryable<Journey> journeys) =>
+            journeys.Where(journey => journey.Schedule != null);
 
         public static IEnumerable<Request> FilterUnsuitableRequests(this IQueryable<Request> requests, Journey journey, Func<Request, JourneyFilter> requestToJourneyFilter) =>
             requests.Where(request => journey.Participants.Count + request.PassengersCount <= journey.CountOfSeats)

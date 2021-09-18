@@ -10,12 +10,6 @@ namespace Car.Data.Migrations
                 name: "Name",
                 table: "Schedule");
 
-            migrationBuilder.AddColumn<string>(
-                name: "FCMToken",
-                table: "User",
-                type: "nvarchar(max)",
-                nullable: true);
-
             migrationBuilder.AddColumn<int>(
                 name: "Days",
                 table: "Schedule",
@@ -26,10 +20,6 @@ namespace Car.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "FCMToken",
-                table: "User");
-
             migrationBuilder.DropColumn(
                 name: "Days",
                 table: "Schedule");
