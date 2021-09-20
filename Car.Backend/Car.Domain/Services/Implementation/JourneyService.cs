@@ -68,7 +68,7 @@ namespace Car.Domain.Services.Implementation
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
-                .IncludeSchedule();
+                .IncludeSchedule()
                 .IncludeJourneyInvitations();
 
             var journey = withCancelledStops
@@ -185,7 +185,7 @@ namespace Car.Domain.Services.Implementation
                 .Select(day => now.AddDays(day))
                 .Where(date =>
                     schedule.Days.ToString().Contains(date.DayOfWeek.ToString()) &&
-                    !schedule.ChildJourneys.Any(journey => journey.DepartureTime.Equals(date)))
+                    !schedule.ChildJourneys.Any(journey => journey.DepartureTime.Date.Equals(date)))
                 .ToHashSet();
 
             foreach (var date in dates)
@@ -256,6 +256,8 @@ namespace Car.Domain.Services.Implementation
                     await NotifyInvitedUsers(addedJourney.Invitations, addedJourney.OrganizerId, addedJourney.Id);
                 }
             }
+
+            journeyRepository.Detach(addedJourney!);
 
             return mapper.Map<Journey, JourneyModel>(addedJourney!);
         }
@@ -353,6 +355,15 @@ namespace Car.Domain.Services.Implementation
 
             if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))
             {
+                var journeysToUpdateIds = (await scheduleRepository
+                        .Query()
+                        .IncludeChildJourneys()
+                        .AsNoTrackingWithIdentityResolution()
+                        .FirstOrDefaultAsync(schedule_ => schedule_.Id == journey.Id))
+                    .ChildJourneys
+                    .Select(journey_ => journey_.Id)
+                    .ToList();
+
                 await UpdateScheduleAsync(journeyDto.Id, journeyDto.WeekDay);
 
                 journeyDto.WeekDay = null;
@@ -365,10 +376,24 @@ namespace Car.Domain.Services.Implementation
 
                 if (schedule is not null)
                 {
-                    foreach (var childJourney in schedule.ChildJourneys)
+                    foreach (var childJourney in schedule.ChildJourneys.Where(journey_ => !journey_.IsCancelled && journeysToUpdateIds.Contains(journey_.Id)))
                     {
                         journeyDto.Id = childJourney.Id;
                         journeyDto.DepartureTime = childJourney.DepartureTime;
+                        foreach (var journeyPoint in journeyDto.JourneyPoints)
+                        {
+                            journeyPoint.Id = 0;
+                        }
+
+                        foreach (var stop in journeyDto.Stops)
+                        {
+                            stop.Id = 0;
+                            if (stop.Address is not null)
+                            {
+                                stop.Address = stop.Address with { Id = 0 };
+                            }
+                        }
+
                         await UpdateRouteAsync(journeyDto, true);
                     }
                 }
@@ -377,6 +402,7 @@ namespace Car.Domain.Services.Implementation
             {
                 var schedule = await scheduleRepository.AddAsync(new Schedule
                     { Id = journeyDto.Id, Days = (WeekDay)journeyDto.WeekDay });
+                await scheduleRepository.SaveChangesAsync();
                 await AddFutureJourneyAsync(schedule);
             }
             else
@@ -406,8 +432,8 @@ namespace Car.Domain.Services.Implementation
 
             var existingInvitations = journey.Invitations;
 
-            var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto); 
-            
+            var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
+
             if (!isParentUpdated)
             {
                 updatedJourney.ParentId = null;
@@ -418,6 +444,15 @@ namespace Car.Domain.Services.Implementation
 
             if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))
             {
+                var journeysToUpdateIds = (await scheduleRepository
+                        .Query()
+                        .IncludeChildJourneys()
+                        .AsNoTrackingWithIdentityResolution()
+                        .FirstOrDefaultAsync(schedule_ => schedule_.Id == journey.Id))
+                    .ChildJourneys
+                    .Select(journey_ => journey_.Id)
+                    .ToList();
+
                 await UpdateScheduleAsync(journeyDto.Id, journeyDto.WeekDay);
 
                 journeyDto.WeekDay = null;
@@ -430,7 +465,7 @@ namespace Car.Domain.Services.Implementation
 
                 if (schedule is not null)
                 {
-                    foreach (var childJourney in schedule.ChildJourneys.Where(journey_ => !journey_.IsCancelled))
+                    foreach (var childJourney in schedule.ChildJourneys.Where(journey_ => !journey_.IsCancelled && journeysToUpdateIds.Contains(journey_.Id)))
                     {
                         journeyDto.Id = childJourney.Id;
                         journeyDto.DepartureTime = childJourney.DepartureTime.Date + journeyDto.DepartureTime.TimeOfDay;
@@ -448,6 +483,7 @@ namespace Car.Domain.Services.Implementation
             {
                 var schedule = await scheduleRepository.AddAsync(new Schedule
                     { Id = journeyDto.Id, Days = (WeekDay)journeyDto.WeekDay });
+                await scheduleRepository.SaveChangesAsync();
                 await AddFutureJourneyAsync(schedule);
             }
             else
@@ -501,8 +537,6 @@ namespace Car.Domain.Services.Implementation
             }
             else
             {
-                scheduleRepository.Delete(await scheduleRepository.GetByIdAsync(id));
-
                 var journeyToCancel = await journeyRepository
                     .Query()
                     .Where(journey => journey.ParentId == id)
@@ -513,6 +547,9 @@ namespace Car.Domain.Services.Implementation
                 {
                     await CancelAsync(journeyId);
                 }
+
+                scheduleRepository.Delete(await scheduleRepository.GetByIdAsync(id));
+                await scheduleRepository.SaveChangesAsync();
             }
         }
 

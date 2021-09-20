@@ -12,7 +12,7 @@ namespace Car.Data.Migrations
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
                     ChatId = table.Column<int>(type: "int", nullable: false),
-                    UnreadMessagesCount = table.Column<int>(type: "int", nullable: false)
+                    UnreadMessagesCount = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
