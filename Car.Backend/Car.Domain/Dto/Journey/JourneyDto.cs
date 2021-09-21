@@ -28,7 +28,7 @@ namespace Car.Domain.Dto
 
         public int? CarId { get; set; }
 
-        public WeekDay? WeekDay { get; set; }
+        public WeekDays? WeekDay { get; set; }
 
         public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();
 

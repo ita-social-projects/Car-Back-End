@@ -58,9 +58,6 @@ namespace Car.Domain.Extensions
                 journey.DepartureTime > now);
         }
 
-        public static IQueryable<Journey> SortByDepartureTime(this IQueryable<Journey> journeys) =>
-            journeys.OrderBy(journey => journey.DepartureTime);
-
         public static async Task<IQueryable<Journey>> UseSavedAdresses(this IQueryable<Journey> journeys, ILocationService locationService)
         {
             var savedLocations = await locationService.GetAllByUserIdAsync();

@@ -7,7 +7,7 @@ namespace Car.Data.Entities
     {
         public int Id { get; set; }
 
-        public WeekDay Days { get; set; }
+        public WeekDays Days { get; set; }
 
         public Journey? Journey { get; set; }
 

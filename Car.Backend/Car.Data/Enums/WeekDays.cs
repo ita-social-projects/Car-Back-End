@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Car.Data.Enums
 {
     [Flags]
-    public enum WeekDay
+    public enum WeekDays
     {
         /// <summary>
         /// Monday.

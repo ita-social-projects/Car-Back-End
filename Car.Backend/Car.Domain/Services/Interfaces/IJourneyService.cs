@@ -23,19 +23,17 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeletePastJourneyAsync();
 
-        Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel, int? parentId = null);
+        Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel);
 
         IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter);
 
         Task<bool> DeleteAsync(int journeyId);
 
-        Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated = false);
+        Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto);
 
-        Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto, bool isParentUpdated = false);
+        Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto);
 
         Task<InvitationDto> UpdateInvitationAsync(InvitationDto invitationDto);
-
-        Task NotifyInvitedUsers(ICollection<Invitation> invitations, int senderId, int journeyId);
 
         IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter);
 
