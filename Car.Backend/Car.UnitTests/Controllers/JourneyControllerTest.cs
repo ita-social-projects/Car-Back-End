@@ -170,7 +170,7 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
 
-            journeyService.Setup(j => j.AddJourneyAsync(journeyDto, null))
+            journeyService.Setup(j => j.AddJourneyAsync(journeyDto))
                 .ReturnsAsync(expectedJourney);
 
             // Act
@@ -252,7 +252,7 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
             journeyService.Setup(service =>
-                service.UpdateRouteAsync(journeyDto, false)).ReturnsAsync(expectedJourney);
+                service.UpdateRouteAsync(journeyDto)).ReturnsAsync(expectedJourney);
 
             // Act
             var result = await journeyController.UpdateRoute(journeyDto);
@@ -269,7 +269,7 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
             journeyService.Setup(service =>
-                service.UpdateDetailsAsync(journeyDto, false)).ReturnsAsync(expectedJourney);
+                service.UpdateDetailsAsync(journeyDto)).ReturnsAsync(expectedJourney);
 
             // Act
             var result = await journeyController.UpdateDetails(journeyDto);
