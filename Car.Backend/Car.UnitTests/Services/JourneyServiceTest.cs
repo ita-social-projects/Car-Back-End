@@ -913,11 +913,13 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Theory]
-        [AutoEntityData]
-        public async Task UpdateRouteAsync_WhenJourneyIsValid_ReturnsJourneyObject(Journey[] journeys)
+        [Fact]
+        public async Task UpdateRouteAsync_WhenJourneyIsValid_ReturnsJourneyObject()
         {
             // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, DateTime.Now + TimeSpan.FromDays(1))
+                .CreateMany();
             var updatedJourneyDto = Fixture.Build<JourneyDto>()
                 .With(dto => dto.Id, journeys.First().Id)
                 .With(dto => dto.WeekDay, () => null)
