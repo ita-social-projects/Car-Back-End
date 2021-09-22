@@ -19,6 +19,11 @@ namespace Car.WebApi.ServiceExtension
                 () => serviceProvider.GetService<IRequestService>()!.DeleteOutdatedAsync(),
                 Cron.Daily(),
                 TimeZoneInfo.Utc);
+            recurringJobManager.AddOrUpdate(
+                "CreateFutureScheduledJourneys",
+                () => serviceProvider.GetService<IJourneyService>()!.AddFutureJourneyAsync(),
+                Cron.Daily(),
+                TimeZoneInfo.Utc);
         }
     }
 }

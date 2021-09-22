@@ -29,27 +29,5 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         {
             validator.ShouldNotHaveValidationErrorFor(schedule => schedule.Id, value);
         }
-
-        [Xunit.Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void Name_IsNull_GeneratesValidationError(string value)
-        {
-            validator.ShouldHaveValidationErrorFor(schedule => schedule.Name, value);
-        }
-
-        [Fact]
-        public void Name_IsNotValid_GeneratesValidationError()
-        {
-            string longText = new string('*', Constants.StringMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(schedule => schedule.Name, longText);
-        }
-
-        [Xunit.Theory]
-        [InlineData("Name")]
-        public void Name_IsSpecified_NotGeneratesValidationError(string value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(schedule => schedule.Name, value);
-        }
     }
 }

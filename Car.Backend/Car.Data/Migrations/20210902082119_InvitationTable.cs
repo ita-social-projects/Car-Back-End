@@ -14,7 +14,7 @@ namespace Car.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     InvitedUserId = table.Column<int>(type: "int", nullable: false),
                     JourneyId = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
+                    Type = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
