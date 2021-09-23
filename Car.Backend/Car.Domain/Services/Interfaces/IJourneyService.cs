@@ -19,6 +19,8 @@ namespace Car.Domain.Services.Interfaces
 
         Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int countToTake = 5);
 
+        Task AddFutureJourneyAsync();
+
         Task DeletePastJourneyAsync();
 
         Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel);
@@ -32,8 +34,6 @@ namespace Car.Domain.Services.Interfaces
         Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto);
 
         Task<InvitationDto> UpdateInvitationAsync(InvitationDto invitationDto);
-
-        Task NotifyInvitedUsers(ICollection<Invitation> invitations, int senderId, int journeyId);
 
         IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter);
 

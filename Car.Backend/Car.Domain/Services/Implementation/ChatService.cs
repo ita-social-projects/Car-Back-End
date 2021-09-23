@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Internal;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
@@ -46,9 +45,19 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId)
         {
-            var chat = await messageRepository.Query()
+            var messages = messageRepository
+                .Query()
+                .Where(message => message.ChatId == chatId);
+            var maxId = messages.Any()
+                ? messages.Max(message => message.Id) + 1
+                : default;
+            var chat = await messageRepository
+                .Query()
                 .Include(user => user.Sender)
-                .Where(message => message.ChatId == chatId)
+                .Where(message => message.ChatId == chatId
+                                  && message.Id < (previousMessageId == 0
+                                      ? maxId
+                                      : previousMessageId))
                 .Select(message => new MessageDto()
                 {
                     Id = message.Id,
@@ -59,15 +68,11 @@ namespace Car.Domain.Services.Implementation
                     SenderName = message.Sender.Name,
                     SenderSurname = message.Sender.Surname,
                     ImageId = message.Sender.ImageId,
-                }).OrderByDescending(messageDto => messageDto.CreatedAt)
-                .Where(messageDto => messageDto.Id < (previousMessageId == 0
-                    ? messageRepository
-                        .Query()
-                        .Where(message => message.ChatId == chatId)
-                        .Max(message => message.Id) + 1
-                    : previousMessageId))
+                })
+                .OrderByDescending(messageDto => messageDto.CreatedAt)
                 .Take(50)
                 .ToListAsync();
+
             return chat;
         }
 
@@ -101,14 +106,16 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<ChatDto>> GetUserChatsAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-            var user = await userRepository.Query()
-                .IncludeChats()
+            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            var user = await userRepository
+                .Query()
+                .IncludeJourney()
+                .IncludeReceivedMessages()
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            var chats = user?.OrganizerJourneys.Select(journey => journey.Chat)
-                .Union(user.ParticipantJourneys.Select(journey => journey.Chat))
-                .Except(new List<Chat>() { null! });
+            var chats = user.ReceivedMessages
+                .Select(rm => rm.Chat)
+                .OrderByDescending(chat => chat!.Journey!.DepartureTime);
 
             return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
         }
@@ -135,6 +142,7 @@ namespace Car.Domain.Services.Implementation
                         MessageText = msg.Text,
                         MessageId = msg.Id,
                         Name = chat.Name,
+                        ReceivedMessages = chat.ReceivedMessages,
                     }))
                 .ToList();
 
@@ -162,15 +170,6 @@ namespace Car.Domain.Services.Implementation
             }
 
             await chatRepository.SaveChangesAsync();
-        }
-
-        public async Task<int> GetAllUnreadMessagesNumber()
-        {
-            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-            return await receivedMessagesRepository
-                .Query()
-                .Where(repo => repo.UserId == userId)
-                .SumAsync(repo => repo.UnreadMessagesCount);
         }
 
         public async Task<Chat> GetChatByIdAsync(int chatId)

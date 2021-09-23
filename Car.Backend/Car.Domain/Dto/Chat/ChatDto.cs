@@ -1,4 +1,6 @@
-namespace Car.Domain.Dto.ChatDto
+using System.Collections.Generic;
+
+namespace Car.Domain.Dto.Chat
 {
     public class ChatDto
     {
@@ -9,6 +11,8 @@ namespace Car.Domain.Dto.ChatDto
         public string MessageText { get; set; } = string.Empty;
 
         public int MessageId { get; set; }
+
+        public ICollection<ChatReceivedMessagesDto?>? ReceivedMessages { get; set; }
 
         public ChatUserDto? JourneyOrganizer { get; set; }
 

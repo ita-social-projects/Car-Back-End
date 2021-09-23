@@ -47,9 +47,8 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Theory]
-        [AutoEntityData]
-        public async Task AddCar_WhenCarIsValid_ReturnsOkObjectResult(User user)
+        [Fact]
+        public async Task AddCar_WhenCarIsValid_ReturnsOkObjectResult()
         {
             // Arrange
             var createCarModel = Fixture.Build<CreateCarDto>()

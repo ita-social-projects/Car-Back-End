@@ -11,7 +11,11 @@ namespace Car.Data.EntityConfigurations
             builder.ToTable("Schedule");
             builder.HasKey(schedule => schedule.Id);
 
-            builder.Property(schedule => schedule.Name).HasMaxLength(100).IsRequired();
+            builder.HasMany(schedule => schedule.ChildJourneys)
+                .WithOne(journey => journey.Parent!)
+                .HasForeignKey(journey => journey.ParentId);
+
+            builder.Property(schedule => schedule.Days).IsRequired();
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace Car.Domain.Dto.ChatDto
+namespace Car.Domain.Dto.Chat
 {
     public class ChatJourneyDto
     {

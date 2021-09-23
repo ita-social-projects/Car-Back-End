@@ -1,6 +1,6 @@
 ﻿using Car.Data.Constants;
 using Car.Data.FluentValidation;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 using FluentValidation;
 
 namespace Car.Domain.FluentValidation

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
-using Car.Domain.Dto.ChatDto;
+using Car.Domain.Dto.Chat;
 using Car.Domain.Filters;
 
 namespace Car.Domain.Services.Interfaces
@@ -24,7 +24,5 @@ namespace Car.Domain.Services.Interfaces
         Task<Chat> GetChatByIdAsync(int chatId);
 
         Task<ReceivedMessages> GetReceivedMessagesFromChat(int chatId);
-
-        public Task<int> GetAllUnreadMessagesNumber();
     }
 }
