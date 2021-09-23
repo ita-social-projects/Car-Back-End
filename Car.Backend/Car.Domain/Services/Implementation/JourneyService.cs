@@ -152,6 +152,7 @@ namespace Car.Domain.Services.Implementation
 
             var journeysToDelete = await journeyRepository
                 .Query()
+                .IncludeSchedule()
                 .Where(j => (j.Schedule == null || j.IsCancelled) && (now - j.DepartureTime).TotalDays >= termInDays)
                 .ToListAsync();
 
