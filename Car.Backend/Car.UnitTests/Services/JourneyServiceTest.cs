@@ -461,14 +461,14 @@ namespace Car.UnitTests.Services
             // Arrange
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeysToDelete.AsQueryable().BuildMock().Object);
-            journeyRepository.Setup(r => r.DeleteRangeAsync(It.IsAny<List<Journey>>()))
+            journeyRepository.Setup(r => r.DeleteRangeAsync(It.IsAny<IEnumerable<Journey>>()))
                 .Returns(Task.CompletedTask);
 
             // Act
             await journeyService.DeletePastJourneyAsync();
 
             // Assert
-            journeyRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<List<Journey>>()), Times.Once);
+            journeyRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<IEnumerable<Journey>>()), Times.Once);
         }
 
         [Theory]
