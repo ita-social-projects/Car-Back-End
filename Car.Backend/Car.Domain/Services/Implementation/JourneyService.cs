@@ -465,6 +465,12 @@ namespace Car.Domain.Services.Implementation
             return applicantStops;
         }
 
+        private static bool IsSuitableSeatsCountForAdding(Journey journey, JourneyUserDto applicant)
+        {
+            var passengers = journey.JourneyUsers.Sum(journeyUser => journeyUser.PassangersCount);
+            return passengers + applicant.PassangersCount <= journey.CountOfSeats;
+        }
+
         private async Task NotifyInvitedUsers(ICollection<Invitation> invitations, int senderId, int journeyId)
         {
             foreach (var invitation in invitations)
@@ -517,12 +523,6 @@ namespace Car.Domain.Services.Implementation
 
                 await AddJourneyAsync(journey, schedule.Id);
             }
-        }
-
-        private bool IsSuitableSeatsCountForAdding(Journey journey, JourneyUserDto applicant)
-        {
-            var passengers = journey.JourneyUsers.Sum(journeyUser => journeyUser.PassangersCount);
-            return passengers + applicant.PassangersCount <= journey.CountOfSeats;
         }
 
         private async Task CancelUnsuitableJourneyAsync(Schedule schedule)

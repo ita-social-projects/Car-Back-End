@@ -110,10 +110,11 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> FilterScheduledJourneys(this IQueryable<Journey> journeys) =>
             journeys.Where(journey => journey.Schedule != null);
 
-        public static IEnumerable<Request> FilterUnsuitableRequests(this IQueryable<Request> requests, Journey journey,
-            Func<Request, JourneyFilter> requestToJourneyFilter)
-        {
-            return requests
+        public static IEnumerable<Request> FilterUnsuitableRequests(
+            this IQueryable<Request> requests,
+            Journey journey,
+            Func<Request, JourneyFilter> requestToJourneyFilter) =>
+            requests
                 .Where(request => journey.DepartureTime > DateTime.UtcNow
                                   && journey.DepartureTime <=
                                   request.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
@@ -125,10 +126,8 @@ namespace Car.Domain.Extensions
                 .AsEnumerable()
                 .Where(request => IsSuitablePoints(journey, requestToJourneyFilter(request)))
                 .Where(request => IsSuitableSeatsCount(journey, requestToJourneyFilter(request)));
-        }
 
-        public static IEnumerable<Journey> FilterUnsuitableJourneys(this IQueryable<Journey> journeys,
-            JourneyFilter filter) =>
+        public static IEnumerable<Journey> FilterUnsuitableJourneys(this IQueryable<Journey> journeys, JourneyFilter filter) =>
             journeys
                 .Where(journey => journey.DepartureTime > DateTime.UtcNow
                                   && journey.DepartureTime <=
