@@ -909,7 +909,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateDetailsAsync_WhenJourneyScheduled_ExecuteEightTimes(JourneyDto updatedJourneyDto)
+        public async Task UpdateDetailsAsync_WhenJourneyScheduled_ExecuteSevenTimes(JourneyDto updatedJourneyDto)
         {
             // Arrange
             updatedJourneyDto.WeekDay = WeekDays.Monday;
@@ -963,13 +963,16 @@ namespace Car.UnitTests.Services
             scheduleRepository.Setup(repo =>
                 repo.AddAsync(It.IsAny<Schedule>())).ReturnsAsync(new Schedule
                 { Id = journey.Id, Journey = journey, Days = WeekDays.Monday });
+            scheduleRepository.Setup(repo =>
+                repo.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Schedule
+                { Id = expectedJourney.Id, Journey = journeys.First(), Days = WeekDays.Monday });
 
             // Act
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
 
             // Assert
             result.Should().BeEquivalentTo(expectedJourney);
-            journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(childJourneys.Count + 2));
+            journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(childJourneys.Count + 1));
         }
 
         [Theory]
@@ -1225,7 +1228,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateRouteAsync_WhenJourneyScheduled_ExecuteEightTimes()
+        public async Task UpdateRouteAsync_WhenJourneyScheduled_ExecuteSevenTimes()
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
@@ -1283,12 +1286,15 @@ namespace Car.UnitTests.Services
             scheduleRepository.Setup(repo =>
                 repo.AddAsync(It.IsAny<Schedule>())).ReturnsAsync(new Schedule
                 { Id = expectedJourney.Id, Journey = journeys.First(), Days = WeekDays.Monday });
+            scheduleRepository.Setup(repo =>
+                repo.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Schedule
+                { Id = expectedJourney.Id, Journey = journeys.First(), Days = WeekDays.Monday });
 
             // Act
             var result = await journeyService.UpdateRouteAsync(updatedJourneyDto);
 
             // Assert
-            journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(childJourneys.Count + 2));
+            journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(childJourneys.Count + 1));
         }
 
         [Theory]
@@ -1693,16 +1699,18 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task AddFutureJourneyAsync_ScheduleExists_ExecuteTwice()
+        public async Task AddFutureJourneyAsync_ScheduleExists_ExecuteOnce()
         {
             // Arrange
+            const WeekDays days = WeekDays.Monday | WeekDays.Tuesday | WeekDays.Wednesday | WeekDays.Thursday | WeekDays.Friday |
+                                  WeekDays.Saturday | WeekDays.Sunday;
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.IsCancelled, false)
                 .CreateMany();
             var schedules = Fixture.Build<Schedule>()
                 .With(s => s.Id, journeys.FirstOrDefault().Id)
                 .With(s => s.Journey, journeys.FirstOrDefault())
-                .With(s => s.Days, WeekDays.Monday)
+                .With(s => s.Days, days)
                 .CreateMany(1);
 
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
@@ -1712,7 +1720,7 @@ namespace Car.UnitTests.Services
             await journeyService.AddFutureJourneyAsync();
 
             // Assert
-            journeyRepository.Verify(j => j.SaveChangesAsync(), Times.Exactly(2));
+            journeyRepository.Verify(j => j.SaveChangesAsync(), Times.Exactly(1));
         }
 
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()
