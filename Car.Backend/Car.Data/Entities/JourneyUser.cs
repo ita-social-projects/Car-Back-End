@@ -17,5 +17,7 @@ namespace Car.Data.Entities
         public Journey? Journey { get; set; }
 
         public bool WithBaggage { get; set; }
+
+        public int PassangersCount { get; set; }
     }
 }

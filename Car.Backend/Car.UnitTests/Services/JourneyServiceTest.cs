@@ -667,10 +667,18 @@ namespace Car.UnitTests.Services
             // Arrange
             var (journeyComposer, filterComposer) = GetInitializedJourneyAndFilter();
 
-            var participants = Fixture.Build<User>().CreateMany(participantsCountJourney).ToList();
+            var participants = Fixture.Build<User>()
+                .CreateMany(participantsCountJourney)
+                .ToList();
+
+            var journeyUsers = Fixture.Build<JourneyUser>()
+                .With(journeyUser => journeyUser.PassangersCount, 1)
+                .CreateMany(participantsCountJourney)
+                .ToList();
 
             var journeys = journeyComposer
                 .With(j => j.Participants, participants)
+                .With(j => j.JourneyUsers, journeyUsers)
                 .With(j => j.CountOfSeats, countOfSeats)
                 .With(j => j.Schedule, null as Schedule)
                 .CreateMany(journeysToCreateCount);
@@ -1501,16 +1509,16 @@ namespace Car.UnitTests.Services
             // Arrange
             if (journeyApply.JourneyUser != null)
             {
-               var journeys = Fixture.Build<Journey>()
+                var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyApply.JourneyUser.JourneyId + 1)
                 .With(j => j.Participants, new List<User>())
                 .CreateMany(1);
-               var participants = Fixture.Build<User>()
+                var participants = Fixture.Build<User>()
                 .With(p => p.Id, journeyApply.JourneyUser.UserId)
                 .CreateMany(1)
                 .ToList();
-               journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
-               userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+                journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+                userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
             }
 
             // Act
@@ -1522,11 +1530,12 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyAndUserAreValid_ReturnsTrue(JourneyApplyModel journeyApply)
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValid_ReturnsTrue(JourneyApplyModel journeyApply, int passangersCount)
         {
             // Arrange
             if (journeyApply.JourneyUser != null)
             {
+                journeyApply.JourneyUser.PassangersCount = passangersCount;
                 var receivedMessages = Fixture.Build<ReceivedMessages>()
                 .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
                 .CreateMany(1)
@@ -1539,8 +1548,9 @@ namespace Car.UnitTests.Services
                 var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
                 .With(j => j.Participants, new List<User>())
-                .With(j => j.CountOfSeats, 4).
-                CreateMany(1)
+                .With(j => j.CountOfSeats, passangersCount + 1)
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .CreateMany(1)
                 .ToList();
                 var chats = Fixture.Build<Chat>()
                 .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
@@ -1733,12 +1743,18 @@ namespace Car.UnitTests.Services
                     new JourneyPoint { Latitude = 35, Longitude = 35 },
                 };
 
+            var journeyUsers = Fixture.Build<JourneyUser>()
+                .With(ju => ju.PassangersCount, 1)
+                .CreateMany(3)
+                .ToList();
+
             var journey = Fixture.Build<Journey>()
                 .With(j => j.CountOfSeats, 4)
                 .With(j => j.IsFree, true)
                 .With(j => j.DepartureTime, departureTime)
                 .With(j => j.JourneyPoints, journeyPoints)
-                .With(j => j.IsCancelled, false);
+                .With(j => j.IsCancelled, false)
+                .With(j => j.JourneyUsers, journeyUsers);
 
             var filter = Fixture.Build<JourneyFilter>()
                 .With(f => f.DepartureTime, departureTime)

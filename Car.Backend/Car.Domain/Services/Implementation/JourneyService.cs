@@ -190,6 +190,7 @@ namespace Car.Domain.Services.Implementation
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
+                .IncludeJourneyUsers()
                 .FilterUnsuitableJourneys(filter);
 
         public async Task<bool> DeleteAsync(int journeyId)
@@ -346,7 +347,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<bool> AddUserToJourney(JourneyApplyModel journeyApply)
         {
-            var journeyId = journeyApply.JourneyUser?.JourneyId ?? default(int);
+            var journeyId = journeyApply.JourneyUser!.JourneyId;
 
             var journey = await journeyRepository
                 .Query()
@@ -354,7 +355,7 @@ namespace Car.Domain.Services.Implementation
                 .Include(j => j.Chat)
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
-            var userId = journeyApply.JourneyUser?.UserId ?? default(int);
+            var userId = journeyApply.JourneyUser.UserId;
 
             var userToAdd = await userRepository
                 .Query()
@@ -363,7 +364,7 @@ namespace Car.Domain.Services.Implementation
             if (journey == null
                 || userToAdd == null
                 || journey.Participants.Contains(userToAdd)
-                || journey.Participants.Count >= journey.CountOfSeats)
+                || !IsSuitableSeatsCountForAdding(journey, journeyApply.JourneyUser))
             {
                 return false;
             }
@@ -467,6 +468,12 @@ namespace Car.Domain.Services.Implementation
             });
 
             return applicantStops;
+        }
+
+        private static bool IsSuitableSeatsCountForAdding(Journey journey, JourneyUserDto applicant)
+        {
+            var passengers = journey.JourneyUsers.Sum(journeyUser => journeyUser.PassangersCount);
+            return passengers + applicant.PassangersCount <= journey.CountOfSeats;
         }
 
         private async Task NotifyInvitedUsers(ICollection<Invitation> invitations, int senderId, int journeyId)

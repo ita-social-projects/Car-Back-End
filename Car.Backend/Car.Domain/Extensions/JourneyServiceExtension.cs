@@ -42,6 +42,9 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> IncludeSchedule(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.Schedule);
 
+        public static IQueryable<Journey> IncludeJourneyUsers(this IQueryable<Journey> journeys) =>
+            journeys.Include(journey => journey.JourneyUsers);
+
         public static IQueryable<Journey> FilterPast(this IQueryable<Journey> journeys)
         {
             DateTime now = DateTime.UtcNow;
@@ -107,27 +110,36 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> FilterScheduledJourneys(this IQueryable<Journey> journeys) =>
             journeys.Where(journey => journey.Schedule != null);
 
-        public static IEnumerable<Request> FilterUnsuitableRequests(this IQueryable<Request> requests, Journey journey, Func<Request, JourneyFilter> requestToJourneyFilter) =>
-            requests.Where(request => journey.Participants.Count + request.PassengersCount <= journey.CountOfSeats)
-            .Where(request => journey.DepartureTime > DateTime.UtcNow
-                && journey.DepartureTime <= request.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
-                && journey.DepartureTime >= request.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours))
-            .Where(request => (journey.IsFree && request.Fee == FeeType.Free)
-                || (!journey.IsFree && request.Fee == FeeType.Paid)
-                || (request.Fee == FeeType.All))
-            .AsEnumerable()
-            .Where(request => IsSuitablePoints(journey, requestToJourneyFilter(request)));
+        public static IEnumerable<Request> FilterUnsuitableRequests(
+            this IQueryable<Request> requests,
+            Journey journey,
+            Func<Request, JourneyFilter> requestToJourneyFilter) =>
+            requests
+                .Where(request => journey.DepartureTime > DateTime.UtcNow
+                                  && journey.DepartureTime <=
+                                  request.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
+                                  && journey.DepartureTime >=
+                                  request.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours))
+                .Where(request => (journey.IsFree && request.Fee == FeeType.Free)
+                                  || (!journey.IsFree && request.Fee == FeeType.Paid)
+                                  || (request.Fee == FeeType.All))
+                .AsEnumerable()
+                .Where(request => IsSuitablePoints(journey, requestToJourneyFilter(request)))
+                .Where(request => IsSuitableSeatsCount(journey, requestToJourneyFilter(request)));
 
         public static IEnumerable<Journey> FilterUnsuitableJourneys(this IQueryable<Journey> journeys, JourneyFilter filter) =>
-            journeys.Where(journey => journey.Participants.Count + filter.PassengersCount <= journey.CountOfSeats)
-            .Where(journey => journey.DepartureTime > DateTime.UtcNow
-                && journey.DepartureTime <= filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
-                && journey.DepartureTime >= filter.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours))
-            .Where(journey => (journey.IsFree && filter.Fee == FeeType.Free)
-                || (!journey.IsFree && filter.Fee == FeeType.Paid)
-                || (filter.Fee == FeeType.All))
-            .AsEnumerable()
-            .Where(journey => IsSuitablePoints(journey, filter));
+            journeys
+                .Where(journey => journey.DepartureTime > DateTime.UtcNow
+                                  && journey.DepartureTime <=
+                                  filter.DepartureTime.AddHours(Constants.JourneySearchTimeScopeHours)
+                                  && journey.DepartureTime >=
+                                  filter.DepartureTime.AddHours(-Constants.JourneySearchTimeScopeHours))
+                .Where(journey => (journey.IsFree && filter.Fee == FeeType.Free)
+                                  || (!journey.IsFree && filter.Fee == FeeType.Paid)
+                                  || (filter.Fee == FeeType.All))
+                .AsEnumerable()
+                .Where(journey => IsSuitablePoints(journey, filter))
+                .Where(journey => IsSuitableSeatsCount(journey, filter));
 
         public static double CalculateDistance(this JourneyPoint point, double latitude, double longitude) =>
             GeoCalculator.GetDistance(
@@ -144,6 +156,12 @@ namespace Car.Domain.Extensions
 
             return pointsFromStart.Any() && pointsFromStart
                 .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
+        }
+
+        private static bool IsSuitableSeatsCount(Journey journey, JourneyFilter filter)
+        {
+            var passengers = journey.JourneyUsers.Sum(journeyUser => journeyUser.PassangersCount);
+            return passengers + filter.PassengersCount <= journey.CountOfSeats;
         }
     }
 }

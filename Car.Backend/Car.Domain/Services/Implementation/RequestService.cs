@@ -118,7 +118,7 @@ namespace Car.Domain.Services.Implementation
                 Type = NotificationType.RequestedJourneyCreated,
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow,
-                JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id, applicantStops = stops }, serializeOptions),
+                JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id, passangersCount = request.PassengersCount, applicantStops = stops }, serializeOptions),
                 JourneyId = journey.Id,
             };
 
