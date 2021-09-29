@@ -150,11 +150,11 @@ namespace Car.Domain.Services.Implementation
             var now = DateTime.Now;
             var termInDays = 14;
 
-            var journeysToDelete = await journeyRepository
+            var journeysToDelete = journeyRepository
                 .Query()
                 .IncludeSchedule()
-                .Where(j => (j.Schedule == null || j.IsCancelled) && (now - j.DepartureTime).TotalDays >= termInDays)
-                .ToListAsync();
+                .AsEnumerable()
+                .Where(j => (j.Schedule == null || j.IsCancelled) && (now - j.DepartureTime).TotalDays >= termInDays);
 
             await journeyRepository.DeleteRangeAsync(journeysToDelete);
             await journeyRepository.SaveChangesAsync();
