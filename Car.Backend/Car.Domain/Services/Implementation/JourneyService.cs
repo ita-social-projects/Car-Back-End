@@ -180,7 +180,11 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel) => await AddJourneyAsync(journeyModel, null);
+        public async Task<JourneyModel?> AddJourneyAsync(JourneyDto journeyModel)
+        {
+            var result = await AddJourneyAsync(journeyModel, null);
+            return result.Model;
+        }
 
         public IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter) =>
             journeyRepository
@@ -548,8 +552,20 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        private async Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel, int? parentId)
+        private async Task<(JourneyModel? Model, bool IsDepartureTimeInvalid)> AddJourneyAsync(JourneyDto journeyModel, int? parentId)
         {
+            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
+            bool isDepartureTimeInvalid = await journeyRepository.Query()
+                .Where(j => j.Id == userId)
+                .AnyAsync(j => (j.DepartureTime - journeyModel.DepartureTime).TotalMinutes <= 15 &&
+                (j.DepartureTime - journeyModel.DepartureTime).TotalMinutes >= -15);
+
+            if (isDepartureTimeInvalid)
+            {
+                return (null, false);
+            }
+
             var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
@@ -582,7 +598,7 @@ namespace Car.Domain.Services.Implementation
 
             journeyRepository.Detach(addedJourney!);
 
-            return mapper.Map<Journey, JourneyModel>(addedJourney!);
+            return (mapper.Map<Journey, JourneyModel>(addedJourney!), true);
         }
 
         private async Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated)
