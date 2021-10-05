@@ -23,7 +23,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeletePastJourneyAsync();
 
-        Task<(JourneyModel? JourneyModel, bool IsDepartureTimeInvalid)> AddJourneyAsync(JourneyDto journeyModel);
+        Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel);
 
         IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter);
 

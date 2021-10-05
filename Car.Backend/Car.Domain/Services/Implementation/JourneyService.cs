@@ -180,7 +180,7 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<(JourneyModel? JourneyModel, bool IsDepartureTimeInvalid)> AddJourneyAsync(JourneyDto journeyModel)
+        public async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel)
             => await AddJourneyAsync(journeyModel, null);
 
         public IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter) =>
@@ -549,21 +549,21 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        private async Task<(JourneyModel? Model, bool IsDepartureTimeInvalid)> AddJourneyAsync(JourneyDto journeyModel, int? parentId)
+        private async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel, int? parentId)
         {
             var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
             var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
-            bool isDepartureTimeInvalid = journeyRepository.Query()
+            bool isDepartureTimeValid = !journeyRepository.Query()
                 .Where(j => j.OrganizerId == userId)
                 .ToList()
                 .Any(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes <= 15 &&
                 (j.DepartureTime - journey.DepartureTime).TotalMinutes >= -15);
 
-            if (isDepartureTimeInvalid)
+            if (!isDepartureTimeValid)
             {
-                return (null, false);
+                return new JourneyTimeModel { JourneyModel = null, IsDepartureTimeValid = false };
             }
 
             var addedJourney = await journeyRepository.AddAsync(journey);
@@ -573,7 +573,7 @@ namespace Car.Domain.Services.Implementation
                 addedJourney.ParentId = parentId;
             }
 
-            await journeyRepository.SaveChangesAsync();
+            //await journeyRepository.SaveChangesAsync();
 
             if (addedJourney is not null)
             {
@@ -596,7 +596,8 @@ namespace Car.Domain.Services.Implementation
 
             journeyRepository.Detach(addedJourney!);
 
-            return (mapper.Map<Journey, JourneyModel>(addedJourney!), true);
+            return new JourneyTimeModel()
+            { JourneyModel = mapper.Map<Journey, JourneyModel>(addedJourney!), IsDepartureTimeValid = true };
         }
 
         private async Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated)
