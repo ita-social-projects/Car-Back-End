@@ -180,11 +180,8 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<JourneyModel?> AddJourneyAsync(JourneyDto journeyModel)
-        {
-            var result = await AddJourneyAsync(journeyModel, null);
-            return result.Model;
-        }
+        public async Task<(JourneyModel? JourneyModel, bool IsDepartureTimeInvalid)> AddJourneyAsync(JourneyDto journeyModel)
+            => await AddJourneyAsync(journeyModel, null);
 
         public IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter) =>
             journeyRepository
