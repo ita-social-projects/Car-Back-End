@@ -47,9 +47,8 @@ namespace Car.UnitTests.FluentValidationTests.Car
         }
 
         [Xunit.Theory]
-        [InlineData(null)]
         [InlineData("")]
-        public void Name_IsNull_GeneratesValidationError(string value)
+        public void Name_IsEmpty_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(model => model.Name, value);
         }

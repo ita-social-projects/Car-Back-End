@@ -11,7 +11,7 @@ namespace Car.Data.Entities
 
         public Color Color { get; set; }
 
-        public string PlateNumber { get; set; } = string.Empty;
+        public string? PlateNumber { get; set; }
 
         public string? ImageId { get; set; }
 
