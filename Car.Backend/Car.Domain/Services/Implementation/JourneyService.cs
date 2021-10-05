@@ -553,17 +553,18 @@ namespace Car.Domain.Services.Implementation
         {
             var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
-            bool isDepartureTimeInvalid = await journeyRepository.Query()
-                .Where(j => j.Id == userId)
-                .AnyAsync(j => (j.DepartureTime - journeyModel.DepartureTime).TotalMinutes <= 15 &&
-                (j.DepartureTime - journeyModel.DepartureTime).TotalMinutes >= -15);
+            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
+
+            bool isDepartureTimeInvalid = journeyRepository.Query()
+                .Where(j => j.OrganizerId == userId)
+                .ToList()
+                .Any(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes <= 15 &&
+                (j.DepartureTime - journey.DepartureTime).TotalMinutes >= -15);
 
             if (isDepartureTimeInvalid)
             {
                 return (null, false);
             }
-
-            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
 
