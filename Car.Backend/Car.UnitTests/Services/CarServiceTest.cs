@@ -157,7 +157,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateCarAsync_WhenCarIsValid_ReturnsCarObject()
+        public async Task UpdateCarAsync_WhenCarIsValidAndUserIsOwner_ReturnsCarObject()
         {
             // Arrange
             var updateCarModel = Fixture.Build<UpdateCarDto>()
@@ -167,6 +167,9 @@ namespace Car.UnitTests.Services
                 .With(c => c.Id, updateCarModel.Id)
                 .Create();
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, inputCar.OwnerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
                 .ReturnsAsync(inputCar);
 
@@ -174,7 +177,31 @@ namespace Car.UnitTests.Services
             var result = await carService.UpdateCarAsync(updateCarModel);
 
             // Assert
-            result.Should().BeEquivalentTo(updateCarModel, options => options.ExcludingMissingMembers());
+            result.Should().BeEquivalentTo((true, updateCarModel), options => options.ExcludingMissingMembers());
+        }
+
+        [Fact]
+        public async Task UpdateCarAsync_WhenCarIsValidAndUserIsNotOwner_ReturnsCarObject()
+        {
+            // Arrange
+            var updateCarModel = Fixture.Build<UpdateCarDto>()
+                .With(model => model.Image, (IFormFile)null)
+                .Create();
+            var inputCar = Fixture.Build<CarEntity>()
+                .With(c => c.Id, updateCarModel.Id)
+                .Create();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (inputCar.OwnerId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
+                .ReturnsAsync(inputCar);
+
+            // Act
+            var result = await carService.UpdateCarAsync(updateCarModel);
+
+            // Assert
+            result.Should().Be((false, null));
         }
 
         [Fact]
@@ -192,7 +219,7 @@ namespace Car.UnitTests.Services
             var result = await carService.UpdateCarAsync(updateCarModel);
 
             // Assert
-            result.Should().BeNull();
+            result.Should().Be((true, null));
         }
 
         [Theory]

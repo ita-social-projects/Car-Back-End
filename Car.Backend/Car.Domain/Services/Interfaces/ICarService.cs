@@ -13,7 +13,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<CarDto>> GetAllByUserIdAsync();
 
-        Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel);
+        Task<(bool IsUpdated, UpdateCarDto? UpdatedCarDto)> UpdateCarAsync(UpdateCarDto updateCarModel);
 
         Task<bool> DeleteAsync(int carId);
     }

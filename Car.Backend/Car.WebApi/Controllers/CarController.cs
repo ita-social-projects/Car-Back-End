@@ -50,8 +50,11 @@ namespace Car.WebApi.Controllers
         /// <param name="updateCarModel">The car.</param>
         /// <returns>The updated car.</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateCar([FromForm] UpdateCarDto updateCarModel) =>
-            Ok(await carService.UpdateCarAsync(updateCarModel));
+        public async Task<IActionResult> UpdateCar([FromForm] UpdateCarDto updateCarModel)
+        {
+            var (isCarUpdated, updatedCar) = await carService.UpdateCarAsync(updateCarModel);
+            return isCarUpdated ? Ok(updatedCar) : Forbid();
+        }
 
         /// <summary>
         /// deletes car by identifier

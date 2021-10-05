@@ -87,14 +87,14 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateCar_WhenCarIsValid_ReturnsOkObjectResult()
+        public async Task UpdateCar_WhenCarIsValidAndIsAllowed_ReturnsOkObjectResult()
         {
             // Arrange
             var updateCarModel = Fixture.Build<UpdateCarDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
             var expectedCar = updateCarModel;
 
-            carService.Setup(service => service.UpdateCarAsync(updateCarModel)).ReturnsAsync(expectedCar);
+            carService.Setup(service => service.UpdateCarAsync(updateCarModel)).ReturnsAsync((true, expectedCar));
 
             // Act
             var result = await carController.UpdateCar(updateCarModel);
@@ -105,6 +105,23 @@ namespace Car.UnitTests.Controllers
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(expectedCar);
             }
+        }
+
+        [Fact]
+        public async Task UpdateCar_WhenCarIsValidAndIsNotAllowed_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var updateCarModel = Fixture.Build<UpdateCarDto>()
+                .With(u => u.Image, (IFormFile)null).Create();
+            var expectedCar = updateCarModel;
+
+            carService.Setup(service => service.UpdateCarAsync(updateCarModel)).ReturnsAsync((false, null));
+
+            // Act
+            var result = await carController.UpdateCar(updateCarModel);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]
