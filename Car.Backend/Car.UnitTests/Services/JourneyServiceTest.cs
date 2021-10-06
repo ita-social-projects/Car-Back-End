@@ -476,6 +476,13 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject(JourneyDto journeyDto)
         {
             // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyDto.WeekDay = null;
             var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
             var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
@@ -495,6 +502,13 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsScheduled_ExecuteThreeTimes(JourneyDto journeyDto)
         {
             // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyDto.WeekDay = WeekDays.Monday;
             var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
 
@@ -515,6 +529,12 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject(JourneyDto journeyDto)
         {
             // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
 
@@ -522,7 +542,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.AddJourneyAsync(journeyDto);
 
             // Assert
-            result.Should().BeNull();
+            result.JourneyModel.Should().BeNull();
         }
 
         [Theory]
@@ -886,6 +906,13 @@ namespace Car.UnitTests.Services
         public async Task UpdateDetailsAsync_WhenJourneyBecomeScheduled_ExecuteThreeTimes(JourneyDto updatedJourneyDto)
         {
             // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             updatedJourneyDto.WeekDay = WeekDays.Monday;
             var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
             var journeys = Fixture.Build<Journey>()
@@ -1155,6 +1182,13 @@ namespace Car.UnitTests.Services
         public async Task UpdateRouteAsync_WhenJourneyBecomeScheduled_ExecuteThreeTimes()
         {
             // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.Now + TimeSpan.FromDays(1))
                 .With(j => j.IsCancelled, false)
@@ -1712,6 +1746,13 @@ namespace Car.UnitTests.Services
         public async Task AddFutureJourneyAsync_ScheduleExists_ExecuteOnce()
         {
             // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             const WeekDays days = WeekDays.Monday | WeekDays.Tuesday | WeekDays.Wednesday | WeekDays.Thursday | WeekDays.Friday |
                                   WeekDays.Saturday | WeekDays.Sunday;
             var journeys = Fixture.Build<Journey>()

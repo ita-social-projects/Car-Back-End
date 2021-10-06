@@ -168,7 +168,9 @@ namespace Car.UnitTests.Controllers
         public async Task AddJourney_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
         {
             // Arrange
-            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+            var journeyModel = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+
+            var expectedJourney = new JourneyTimeModel { JourneyModel = journeyModel, IsDepartureTimeValid = true };
 
             journeyService.Setup(j => j.AddJourneyAsync(journeyDto))
                 .ReturnsAsync(expectedJourney);

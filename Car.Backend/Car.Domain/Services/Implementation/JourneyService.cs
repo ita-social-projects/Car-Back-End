@@ -573,7 +573,7 @@ namespace Car.Domain.Services.Implementation
                 addedJourney.ParentId = parentId;
             }
 
-            //await journeyRepository.SaveChangesAsync();
+            await journeyRepository.SaveChangesAsync();
 
             if (addedJourney is not null)
             {
