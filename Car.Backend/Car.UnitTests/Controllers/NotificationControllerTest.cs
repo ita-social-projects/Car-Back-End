@@ -150,12 +150,12 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task MarkNotificationAsReadAsync_WhenNotificationExists_ReturnOkObjectResult(int notificationId)
+        public async Task MarkNotificationAsReadAsync_WhenNotificationExistsAndIsAllowed_ReturnOkObjectResult(int notificationId)
         {
             // Arrange
             var notification = Fixture.Build<NotificationDto>().With(n => n.Id, notificationId).Create();
             notificationService.Setup(service => service.MarkNotificationAsReadAsync(notificationId))
-                .ReturnsAsync(notification);
+                .ReturnsAsync((true, notification));
 
             // Act
             var result = await notificationController.MarkNotificationAsReadAsync(notificationId);
@@ -167,11 +167,27 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
+        public async Task MarkNotificationAsReadAsync_WhenNotificationExistsAndIsNotAllowed_ReturnOkObjectResult(int notificationId)
+        {
+            // Arrange
+            var notification = Fixture.Build<NotificationDto>().With(n => n.Id, notificationId).Create();
+            notificationService.Setup(service => service.MarkNotificationAsReadAsync(notificationId))
+                .ReturnsAsync((false, null));
+
+            // Act
+            var result = await notificationController.MarkNotificationAsReadAsync(notificationId);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task MarkNotificationAsReadAsync_WhenNotificationNotExists_ReturnNull(int notificationId)
         {
             // Arrange
             notificationService.Setup(service => service.MarkNotificationAsReadAsync(notificationId))
-                .ReturnsAsync((NotificationDto)null);
+                .ReturnsAsync((true, (NotificationDto)null));
 
             // Act
             var result = await notificationController.MarkNotificationAsReadAsync(notificationId);
