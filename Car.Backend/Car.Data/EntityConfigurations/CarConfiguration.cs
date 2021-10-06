@@ -19,7 +19,7 @@ namespace Car.Data.EntityConfigurations
                 .WithMany(brand => brand!.Cars)
                 .HasForeignKey(car => car.ModelId);
 
-            builder.Property(car => car.PlateNumber).HasMaxLength(10).IsRequired();
+            builder.Property(car => car.PlateNumber).HasMaxLength(10);
             builder.Property(car => car.ImageId).HasMaxLength(1500);
         }
     }
