@@ -10,9 +10,11 @@ namespace Car.Domain.FluentValidation
         {
             RuleFor(car => car.Id).GreaterThan(Constants.IdLength);
             RuleFor(car => car.Color).NotNull();
-            RuleFor(car => car.PlateNumber).NotNull().NotEmpty()
-                                                     .MinimumLength(Constants.PlateNumberMinLength)
-                                                     .MaximumLength(Constants.PlateNumberMaxLength);
+            RuleFor(car => car.PlateNumber).NotEmpty()
+                                            .MinimumLength(Constants.PlateNumberMinLength)
+                                            .MaximumLength(Constants.PlateNumberMaxLength)
+                                            .Matches("^[A-Za-zА-ЯҐЄІЇа-яґєії0-9- ]+$")
+                                            .When(car => car.PlateNumber != null);
             RuleFor(car => car.OwnerId).GreaterThan(Constants.IdLength);
             RuleFor(car => car.Model).SetValidator(new ModelDtoValidator()!);
         }
