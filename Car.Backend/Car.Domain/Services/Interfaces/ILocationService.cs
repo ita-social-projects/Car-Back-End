@@ -14,7 +14,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<Location>> GetAllByUserIdAsync();
 
-        Task<Location?> UpdateAsync(UpdateLocationDto location);
+        Task<(bool IsUpdated, Location? UpdatedLocation)> UpdateAsync(UpdateLocationDto location);
 
         public Task<bool> DeleteAsync(int locationId);
     }

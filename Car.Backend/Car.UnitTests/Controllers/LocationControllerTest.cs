@@ -83,12 +83,12 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateLocation_WhenLocationExists_ReturnsLocation(
+        public async Task UpdateLocation_WhenLocationExistsAndIsAllowed_ReturnsLocation(
             UpdateLocationDto locationModel, Location location)
         {
             // Arrange
             locationService.Setup(l => l.UpdateAsync(locationModel))
-                .ReturnsAsync(location);
+                .ReturnsAsync((true, location));
 
             // Act
             var result = await locationController.UpdateAsync(locationModel);
@@ -100,11 +100,27 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationExistsAndIsNotAllowed_ReturnsLocation(
+            UpdateLocationDto locationModel, Location location)
+        {
+            // Arrange
+            locationService.Setup(l => l.UpdateAsync(locationModel))
+                .ReturnsAsync((false, null));
+
+            // Act
+            var result = await locationController.UpdateAsync(locationModel);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task UpdateLocation_WhenLocationNotExists_ReturnsNull(UpdateLocationDto locationModel)
         {
             // Arrange
             locationService.Setup(l => l.UpdateAsync(locationModel))
-                .ReturnsAsync((Location)null);
+                .ReturnsAsync((true, (Location)null));
 
             // Act
             var result = await locationController.UpdateAsync(locationModel);

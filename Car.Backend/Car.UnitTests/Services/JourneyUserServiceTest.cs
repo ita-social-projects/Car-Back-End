@@ -181,7 +181,7 @@ namespace Car.UnitTests.Services
             var result = await journeyUserService.UpdateJourneyUserAsync(journeyUserDto);
 
             // Assert
-            result.Should().BeNull();
+            result.Should().Be((true, null));
         }
 
         [Theory]
@@ -252,7 +252,7 @@ namespace Car.UnitTests.Services
             var result = await journeyUserService.SetWithBaggageAsync(journeyId, userId, withBaggage);
 
             // Assert
-            result.Should().BeNull();
+            result.Should().Be((true, null));
         }
     }
 }
