@@ -101,7 +101,7 @@ namespace Car.UnitTests.Controllers
         [Theory]
         [AutoEntityData]
         public async Task UpdateLocation_WhenLocationExistsAndIsNotAllowed_ReturnsLocation(
-            UpdateLocationDto locationModel, Location location)
+            UpdateLocationDto locationModel)
         {
             // Arrange
             locationService.Setup(l => l.UpdateAsync(locationModel))

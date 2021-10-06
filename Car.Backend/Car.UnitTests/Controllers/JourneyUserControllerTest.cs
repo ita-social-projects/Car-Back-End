@@ -161,7 +161,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task SetWithBaggage_WhenJourneyUserExistsAndIsNotAllowed_ReturnsForbid(int journeyId, int userId, bool withBaggage, JourneyUserDto expectedResult)
+        public async Task SetWithBaggage_WhenJourneyUserExistsAndIsNotAllowed_ReturnsForbid(int journeyId, int userId, bool withBaggage)
         {
             // Arrange
             journeyService.Setup(j => j.SetWithBaggageAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
