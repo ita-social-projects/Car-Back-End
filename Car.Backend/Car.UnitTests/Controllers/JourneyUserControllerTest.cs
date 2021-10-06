@@ -87,11 +87,11 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task Update_WhenJourneyUserExists_ReturnsUpdatedJourneyUser(JourneyUserDto journeyUser)
+        public async Task Update_WhenJourneyUserExistsAndAllowed_ReturnsUpdatedJourneyUser(JourneyUserDto journeyUser)
         {
             // Arrange
             journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserDto>()))
-                .ReturnsAsync(journeyUser);
+                .ReturnsAsync((true, journeyUser));
 
             // Act
             var result = await journeyUserController.Update(journeyUser);
@@ -107,11 +107,26 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
+        public async Task Update_WhenJourneyUserExistsAndNotAllowed_ReturnsForbid(JourneyUserDto journeyUser)
+        {
+            // Arrange
+            journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserDto>()))
+                .ReturnsAsync((false, null));
+
+            // Act
+            var result = await journeyUserController.Update(journeyUser);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task Update_WhenJourneyUserDoesNotExists_ReturnsNull(JourneyUserDto journeyUser)
         {
             // Arrange
             journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserDto>()))
-                .ReturnsAsync((JourneyUserDto)null);
+                .ReturnsAsync((true, (JourneyUserDto)null));
 
             // Act
             var result = await journeyUserController.Update(journeyUser);
@@ -126,11 +141,11 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task SetWithBaggage_WhenJourneyUserExists_ReturnsUpdatedJourneyUser(int journeyId, int userId, bool withBaggage, JourneyUserDto expectedResult)
+        public async Task SetWithBaggage_WhenJourneyUserExistsAndIsAllowed_ReturnsUpdatedJourneyUser(int journeyId, int userId, bool withBaggage, JourneyUserDto expectedResult)
         {
             // Arrange
             journeyService.Setup(j => j.SetWithBaggageAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
-                .ReturnsAsync(expectedResult);
+                .ReturnsAsync((true, expectedResult));
 
             // Act
             var result = await journeyUserController.UpdateWithBaggage(journeyId, userId, withBaggage);
@@ -146,11 +161,26 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
+        public async Task SetWithBaggage_WhenJourneyUserExistsAndIsNotAllowed_ReturnsForbid(int journeyId, int userId, bool withBaggage, JourneyUserDto expectedResult)
+        {
+            // Arrange
+            journeyService.Setup(j => j.SetWithBaggageAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
+                .ReturnsAsync((false, null));
+
+            // Act
+            var result = await journeyUserController.UpdateWithBaggage(journeyId, userId, withBaggage);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task SetWithBaggage_WhenJourneyUserDoesNotExist_ReturnsNull(int journeyId, int userId, bool withBaggage)
         {
             // Arrange
             journeyService.Setup(j => j.SetWithBaggageAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>()))
-                .ReturnsAsync((JourneyUserDto)null);
+                .ReturnsAsync((true, (JourneyUserDto)null));
 
             // Act
             var result = await journeyUserController.UpdateWithBaggage(journeyId, userId, withBaggage);

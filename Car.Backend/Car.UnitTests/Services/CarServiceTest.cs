@@ -181,7 +181,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateCarAsync_WhenCarIsValidAndUserIsNotOwner_ReturnsCarObject()
+        public async Task UpdateCarAsync_WhenCarIsValidAndUserIsNotOwner_ReturnsNull()
         {
             // Arrange
             var updateCarModel = Fixture.Build<UpdateCarDto>()

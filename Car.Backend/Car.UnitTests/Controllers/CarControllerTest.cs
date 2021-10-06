@@ -108,7 +108,7 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateCar_WhenCarIsValidAndIsNotAllowed_ReturnsOkObjectResult()
+        public async Task UpdateCar_WhenCarIsValidAndIsNotAllowed_ReturnsForbidObjectResult()
         {
             // Arrange
             var updateCarModel = Fixture.Build<UpdateCarDto>()

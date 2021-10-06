@@ -101,8 +101,11 @@ namespace Car.WebApi.Controllers
         /// <param name="journey">The journey dto.</param>
         /// <returns>OkResult</returns>
         [HttpPut("update-route")]
-        public async Task<IActionResult> UpdateRoute([FromBody] JourneyDto journey) =>
-            Ok(await journeyService.UpdateRouteAsync(journey));
+        public async Task<IActionResult> UpdateRoute([FromBody] JourneyDto journey)
+        {
+            var (isJourneyUpdated, updatedJourney) = await journeyService.UpdateRouteAsync(journey);
+            return isJourneyUpdated ? Ok(updatedJourney) : Forbid();
+        }
 
         /// <summary>
         /// Update the journey details asynchronously.
@@ -110,8 +113,11 @@ namespace Car.WebApi.Controllers
         /// <param name="journey">The journey dto.</param>
         /// <returns>OkResult</returns>
         [HttpPut("update-details")]
-        public async Task<IActionResult> UpdateDetails([FromBody] JourneyDto journey) =>
-            Ok(await journeyService.UpdateDetailsAsync(journey));
+        public async Task<IActionResult> UpdateDetails([FromBody] JourneyDto journey)
+        {
+            var (isJourneyUpdated, updatedJourney) = await journeyService.UpdateDetailsAsync(journey);
+            return isJourneyUpdated ? Ok(updatedJourney) : Forbid();
+        }
 
         /// <summary>
         /// Update the journey invitation asynchronously.
@@ -119,8 +125,11 @@ namespace Car.WebApi.Controllers
         /// <param name="invitation">The journey dto.</param>
         /// <returns>OkResult</returns>
         [HttpPut("update-invitation")]
-        public async Task<IActionResult> UpdateInvitation([FromBody] InvitationDto invitation) =>
-            Ok(await journeyService.UpdateInvitationAsync(invitation));
+        public async Task<IActionResult> UpdateInvitation([FromBody] InvitationDto invitation)
+        {
+            var (isInvitationUpdated, updatedInvitation) = await journeyService.UpdateInvitationAsync(invitation);
+            return isInvitationUpdated ? Ok(updatedInvitation) : Forbid();
+        }
 
         /// <summary>
         /// Cancels journey
@@ -130,8 +139,8 @@ namespace Car.WebApi.Controllers
         [HttpPut("cancel/{id}")]
         public async Task<IActionResult> CancelJourney(int id)
         {
-            await journeyService.CancelAsync(id);
-            return Ok();
+            var isCancelled = await journeyService.CancelAsync(id);
+            return isCancelled ? Ok() : Forbid();
         }
 
         /// <summary>
@@ -164,8 +173,8 @@ namespace Car.WebApi.Controllers
         [HttpPut("add-user/")]
         public async Task<IActionResult> AddUserToJourney([FromBody] JourneyApplyModel journeyApply)
         {
-            var isUserAdded = await journeyService.AddUserToJourney(journeyApply);
-            return Ok(isUserAdded);
+            var (isAddingAllowed, isUserAdded) = await journeyService.AddUserToJourney(journeyApply);
+            return isAddingAllowed ? Ok(isUserAdded) : Forbid();
         }
 
         [HttpGet("journey-user/{journeyId}/{userId}/{withCancelledStops}")]

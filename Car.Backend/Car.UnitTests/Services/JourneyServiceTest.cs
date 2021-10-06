@@ -1028,10 +1028,11 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateDetailsAsync_WhenJourneyIsNotValid_ReturnsNull(JourneyDto updatedJourneyDto)
+        public async Task UpdateDetailsAsync_WhenJourneyIsNotValid_ReturnsSameObject(JourneyDto updatedJourneyDto)
         {
             // Arrange
             updatedJourneyDto.WeekDay = null;
+            var expected = Mapper.Map<JourneyDto, JourneyModel>(updatedJourneyDto);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, updatedJourneyDto.Id + 1)
                 .CreateMany(1);
@@ -1049,12 +1050,12 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().BeNull();
+            result.Should().Be((true, expected));
         }
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateInvitationAsync_WhenInvitationIsValid_ReturnsInvitationObject(
+        public async Task UpdateInvitationAsync_WhenInvitationIsValidAndIsAllowed_ReturnsInvitationObject(
             InvitationDto updatedInvitationDto,
             JourneyDto updatedJourneyDto)
         {
@@ -1071,6 +1072,8 @@ namespace Car.UnitTests.Services
                 .With(j => j.Invitations, invitations.ToList())
                 .CreateMany(1);
             var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, invitation.InvitedUserId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             invitationRepository.Setup(repo =>
                     repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync(invitation);
@@ -1083,7 +1086,43 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateInvitationAsync(updatedInvitationDto);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedInvitation);
+            result.Should().BeEquivalentTo((true, expectedInvitation));
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateInvitationAsync_WhenInvitationIsValidAndIsNotAllowed_ReturnNull(
+            InvitationDto updatedInvitationDto,
+            JourneyDto updatedJourneyDto)
+        {
+            // Arrange
+            updatedInvitationDto.JourneyId = updatedJourneyDto.Id;
+            var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
+            var invitation = Mapper.Map<InvitationDto, Invitation>(updatedInvitationDto);
+            var invitations = Fixture.Build<Invitation>()
+                .With(i => i.Id, invitation.Id)
+                .With(i => i.InvitedUserId, invitation.InvitedUserId)
+                .CreateMany(1);
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journey.Id)
+                .With(j => j.Invitations, invitations.ToList())
+                .CreateMany(1);
+            var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (invitation.InvitedUserId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            invitationRepository.Setup(repo =>
+                    repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync(invitation);
+            invitationRepository.Setup(repo =>
+                    repo.Query()).Returns(invitations.AsQueryable().BuildMock().Object);
+            journeyRepository.Setup(repo =>
+                    repo.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.UpdateInvitationAsync(updatedInvitationDto);
+
+            // Assert
+            result.Should().Be((false, null));
         }
 
         [Theory]
@@ -1525,17 +1564,21 @@ namespace Car.UnitTests.Services
             var result = await journeyService.AddUserToJourney(journeyApply);
 
             // Assert
-            result.Should().Be(false);
+            result.Should().Be((true, false));
         }
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyAndUserAreValid_ReturnsTrue(JourneyApplyModel journeyApply, int passangersCount)
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndIsAllowed_ReturnsTrue(JourneyApplyModel journeyApply, int passangersCount)
         {
             // Arrange
             if (journeyApply.JourneyUser != null)
             {
                 journeyApply.JourneyUser.PassangersCount = passangersCount;
+
+                var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journeyApply.JourneyUser.UserId.ToString()) };
+                httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
                 var receivedMessages = Fixture.Build<ReceivedMessages>()
                 .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
                 .CreateMany(1)
@@ -1568,7 +1611,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.AddUserToJourney(journeyApply);
 
             // Assert
-            result.Should().Be(true);
+            result.Should().Be((true, true));
         }
 
         [Theory]
