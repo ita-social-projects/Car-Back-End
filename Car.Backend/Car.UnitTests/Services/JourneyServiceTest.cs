@@ -805,6 +805,9 @@ namespace Car.UnitTests.Services
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journeys.FirstOrDefault().OrganizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             notificationService.Setup(s => s.NotifyParticipantsAboutCancellationAsync(It.IsAny<Journey>())).Returns(Task.CompletedTask);
             notificationService.Setup(s => s.DeleteNotificationsAsync(It.IsAny<IEnumerable<Notification>>()));
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
@@ -818,15 +821,21 @@ namespace Car.UnitTests.Services
             journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
         }
 
-        [Fact]
-        public async Task CancelAsync_WhenJourneyAndScheduleExist_ExecuteFiveTimes()
+        [Theory]
+        [AutoEntityData]
+        public async Task CancelAsync_WhenJourneyAndScheduleExist_ExecuteFiveTimes(int organizerId)
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Participants, null as List<User>)
                 .With(j => j.IsCancelled, false)
+                .With(j => j.OrganizerId, organizerId)
                 .CreateMany(5);
             var journeyIdToCancel = journeys.FirstOrDefault().Id;
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             var childJourneys = journeys.Skip(1).ToList();
             foreach (var journey in childJourneys)
             {
@@ -867,6 +876,9 @@ namespace Car.UnitTests.Services
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updatedJourneyDto.OrganizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyRepository.Setup(repo =>
                 repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync(journey);
             journeyRepository.Setup(repo =>
@@ -878,7 +890,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedJourney);
+            result.UpdatedJourney.Should().BeEquivalentTo(expectedJourney);
         }
 
         [Theory]
@@ -897,6 +909,9 @@ namespace Car.UnitTests.Services
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updatedJourneyDto.OrganizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyRepository.Setup(repo =>
                 repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync(journey);
             journeyRepository.Setup(repo =>
@@ -911,7 +926,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedJourney);
+            result.UpdatedJourney.Should().BeEquivalentTo(expectedJourney);
             journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(3));
         }
 
@@ -928,6 +943,10 @@ namespace Car.UnitTests.Services
                 .With(dto => dto.DepartureTime, DateTime.Now.AddHours(1))
                 .CreateMany(1)
                 .ToList();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updatedJourneyDto.OrganizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             var dateNonMonday = DateTime.Now.AddDays(1);
             while (dateNonMonday.DayOfWeek == DayOfWeek.Monday)
             {
@@ -979,7 +998,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedJourney);
+            result.UpdatedJourney.Should().BeEquivalentTo(expectedJourney);
             journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(childJourneys.Count + 1));
         }
 
@@ -1003,6 +1022,10 @@ namespace Car.UnitTests.Services
                 .CreateMany(2)
                 .ToList();
             journeys.AddRange(childJourneys);
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updatedJourneyDto.OrganizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
             var schedules = Fixture.Build<Schedule>()
                 .With(j => j.Id, journey.Id)
@@ -1022,7 +1045,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedJourney);
+            result.UpdatedJourney.Should().BeEquivalentTo(expectedJourney);
             journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(childJourneys.Count + 1));
         }
 
@@ -1050,7 +1073,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateDetailsAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().Be((true, expected));
+            result.IsUpdated.Should().BeTrue();
         }
 
         [Theory]
@@ -1145,6 +1168,9 @@ namespace Car.UnitTests.Services
                 .CreateMany(1);
             var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, expectedInvitation.InvitedUserId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             invitationRepository.Setup(repo =>
                     repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync((Invitation)null);
             invitationRepository.Setup(repo =>
@@ -1156,7 +1182,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateInvitationAsync(updatedInvitationDto);
 
             // Assert
-            result.Should().BeNull();
+            result.UpdatedInvitationDto.Should().BeNull();
         }
 
         [Fact]
@@ -1178,6 +1204,9 @@ namespace Car.UnitTests.Services
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, expectedJourney.Organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
             scheduleRepository.Setup(repo =>
@@ -1187,7 +1216,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateRouteAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedJourney);
+            result.UpdatedJourney.Should().BeEquivalentTo(expectedJourney);
         }
 
         [Fact]
@@ -1210,6 +1239,9 @@ namespace Car.UnitTests.Services
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, expectedJourney.Organizer.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
             scheduleRepository.Setup(repo =>
@@ -1222,23 +1254,26 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateRouteAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedJourney);
+            result.UpdatedJourney.Should().BeEquivalentTo(expectedJourney);
             journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(3));
         }
 
-        [Fact]
-        public async Task UpdateRouteAsync_WhenJourneyBecomeNonScheduled_ExecuteThreeTimes()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateRouteAsync_WhenJourneyBecomeNonScheduled_ExecuteThreeTimes(int organizerId)
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.Now + TimeSpan.FromDays(1))
                 .With(j => j.IsCancelled, false)
+                .With(j => j.OrganizerId, organizerId)
                 .CreateMany(1)
                 .ToList();
             var journey = journeys.First();
             var childJourneys = Fixture.Build<Journey>()
                 .With(j => j.IsCancelled, false)
                 .With(j => j.ParentId, journey.Id)
+                .With(j => j.OrganizerId, organizerId)
                 .With(dto => dto.DepartureTime, DateTime.Now.AddHours(1))
                 .CreateMany(2)
                 .ToList();
@@ -1259,6 +1294,9 @@ namespace Car.UnitTests.Services
                 .With(j => j.ChildJourneys, childJourneys)
                 .CreateMany(1);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journey.OrganizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
             scheduleRepository.Setup(repo =>
@@ -1274,13 +1312,15 @@ namespace Car.UnitTests.Services
             journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(3));
         }
 
-        [Fact]
-        public async Task UpdateRouteAsync_WhenJourneyScheduled_ExecuteSevenTimes()
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateRouteAsync_WhenJourneyScheduled_ExecuteSevenTimes(int organizerId)
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.Now + TimeSpan.FromDays(1))
                 .With(j => j.IsCancelled, false)
+                .With(j => j.OrganizerId, organizerId)
                 .CreateMany(1)
                 .ToList();
             var journey = journeys.First();
@@ -1300,12 +1340,14 @@ namespace Car.UnitTests.Services
                 .With(j => j.ParentId, journey.Id)
                 .With(dto => dto.IsCancelled, false)
                 .With(dto => dto.DepartureTime, dateNonMonday)
+                .With(j => j.OrganizerId, organizerId)
                 .CreateMany()
                 .ToList();
             var otherChildJourneys = Fixture.Build<Journey>()
                 .With(j => j.ParentId, journey.Id)
                 .With(dto => dto.IsCancelled, false)
                 .With(dto => dto.DepartureTime, dateMonday)
+                .With(j => j.OrganizerId, organizerId)
                 .CreateMany()
                 .ToList();
             childJourneys.AddRange(otherChildJourneys);
@@ -1313,6 +1355,7 @@ namespace Car.UnitTests.Services
             var updatedJourneyDto = Fixture.Build<JourneyDto>()
                 .With(dto => dto.Id, journey.Id)
                 .With(dto => dto.WeekDay, WeekDays.Monday)
+                .With(j => j.OrganizerId, organizerId)
                 .Create();
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
             expectedJourney.Duration = updatedJourneyDto.Duration;
@@ -1325,6 +1368,9 @@ namespace Car.UnitTests.Services
                 .With(j => j.Days, WeekDays.Monday)
                 .With(j => j.ChildJourneys, childJourneys)
                 .CreateMany(1);
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
@@ -1360,7 +1406,7 @@ namespace Car.UnitTests.Services
             var result = await journeyService.UpdateRouteAsync(updatedJourneyDto);
 
             // Assert
-            result.Should().BeNull();
+            result.UpdatedJourney.Should().BeNull();
         }
 
         [Theory]
