@@ -171,13 +171,13 @@ namespace Car.Domain.Services.Implementation
 
             var date = DateTime.Now.AddDays(13);
 
-            foreach (var schedule in schedules)
+            schedules.ForEach(async (schedule) =>
             {
                 if (schedule.Days.ToString().Contains(date.DayOfWeek.ToString()))
                 {
                     await AddFutureJourneyAsync(schedule, date);
                 }
-            }
+            });
         }
 
         public async Task<JourneyModel> AddJourneyAsync(JourneyDto journeyModel) => await AddJourneyAsync(journeyModel, null);
@@ -389,7 +389,7 @@ namespace Car.Domain.Services.Implementation
 
             int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
-            if (userId != journey.OrganizerId && userId != journeyApply.JourneyUser.UserId)
+            if (currentUserId != journey.OrganizerId && currentUserId != journeyApply.JourneyUser.UserId)
             {
                 return (false, false);
             }
