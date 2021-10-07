@@ -171,13 +171,8 @@ namespace Car.Domain.Services.Implementation
 
             var date = DateTime.Now.AddDays(13);
 
-            foreach (var schedule in schedules)
-            {
-                if (schedule.Days.ToString().Contains(date.DayOfWeek.ToString()))
-                {
-                    await AddFutureJourneyAsync(schedule, date);
-                }
-            }
+            schedules.Where(s => s.Days.ToString().Contains(date.DayOfWeek.ToString())).ToList()
+                .ForEach(async s => await AddFutureJourneyAsync(s, date));
         }
 
         public async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel)
@@ -557,7 +552,7 @@ namespace Car.Domain.Services.Implementation
 
             bool isDepartureTimeValid = !journeyRepository.Query()
                 .Where(j => j.OrganizerId == userId)
-                .ToList()
+                .AsEnumerable()
                 .Any(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes <= 15 &&
                 (j.DepartureTime - journey.DepartureTime).TotalMinutes >= -15);
 
