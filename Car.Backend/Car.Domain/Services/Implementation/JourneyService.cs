@@ -613,8 +613,7 @@ namespace Car.Domain.Services.Implementation
         private async Task<(bool IsUpdated, JourneyModel? UpdatedJourney)> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated)
         {
             var journey = await journeyRepository.Query()
-                .FilterUncancelledJourneys()
-                .FilterUpcoming()
+                .FilterEditable()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
@@ -702,8 +701,7 @@ namespace Car.Domain.Services.Implementation
             var journey = await journeyRepository.Query()
                 .IncludeJourneyInvitations()
                 .AsNoTracking()
-                .FilterUncancelledJourneys()
-                .FilterUpcoming()
+                .FilterEditable()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
             var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);

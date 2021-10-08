@@ -61,6 +61,14 @@ namespace Car.Domain.Extensions
                 journey.DepartureTime > now);
         }
 
+        public static IQueryable<Journey> FilterEditable(this IQueryable<Journey> journeys)
+        {
+            DateTime now = DateTime.UtcNow;
+
+            return journeys.FilterUncancelledJourneys().IncludeSchedule().Where(journey =>
+                journey.DepartureTime > now || journey.Schedule != null);
+        }
+
         public static async Task<IQueryable<Journey>> UseSavedAdresses(this IQueryable<Journey> journeys, ILocationService locationService)
         {
             var savedLocations = await locationService.GetAllByUserIdAsync();

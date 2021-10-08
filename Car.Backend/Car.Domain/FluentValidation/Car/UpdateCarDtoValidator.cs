@@ -11,10 +11,11 @@ namespace Car.Domain.FluentValidation
             RuleFor(car => car.Id).GreaterThan(Constants.IdLength);
             RuleFor(car => car.Color).NotNull();
             RuleFor(car => car.ModelId).GreaterThan(Constants.IdLength);
-            RuleFor(car => car.PlateNumber).NotNull().NotEmpty()
-                                                     .MinimumLength(Constants.PlateNumberMinLength)
-                                                     .MaximumLength(Constants.PlateNumberMaxLength)
-                                                     .Matches("^[A-Za-zА-ЯҐЄІЇа-яґєії0-9- ]+$");
+            RuleFor(car => car.PlateNumber).NotEmpty()
+                                            .MinimumLength(Constants.PlateNumberMinLength)
+                                            .MaximumLength(Constants.PlateNumberMaxLength)
+                                            .Matches("^[A-Za-zА-ЯҐЄІЇа-яґєії0-9- ]+$")
+                                            .When(car => car.PlateNumber != null);
         }
     }
 }
