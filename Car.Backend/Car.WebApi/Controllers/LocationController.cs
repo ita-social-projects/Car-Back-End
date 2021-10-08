@@ -42,8 +42,11 @@ namespace Car.WebApi.Controllers
         /// <param name="location">location to be updated</param>
         /// <returns>updated location</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateLocationDto location) =>
-            Ok(await locationService.UpdateAsync(location));
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateLocationDto location)
+        {
+            var (isLocationUpdated, updatedLocation) = await locationService.UpdateAsync(location);
+            return isLocationUpdated ? Ok(updatedLocation) : Forbid();
+        }
 
         /// <summary>
         /// Gets the location by identifier.

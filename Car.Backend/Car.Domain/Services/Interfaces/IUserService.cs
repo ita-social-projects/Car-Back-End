@@ -10,7 +10,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<UserEmailDto>> GetAllUsersAsync();
 
-        Task<UserDto?> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto);
+        Task<(bool IsUpdated, UserDto? UpdatedUserDto)> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto);
 
         Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto);
 

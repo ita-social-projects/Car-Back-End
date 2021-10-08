@@ -23,16 +23,25 @@ namespace Car.Domain.Services.Implementation
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<int> MarkMessagesReadInChatAsync(int chatId)
+        public async Task<bool> MarkMessagesReadInChatAsync(int chatId)
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
             var receivedMessages = await receivedMessagesRepository.Query()
-                .FirstOrDefaultAsync(rm => rm.ChatId == chatId && rm.UserId == userId)!;
-            receivedMessages.UnreadMessagesCount = 0;
+                .FirstOrDefaultAsync(rm => rm.ChatId == chatId);
 
-            await receivedMessagesRepository.SaveChangesAsync();
-            return receivedMessages.UnreadMessagesCount;
+            if (receivedMessages.UserId != userId)
+            {
+                return false;
+            }
+
+            if (receivedMessages != null)
+            {
+                receivedMessages.UnreadMessagesCount = 0;
+                await receivedMessagesRepository.SaveChangesAsync();
+            }
+
+            return true;
         }
 
         public async Task<int> GetAllUnreadMessagesNumber()

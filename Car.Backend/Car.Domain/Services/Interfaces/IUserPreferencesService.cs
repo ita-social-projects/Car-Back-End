@@ -8,6 +8,6 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<UserPreferencesDto?> GetPreferencesAsync(int userId);
 
-        Task<UserPreferencesDto?> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO);
+        Task<(bool IsUpdated, UserPreferencesDto? UpdatedReferencesDto)> UpdatePreferencesAsync(UserPreferencesDto preferencesDTO);
     }
 }

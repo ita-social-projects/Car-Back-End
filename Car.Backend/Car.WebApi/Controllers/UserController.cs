@@ -39,8 +39,11 @@ namespace Car.WebApi.Controllers
         /// <param name="updateUserImageDto">User object to update.</param>
         /// <returns>Updated user.</returns>
         [HttpPut("image")]
-        public async Task<IActionResult> UpdateUserImage([FromForm] UpdateUserImageDto updateUserImageDto) =>
-            Ok(await userService.UpdateUserImageAsync(updateUserImageDto));
+        public async Task<IActionResult> UpdateUserImage([FromForm] UpdateUserImageDto updateUserImageDto)
+        {
+            var (isUserUpdated, updatedUser) = await userService.UpdateUserImageAsync(updateUserImageDto);
+            return isUserUpdated ? Ok(updatedUser) : Forbid();
+        }
 
         /// <summary>
         /// Adds fcmtoken to user asynchronously.

@@ -63,21 +63,27 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<CarEntity>, IEnumerable<CarDto>>(cars);
         }
 
-        public async Task<UpdateCarDto> UpdateCarAsync(UpdateCarDto updateCarModel)
+        public async Task<(bool IsUpdated, UpdateCarDto? UpdatedCarDto)> UpdateCarAsync(UpdateCarDto updateCarModel)
         {
             var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 
             if (car != null)
             {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
+                if (userId != car.OwnerId)
+                {
+                    return (false, null);
+                }
+
                 await imageService.UpdateImageAsync(car, updateCarModel.Image);
                 car.Color = updateCarModel.Color;
                 car.ModelId = updateCarModel.ModelId;
                 car.PlateNumber = updateCarModel.PlateNumber;
+                await carRepository.SaveChangesAsync();
             }
 
-            await carRepository.SaveChangesAsync();
-
-            return mapper.Map<CarEntity, UpdateCarDto>(car!);
+            return (true, mapper.Map<CarEntity, UpdateCarDto>(car!));
         }
 
         public async Task<bool> DeleteAsync(int carId)
