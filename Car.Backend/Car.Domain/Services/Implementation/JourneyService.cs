@@ -643,6 +643,7 @@ namespace Car.Domain.Services.Implementation
 
                 if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))
                 {
+                    scheduleRepository.Detach(journey.Schedule!);
                     await UpdateChildRoutesAsync(journeyDto);
                 }
                 else if (journeyDto.WeekDay is not null)
@@ -700,8 +701,8 @@ namespace Car.Domain.Services.Implementation
         {
             var journey = await journeyRepository.Query()
                 .IncludeJourneyInvitations()
-                .AsNoTracking()
                 .FilterEditable()
+                .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
             var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
@@ -799,7 +800,8 @@ namespace Car.Domain.Services.Implementation
         {
             if (weekDay is not null)
             {
-                var newDays = weekDay.ToString()!.Split(", ").Except((await scheduleRepository.GetByIdAsync(id)).Days.ToString().Split(", "));
+                var schedule = await scheduleRepository.GetByIdAsync(id);
+                var newDays = weekDay.ToString()!.Split(", ").Except(schedule.Days.ToString().Split(", "));
 
                 var now = DateTime.Today;
                 var termInDays = 14;
@@ -808,10 +810,11 @@ namespace Car.Domain.Services.Implementation
                     .Where(date => newDays.Contains(date.DayOfWeek.ToString()))
                     .ToHashSet();
 
-                await scheduleRepository.UpdateAsync(new Schedule { Id = id, Days = (WeekDays)weekDay });
+                schedule.Days = (WeekDays)weekDay;
                 await scheduleRepository.SaveChangesAsync();
+                scheduleRepository.Detach(schedule);
 
-                var schedule = await scheduleRepository
+                schedule = await scheduleRepository
                     .Query()
                     .IncludeJourneyWithRouteInfo()
                     .IncludeChildJourneys()

@@ -9,7 +9,8 @@ namespace Car.Domain.FluentValidation
     {
         public JourneyDtoValidator()
         {
-            RuleFor(model => model.DepartureTime).GreaterThan(DateTime.UtcNow);
+            When(model => model.WeekDay == null, () =>
+                RuleFor(model => model.DepartureTime).GreaterThan(DateTime.UtcNow));
             RuleFor(model => model.CountOfSeats)
                 .GreaterThan(Constants.NumberMin)
                 .LessThanOrEqualTo(Constants.SeatsMaxCount);
