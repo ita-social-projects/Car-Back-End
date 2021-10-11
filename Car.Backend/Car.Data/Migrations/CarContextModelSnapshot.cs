@@ -391,7 +391,6 @@ namespace Car.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PlateNumber")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
@@ -419,7 +418,7 @@ namespace Car.Data.Migrations
                     b.ToTable("Chat");
                 });
 
-            modelBuilder.Entity("Car.Data.Entities.FCMToken", b =>
+            modelBuilder.Entity("Car.Data.Entities.FcmToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -437,7 +436,7 @@ namespace Car.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FCMToken");
+                    b.ToTable("FcmToken");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Invitation", b =>
@@ -549,6 +548,9 @@ namespace Car.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PassangersCount")
                         .HasColumnType("int");
 
                     b.Property<bool>("WithBaggage")
@@ -8375,7 +8377,7 @@ namespace Car.Data.Migrations
                     b.Navigation("Journey");
                 });
 
-            modelBuilder.Entity("Car.Data.Entities.FCMToken", b =>
+            modelBuilder.Entity("Car.Data.Entities.FcmToken", b =>
                 {
                     b.HasOne("Car.Data.Entities.User", "User")
                         .WithMany("FCMTokens")

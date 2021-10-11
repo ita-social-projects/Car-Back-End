@@ -6,7 +6,7 @@ namespace Car.Domain.Services.Interfaces
 {
     public interface IReceivedMessagesService
     {
-        Task<int> MarkMessagesReadInChatAsync(int chatId);
+        Task<bool> MarkMessagesReadInChatAsync(int chatId);
 
         Task<int> GetAllUnreadMessagesNumber();
     }

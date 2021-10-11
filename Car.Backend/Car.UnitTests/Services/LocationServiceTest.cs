@@ -145,7 +145,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateLocation_WhenLocationIsValid_ReturnsLocationObject(Location[] locations)
+        public async Task UpdateLocation_WhenLocationIsValidAndIsAllowed_ReturnsLocationObject(Location[] locations)
         {
             // Arrange
             var updatedLocationModel = Fixture.Build<UpdateLocationDto>()
@@ -155,11 +155,36 @@ namespace Car.UnitTests.Services
             locationRepository.Setup(r => r.Query())
                 .Returns(locations.AsQueryable().BuildMock().Object);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, expectedLocation.UserId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             // Act
             var result = await locationService.UpdateAsync(updatedLocationModel);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedLocation);
+            result.Should().BeEquivalentTo((true, expectedLocation));
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationIsValidAndIsNotAllowed_ReturnsNull(Location[] locations)
+        {
+            // Arrange
+            var updatedLocationModel = Fixture.Build<UpdateLocationDto>()
+                .With(model => model.Id, locations.First().Id).Create();
+            var expectedLocation = locations.First();
+
+            locationRepository.Setup(r => r.Query())
+                .Returns(locations.AsQueryable().BuildMock().Object);
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (expectedLocation.UserId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            // Act
+            var result = await locationService.UpdateAsync(updatedLocationModel);
+
+            // Assert
+            result.Should().Be((false, null));
         }
 
         [Theory]
@@ -178,7 +203,7 @@ namespace Car.UnitTests.Services
             var result = await locationService.UpdateAsync(updatedLocationModel);
 
             // Assert
-            result.Should().BeNull();
+            result.UpdatedLocation.Should().BeNull();
         }
 
         [Theory]

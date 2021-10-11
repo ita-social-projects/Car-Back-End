@@ -29,17 +29,17 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> DeleteAsync(int journeyId);
 
-        Task<JourneyModel?> UpdateRouteAsync(JourneyDto journeyDto);
+        Task<(bool IsUpdated, JourneyModel? UpdatedJourney)> UpdateRouteAsync(JourneyDto journeyDto);
 
-        Task<JourneyModel?> UpdateDetailsAsync(JourneyDto journeyDto);
+        Task<(bool IsUpdated, JourneyModel? UpdatedJourney)> UpdateDetailsAsync(JourneyDto journeyDto);
 
-        Task<InvitationDto> UpdateInvitationAsync(InvitationDto invitationDto);
+        Task<(bool IsUpdated, InvitationDto? UpdatedInvitationDto)> UpdateInvitationAsync(InvitationDto invitationDto);
 
         IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter);
 
         Task CheckForSuitableRequests(Journey journey);
 
-        Task CancelAsync(int journeyId);
+        Task<bool> CancelAsync(int journeyId);
 
         Task<bool> IsCanceled(int journeyId);
 
@@ -47,7 +47,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<int> GetUnreadMessagesCountForNewUserAsync(int journeyId);
 
-        Task<bool> AddUserToJourney(JourneyApplyModel journeyApply);
+        Task<(bool IsAddingAllowed, bool IsUserAdded)> AddUserToJourney(JourneyApplyModel journeyApply);
 
         Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
             int journeyId,

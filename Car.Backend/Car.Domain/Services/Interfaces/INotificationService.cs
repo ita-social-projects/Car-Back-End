@@ -21,7 +21,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<NotificationDto> CreateNewNotificationAsync(CreateNotificationDto createNotificationDto);
 
-        Task<NotificationDto> MarkNotificationAsReadAsync(int notificationId);
+        Task<(bool IsUpdated, NotificationDto? UpdatedNotificationDto)> MarkNotificationAsReadAsync(int notificationId);
 
         Task JourneyUpdateNotifyUserAsync(Journey journey);
 

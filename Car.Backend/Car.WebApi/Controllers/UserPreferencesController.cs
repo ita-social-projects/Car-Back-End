@@ -31,7 +31,10 @@ namespace Car.WebApi.Controllers
         /// <param name="preferences">preferences to be updated</param>
         /// <returns>updated preference</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdatePreferences([FromBody] UserPreferencesDto preferences) =>
-            Ok(await preferencesService.UpdatePreferencesAsync(preferences));
+        public async Task<IActionResult> UpdatePreferences([FromBody] UserPreferencesDto preferences)
+        {
+            var (isPreferencesUpdated, updatedPreferences) = await preferencesService.UpdatePreferencesAsync(preferences);
+            return isPreferencesUpdated ? Ok(updatedPreferences) : Forbid();
+        }
     }
 }
