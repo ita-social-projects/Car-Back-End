@@ -249,12 +249,12 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateRoute_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
+        public async Task UpdateRoute_WhenJourneyIsValidAndUserIsOrganizer_ReturnsOkObjectResult(JourneyDto journeyDto)
         {
             // Arrange
             var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
             journeyService.Setup(service =>
-                service.UpdateRouteAsync(journeyDto)).ReturnsAsync(expectedJourney);
+                service.UpdateRouteAsync(journeyDto)).ReturnsAsync((true, expectedJourney));
 
             // Act
             var result = await journeyController.UpdateRoute(journeyDto);
@@ -266,12 +266,28 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateDetails_WhenJourneyIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
+        public async Task UpdateRoute_WhenJourneyIsValidAndUserIsNotOrganizer_ReturnsForbidObjectResult(JourneyDto journeyDto)
         {
             // Arrange
             var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
             journeyService.Setup(service =>
-                service.UpdateDetailsAsync(journeyDto)).ReturnsAsync(expectedJourney);
+                service.UpdateRouteAsync(journeyDto)).ReturnsAsync((false, null));
+
+            // Act
+            var result = await journeyController.UpdateRoute(journeyDto);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateDetails_WhenJourneyIsValidAndUserIsOrganizer_ReturnsOkObjectResult(JourneyDto journeyDto)
+        {
+            // Arrange
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+            journeyService.Setup(service =>
+                service.UpdateDetailsAsync(journeyDto)).ReturnsAsync((true, expectedJourney));
 
             // Act
             var result = await journeyController.UpdateDetails(journeyDto);
@@ -283,13 +299,29 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateInvitations_WhenInvitationIsValid_ReturnsOkObjectResult(
+        public async Task UpdateDetails_WhenJourneyIsValidAndUserIsNotOrganizer_ReturnsForbidObjectResult(JourneyDto journeyDto)
+        {
+            // Arrange
+            var expectedJourney = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+            journeyService.Setup(service =>
+                service.UpdateDetailsAsync(journeyDto)).ReturnsAsync((false, null));
+
+            // Act
+            var result = await journeyController.UpdateDetails(journeyDto);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateInvitations_WhenInvitationIsValidAndIsAllowed_ReturnsOkObjectResult(
             InvitationDto invitationDto,
             InvitationDto expectedInvitationDto)
         {
             // Arrange
             journeyService.Setup(service =>
-                service.UpdateInvitationAsync(invitationDto)).ReturnsAsync(expectedInvitationDto);
+                service.UpdateInvitationAsync(invitationDto)).ReturnsAsync((true, expectedInvitationDto));
 
             // Act
             var result = await journeyController.UpdateInvitation(invitationDto);
@@ -300,17 +332,46 @@ namespace Car.UnitTests.Controllers
         }
 
         [Theory]
-        [AutoData]
-        public async Task CancelAsync_WhenJourneyExists_ReturnsOkResult(int journeyIdToCancel)
+        [AutoEntityData]
+        public async Task UpdateInvitations_WhenInvitationIsValidAndIsNotAllowed_ReturnsForbidObjectResult(InvitationDto invitationDto)
         {
             // Arrange
-            journeyService.Setup(service => service.CancelAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
+            journeyService.Setup(service =>
+                service.UpdateInvitationAsync(invitationDto)).ReturnsAsync((false, null));
+
+            // Act
+            var result = await journeyController.UpdateInvitation(invitationDto);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyExistsAndUserIsOrganizer_ReturnsOkResult(int journeyIdToCancel)
+        {
+            // Arrange
+            journeyService.Setup(service => service.CancelAsync(It.IsAny<int>())).ReturnsAsync(true);
 
             // Act
             var result = await journeyController.CancelJourney(journeyIdToCancel);
 
             // Assert
             result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task CancelAsync_WhenJourneyExistsAndUserIsNotOrganizer_ReturnsForbidResult(int journeyIdToCancel)
+        {
+            // Arrange
+            journeyService.Setup(service => service.CancelAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await journeyController.CancelJourney(journeyIdToCancel);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]
@@ -372,12 +433,12 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_ReturnsOkObjectResult(JourneyApplyModel journeyApply, bool expectedResult)
+        public async Task AddUserToJourney_IsAllowed_ReturnsOkObjectResult(JourneyApplyModel journeyApply, bool expectedResult)
         {
             // Arrange
             journeyService
                 .Setup(service => service.AddUserToJourney(It.IsAny<JourneyApplyModel>()))
-                .ReturnsAsync(expectedResult);
+                .ReturnsAsync((true, expectedResult));
 
             // Act
             var result = await journeyController.AddUserToJourney(journeyApply);
@@ -388,6 +449,22 @@ namespace Car.UnitTests.Controllers
                 (result as OkObjectResult)?.StatusCode.Should().Be(200);
                 (result as OkObjectResult)?.Value.Should().BeEquivalentTo(expectedResult);
             }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_IsNotAllowed_ReturnsForbidObjectResult(JourneyApplyModel journeyApply, bool expectedResult)
+        {
+            // Arrange
+            journeyService
+                .Setup(service => service.AddUserToJourney(It.IsAny<JourneyApplyModel>()))
+                .ReturnsAsync((false, expectedResult));
+
+            // Act
+            var result = await journeyController.AddUserToJourney(journeyApply);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]

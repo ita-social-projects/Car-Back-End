@@ -29,20 +29,30 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task MarkAsRead_ReturnsInt(int chatId)
+        public async Task MarkAsRead_IsAllowed_ReturnsOkObjectResut(int chatId)
         {
             // Arrange
-            receivedMessagesService.Setup(rm => rm.MarkMessagesReadInChatAsync(chatId)).ReturnsAsync(0);
+            receivedMessagesService.Setup(rm => rm.MarkMessagesReadInChatAsync(chatId)).ReturnsAsync(true);
 
             // Act
             var result = await receivedMessagesController.MarkMessagesRead(chatId);
 
             // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().BeOfType<int>();
-            }
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task MarkAsRead_IsNotAllowed_ReturnsForbidObject(int chatId)
+        {
+            // Arrange
+            receivedMessagesService.Setup(rm => rm.MarkMessagesReadInChatAsync(chatId)).ReturnsAsync(false);
+
+            // Act
+            var result = await receivedMessagesController.MarkMessagesRead(chatId);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]

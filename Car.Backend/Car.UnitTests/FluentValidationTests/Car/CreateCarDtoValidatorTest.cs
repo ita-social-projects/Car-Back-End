@@ -25,14 +25,13 @@ namespace Car.UnitTests.FluentValidationTests.Car
         [Xunit.Theory]
         [InlineData("")]
         [InlineData("12345678910")]
-        [InlineData(null)]
-        public void PlateNumber_IsNull_GeneratesValidationError(string value)
+        public void PlateNumber_IsNotValid_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(carModel => carModel.PlateNumber, value);
         }
 
         [Fact]
-        public void PlateNumber__IsNotValid_GeneratesValidationError()
+        public void PlateNumber_IsTooLong_GeneratesValidationError()
         {
             string longCommnt = new string('*', Constants.PlateNumberMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(carModel => carModel.PlateNumber, longCommnt);

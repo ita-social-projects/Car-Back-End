@@ -23,8 +23,11 @@ namespace Car.WebApi.Controllers
         /// <param name="chatId">Chat identifier</param>
         /// <returns>number of marked messages</returns>
         [HttpPut("markasread/{chatId}")]
-        public async Task<IActionResult> MarkMessagesRead(int chatId) =>
-            Ok(await receivedMessagesService.MarkMessagesReadInChatAsync(chatId));
+        public async Task<IActionResult> MarkMessagesRead(int chatId)
+        {
+            var isCountUpdated = await receivedMessagesService.MarkMessagesReadInChatAsync(chatId);
+            return isCountUpdated ? Ok() : Forbid();
+        }
 
         /// <summary>
         /// Counts number of all unread messages of the user

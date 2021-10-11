@@ -57,14 +57,13 @@ namespace Car.UnitTests.FluentValidationTests.Car
         [Xunit.Theory]
         [InlineData("")]
         [InlineData("12345678910")]
-        [InlineData(null)]
-        public void PlateNumber_IsNull_GeneratesValidationError(string value)
+        public void PlateNumber_IsNotValid_GeneratesValidationError(string value)
         {
             validator.ShouldHaveValidationErrorFor(carDto => carDto.PlateNumber, value);
         }
 
         [Fact]
-        public void PlateNumber__IsNotValid_GeneratesValidationError()
+        public void PlateNumber_IsTooLong_GeneratesValidationError()
         {
             string longCommnt = new string('*', Constants.PlateNumberMaxLength + 1);
             validator.ShouldHaveValidationErrorFor(carDto => carDto.PlateNumber, longCommnt);
@@ -72,6 +71,7 @@ namespace Car.UnitTests.FluentValidationTests.Car
 
         [Xunit.Theory]
         [InlineData("12345")]
+        [InlineData(null)]
         public void PlateNumber_IsSpecified_NotGeneratesValidationError(string value)
         {
             validator.ShouldNotHaveValidationErrorFor(carDto => carDto.PlateNumber, value);

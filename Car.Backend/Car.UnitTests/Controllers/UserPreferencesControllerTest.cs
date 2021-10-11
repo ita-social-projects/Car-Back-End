@@ -57,12 +57,12 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdatePreferences_WhenUserPreferencesExists_ReturnsUserPreferences(
+        public async Task UpdatePreferences_WhenUserPreferencesExistsIsAllowed_ReturnsUserPreferences(
             UserPreferencesDto userPreferencesDTO)
         {
             // Arrange
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferencesDTO))
-                .ReturnsAsync(userPreferencesDTO);
+                .ReturnsAsync((true, userPreferencesDTO));
 
             // Act
             var result = await userPreferencesController.UpdatePreferences(userPreferencesDTO);
@@ -74,11 +74,27 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
+        public async Task UpdatePreferences_WhenUserPreferencesExistsIsNotAllowed_ReturnsForbid(
+            UserPreferencesDto userPreferencesDTO)
+        {
+            // Arrange
+            preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferencesDTO))
+                .ReturnsAsync((false, null));
+
+            // Act
+            var result = await userPreferencesController.UpdatePreferences(userPreferencesDTO);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task UpdatePreferences_WhenUserPreferencesNotExist_ReturnsNull(UserPreferencesDto userPreferences)
         {
             // Arrange
             preferencesService.Setup(u => u.UpdatePreferencesAsync(userPreferences))
-                .ReturnsAsync((UserPreferencesDto)null);
+                .ReturnsAsync((true, (UserPreferencesDto)null));
 
             // Act
             var result = await userPreferencesController.UpdatePreferences(userPreferences);

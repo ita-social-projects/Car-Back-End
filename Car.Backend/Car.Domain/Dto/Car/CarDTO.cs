@@ -11,7 +11,7 @@ namespace Car.Domain.Dto
 
         public Color Color { get; set; }
 
-        public string PlateNumber { get; set; } = string.Empty;
+        public string? PlateNumber { get; set; }
 
         public int OwnerId { get; set; }
 
