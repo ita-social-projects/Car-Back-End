@@ -950,8 +950,9 @@ namespace Car.UnitTests.Services
         public async Task UpdateDetailsAsync_WhenJourneyBecomeScheduled_ExecuteThreeTimes(JourneyDto updatedJourneyDto)
         {
             // Arrange
-            var user = Fixture.Build<User>().
-                CreateMany(1)
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, updatedJourneyDto.OrganizerId)
+                .CreateMany(1)
                 .First();
 
             var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
@@ -961,15 +962,13 @@ namespace Car.UnitTests.Services
             var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journey.Id)
+                .With(j => j.OrganizerId, user.Id)
                 .With(dto => dto.IsCancelled, false)
                 .With(dto => dto.DepartureTime, DateTime.Now.AddHours(1))
                 .CreateMany(1);
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
-
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updatedJourneyDto.OrganizerId.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             journeyRepository.Setup(repo =>
                 repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync(journey);
@@ -1292,9 +1291,11 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.Now + TimeSpan.FromDays(1))
                 .With(j => j.IsCancelled, false)
+                .With(j => j.OrganizerId, user.Id)
                 .CreateMany();
             var updatedJourneyDto = Fixture.Build<JourneyDto>()
                 .With(dto => dto.Id, journeys.First().Id)
+                .With(dto => dto.OrganizerId, user.Id)
                 .With(dto => dto.WeekDay, () => WeekDays.Monday)
                 .Create();
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journeys.First());
@@ -1304,9 +1305,6 @@ namespace Car.UnitTests.Services
             expectedJourney.RouteDistance = updatedJourneyDto.RouteDistance;
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
-
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, expectedJourney.Organizer.Id.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
