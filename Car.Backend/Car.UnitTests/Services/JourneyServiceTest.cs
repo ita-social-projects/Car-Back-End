@@ -526,6 +526,38 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task AddAsync_WhenTimeInvalid_ReturnsJourneyModelNullIsDepartureTimeValidFlase(JourneyDto journeyDto)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, journeyDto.OrganizerId)
+                .CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            var anotherJourney = Fixture.Build<Journey>()
+                .With(j => j.OrganizerId, journeyDto.OrganizerId)
+                .With(j => j.DepartureTime, journeyDto.DepartureTime.AddMinutes(5))
+                .CreateMany(1)
+                .ToList();
+
+            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
+
+            journeyRepository.Setup(r =>
+                r.Query()).Returns(anotherJourney.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.AddJourneyAsync(journeyDto);
+
+            // Assert
+            result.JourneyModel?.Should().BeNull();
+            result.IsDepartureTimeValid.Should().BeFalse();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject(JourneyDto journeyDto)
         {
             // Arrange
@@ -1519,6 +1551,34 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
+        public async Task DeleteUserFromJourney_UserIsNotAnOrganizerAndNotCurrentUser_ReturnsFalse(int journeyId, int userId)
+        {
+            // Arrange
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, userId + 1)
+                .Create();
+
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyId)
+                .With(j => j.OrganizerId, userId + 1)
+                .With(j => j.Participants, new List<User> { user })
+                .CreateMany(1);
+
+            journeyRepository.Setup(j => j.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.DeleteUserFromJourney(journeyId, userId);
+
+            // Assert
+            journeys.First().Participants.Any(p => p.Id == userId).Should().BeFalse();
+            journeyRepository.Verify(repo => repo.SaveChangesAsync(), Times.Never);
+        }
+
+        [Theory]
+        [AutoData]
         public async Task DeleteUserFromJourney_WhenUserDoesNotExist_ExecuteNever(int journeyId, int userId)
         {
             // Arrange
@@ -1628,6 +1688,30 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().Be(expected);
+         }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUnreadMessagesCountForNewUser_ChatIsNull_ReturnsZero(int journeyId)
+        {
+            // Arrange
+            var messages = Fixture.Build<Message>()
+                .With(m => m.ChatId, journeyId)
+                .CreateMany(5)
+                .ToList();
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyId + 1)
+                .With(c => c.Messages, messages)
+                .CreateMany(1)
+                .ToList();
+            messageRepository.Setup(r => r.Query()).Returns(messages.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetUnreadMessagesCountForNewUserAsync(journeyId);
+
+            // Assert
+            result.Should().Be(0);
          }
 
         [Theory]
