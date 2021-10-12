@@ -109,9 +109,8 @@ namespace Car.WebApi.Controllers
         [HttpPut("{notificationId}")]
         public async Task<IActionResult> MarkNotificationAsReadAsync(int notificationId)
         {
-            var notification = await notificationService.MarkNotificationAsReadAsync(notificationId);
-
-            return Ok(notification);
+            var (isNotificationUpdated, updatedNotification) = await notificationService.MarkNotificationAsReadAsync(notificationId);
+            return isNotificationUpdated ? Ok(updatedNotification) : Forbid();
         }
     }
 }

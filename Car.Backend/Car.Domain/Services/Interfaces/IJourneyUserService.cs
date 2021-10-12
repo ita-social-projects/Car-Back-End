@@ -13,8 +13,8 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> HasBaggage(int journeyId, int userId);
 
-        Task<JourneyUserDto?> UpdateJourneyUserAsync(JourneyUserDto updateJourneyUserDto);
+        Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> UpdateJourneyUserAsync(JourneyUserDto updateJourneyUserDto);
 
-        Task<JourneyUserDto?> SetWithBaggageAsync(int journeyId, int userId, bool withBaggage);
+        Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> SetWithBaggageAsync(int journeyId, int userId, bool withBaggage);
     }
 }
