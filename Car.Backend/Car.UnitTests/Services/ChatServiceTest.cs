@@ -138,16 +138,9 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var chatEntity = Mapper.Map<CreateChatDto, Chat>(chat);
-            var journeys = Fixture.Build<Journey>()
-                .With(repo => repo.Id, chat.Id)
-                .CreateMany(1)
-                .ToList();
             chatRepository.Setup(repo => repo
                 .AddAsync(chatEntity))
                 .ReturnsAsync((Chat)null);
-            journeyRepository.Setup(repo => repo
-                .Query())
-                .Returns(journeys.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await chatService.AddChatAsync(chat);
