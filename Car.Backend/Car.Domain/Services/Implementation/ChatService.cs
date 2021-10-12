@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -78,7 +79,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<Chat?> AddChatAsync(CreateChatDto chat)
         {
-            var addedChat = await chatRepository.Query().FirstOrDefaultAsync(c => c.Id == chat.Id);
+            var addedChat = chatRepository.Query().FirstOrDefault(c => c.Id == chat.Id);
 
             if (addedChat is null)
             {
