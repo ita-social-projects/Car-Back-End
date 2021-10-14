@@ -45,53 +45,11 @@ namespace Car.WebApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext(Configuration);
-            services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            services.AddServices(Configuration);
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddCorsSettings();
-            services.InitializeConfigurations(Configuration);
-            services.AddLogging();
+            services.InstallServicesInAssembly(Configuration);
             if (Environment.IsProduction())
             {
                 services.AddApplicationInsightsTelemetry();
             }
-
-            services.AddSignalR();
-            services.AddHangFire();
-            services.AddHangfireServer();
-            services.AddSwagger();
-
-            // Configure this as suited for your case
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-              // Processing all forward headers (the default is None)
-              options.ForwardedHeaders = ForwardedHeaders.All;
-
-              // Clearing known networks and proxies collections
-              options.KnownNetworks.Clear();
-              options.KnownProxies.Clear();
-            });
-
-            var jwtOptions = Configuration.GetSection(nameof(Jwt)).Get<Jwt>();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(options =>
-               {
-                   options.TokenValidationParameters = new TokenValidationParameters
-                   {
-                       ValidateIssuer = true,
-                       ValidateAudience = true,
-                       ValidateLifetime = true,
-                       ValidateIssuerSigningKey = true,
-                       ValidIssuer = jwtOptions.Issuer,
-                       ValidAudience = jwtOptions.Issuer,
-                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key!)),
-                   };
-               });
-
-            services.AddMvc().AddFluentValidation();
-            services.AddFluentValidators();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
