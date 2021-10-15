@@ -16,7 +16,6 @@ namespace Car.WebApi.ServiceExtension
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddCorsSettings();
             services.InitializeConfigurations(configuration);
-            services.AddLogging();
         }
     }
 }

@@ -46,6 +46,7 @@ namespace Car.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.InstallServicesInAssembly(Configuration);
+            services.AddLogging();
             if (Environment.IsProduction())
             {
                 services.AddApplicationInsightsTelemetry();
