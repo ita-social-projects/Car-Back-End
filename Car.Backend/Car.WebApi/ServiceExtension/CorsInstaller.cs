@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Car.WebApi.ServiceExtension
 {
-    public static class CorsExtension
+    public class CorsInstaller : IInstaller
     {
-        public static void AddCorsSettings(this IServiceCollection services) =>
+        public void InstallServices(IServiceCollection services, IConfiguration configuration)
+        {
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder => builder
@@ -15,5 +17,6 @@ namespace Car.WebApi.ServiceExtension
                     .AllowCredentials()
                     .Build());
             });
+        }
     }
 }

@@ -1,7 +1,9 @@
-﻿using Azure.Storage.Blobs;
+using System;
+using Azure.Storage.Blobs;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Configurations;
+using Car.Domain.Extensions;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -9,10 +11,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Car.WebApi.ServiceExtension
 {
-    public static class ServicesExtension
+    public class DbInstaller : IInstaller
     {
-        public static void AddServices(this IServiceCollection services, IConfiguration configuration)
+        public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddDbContext(configuration);
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddScoped<BlobServiceClient>(provider =>
                 new BlobServiceClient(configuration.GetSection("AzureBlobStorageOptions")
                     .GetValue<string>("AccessKey")));
@@ -56,10 +63,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<JourneyUser>, Repository<JourneyUser>>();
             services.AddScoped<IRepository<ReceivedMessages>, Repository<ReceivedMessages>>();
             services.AddScoped<IRepository<Schedule>, Repository<Schedule>>();
-        }
 
-        public static void InitializeConfigurations(this IServiceCollection services, IConfiguration configuration)
-        {
             services.Configure<Jwt>(configuration.GetSection("Jwt"));
             services.Configure<AzureBlobStorageOptions>(configuration.GetSection("AzureBlobStorageOptions"));
             services.Configure<FirebaseOptions>(configuration.GetSection("FirebaseOptions"));
