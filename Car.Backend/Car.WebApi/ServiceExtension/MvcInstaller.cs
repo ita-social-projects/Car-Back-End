@@ -15,9 +15,7 @@ namespace Car.WebApi.ServiceExtension
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSwagger();
             services.AddSignalR();
-            services.AddHangFire();
             services.AddHangfireServer();
 
             // Configure this as suited for your case
@@ -48,7 +46,6 @@ namespace Car.WebApi.ServiceExtension
                 });
 
             services.AddMvc().AddFluentValidation();
-            services.AddFluentValidators();
         }
     }
 }

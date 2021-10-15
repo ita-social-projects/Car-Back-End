@@ -1,20 +1,13 @@
 using System;
-using System.Text;
-using Car.Domain.Configurations;
-using Car.Domain.Extensions;
 using Car.Domain.Hubs;
 using Car.WebApi.ServiceExtension;
-using FluentValidation.AspNetCore;
 using Hangfire;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Car.WebApi
 {

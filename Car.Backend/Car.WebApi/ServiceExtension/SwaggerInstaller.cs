@@ -2,14 +2,15 @@ using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 namespace Car.WebApi.ServiceExtension
 {
-    public static class SwaggerExtension
+    public class SwaggerInstaller : IInstaller
     {
-        public static void AddSwagger(this IServiceCollection services)
+        public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSwaggerGen(cfg =>
             {
