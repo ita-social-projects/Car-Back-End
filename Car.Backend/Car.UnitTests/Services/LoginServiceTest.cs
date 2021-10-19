@@ -77,21 +77,6 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserAsync_WhenUserIsNotValid_ReturnsNull(User user)
-        {
-            // Arrange
-            userRepository.Setup(r => r.AddAsync(user))
-                .ReturnsAsync((User)null);
-
-            // Act
-            var result = await loginService.AddUserAsync(user);
-
-            // Assert
-            result.Should().BeNull();
-        }
-
-        [Theory]
-        [AutoEntityData]
         public async Task LoginAsync_WhenUserExists_ReturnsUserWithToken(IEnumerable<User> users, string token)
         {
             // Arrange
@@ -125,24 +110,6 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Token.Should().BeSameAs(token);
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task LoginAsync_WhenUserIsNotValid_ReturnsNull(IEnumerable<User> users)
-        {
-            // Arrange
-            User user = null;
-            var userDto = Mapper.Map<UserDto>(user);
-
-            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
-            userRepository.Setup(repo => repo.AddAsync(user)).ReturnsAsync(user);
-
-            // Act
-            var result = await loginService.LoginAsync(userDto);
-
-            // Assert
-            result.Should().BeNull();
         }
     }
 }

@@ -46,11 +46,6 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<UserDto?> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto)
         {
-            if (updateUserImageDto == null)
-            {
-                return null;
-            }
-
             var user = await userRepository.Query().FirstOrDefaultAsync(u => updateUserImageDto.Id == u.Id);
 
             await imageService.UpdateImageAsync(user, updateUserImageDto.Image);
@@ -77,7 +72,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task DeleteUserFcmtokenAsync(string tokenToDelete)
         {
-            var fcmToken = fcmTokenRepository.Query().Where(token => token.Token == tokenToDelete).FirstOrDefault();
+            var fcmToken = fcmTokenRepository.Query().FirstOrDefault(token => token.Token == tokenToDelete);
 
             if (fcmToken != null)
             {

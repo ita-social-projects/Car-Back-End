@@ -30,12 +30,9 @@ namespace Car.Domain.Services.Implementation
         {
             var preferences = await preferencesRepository.GetByIdAsync(preferencesDTO.Id);
 
-            if (preferences != null)
-            {
-                preferences.DoAllowSmoking = preferencesDTO.DoAllowSmoking;
-                preferences.DoAllowEating = preferencesDTO.DoAllowEating;
-                preferences.Comments = preferencesDTO.Comments;
-            }
+            preferences.DoAllowSmoking = preferencesDTO.DoAllowSmoking;
+            preferences.DoAllowEating = preferencesDTO.DoAllowEating;
+            preferences.Comments = preferencesDTO.Comments;
 
             await preferencesRepository.SaveChangesAsync();
 

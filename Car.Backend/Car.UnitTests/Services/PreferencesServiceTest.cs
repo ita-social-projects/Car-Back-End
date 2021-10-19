@@ -80,20 +80,5 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().BeEquivalentTo(preferencesDTO, options => options.ExcludingMissingMembers());
         }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull(UserPreferences preferences, UserPreferencesDto preferencesDTO)
-        {
-            // Arrange
-            preferencesRepository.Setup(r => r.UpdateAsync(preferences))
-                .ReturnsAsync((UserPreferences)null);
-
-            // Act
-            var result = await preferencesService.UpdatePreferencesAsync(preferencesDTO);
-
-            // Assert
-            result.Should().BeNull();
-        }
     }
 }

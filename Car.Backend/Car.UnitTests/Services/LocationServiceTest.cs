@@ -183,24 +183,6 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenLocationIsNotExist_ThrowDbUpdateConcurrencyException(LocationDto locationDto)
-        {
-            // Arrange
-            Location location = Mapper.Map<LocationDto, Location>(locationDto);
-            locationRepository.Setup(repo => repo.GetByIdAsync(location.Id)).ReturnsAsync(location);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, location.UserId.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            locationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
-
-            // Act
-            var result = locationService.Invoking(service => service.DeleteAsync(location.Id));
-
-            // Assert
-            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
-        }
-
-        [Theory]
-        [AutoData]
         public async Task DeleteAsync_WhenLocationExistAndUserIsOwner_ExecuteOnce(LocationDto locationDto)
         {
             // Arrange

@@ -105,21 +105,6 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateUserImageAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
-        {
-            // Arrange
-            UpdateUserImageDto updateUserDto = null;
-            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
-
-            // Act
-            var result = await userService.UpdateUserImageAsync(updateUserDto);
-
-            // Assert
-            result.Should().BeNull();
-        }
-
-        [Theory]
-        [AutoEntityData]
         public async Task AddUserFcmtokenAsync_WhenTokenIsValid_ReturnsAddedToken(UserFcmTokenDto userFCMTokenDto, User user)
         {
             // Arrange

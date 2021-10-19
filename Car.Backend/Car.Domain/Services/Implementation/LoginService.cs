@@ -26,11 +26,6 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<User?> AddUserAsync(User user)
         {
-            if (user == null)
-            {
-                return null;
-            }
-
             user.UserPreferences = new UserPreferences();
             var newUser = await userRepository.AddAsync(user);
             await userRepository.SaveChangesAsync();

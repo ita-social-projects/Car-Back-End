@@ -210,24 +210,6 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException(CreateNotificationDto notificationDto)
-        {
-            // Arrange
-            Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
-            notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            notificationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
-
-            // Act
-            var result = notificationService.Invoking(service => service.DeleteAsync(notification.Id));
-
-            // Assert
-            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
-        }
-
-        [Xunit.Theory]
-        [AutoData]
         public async Task DeleteAsync_WhenNotificationExistAndUserIsReceiver_ExecuteOnce(CreateNotificationDto notificationDto)
         {
             // Arrange
@@ -391,7 +373,7 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoEntityData]
-        public async Task DeleteNotificationsAsync_WhenNotificaionsNotNull_SavesChangesOnce(
+        public async Task DeleteNotificationsAsync_WhenNotificationsNotNull_SavesChangesOnce(
             IEnumerable<Notification> notificationsToDelete)
         {
             // Arrange
@@ -401,18 +383,6 @@ namespace Car.UnitTests.Services
 
             // Assert
             notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
-        }
-
-        [Fact]
-        public async Task DeleteNotificationsAsync_WhenNotificationsIsNull_SavesChangesNever()
-        {
-            // Arrange
-
-            // Act
-            await notificationService.DeleteNotificationsAsync((IEnumerable<Notification>)null);
-
-            // Assert
-            notificationRepository.Verify(r => r.SaveChangesAsync(), Times.Never);
         }
 
         [Theory]
