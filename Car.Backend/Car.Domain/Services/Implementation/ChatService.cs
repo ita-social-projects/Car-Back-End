@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -78,13 +79,18 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<Chat?> AddChatAsync(CreateChatDto chat)
         {
-            var addedChat = await chatRepository.AddAsync(mapper.Map<Chat>(chat));
+            var addedChat = chatRepository.Query().FirstOrDefault(c => c.Id == chat.Id);
 
-            var addedReceivedMessages = await GetReceivedMessagesFromChat(addedChat.Id);
-            await receivedMessagesRepository.AddAsync(mapper.Map<ReceivedMessages>(addedReceivedMessages));
-            await receivedMessagesRepository.SaveChangesAsync();
+            if (addedChat is null)
+            {
+                addedChat = await chatRepository.AddAsync(mapper.Map<Chat>(chat));
 
-            await chatRepository.SaveChangesAsync();
+                var addedReceivedMessages = await GetReceivedMessagesFromChat(addedChat.Id);
+                await receivedMessagesRepository.AddAsync(mapper.Map<ReceivedMessages>(addedReceivedMessages));
+                await receivedMessagesRepository.SaveChangesAsync();
+
+                await chatRepository.SaveChangesAsync();
+            }
 
             return addedChat;
         }

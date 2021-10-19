@@ -100,17 +100,27 @@ namespace Car.Domain.Services.Implementation
             return true;
         }
 
-        public async Task<NotificationDto> MarkNotificationAsReadAsync(int notificationId)
+        public async Task<(bool IsUpdated, NotificationDto? UpdatedNotificationDto)> MarkNotificationAsReadAsync(int notificationId)
         {
             var notificationToUpdate = await notificationRepository.Query()
                 .FirstOrDefaultAsync(notification => notification.Id == notificationId);
-            notificationToUpdate.IsRead = true;
-            await notificationRepository.SaveChangesAsync();
 
-            var updatedNotification = mapper.Map<Notification, NotificationDto>(notificationToUpdate);
-            await NotifyClientAsync(updatedNotification);
+            if (notificationToUpdate != null)
+            {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
-            return updatedNotification;
+                if (userId != notificationToUpdate.ReceiverId)
+                {
+                    return (false, null);
+                }
+
+                notificationToUpdate.IsRead = true;
+                await notificationRepository.SaveChangesAsync();
+
+                await NotifyClientAsync(mapper.Map<Notification, NotificationDto>(notificationToUpdate!));
+            }
+
+            return (true, mapper.Map<Notification, NotificationDto>(notificationToUpdate!));
         }
 
         public Task<NotificationDto> CreateNewNotificationAsync(CreateNotificationDto createNotificationDto) =>

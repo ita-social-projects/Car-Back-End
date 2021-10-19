@@ -1,12 +1,13 @@
 ﻿using Hangfire;
 using Hangfire.MemoryStorage;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Car.WebApi.ServiceExtension
 {
-    public static class HangFireExtension
+    public class HangFireInstaller : IInstaller
     {
-        public static void AddHangFire(this IServiceCollection services)
+        public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddHangfire(config =>
                 config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

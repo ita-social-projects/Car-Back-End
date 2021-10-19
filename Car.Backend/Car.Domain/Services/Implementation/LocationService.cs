@@ -49,22 +49,29 @@ namespace Car.Domain.Services.Implementation
             return newLocation;
         }
 
-        public async Task<Location?> UpdateAsync(UpdateLocationDto location)
+        public async Task<(bool IsUpdated, Location? UpdatedLocation)> UpdateAsync(UpdateLocationDto location)
         {
             var updatedLocation = await locationRepository.Query().Include(locationAddress => locationAddress.Address).FirstOrDefaultAsync(i => i.Id == location.Id);
 
             if (updatedLocation is not null)
             {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
+                if (userId != updatedLocation.UserId)
+                {
+                    return (false, null);
+                }
+
                 updatedLocation.Name = location.Name;
                 updatedLocation!.Address!.Name = location!.Address!.Name;
                 updatedLocation.Address.Longitude = location.Address.Longitude;
                 updatedLocation.Address.Latitude = location.Address.Latitude;
                 updatedLocation.TypeId = location.TypeId;
+
+                await locationRepository.SaveChangesAsync();
             }
 
-            await locationRepository.SaveChangesAsync();
-
-            return updatedLocation;
+            return (true, updatedLocation);
         }
 
         public async Task<bool> DeleteAsync(int locationId)

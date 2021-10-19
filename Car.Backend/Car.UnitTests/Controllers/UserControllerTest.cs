@@ -62,14 +62,14 @@ namespace Car.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateUserImage_WhenUserExists_ReturnsOkObjectResult()
+        public async Task UpdateUserImage_WhenUserExistsIsAllowed_ReturnsOkObjectResult()
         {
             // Arrange
             var updateUserDto = Fixture.Build<UpdateUserImageDto>()
                 .With(u => u.Image, (IFormFile)null).Create();
             var expectedUser = Mapper.Map<UpdateUserImageDto, UserDto>(updateUserDto);
 
-            userService.Setup(service => service.UpdateUserImageAsync(updateUserDto)).ReturnsAsync(expectedUser);
+            userService.Setup(service => service.UpdateUserImageAsync(updateUserDto)).ReturnsAsync((true, expectedUser));
 
             // Act
             var result = await userController.UpdateUserImage(updateUserDto);
@@ -80,6 +80,23 @@ namespace Car.UnitTests.Controllers
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(expectedUser);
             }
+        }
+
+        [Fact]
+        public async Task UpdateUserImage_WhenUserExistsIsAllowed_ReturnsForbidResult()
+        {
+            // Arrange
+            var updateUserDto = Fixture.Build<UpdateUserImageDto>()
+                .With(u => u.Image, (IFormFile)null).Create();
+            var expectedUser = Mapper.Map<UpdateUserImageDto, UserDto>(updateUserDto);
+
+            userService.Setup(service => service.UpdateUserImageAsync(updateUserDto)).ReturnsAsync((false, null));
+
+            // Act
+            var result = await userController.UpdateUserImage(updateUserDto);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]

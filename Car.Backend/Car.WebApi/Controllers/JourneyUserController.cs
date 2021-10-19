@@ -53,7 +53,8 @@ namespace Car.WebApi.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] JourneyUserDto journeyUser)
         {
-            return Ok(await journeyUserService.UpdateJourneyUserAsync(journeyUser));
+            var (isJourneyUserUpdated, updatedJourneyUser) = await journeyUserService.UpdateJourneyUserAsync(journeyUser);
+            return isJourneyUserUpdated ? Ok(updatedJourneyUser) : Forbid();
         }
 
         /// <summary>
@@ -66,7 +67,8 @@ namespace Car.WebApi.Controllers
         [HttpPut("{journeyId}/{userId}")]
         public async Task<IActionResult> UpdateWithBaggage(int journeyId, int userId, [FromBody]bool withBaggage)
         {
-            return Ok(await journeyUserService.SetWithBaggageAsync(journeyId, userId, withBaggage));
+            var (isJourneyUserUpdated, updatedJourneyUser) = await journeyUserService.SetWithBaggageAsync(journeyId, userId, withBaggage);
+            return isJourneyUserUpdated ? Ok(updatedJourneyUser) : Forbid();
         }
     }
 }

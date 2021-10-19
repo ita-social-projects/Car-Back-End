@@ -282,13 +282,14 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoEntityData]
-        public async Task MarkNotificationAsReadAsync_WhenNotificationExist_ReturnsReadNotification(List<Notification> notifications, User user)
+        public async Task MarkNotificationAsReadAsync_WhenNotificationExistAndIsAllowed_ReturnsReadNotification(List<Notification> notifications)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             var notification = notifications.First();
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             notificationRepository
                 .Setup(repo => repo.Query())
@@ -301,7 +302,32 @@ namespace Car.UnitTests.Services
             var result = await notificationService.MarkNotificationAsReadAsync(notification.Id);
 
             // Assert
-            result.IsRead.Should().BeTrue();
+            result.UpdatedNotificationDto.IsRead.Should().BeTrue();
+        }
+
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task MarkNotificationAsReadAsync_WhenNotificationExistAndIsNotAllowed_ReturnsReadNotification(List<Notification> notifications)
+        {
+            // Arrange
+            var notification = notifications.First();
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (notification.ReceiverId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            notificationRepository
+                .Setup(repo => repo.Query())
+                .Returns(notifications
+                    .AsQueryable()
+                    .BuildMock()
+                    .Object);
+
+            // Act
+            var result = await notificationService.MarkNotificationAsReadAsync(notification.Id);
+
+            // Assert
+            result.IsUpdated.Should().BeFalse();
         }
 
         [Fact]

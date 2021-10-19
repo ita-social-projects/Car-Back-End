@@ -134,6 +134,24 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+
+        public async Task AddChatAsync_WhenChatIsNotValid_ReturnsNull(CreateChatDto chat)
+        {
+            // Arrange
+            var chatEntity = Mapper.Map<CreateChatDto, Chat>(chat);
+            chatRepository.Setup(repo => repo
+                .AddAsync(chatEntity))
+                .ReturnsAsync((Chat)null);
+
+            // Act
+            var result = await chatService.AddChatAsync(chat);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task GetUserChatsAsync_WhenChatsExist_ReturnsChatCollection(IEnumerable<User> users)
         {
             // Arrange

@@ -8,6 +8,8 @@ using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.ServiceExtension;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car.Domain.Services.Implementation
@@ -16,13 +18,16 @@ namespace Car.Domain.Services.Implementation
     {
         private readonly IRepository<JourneyUser> journeyUserRepository;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public JourneyUserService(
             IRepository<JourneyUser> journeyUserRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.journeyUserRepository = journeyUserRepository;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<JourneyUserDto> GetJourneyUserByIdAsync(int journeyId, int userId)
@@ -43,7 +48,7 @@ namespace Car.Domain.Services.Implementation
             return journeyUser is not null && journeyUser.WithBaggage;
         }
 
-        public async Task<JourneyUserDto?> UpdateJourneyUserAsync(JourneyUserDto updateJourneyUserDto)
+        public async Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> UpdateJourneyUserAsync(JourneyUserDto updateJourneyUserDto)
         {
             var journeyUser = await journeyUserRepository
                 .Query()
@@ -53,16 +58,23 @@ namespace Car.Domain.Services.Implementation
 
             if (journeyUser is not null)
             {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
+                if (userId != journeyUser.UserId)
+                {
+                    return (false, null);
+                }
+
                 journeyUserRepository.Detach(journeyUser);
                 journeyUser = await journeyUserRepository.UpdateAsync(updatedJourneyUser);
                 await journeyUserRepository.SaveChangesAsync();
-                return mapper.Map<JourneyUser, JourneyUserDto>(journeyUser);
+                return (true, mapper.Map<JourneyUser, JourneyUserDto>(journeyUser));
             }
 
-            return null;
+            return (true, null);
         }
 
-        public async Task<JourneyUserDto?> SetWithBaggageAsync(int journeyId, int userId, bool withBaggage)
+        public async Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> SetWithBaggageAsync(int journeyId, int userId, bool withBaggage)
         {
             var journeyUser = await journeyUserRepository
                 .Query()
@@ -70,12 +82,19 @@ namespace Car.Domain.Services.Implementation
 
             if (journeyUser is not null)
             {
+                int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
+                if (currentUserId != userId)
+                {
+                    return (false, null);
+                }
+
                 journeyUser.WithBaggage = withBaggage;
                 await journeyUserRepository.SaveChangesAsync();
-                return mapper.Map<JourneyUser, JourneyUserDto>(journeyUser);
+                return (true, mapper.Map<JourneyUser, JourneyUserDto>(journeyUser));
             }
 
-            return null;
+            return (true, null);
         }
     }
 }

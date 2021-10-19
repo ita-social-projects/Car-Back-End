@@ -6,13 +6,14 @@ using Car.Domain.FluentValidation;
 using Car.Domain.FluentValidation.Journey;
 using Car.Domain.Models.Journey;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Car.WebApi.ServiceExtension
 {
-    public static class FluentValidationExtension
+    public class FluentValidationInstaller : IInstaller
     {
-        public static void AddFluentValidators(this IServiceCollection services)
+        public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IValidator<AddressDto>, AddressDtoValidator>();
             services.AddTransient<IValidator<UpdateAddressToLocationDto>, UpdateAddressToLocationDtoValidator>();

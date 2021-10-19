@@ -157,7 +157,7 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateCarAsync_WhenCarIsValid_ReturnsCarObject()
+        public async Task UpdateCarAsync_WhenCarIsValidAndUserIsOwner_ReturnsCarObject()
         {
             // Arrange
             var updateCarModel = Fixture.Build<UpdateCarDto>()
@@ -167,6 +167,9 @@ namespace Car.UnitTests.Services
                 .With(c => c.Id, updateCarModel.Id)
                 .Create();
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, inputCar.OwnerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
                 .ReturnsAsync(inputCar);
 
@@ -174,7 +177,67 @@ namespace Car.UnitTests.Services
             var result = await carService.UpdateCarAsync(updateCarModel);
 
             // Assert
-            result.Should().BeEquivalentTo(updateCarModel, options => options.ExcludingMissingMembers());
+            result.Should().BeEquivalentTo((true, updateCarModel), options => options.ExcludingMissingMembers());
+        }
+
+        [Fact]
+        public async Task UpdateCarAsync_WhenCarIsValidAndUserIsNotOwner_ReturnsNull()
+        {
+            // Arrange
+            var updateCarModel = Fixture.Build<UpdateCarDto>()
+                .With(model => model.Image, (IFormFile)null)
+                .Create();
+            var inputCar = Fixture.Build<CarEntity>()
+                .With(c => c.Id, updateCarModel.Id)
+                .Create();
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (inputCar.OwnerId + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
+                .ReturnsAsync(inputCar);
+
+            // Act
+            var result = await carService.UpdateCarAsync(updateCarModel);
+
+            // Assert
+            result.Should().Be((false, null));
+        }
+
+        [Fact]
+        public async Task UpdateCarAsync_WhenCarIsNotExist_ReturnsNull()
+        {
+            // Arrange
+            var updateCarModel = Fixture.Build<UpdateCarDto>()
+                .With(model => model.Image, (IFormFile)null)
+                .Create();
+
+            carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
+                .ReturnsAsync((CarEntity)null);
+
+            // Act
+            var result = await carService.UpdateCarAsync(updateCarModel);
+
+            // Assert
+            result.Should().Be((true, null));
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException(CarDto carDto)
+        {
+            // Arrange
+            CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
+            carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, car.OwnerId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = carService.Invoking(service => service.DeleteAsync(car.Id));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
         }
 
         [Theory]

@@ -44,17 +44,27 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<List<User>, List<UserEmailDto>>(users);
         }
 
-        public async Task<UserDto?> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto)
+        public async Task<(bool IsUpdated, UserDto? UpdatedUserDto)> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto)
         {
             var user = await userRepository.Query().FirstOrDefaultAsync(u => updateUserImageDto.Id == u.Id);
 
-            await imageService.UpdateImageAsync(user, updateUserImageDto.Image);
+            if (user != null)
+            {
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
-            await userRepository.UpdateAsync(user);
+                if (userId != updateUserImageDto.Id)
+                {
+                    return (false, null);
+                }
 
-            await userRepository.SaveChangesAsync();
+                await imageService.UpdateImageAsync(user, updateUserImageDto.Image);
 
-            return mapper.Map<User, UserDto>(user);
+                await userRepository.UpdateAsync(user);
+
+                await userRepository.SaveChangesAsync();
+            }
+
+            return (true, mapper.Map<User, UserDto>(user!));
         }
 
         public async Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto)

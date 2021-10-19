@@ -85,7 +85,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateUserImageAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
+        public async Task UpdateUserImageAsync_WhenUserIsValidAndIsAllowed_ReturnsUpdatedUser(List<User> users)
         {
             // Arrange
             var updateUserDto = Fixture.Build<UpdateUserImageDto>()
@@ -94,13 +94,57 @@ namespace Car.UnitTests.Services
                 .Create();
             users.Add(user);
 
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updateUserDto.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await userService.UpdateUserImageAsync(updateUserDto);
 
             // Assert
-            result.Should().BeEquivalentTo(updateUserDto, options => options.ExcludingMissingMembers());
+            result.Should().BeEquivalentTo((true, updateUserDto), options => options.ExcludingMissingMembers());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateUserImageAsync_WhenUserIsValidAndIsNotAllowed_ReturnsFalse(List<User> users)
+        {
+            // Arrange
+            var updateUserDto = Fixture.Build<UpdateUserImageDto>()
+                .With(u => u.Image, (IFormFile)null).Create();
+            var user = Fixture.Build<User>().With(u => u.Id, updateUserDto.Id)
+                .Create();
+            users.Add(user);
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (updateUserDto.Id + 1).ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await userService.UpdateUserImageAsync(updateUserDto);
+
+            // Assert
+            result.Should().Be((false, null));
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateUserImageAsync_WhenUserIsNotValid_ReturnsNull(List<User> users)
+        {
+            // Arrange
+            UpdateUserImageDto updateUserDto = null;
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, users[0].Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            // Act
+            var result = await userService.UpdateUserImageAsync(updateUserDto);
+
+            // Assert
+            result.UpdatedUserDto.Should().BeNull();
         }
 
         [Theory]
