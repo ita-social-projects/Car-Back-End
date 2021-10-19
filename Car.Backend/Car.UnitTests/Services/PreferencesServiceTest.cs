@@ -109,7 +109,7 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().Be((false, null));
         }
-        
+
         [Theory]
         [AutoEntityData]
         public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull(UserPreferences preferences, UserPreferencesDto preferencesDTO)
