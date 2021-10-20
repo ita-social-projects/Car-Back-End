@@ -35,11 +35,8 @@ namespace Car.Domain.Services.Implementation
                 return false;
             }
 
-            if (receivedMessages != null)
-            {
-                receivedMessages.UnreadMessagesCount = 0;
-                await receivedMessagesRepository.SaveChangesAsync();
-            }
+            receivedMessages.UnreadMessagesCount = 0;
+            await receivedMessagesRepository.SaveChangesAsync();
 
             return true;
         }

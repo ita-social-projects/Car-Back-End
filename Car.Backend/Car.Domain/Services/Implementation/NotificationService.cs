@@ -131,7 +131,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task JourneyUpdateNotifyUserAsync(Journey journey)
         {
-            if (journey is null || journey.Participants is null)
+            if (journey?.Participants is null)
             {
                 return;
             }
@@ -152,7 +152,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task NotifyParticipantsAboutCancellationAsync(Journey journey)
         {
-            if (journey.Participants is null)
+            if (journey?.Participants is null)
             {
                 return;
             }
@@ -174,11 +174,8 @@ namespace Car.Domain.Services.Implementation
 
         public async Task DeleteNotificationsAsync(IEnumerable<Notification> notifications)
         {
-            if (notifications is not null)
-            {
-                await notificationRepository.DeleteRangeAsync(notifications);
-                await notificationRepository.SaveChangesAsync();
-            }
+            await notificationRepository.DeleteRangeAsync(notifications);
+            await notificationRepository.SaveChangesAsync();
         }
 
         public async Task NotifyDriverAboutParticipantWithdrawal(Journey journey, int participantId)
