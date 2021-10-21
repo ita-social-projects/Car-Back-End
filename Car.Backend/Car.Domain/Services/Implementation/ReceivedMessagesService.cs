@@ -31,7 +31,7 @@ namespace Car.Domain.Services.Implementation
                 .FirstOrDefaultAsync(rm => rm.ChatId == chatId
                                            && rm.UserId == userId);
 
-            if (receivedMessages.UserId != userId)
+            if (receivedMessages is null)
             {
                 return false;
             }
