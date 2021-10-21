@@ -21,7 +21,7 @@ namespace Car.Domain.Services.Implementation
         /// <returns>Task.</returns>
         public async Task<IEntityWithImage?> UploadImageAsync(IEntityWithImage entity, IFormFile? entityFile)
         {
-            if (entityFile != null && entity != null)
+            if (entityFile != null)
             {
                 entity.ImageId = await fileService.UploadFileAsync(entityFile.OpenReadStream(), entityFile.FileName);
             }
