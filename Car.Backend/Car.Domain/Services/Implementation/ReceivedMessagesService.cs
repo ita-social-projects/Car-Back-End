@@ -28,7 +28,8 @@ namespace Car.Domain.Services.Implementation
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
 
             var receivedMessages = await receivedMessagesRepository.Query()
-                .FirstOrDefaultAsync(rm => rm.ChatId == chatId);
+                .FirstOrDefaultAsync(rm => rm.ChatId == chatId
+                                           && rm.UserId == userId);
 
             if (receivedMessages.UserId != userId)
             {
