@@ -3,9 +3,12 @@ using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 namespace Car.WebApi.Controllers
 {
+    [Authorize]
+    [RequiredScope("ApiAccess")]
     [Route("api/login")]
     [ApiController]
     public class LoginController : ControllerBase
@@ -19,11 +22,9 @@ namespace Car.WebApi.Controllers
         /// ensures the user and returns a User for client app,
         /// if user doesn't exist in DB it creates a user and saves them to DB
         /// </summary>
-        /// <param name="user">Sender model params</param>
         /// <returns>User for a client app</returns>
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] UserDto user) =>
-            Ok(await loginService.LoginAsync(user));
+        public async Task<IActionResult> Login() =>
+            Ok(await loginService.LoginAsync());
     }
 }

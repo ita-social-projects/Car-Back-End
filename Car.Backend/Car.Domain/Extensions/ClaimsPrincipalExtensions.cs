@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Car.Data.Entities;
+using Car.Data.Infrastructure;
 
 namespace Car.WebApi.ServiceExtension
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static int GetCurrentUserId(this ClaimsPrincipal principal)
+        public static int GetCurrentUserId(this ClaimsPrincipal principal, IRepository<User> userRepository)
         {
             if (principal == null)
             {
                 throw new ArgumentNullException(nameof(principal));
             }
 
-            var loggedInUserIdClaim = principal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier && int.TryParse(c.Value, out _));
-            _ = int.TryParse(loggedInUserIdClaim.Value, out int loggedInUserId);
+            var loggedInUserIdClaim = principal.Claims.First(c => c.Type == "preferred_username");
 
-            return loggedInUserId;
+            return userRepository.Query().FirstOrDefault(u => u.Email == loggedInUserIdClaim.Value)!.Id;
         }
     }
 }

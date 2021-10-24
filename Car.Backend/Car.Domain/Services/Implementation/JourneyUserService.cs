@@ -17,15 +17,18 @@ namespace Car.Domain.Services.Implementation
     public class JourneyUserService : IJourneyUserService
     {
         private readonly IRepository<JourneyUser> journeyUserRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public JourneyUserService(
             IRepository<JourneyUser> journeyUserRepository,
+            IRepository<User> userRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
             this.journeyUserRepository = journeyUserRepository;
+            this.userRepository = userRepository;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
         }
@@ -58,7 +61,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journeyUser is not null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != journeyUser.UserId)
                 {
@@ -82,7 +85,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journeyUser is not null)
             {
-                int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (currentUserId != userId)
                 {

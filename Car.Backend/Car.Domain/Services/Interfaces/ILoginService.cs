@@ -10,6 +10,6 @@ namespace Car.Domain.Services.Interfaces
 
       Task<User?> AddUserAsync(User user);
 
-      Task<UserDto> LoginAsync(UserDto userDto);
+      Task<UserDto> LoginAsync();
    }
 }

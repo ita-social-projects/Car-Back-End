@@ -1,24 +1,31 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
+using User = Car.Data.Entities.User;
 
 namespace Car.Domain.Services.Implementation
 {
     public class LoginService : ILoginService
     {
         private readonly IRepository<User> userRepository;
-        private readonly IWebTokenGenerator webTokenGenerator;
         private readonly IMapper mapper;
+        private readonly GraphServiceClient graphServiceClient;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public LoginService(IRepository<User> userRepository, IWebTokenGenerator webTokenGenerator, IMapper mapper)
+        public LoginService(IRepository<User> userRepository,  IMapper mapper, GraphServiceClient graphServiceClient, IHttpContextAccessor httpContextAccessor)
         {
             this.userRepository = userRepository;
-            this.webTokenGenerator = webTokenGenerator;
             this.mapper = mapper;
+            this.graphServiceClient = graphServiceClient;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public Task<User> GetUserAsync(string email) =>
@@ -38,18 +45,58 @@ namespace Car.Domain.Services.Implementation
             return newUser;
         }
 
-        public async Task<UserDto> LoginAsync(UserDto userDto)
+        public async Task<UserDto> LoginAsync()
         {
-            var user = mapper.Map<UserDto, User>(userDto);
-            var loginUser = await GetUserAsync(user?.Email!) ?? await AddUserAsync(user!);
-            if (loginUser != null)
-            {
-                loginUser.Token = webTokenGenerator.GenerateWebToken(loginUser);
-            }
+            var loginUser = await UpdateUserAsync(
+                await GetUserAsync(
+                    httpContextAccessor
+                        .HttpContext!
+                        .User
+                        .Claims
+                        .First(c => c.Type == "preferred_username").Value)) ?? await AddUserAsync(await UpdateUserDataAsync(new User()));
 
             var result = mapper.Map<User, UserDto>(loginUser!);
 
             return result;
+        }
+
+        private async Task<User?> UpdateUserAsync(User? user)
+        {
+            if (user is null)
+            {
+                return user;
+            }
+
+            var updatedUser = await UpdateUserDataAsync(user);
+
+            updatedUser = await userRepository.UpdateAsync(updatedUser);
+            await userRepository.SaveChangesAsync();
+
+            return updatedUser;
+        }
+
+        private async Task<User> UpdateUserDataAsync(User user)
+        {
+            var userData = await graphServiceClient
+                .Users[
+                    httpContextAccessor
+                        .HttpContext!
+                        .User
+                        .Claims
+                        .First(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+                        .Value]
+                .Request()
+                .GetAsync();
+
+            user.Name = userData.GivenName;
+            user.Surname = userData.Surname;
+            user.HireDate = userData.HireDate?.DateTime ?? DateTime.Now;
+            user.Location = userData.OfficeLocation;
+            user.PhoneNumber = userData.MobilePhone;
+            user.Position = userData.JobTitle;
+            user.Email = userData.Mail ?? userData.UserPrincipalName;
+
+            return user;
         }
     }
 }

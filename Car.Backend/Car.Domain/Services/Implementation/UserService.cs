@@ -50,7 +50,7 @@ namespace Car.Domain.Services.Implementation
 
             if (user != null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != updateUserImageDto.Id)
                 {
@@ -70,7 +70,7 @@ namespace Car.Domain.Services.Implementation
         public async Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto)
         {
             var fcmToken = mapper.Map<UserFcmTokenDto, FcmToken>(userFcmtokenDto);
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             fcmToken.UserId = userId;
             fcmToken.Id = 0;
@@ -82,7 +82,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task DeleteUserFcmtokenAsync(string tokenToDelete)
         {
-            var fcmToken = fcmTokenRepository.Query().Where(token => token.Token == tokenToDelete).FirstOrDefault();
+            var fcmToken = fcmTokenRepository.Query().FirstOrDefault(token => token.Token == tokenToDelete);
 
             if (fcmToken != null)
             {

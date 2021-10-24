@@ -112,7 +112,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<ChatDto>> GetUserChatsAsync()
         {
-            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var user = await userRepository
                 .Query()
                 .IncludeJourney()

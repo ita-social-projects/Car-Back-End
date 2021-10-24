@@ -27,13 +27,20 @@ namespace Car.UnitTests.Services
         private readonly CarService carService;
         private readonly Mock<IImageService> imageService;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
+        private readonly Mock<IRepository<User>> userRepository;
 
         public CarServiceTest()
         {
+            userRepository = new Mock<IRepository<User>>();
             carRepository = new Mock<IRepository<CarEntity>>();
             imageService = new Mock<IImageService>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
-            carService = new CarService(carRepository.Object, imageService.Object, Mapper, httpContextAccessor.Object);
+            carService = new CarService(
+                carRepository.Object,
+                userRepository.Object,
+                imageService.Object,
+                Mapper,
+                httpContextAccessor.Object);
         }
 
         [Theory]

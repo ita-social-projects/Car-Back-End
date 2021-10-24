@@ -27,12 +27,18 @@ namespace Car.UnitTests.Services
         private readonly ILocationService locationService;
         private readonly Mock<IRepository<Location>> locationRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
+        private readonly Mock<IRepository<User>> userRepository;
 
         public LocationServiceTest()
         {
+            this.userRepository = new Mock<IRepository<User>>();
             locationRepository = new Mock<IRepository<Location>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
-            locationService = new LocationService(locationRepository.Object, Mapper, httpContextAccessor.Object);
+            locationService = new LocationService(
+                locationRepository.Object,
+                userRepository.Object,
+                Mapper,
+                httpContextAccessor.Object);
         }
 
         [Theory]

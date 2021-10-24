@@ -51,6 +51,7 @@ namespace Car.UnitTests.Services
             journeyUserService = new Mock<IJourneyUserService>();
             notificationService = new NotificationService(
                 notificationRepository.Object,
+                userRepository.Object,
                 hubContext.Object,
                 pushNotificationService.Object,
                 Mapper,

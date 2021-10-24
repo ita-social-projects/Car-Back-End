@@ -26,13 +26,20 @@ namespace Car.UnitTests.Services
         private readonly Mock<INotificationService> notificationService;
         private readonly IRequestService requestService;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
+        private readonly Mock<IRepository<User>> userRepository;
 
         public RequestServiceTest()
         {
             requestRepository = new Mock<IRepository<Request>>();
             notificationService = new Mock<INotificationService>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
-            requestService = new RequestService(notificationService.Object, requestRepository.Object, Mapper, httpContextAccessor.Object);
+            userRepository = new Mock<IRepository<User>>();
+            requestService = new RequestService(
+                notificationService.Object,
+                userRepository.Object,
+                requestRepository.Object,
+                Mapper,
+                httpContextAccessor.Object);
         }
 
         [Theory]

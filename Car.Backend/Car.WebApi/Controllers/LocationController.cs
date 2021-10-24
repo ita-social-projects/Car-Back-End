@@ -4,10 +4,12 @@ using Car.Domain.Dto.Location;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 namespace Car.WebApi.Controllers
 {
     [Authorize]
+    [RequiredScope("ApiAccess")]
     [Route("api/locations")]
     [ApiController]
     public class LocationController : ControllerBase

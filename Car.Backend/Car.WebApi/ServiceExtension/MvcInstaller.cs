@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Car.WebApi.ServiceExtension
@@ -29,21 +30,8 @@ namespace Car.WebApi.ServiceExtension
                 options.KnownProxies.Clear();
             });
 
-            var jwtOptions = configuration.GetSection(nameof(Jwt)).Get<Jwt>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = jwtOptions.Issuer,
-                        ValidAudience = jwtOptions.Issuer,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key!)),
-                    };
-                });
+                .AddMicrosoftIdentityWebApi(configuration);
 
             services.AddMvc().AddFluentValidation();
         }

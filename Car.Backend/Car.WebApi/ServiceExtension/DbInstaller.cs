@@ -1,4 +1,5 @@
 using System;
+using Azure.Identity;
 using Azure.Storage.Blobs;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
@@ -8,6 +9,14 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Graph;
+using Chat = Car.Data.Entities.Chat;
+using Invitation = Car.Data.Entities.Invitation;
+using Location = Car.Data.Entities.Location;
+using LocationType = Car.Data.Entities.LocationType;
+using Message = Car.Data.Entities.Message;
+using Schedule = Car.Data.Entities.Schedule;
+using User = Car.Data.Entities.User;
 
 namespace Car.WebApi.ServiceExtension
 {
@@ -20,9 +29,15 @@ namespace Car.WebApi.ServiceExtension
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped<BlobServiceClient>(provider =>
+            services.AddScoped(_ =>
                 new BlobServiceClient(configuration.GetSection("AzureBlobStorageOptions")
                     .GetValue<string>("AccessKey")));
+            services.AddScoped(_ =>
+                new GraphServiceClient(
+                    new ClientSecretCredential(
+                        configuration.GetSection("AzureAd").GetValue<string>("TenantId"),
+                        configuration.GetSection("AzureAd").GetValue<string>("ClientId"),
+                        configuration.GetSection("AzureAd").GetValue<string>("ClientSecret"))));
             services.AddScoped<ICompressor, ImageCompressor>();
             services.AddSingleton<IFirebaseService, FirebaseService>();
             services.AddScoped<IPushNotificationService, PushNotificationService>();
@@ -37,7 +52,6 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IJourneyService, JourneyService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IImageService, ImageService>();
-            services.AddScoped<IWebTokenGenerator, JsonWebTokenGenerator>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IRequestService, RequestService>();
             services.AddScoped<ILocationTypeService, LocationTypeService>();
@@ -64,7 +78,6 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<ReceivedMessages>, Repository<ReceivedMessages>>();
             services.AddScoped<IRepository<Schedule>, Repository<Schedule>>();
 
-            services.Configure<Jwt>(configuration.GetSection("Jwt"));
             services.Configure<AzureBlobStorageOptions>(configuration.GetSection("AzureBlobStorageOptions"));
             services.Configure<FirebaseOptions>(configuration.GetSection("FirebaseOptions"));
         }

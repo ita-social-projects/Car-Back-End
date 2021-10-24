@@ -9,11 +9,13 @@ using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 using Newtonsoft.Json.Linq;
 
 namespace Car.WebApi.Controllers
 {
     [Authorize]
+    [RequiredScope("ApiAccess")]
     [Route("api/journeys")]
     [ApiController]
     public class JourneyController : ControllerBase
