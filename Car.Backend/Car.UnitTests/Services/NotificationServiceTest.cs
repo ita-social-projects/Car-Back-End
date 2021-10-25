@@ -227,14 +227,16 @@ namespace Car.UnitTests.Services
         }
 
         [Xunit.Theory]
-        [AutoData]
-        public async Task DeleteAsync_WhenNotificationExistAndUserIsReceiver_ExecuteOnce(CreateNotificationDto notificationDto)
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenNotificationExistAndUserIsReceiver_ExecuteOnce(CreateNotificationDto notificationDto, IEnumerable<Notification> notifications)
         {
             // Arrange
             Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
             notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
+            notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
             var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
             // Act
             await notificationService.DeleteAsync(notification.Id);
