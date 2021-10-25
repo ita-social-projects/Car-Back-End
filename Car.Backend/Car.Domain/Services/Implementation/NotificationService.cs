@@ -98,6 +98,7 @@ namespace Car.Domain.Services.Implementation
 
                 notificationRepository.Delete(notification);
                 await notificationRepository.SaveChangesAsync();
+                await NotifyDeleteClientAsync(notificationId);
             }
 
             return true;
@@ -204,6 +205,14 @@ namespace Car.Domain.Services.Implementation
         private async Task NotifyClientAsync(NotificationDto notification)
         {
             await notificationHub.Clients.All.SendAsync("sendToReact", notification);
+            await notificationHub.Clients.All.SendAsync(
+                "updateUnreadNotificationsNumber",
+                await GetUnreadNotificationsNumberAsync());
+        }
+
+        private async Task NotifyDeleteClientAsync(int notificationId)
+        {
+            await notificationHub.Clients.All.SendAsync("deleteFromReact", notificationId);
             await notificationHub.Clients.All.SendAsync(
                 "updateUnreadNotificationsNumber",
                 await GetUnreadNotificationsNumberAsync());
