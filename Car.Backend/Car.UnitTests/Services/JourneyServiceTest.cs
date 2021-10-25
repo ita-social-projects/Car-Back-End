@@ -117,8 +117,9 @@ namespace Car.UnitTests.Services
         public async Task GetPastJourneysAsync_PastJourneysExist_ReturnsJourneyCollection([Range(1, 3)] int days, User participant)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, participant.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", participant.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { participant }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
@@ -150,8 +151,9 @@ namespace Car.UnitTests.Services
         public async Task GetPastJourneysAsync_PastJourneysNotExist_ReturnsEmptyCollection([Range(1, 3)] int days, User participant)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, participant.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", participant.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { participant }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
                 .With(j => j.Participants, new List<User>() { participant })
@@ -184,8 +186,9 @@ namespace Car.UnitTests.Services
                     journeys.SelectMany(j => j.Participants.Select(p => p.Id)).Union(journeys.Select(j => j.OrganizerId)).Max() + 1)
                 .Create();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
@@ -202,8 +205,9 @@ namespace Car.UnitTests.Services
         public async Task GetUpcomingJourneysAsync_UpcomingJourneysExistForOrganizer_ReturnsJourneyCollection([Range(1, 3)] int days, User organizer)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
@@ -238,8 +242,9 @@ namespace Car.UnitTests.Services
         public async Task GetUpcomingJourneysAsync_UpcomingJourneysExistForParticipant_ReturnsJourneyCollection([Range(1, 3)] int days, User participant)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, participant.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", participant.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { participant }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.Participants, new List<User>() { participant })
@@ -272,8 +277,9 @@ namespace Car.UnitTests.Services
         public async Task GetUpcomingJourneysAsync_UpcomingJourneysNotExistForOrganizer_ReturnsEmptyCollection([Range(1, 3)] int days, User organizer)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
@@ -296,8 +302,9 @@ namespace Car.UnitTests.Services
             [Range(1, 3)] int days, User organizer, User anotherUser)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
@@ -324,8 +331,9 @@ namespace Car.UnitTests.Services
         public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForParticipant_ReturnsJourneyCollection(User participant)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, participant.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", participant.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { participant }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.Participants, new List<User>() { participant })
@@ -358,8 +366,9 @@ namespace Car.UnitTests.Services
         public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForOrganizer_ReturnsJourneyCollection(User organizer)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
@@ -393,8 +402,9 @@ namespace Car.UnitTests.Services
         public async Task GetScheduledJourneysAsync_ScheduledJourneysNotExist_ReturnsEmptyCollection(User organizer)
         {
             // Arrange
-            var claims = new List<Claim>() { new(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(journey => journey.Schedule, (Schedule)null)
                 .With(journey => journey.OrganizerId, organizer.Id)
@@ -421,8 +431,9 @@ namespace Car.UnitTests.Services
             [Range(1, 10)] int journeyCount, [Range(1, 5)] int countToTake, User organizer)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
             var recentJourneys = Fixture.Build<Journey>()
                 .With(journey => journey.OrganizerId, organizer.Id + 1)
                 .CreateMany(journeyCount);
@@ -442,8 +453,9 @@ namespace Car.UnitTests.Services
         public async Task GetStopsFromRecentJourneysAsync_RecentJourneysNotExist_ReturnsEmptyCollection(User organizer, List<Journey> recentJourneys)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizer.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
             journeyRepository.Setup(r => r.Query())
                 .Returns(recentJourneys.AsQueryable().BuildMock().Object);
 
@@ -480,8 +492,9 @@ namespace Car.UnitTests.Services
                 CreateMany(1)
                 .First();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             journeyDto.WeekDay = null;
             var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
@@ -506,8 +519,9 @@ namespace Car.UnitTests.Services
                 CreateMany(1)
                 .First();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             journeyDto.WeekDay = WeekDays.Monday;
             var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
@@ -534,8 +548,9 @@ namespace Car.UnitTests.Services
                 .CreateMany(1)
                 .First();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var anotherJourney = Fixture.Build<Journey>()
                 .With(j => j.OrganizerId, journeyDto.OrganizerId)
@@ -561,11 +576,10 @@ namespace Car.UnitTests.Services
         public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject(JourneyDto journeyDto)
         {
             // Arrange
-            var user = Fixture.Build<User>().
-                CreateMany(1)
-                .First();
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var user = Fixture.Build<User>().Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             journeyRepository.Setup(r =>
                 r.AddAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
@@ -779,8 +793,10 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             Journey journey = Mapper.Map<JourneyDto, Journey>(journeyDto);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journey.OrganizerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, journey.OrganizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Participants, null as List<User>)
                 .With(j => j.Id, journey.Id)
@@ -804,8 +820,10 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             Journey journey = Mapper.Map<JourneyDto, Journey>(journeyDto);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (journey.OrganizerId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, journey.OrganizerId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Participants, null as List<User>)
                 .With(j => j.Id, journey.Id)
@@ -857,8 +875,10 @@ namespace Car.UnitTests.Services
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journeys.FirstOrDefault().OrganizerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, journeys.First().OrganizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             notificationService.Setup(s => s.NotifyParticipantsAboutCancellationAsync(It.IsAny<Journey>())).Returns(Task.CompletedTask);
             notificationService.Setup(s => s.DeleteNotificationsAsync(It.IsAny<IEnumerable<Notification>>()));
@@ -885,8 +905,10 @@ namespace Car.UnitTests.Services
                 .CreateMany(5);
             var journeyIdToCancel = journeys.FirstOrDefault().Id;
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, organizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var childJourneys = journeys.Skip(1).ToList();
             foreach (var journey in childJourneys)
@@ -928,8 +950,10 @@ namespace Car.UnitTests.Services
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updatedJourneyDto.OrganizerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, updatedJourneyDto.OrganizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             journeyRepository.Setup(repo =>
                 repo.UpdateAsync(It.IsAny<Journey>())).ReturnsAsync(journey);
@@ -955,8 +979,9 @@ namespace Car.UnitTests.Services
                 .CreateMany(1)
                 .First();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             updatedJourneyDto.WeekDay = WeekDays.Monday;
             var journey = Mapper.Map<JourneyDto, Journey>(updatedJourneyDto);
@@ -1002,8 +1027,10 @@ namespace Car.UnitTests.Services
                 .CreateMany(1)
                 .ToList();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updatedJourneyDto.OrganizerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, updatedJourneyDto.OrganizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var dateNonMonday = DateTime.Now.AddDays(1);
             while (dateNonMonday.DayOfWeek == DayOfWeek.Monday)
@@ -1081,8 +1108,10 @@ namespace Car.UnitTests.Services
                 .ToList();
             journeys.AddRange(childJourneys);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updatedJourneyDto.OrganizerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, updatedJourneyDto.OrganizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journey);
             var schedules = Fixture.Build<Schedule>()
@@ -1153,8 +1182,10 @@ namespace Car.UnitTests.Services
                 .With(j => j.Invitations, invitations.ToList())
                 .CreateMany(1);
             var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, invitation.InvitedUserId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, invitation.InvitedUserId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             invitationRepository.Setup(repo =>
                     repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync(invitation);
@@ -1189,8 +1220,10 @@ namespace Car.UnitTests.Services
                 .With(j => j.Invitations, invitations.ToList())
                 .CreateMany(1);
             var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (invitation.InvitedUserId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, invitation.InvitedUserId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             invitationRepository.Setup(repo =>
                     repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync(invitation);
@@ -1226,8 +1259,10 @@ namespace Car.UnitTests.Services
                 .CreateMany(1);
             var expectedInvitation = Mapper.Map<Invitation, InvitationDto>(invitation);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, expectedInvitation.InvitedUserId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, expectedInvitation.InvitedUserId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             invitationRepository.Setup(repo =>
                     repo.UpdateAsync(It.IsAny<Invitation>())).ReturnsAsync((Invitation)null);
@@ -1262,8 +1297,10 @@ namespace Car.UnitTests.Services
             var schedules = Fixture.Build<Schedule>()
                 .CreateMany(0);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, expectedJourney.Organizer.Id.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, expectedJourney.Organizer.Id).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
@@ -1281,12 +1318,11 @@ namespace Car.UnitTests.Services
         public async Task UpdateRouteAsync_WhenJourneyBecomeScheduled_ExecuteThreeTimes()
         {
             // Arrange
-            var user = Fixture.Build<User>().
-                CreateMany(1)
-                .First();
+            var user = Fixture.Build<User>().Create();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.Now + TimeSpan.FromDays(1))
@@ -1358,8 +1394,10 @@ namespace Car.UnitTests.Services
                 .With(j => j.ChildJourneys, childJourneys)
                 .CreateMany(1);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journey.OrganizerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, journey.OrganizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
@@ -1433,8 +1471,10 @@ namespace Car.UnitTests.Services
                 .With(j => j.ChildJourneys, childJourneys)
                 .CreateMany(1);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, organizerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, organizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
@@ -1607,12 +1647,10 @@ namespace Car.UnitTests.Services
         public async Task DeleteUserFromJourney_WhenUserExists_ExecuteOnce(int journeyId, int userId)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, userId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-
-            var user = Fixture.Build<User>()
-                .With(u => u.Id, userId)
-                .Create();
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyId)
@@ -1637,17 +1675,16 @@ namespace Car.UnitTests.Services
         public async Task DeleteUserFromJourney_UserIsNotAnOrganizerAndNotCurrentUser_ReturnsFalse(int journeyId, int userId)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
+            var participant = Fixture.Build<User>().With(u => u.Id, userId - 1).Create();
+            var user = Fixture.Build<User>().With(u => u.Id, userId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-
-            var user = Fixture.Build<User>()
-                .With(u => u.Id, userId + 1)
-                .Create();
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyId)
                 .With(j => j.OrganizerId, userId + 1)
-                .With(j => j.Participants, new List<User> { user })
+                .With(j => j.Participants, new List<User> { participant })
                 .CreateMany(1);
 
             journeyRepository.Setup(j => j.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
@@ -1714,7 +1751,8 @@ namespace Car.UnitTests.Services
             {
                 journeyApply.JourneyUser.PassangersCount = passangersCount;
 
-                var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journeyApply.JourneyUser.UserId.ToString()) };
+                var user = Fixture.Build<User>().With(u => u.Id, journeyApply.JourneyUser.UserId).Create();
+                var claims = new List<Claim>() { new("preferred_username", user.Email) };
                 httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
                 var receivedMessages = Fixture.Build<ReceivedMessages>()
@@ -1726,6 +1764,7 @@ namespace Car.UnitTests.Services
                 .With(p => p.ReceivedMessages, receivedMessages)
                 .CreateMany(1)
                 .ToList();
+                participants.Add(user);
                 var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
                 .With(j => j.Participants, new List<User>())
@@ -1917,12 +1956,11 @@ namespace Car.UnitTests.Services
         public async Task AddFutureJourneyAsync_ScheduleExists_ExecuteOnce()
         {
             // Arrange
-            var user = Fixture.Build<User>().
-                CreateMany(1)
-                .First();
+            var user = Fixture.Build<User>().Create();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             const WeekDays days = WeekDays.Monday | WeekDays.Tuesday | WeekDays.Wednesday | WeekDays.Thursday | WeekDays.Friday |
                                   WeekDays.Saturday | WeekDays.Sunday;

@@ -25,13 +25,16 @@ namespace Car.UnitTests.Services
         private readonly IJourneyUserService journeyUserService;
         private readonly Mock<IRepository<JourneyUser>> journeyUserRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
+        private readonly Mock<IRepository<User>> userRepository;
 
         public JourneyUserServiceTest()
         {
             journeyUserRepository = new Mock<IRepository<JourneyUser>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
+            userRepository = new Mock<IRepository<User>>();
             journeyUserService = new JourneyUserService(
                 journeyUserRepository.Object,
+                userRepository.Object,
                 Mapper,
                 httpContextAccessor.Object);
         }
@@ -131,8 +134,10 @@ namespace Car.UnitTests.Services
             journeyUserRepository.Setup(r => r.Query()).Returns(journeyUsers.AsQueryable().BuildMock().Object);
             journeyUserRepository.Setup(r => r.UpdateAsync(It.IsAny<JourneyUser>())).ReturnsAsync(journeyUser);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, journeyUserDto.UserId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, journeyUserDto.UserId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             var result = await journeyUserService.UpdateJourneyUserAsync(journeyUserDto);
@@ -155,8 +160,10 @@ namespace Car.UnitTests.Services
             journeyUserRepository.Setup(r => r.Query()).Returns(journeyUsers.AsQueryable().BuildMock().Object);
             journeyUserRepository.Setup(r => r.UpdateAsync(It.IsAny<JourneyUser>())).ReturnsAsync(journeyUser);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (journeyUserDto.UserId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, journeyUserDto.UserId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             var result = await journeyUserService.UpdateJourneyUserAsync(journeyUserDto);
@@ -195,8 +202,10 @@ namespace Car.UnitTests.Services
                 .CreateMany(1);
             journeyUserRepository.Setup(r => r.Query()).Returns(journeyUsers.AsQueryable().BuildMock().Object);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, userId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             var result = await journeyUserService.SetWithBaggageAsync(journeyId, userId, withBaggage);
@@ -223,8 +232,10 @@ namespace Car.UnitTests.Services
                 .CreateMany(1);
             journeyUserRepository.Setup(r => r.Query()).Returns(journeyUsers.AsQueryable().BuildMock().Object);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (userId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, userId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             var result = await journeyUserService.SetWithBaggageAsync(journeyId, userId, withBaggage);

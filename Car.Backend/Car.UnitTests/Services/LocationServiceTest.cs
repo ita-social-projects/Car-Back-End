@@ -78,8 +78,9 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var user = Fixture.Create<User>();
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var locations = Fixture.Create<List<Location>>();
             var expectedLocations = Fixture.Build<Location>()
                 .With(l => l.UserId, user.Id)
@@ -101,8 +102,9 @@ namespace Car.UnitTests.Services
         public async Task GetAllByUserIdAsync_WhenLocationsNotExist_ReturnsEmptyCollection(User user, List<Location> locations)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             locationRepository.Setup(repo => repo.Query(It.IsAny<Expression<Func<Location, object>>[]>()))
                 .Returns(locations.AsQueryable().BuildMock().Object);
 
@@ -118,8 +120,9 @@ namespace Car.UnitTests.Services
         public async Task AddLocationAsync_WhenLocationIsValid_ReturnsLocationObject(LocationDto locationDto, User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var location = Mapper.Map<LocationDto, Location>(locationDto);
 
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
@@ -137,8 +140,9 @@ namespace Car.UnitTests.Services
         public async Task AddLocationAsync_WhenLocationIsNotValid_ReturnsNull(LocationDto locationDto, User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             locationRepository.Setup(repo => repo.AddAsync(It.IsAny<Location>()))
                 .ReturnsAsync((Location)null);
 
@@ -161,8 +165,10 @@ namespace Car.UnitTests.Services
             locationRepository.Setup(r => r.Query())
                 .Returns(locations.AsQueryable().BuildMock().Object);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, expectedLocation.UserId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, expectedLocation.UserId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             var result = await locationService.UpdateAsync(updatedLocationModel);
@@ -183,8 +189,10 @@ namespace Car.UnitTests.Services
             locationRepository.Setup(r => r.Query())
                 .Returns(locations.AsQueryable().BuildMock().Object);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (expectedLocation.UserId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, expectedLocation.UserId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             var result = await locationService.UpdateAsync(updatedLocationModel);
@@ -219,8 +227,10 @@ namespace Car.UnitTests.Services
             // Arrange
             Location location = Mapper.Map<LocationDto, Location>(locationDto);
             locationRepository.Setup(repo => repo.GetByIdAsync(location.Id)).ReturnsAsync(location);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, location.UserId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, location.UserId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             await locationService.DeleteAsync(location.Id);
@@ -236,8 +246,10 @@ namespace Car.UnitTests.Services
             // Arrange
             Location location = Mapper.Map<LocationDto, Location>(locationDto);
             locationRepository.Setup(repo => repo.GetByIdAsync(location.Id)).ReturnsAsync(location);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (location.UserId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, location.UserId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             await locationService.DeleteAsync(location.Id);

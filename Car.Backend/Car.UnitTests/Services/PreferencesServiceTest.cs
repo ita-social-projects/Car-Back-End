@@ -21,13 +21,19 @@ namespace Car.UnitTests.Services
     {
         private readonly IUserPreferencesService preferencesService;
         private readonly Mock<IRepository<UserPreferences>> preferencesRepository;
+        private readonly Mock<IRepository<User>> userRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
 
         public PreferencesServiceTest()
         {
             preferencesRepository = new Mock<IRepository<UserPreferences>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
-            preferencesService = new UserPreferencesService(preferencesRepository.Object, Mapper, httpContextAccessor.Object);
+            userRepository = new Mock<IRepository<User>>();
+            preferencesService = new UserPreferencesService(
+                preferencesRepository.Object,
+                userRepository.Object,
+                Mapper,
+                httpContextAccessor.Object);
         }
 
         [Theory]
@@ -78,8 +84,10 @@ namespace Car.UnitTests.Services
             preferencesRepository.Setup(repo => repo.GetByIdAsync(preferencesDTO.Id))
                 .ReturnsAsync(inputPreferences);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, preferencesDTO.Id.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, preferencesDTO.Id).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             var result = await preferencesService.UpdatePreferencesAsync(preferencesDTO);
@@ -100,8 +108,10 @@ namespace Car.UnitTests.Services
             preferencesRepository.Setup(repo => repo.GetByIdAsync(preferencesDTO.Id))
                 .ReturnsAsync(inputPreferences);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (preferencesDTO.Id + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, preferencesDTO.Id + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             var result = await preferencesService.UpdatePreferencesAsync(preferencesDTO);

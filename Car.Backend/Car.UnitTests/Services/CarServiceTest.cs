@@ -48,8 +48,9 @@ namespace Car.UnitTests.Services
         public async Task AddCarAsync_WhenCarIsValid_ReturnsCarObject(User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var createCarModel = Fixture.Build<CreateCarDto>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
@@ -70,8 +71,9 @@ namespace Car.UnitTests.Services
         public async Task AddCarAsync_WhenCarIsNotValid_ReturnsNull(User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var createCarModel = Fixture.Build<CreateCarDto>()
                 .With(model => model.Image, (IFormFile)null)
                 .Create();
@@ -124,8 +126,9 @@ namespace Car.UnitTests.Services
         public async Task GetAllByUserIdAsync_WhenCarsExist_ReturnsCarsCollection(User owner, List<CarEntity> cars)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, owner.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", owner.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { owner }.AsQueryable());
             var ownCars = Fixture.Build<CarEntity>()
                 .With(c => c.OwnerId, owner.Id)
                 .CreateMany();
@@ -147,8 +150,9 @@ namespace Car.UnitTests.Services
         public async Task GetAllByUserIdAsync_WhenCarsNotExist_ReturnsEmptyCollection(User owner)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, owner.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", owner.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { owner }.AsQueryable());
             var cars = Fixture.Build<CarEntity>()
                 .With(c => c.OwnerId, owner.Id + 1)
                 .CreateMany();
@@ -174,8 +178,10 @@ namespace Car.UnitTests.Services
                 .With(c => c.Id, updateCarModel.Id)
                 .Create();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, inputCar.OwnerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, inputCar.OwnerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
                 .ReturnsAsync(inputCar);
@@ -198,8 +204,10 @@ namespace Car.UnitTests.Services
                 .With(c => c.Id, updateCarModel.Id)
                 .Create();
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (inputCar.OwnerId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, inputCar.OwnerId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
                 .ReturnsAsync(inputCar);
@@ -218,8 +226,10 @@ namespace Car.UnitTests.Services
             // Arrange
             CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
             carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, car.OwnerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, car.OwnerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             await carService.DeleteAsync(car.Id);
@@ -235,8 +245,10 @@ namespace Car.UnitTests.Services
             // Arrange
             CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
             carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (car.OwnerId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, car.OwnerId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             await carService.DeleteAsync(car.Id);
@@ -252,8 +264,10 @@ namespace Car.UnitTests.Services
             // Arrange
             CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
             carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, car.OwnerId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, car.OwnerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateException>();
 
             // Act

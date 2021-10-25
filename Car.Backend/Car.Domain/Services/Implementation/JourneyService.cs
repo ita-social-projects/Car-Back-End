@@ -576,6 +576,7 @@ namespace Car.Domain.Services.Implementation
             var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             bool isDepartureTimeValid = !journeyRepository.Query()
+                .FilterUnscheduledJourneys()
                 .Where(j => j.OrganizerId == userId)
                 .AsEnumerable()
                 .Any(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes is <= 15 and >= -15);

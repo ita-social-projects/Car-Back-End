@@ -156,8 +156,9 @@ namespace Car.UnitTests.Services
             // Arrange
             var userList = users.ToList();
             var user = userList.First();
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var receivedMessages = Fixture.Build<ReceivedMessages>()
                 .With(rm => rm.UserId, user.Id)

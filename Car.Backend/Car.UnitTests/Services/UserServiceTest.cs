@@ -94,8 +94,9 @@ namespace Car.UnitTests.Services
                 .Create();
             users.Add(user);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, updateUserDto.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
@@ -117,7 +118,9 @@ namespace Car.UnitTests.Services
                 .Create();
             users.Add(user);
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (updateUserDto.Id + 1).ToString()) };
+            var currentUser = Fixture.Build<User>().With(u => u.Id, user.Id + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", currentUser.Email) };
+            users.Add(currentUser);
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
@@ -134,8 +137,9 @@ namespace Car.UnitTests.Services
         public async Task AddUserFcmtokenAsync_WhenTokenIsValid_ReturnsAddedToken(UserFcmTokenDto userFCMTokenDto, User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var fcmToken = Mapper.Map<UserFcmTokenDto, FcmToken>(userFCMTokenDto);
             fcmTokenRepository.Setup(repo => repo.AddAsync(It.IsAny<FcmToken>())).ReturnsAsync(fcmToken);
 
