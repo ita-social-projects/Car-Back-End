@@ -553,12 +553,11 @@ namespace Car.UnitTests.Services
             userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             var anotherJourney = Fixture.Build<Journey>()
+                .Without(j => j.Schedule)
                 .With(j => j.OrganizerId, journeyDto.OrganizerId)
                 .With(j => j.DepartureTime, journeyDto.DepartureTime.AddMinutes(5))
                 .CreateMany(1)
                 .ToList();
-
-            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
 
             journeyRepository.Setup(r =>
                 r.Query()).Returns(anotherJourney.AsQueryable().BuildMock().Object);
