@@ -210,7 +210,6 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoData]
-
         public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException(CreateNotificationDto notificationDto)
         {
             // Arrange
