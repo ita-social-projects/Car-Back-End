@@ -117,24 +117,6 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [AutoData]
-        public async Task DeleteAsync_WhenRequestDoesntExist_ThrowsDbUpdateConcurrencyException(RequestDto requestDto)
-        {
-            // Arrange
-            Request request = Mapper.Map<RequestDto, Request>(requestDto);
-            requestRepository.Setup(repo => repo.GetByIdAsync(request.Id)).ReturnsAsync(request);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, request.UserId.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            requestRepository.Setup(r => r.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
-
-            // Act
-            var result = requestService.Invoking(s => s.DeleteAsync(request.Id));
-
-            // Assert
-            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
-        }
-
-        [Theory]
         [AutoEntityData]
         public async Task GetAllAsync_ReturnsRequestCollection(List<Request> requests)
         {

@@ -204,42 +204,6 @@ namespace Car.UnitTests.Services
             result.Should().Be((false, null));
         }
 
-        [Fact]
-        public async Task UpdateCarAsync_WhenCarIsNotExist_ReturnsNull()
-        {
-            // Arrange
-            var updateCarModel = Fixture.Build<UpdateCarDto>()
-                .With(model => model.Image, (IFormFile)null)
-                .Create();
-
-            carRepository.Setup(repo => repo.GetByIdAsync(updateCarModel.Id))
-                .ReturnsAsync((CarEntity)null);
-
-            // Act
-            var result = await carService.UpdateCarAsync(updateCarModel);
-
-            // Assert
-            result.Should().Be((true, null));
-        }
-
-        [Theory]
-        [AutoData]
-        public async Task DeleteAsync_WhenCarIsNotExist_ThrowDbUpdateConcurrencyException(CarDto carDto)
-        {
-            // Arrange
-            CarEntity car = Mapper.Map<CarDto, CarEntity>(carDto);
-            carRepository.Setup(repo => repo.GetByIdAsync(car.Id)).ReturnsAsync(car);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, car.OwnerId.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            carRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
-
-            // Act
-            var result = carService.Invoking(service => service.DeleteAsync(car.Id));
-
-            // Assert
-            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
-        }
-
         [Theory]
         [AutoData]
         public async Task DeleteAsync_WhenCarExistAndUserIsOwner_ExecuteOnce(CarDto carDto)
