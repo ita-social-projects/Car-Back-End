@@ -56,19 +56,6 @@ namespace Car.UnitTests.Services
         }
 
         [Fact]
-        public async Task UploadImageAsync_EntityIsNull_ReturnsNull()
-        {
-            // Arrange
-            var entity = (IEntityWithImage)null;
-
-            // Act
-            var result = await imageService.UploadImageAsync(entity, Mock.Of<IFormFile>());
-
-            // Assert
-            result.Should().BeNull();
-        }
-
-        [Fact]
         public void DeleteImage_EntityIsNull_ReturnsNull()
         {
             // Arrange

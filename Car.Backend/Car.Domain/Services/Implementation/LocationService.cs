@@ -78,17 +78,14 @@ namespace Car.Domain.Services.Implementation
         {
             var location = await locationRepository.GetByIdAsync(locationId);
 
-            if (location != null)
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            if (userId != location.UserId)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-                if (userId != location.UserId)
-                {
-                    return false;
-                }
-
-                locationRepository.Delete(location);
-                await locationRepository.SaveChangesAsync();
+                return false;
             }
+
+            locationRepository.Delete(location);
+            await locationRepository.SaveChangesAsync();
 
             return true;
         }
