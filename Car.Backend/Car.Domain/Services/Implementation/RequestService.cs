@@ -49,17 +49,14 @@ namespace Car.Domain.Services.Implementation
         {
             var request = await requestRepository.GetByIdAsync(requestId);
 
-            if (request != null)
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            if (userId != request.UserId)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-                if (userId != request.UserId)
-                {
-                    return false;
-                }
-
-                requestRepository.Delete(request);
-                await requestRepository.SaveChangesAsync();
+                return false;
             }
+
+            requestRepository.Delete(request);
+            await requestRepository.SaveChangesAsync();
 
             return true;
         }

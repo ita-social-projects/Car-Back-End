@@ -109,23 +109,5 @@ namespace Car.UnitTests.Services
             // Assert
             result.Should().Be((false, null));
         }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task UpdatePreferences_WhenPreferencesIsNotValid_ReturnsNull(UserPreferences preferences, UserPreferencesDto preferencesDTO)
-        {
-            // Arrange
-            preferencesRepository.Setup(r => r.UpdateAsync(preferences))
-                .ReturnsAsync((UserPreferences)null);
-
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, preferences.Id.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-
-            // Act
-            var result = await preferencesService.UpdatePreferencesAsync(preferencesDTO);
-
-            // Assert
-            result.UpdatedReferencesDto.Should().BeNull();
-        }
     }
 }
