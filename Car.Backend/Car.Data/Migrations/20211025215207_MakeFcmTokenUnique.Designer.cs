@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20211025215207_MakeFcmTokenUnique")]
+    partial class MakeFcmTokenUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -377,6 +379,10 @@ namespace Car.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Color")
                         .HasColumnType("int");
 
@@ -384,8 +390,9 @@ namespace Car.Data.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("nvarchar(1500)");
 
-                    b.Property<int>("ModelId")
-                        .HasColumnType("int");
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
@@ -395,8 +402,6 @@ namespace Car.Data.Migrations
                         .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ModelId");
 
                     b.HasIndex("OwnerId");
 
@@ -8352,19 +8357,11 @@ namespace Car.Data.Migrations
 
             modelBuilder.Entity("Car.Data.Entities.Car", b =>
                 {
-                    b.HasOne("Car.Data.Entities.Model", "Model")
-                        .WithMany("Cars")
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Car.Data.Entities.User", "Owner")
                         .WithMany("Cars")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Model");
 
                     b.Navigation("Owner");
                 });
@@ -8720,11 +8717,6 @@ namespace Car.Data.Migrations
             modelBuilder.Entity("Car.Data.Entities.LocationType", b =>
                 {
                     b.Navigation("Locations");
-                });
-
-            modelBuilder.Entity("Car.Data.Entities.Model", b =>
-                {
-                    b.Navigation("Cars");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Schedule", b =>

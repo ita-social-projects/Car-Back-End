@@ -76,6 +76,13 @@ namespace Car.Domain.Services.Implementation
         {
             var fcmToken = mapper.Map<UserFcmTokenDto, FcmToken>(userFcmtokenDto);
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            var savedFcmToken = fcmTokenRepository.Query().FirstOrDefault(token => token.Token == fcmToken.Token);
+            if (savedFcmToken != null)
+            {
+                savedFcmToken.UserId = userId;
+                await fcmTokenRepository.SaveChangesAsync();
+                return mapper.Map<FcmToken, UserFcmTokenDto>(savedFcmToken);
+            }
 
             fcmToken.UserId = userId;
             fcmToken.Id = 0;
@@ -87,7 +94,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task DeleteUserFcmtokenAsync(string tokenToDelete)
         {
-            var fcmToken = fcmTokenRepository.Query().Where(token => token.Token == tokenToDelete).FirstOrDefault();
+            var fcmToken = fcmTokenRepository.Query().FirstOrDefault(token => token.Token == tokenToDelete);
 
             if (fcmToken != null)
             {
