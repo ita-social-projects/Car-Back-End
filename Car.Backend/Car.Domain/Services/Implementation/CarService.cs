@@ -65,22 +65,19 @@ namespace Car.Domain.Services.Implementation
         {
             var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 
-            if (car != null)
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+
+            if (userId != car.OwnerId)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-
-                if (userId != car.OwnerId)
-                {
-                    return (false, null);
-                }
-
-                await imageService.UpdateImageAsync(car, updateCarModel.Image);
-                car.Color = updateCarModel.Color;
-                car.Brand = updateCarModel.Brand;
-                car.Model = updateCarModel.Model;
-                car.PlateNumber = updateCarModel.PlateNumber;
-                await carRepository.SaveChangesAsync();
+                return (false, null);
             }
+
+            await imageService.UpdateImageAsync(car, updateCarModel.Image);
+            car.Color = updateCarModel.Color;
+            car.Brand = updateCarModel.Brand;
+            car.Model = updateCarModel.Model;
+            car.PlateNumber = updateCarModel.PlateNumber;
+            await carRepository.SaveChangesAsync();
 
             return (true, mapper.Map<CarEntity, UpdateCarDto>(car!));
         }
@@ -89,17 +86,14 @@ namespace Car.Domain.Services.Implementation
         {
             var car = await carRepository.GetByIdAsync(carId);
 
-            if (car != null)
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            if (userId != car.OwnerId)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
-                if (userId != car.OwnerId)
-                {
-                    return false;
-                }
-
-                carRepository.Delete(car);
-                await carRepository.SaveChangesAsync();
+                return false;
             }
+
+            carRepository.Delete(car);
+            await carRepository.SaveChangesAsync();
 
             return true;
         }
