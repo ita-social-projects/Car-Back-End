@@ -7,7 +7,9 @@ namespace Car.Data.Entities
     {
         public int Id { get; set; }
 
-        public int ModelId { get; set; }
+        public string Model { get; set; } = string.Empty;
+
+        public string Brand { get; set; } = string.Empty;
 
         public Color Color { get; set; }
 
@@ -20,7 +22,5 @@ namespace Car.Data.Entities
         public ICollection<Journey> Journeys { get; set; } = new List<Journey>();
 
         public User? Owner { get; set; }
-
-        public Model? Model { get; set; }
     }
 }

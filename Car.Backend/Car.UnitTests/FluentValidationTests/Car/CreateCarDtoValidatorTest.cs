@@ -45,19 +45,18 @@ namespace Car.UnitTests.FluentValidationTests.Car
         }
 
         [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void ModelId_IsNotValid_GeneratesValidationError(int value)
+        [InlineData("")]
+        [InlineData(null)]
+        public void Model_IsNotValid_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(carModel => carModel.ModelId, value);
+            validator.ShouldHaveValidationErrorFor(carModel => carModel.Model, value);
         }
 
         [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void ModelId_IsSpecified_NotGeneratesValidationError(int value)
+        [InlineData("Qashkai")]
+        public void Model_IsSpecified_NotGeneratesValidationError(string value)
         {
-            validator.ShouldNotHaveValidationErrorFor(carModel => carModel.ModelId, value);
+            validator.ShouldNotHaveValidationErrorFor(carModel => carModel.Model, value);
         }
     }
 }
