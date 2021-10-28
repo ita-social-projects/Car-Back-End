@@ -15,10 +15,6 @@ namespace Car.Data.EntityConfigurations
                 .HasForeignKey(car => car.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(car => car.Model)
-                .WithMany(brand => brand!.Cars)
-                .HasForeignKey(car => car.ModelId);
-
             builder.Property(car => car.PlateNumber).HasMaxLength(10);
             builder.Property(car => car.ImageId).HasMaxLength(1500);
         }
