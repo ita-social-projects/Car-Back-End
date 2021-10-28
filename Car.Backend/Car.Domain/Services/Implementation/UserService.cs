@@ -46,11 +46,6 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<(bool IsUpdated, UserDto? UpdatedUserDto)> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto)
         {
-            if (updateUserImageDto == null)
-            {
-                return (false, null);
-            }
-
             var user = await userRepository.Query().FirstOrDefaultAsync(u => updateUserImageDto.Id == u.Id);
 
             if (user != null)
