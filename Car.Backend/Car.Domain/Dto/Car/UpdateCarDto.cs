@@ -7,7 +7,9 @@ namespace Car.Domain.Dto
     {
         public int Id { get; set; }
 
-        public int ModelId { get; set; }
+        public string Brand { get; set; } = string.Empty;
+
+        public string Model { get; set; } = string.Empty;
 
         public Color Color { get; set; }
 
