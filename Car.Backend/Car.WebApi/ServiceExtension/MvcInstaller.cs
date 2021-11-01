@@ -16,7 +16,10 @@ namespace Car.WebApi.ServiceExtension
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSignalR();
+            services.AddSignalR()
+                .AddAzureSignalR(
+                    configuration.GetSection("AzureSignalRService")
+                        .GetValue<string>("ConnectionString"));
             services.AddHangfireServer();
 
             // Configure this as suited for your case
