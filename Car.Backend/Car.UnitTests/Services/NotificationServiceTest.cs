@@ -214,15 +214,35 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenNotificationExistAndUserIsReceiver_ExecuteOnce(CreateNotificationDto notificationDto)
+        public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException(CreateNotificationDto notificationDto)
+        {
+            // Arrange
+            Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
+            notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            notificationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = notificationService.Invoking(service => service.DeleteAsync(notification.Id));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
+
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenNotificationExistAndUserIsReceiver_ExecuteOnce(CreateNotificationDto notificationDto, IEnumerable<Notification> notifications)
         {
             // Arrange
             Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
             notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
             var user = Fixture.Build<User>().With(u => u.Id, notification.ReceiverId).Create();
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
             // Act
             await notificationService.DeleteAsync(notification.Id);

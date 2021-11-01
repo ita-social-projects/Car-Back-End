@@ -48,7 +48,6 @@ namespace Car.Domain.Services.Implementation
         {
             var car = await carRepository
                 .Query()
-                .IncludeModelWithBrand()
                 .FirstOrDefaultAsync(c => c.Id == carId);
 
             return mapper.Map<CarEntity, CarDto>(car);
@@ -59,7 +58,6 @@ namespace Car.Domain.Services.Implementation
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var cars = await carRepository
                 .Query()
-                .IncludeModelWithBrand()
                 .Where(car => car.OwnerId == userId)
                 .ToListAsync();
 
@@ -79,7 +77,8 @@ namespace Car.Domain.Services.Implementation
 
             await imageService.UpdateImageAsync(car, updateCarModel.Image);
             car.Color = updateCarModel.Color;
-            car.ModelId = updateCarModel.ModelId;
+            car.Brand = updateCarModel.Brand;
+            car.Model = updateCarModel.Model;
             car.PlateNumber = updateCarModel.PlateNumber;
             await carRepository.SaveChangesAsync();
 

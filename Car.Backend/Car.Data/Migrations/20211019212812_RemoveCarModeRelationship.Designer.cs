@@ -4,14 +4,16 @@ using Car.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Car.Data.Migrations
 {
     [DbContext(typeof(CarContext))]
-    partial class CarContextModelSnapshot : ModelSnapshot
+    [Migration("20211019212812_RemoveCarModeRelationship")]
+    partial class RemoveCarModeRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -430,15 +432,12 @@ namespace Car.Data.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Token")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 

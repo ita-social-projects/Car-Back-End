@@ -16,7 +16,8 @@ namespace Car.Domain.FluentValidation
                                             .Matches("^[A-Za-zА-ЯҐЄІЇа-яґєії0-9- ]+$")
                                             .When(car => car.PlateNumber != null);
             RuleFor(car => car.OwnerId).GreaterThan(Constants.IdLength);
-            RuleFor(car => car.Model).SetValidator(new ModelDtoValidator()!);
+            RuleFor(car => car.Brand).NotNull().NotEmpty();
+            RuleFor(car => car.Model).NotNull().NotEmpty();
         }
     }
 }
