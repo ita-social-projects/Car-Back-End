@@ -90,9 +90,7 @@ namespace Car.Domain.Services.Implementation
 
             user.Name = userData.GivenName;
             user.Surname = userData.Surname;
-            user.HireDate = userData.HireDate?.DateTime ?? DateTime.Now;
             user.Location = userData.OfficeLocation;
-            user.PhoneNumber = userData.MobilePhone;
             user.Position = userData.JobTitle;
             user.Email = userData.Mail ?? userData.UserPrincipalName;
 
