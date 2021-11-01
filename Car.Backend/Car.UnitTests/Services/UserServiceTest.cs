@@ -148,6 +148,25 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task AddUserFcmtokenAsync_WhenTokenExists_ReturnsUpdatedToken(IEnumerable<FcmToken> fcmTokens, User user)
+        {
+            // Arrange
+            var fcmToken = fcmTokens.First();
+            var userFCMTokenDto = Mapper.Map<FcmToken, UserFcmTokenDto>(fcmToken);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            fcmTokenRepository.Setup(repo => repo.Query()).Returns(fcmTokens.AsQueryable().BuildMock().Object);
+            fcmTokenRepository.Setup(repo => repo.AddAsync(It.IsAny<FcmToken>())).ReturnsAsync(fcmToken);
+
+            // Act
+            var result = await userService.AddUserFcmtokenAsync(userFCMTokenDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(userFCMTokenDto);
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task DeleteUserFcmtokenAsync_WhenTokenExists_ExecuteOnce(FcmToken fcmToken, List<FcmToken> fcmTokens)
         {
             // Arrange

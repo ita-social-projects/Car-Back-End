@@ -6,7 +6,9 @@ namespace Car.Domain.Dto
 {
     public class CreateCarDto
     {
-        public int ModelId { get; set; }
+        public string Brand { get; set; } = string.Empty;
+
+        public string Model { get; set; } = string.Empty;
 
         public Color Color { get; set; }
 
