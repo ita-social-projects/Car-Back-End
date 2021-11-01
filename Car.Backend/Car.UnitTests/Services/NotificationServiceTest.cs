@@ -210,13 +210,33 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoData]
-        public async Task DeleteAsync_WhenNotificationExistAndUserIsReceiver_ExecuteOnce(CreateNotificationDto notificationDto)
+        public async Task DeleteAsync_WhenNotificationIsNotExist_ThrowDbUpdateConcurrencyException(CreateNotificationDto notificationDto)
         {
             // Arrange
             Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
             notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
             var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            notificationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
+
+            // Act
+            var result = notificationService.Invoking(service => service.DeleteAsync(notification.Id));
+
+            // Assert
+            await result.Should().ThrowAsync<DbUpdateConcurrencyException>();
+        }
+
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task DeleteAsync_WhenNotificationExistAndUserIsReceiver_ExecuteOnce(CreateNotificationDto notificationDto, IEnumerable<Notification> notifications)
+        {
+            // Arrange
+            Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
+            notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
+            notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
+            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
             // Act
             await notificationService.DeleteAsync(notification.Id);
