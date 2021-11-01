@@ -13,19 +13,22 @@ namespace Car.Domain.Services.Implementation
     public class ReceivedMessagesService : IReceivedMessagesService
     {
         private readonly IRepository<ReceivedMessages> receivedMessagesRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public ReceivedMessagesService(
             IRepository<ReceivedMessages> receivedMessagesRepository,
+            IRepository<User> userRepository,
             IHttpContextAccessor httpContextAccessor)
         {
             this.receivedMessagesRepository = receivedMessagesRepository;
+            this.userRepository = userRepository;
             this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<bool> MarkMessagesReadInChatAsync(int chatId)
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             var receivedMessages = await receivedMessagesRepository.Query()
                 .FirstOrDefaultAsync(rm => rm.ChatId == chatId
@@ -44,7 +47,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<int> GetAllUnreadMessagesNumber()
         {
-            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             return await receivedMessagesRepository
                 .Query()
                 .Where(repo => repo.UserId == userId)

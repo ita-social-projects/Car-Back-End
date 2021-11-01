@@ -5,10 +5,12 @@ using Car.Domain.Models.Notification;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 namespace Car.WebApi.Controllers
 {
     [Authorize]
+    [RequiredScope("ApiAccess")]
     [Route("api/notifications")]
     [ApiController]
     public class NotificationController : ControllerBase

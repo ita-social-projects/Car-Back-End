@@ -51,6 +51,7 @@ namespace Car.UnitTests.Services
             journeyUserService = new Mock<IJourneyUserService>();
             notificationService = new NotificationService(
                 notificationRepository.Object,
+                userRepository.Object,
                 hubContext.Object,
                 pushNotificationService.Object,
                 Mapper,
@@ -87,8 +88,9 @@ namespace Car.UnitTests.Services
             // Arrange
             var users = Fixture.CreateMany<User>(10).ToList();
             var user = users.First();
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var notifications = Fixture
                 .Build<Notification>()
                 .With(n => n.ReceiverId, user.Id)
@@ -119,8 +121,9 @@ namespace Car.UnitTests.Services
         {
             // Arrange
             var user = users.First();
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var notifications = Fixture
                 .Build<Notification>()
                 .With(n => n.ReceiverId, user.Id)
@@ -175,8 +178,9 @@ namespace Car.UnitTests.Services
             Notification notification, IEnumerable<Notification> notifications, User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             notificationRepository.Setup(repo => repo.AddAsync(notification)).ReturnsAsync(notification);
             notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
@@ -215,8 +219,10 @@ namespace Car.UnitTests.Services
             // Arrange
             Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
             notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, notification.ReceiverId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             notificationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
@@ -233,9 +239,11 @@ namespace Car.UnitTests.Services
             // Arrange
             Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
             notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
+            var user = Fixture.Build<User>().With(u => u.Id, notification.ReceiverId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             notificationRepository.Setup(repo => repo.Query()).Returns(notifications.AsQueryable().BuildMock().Object);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
             // Act
@@ -252,8 +260,10 @@ namespace Car.UnitTests.Services
             // Arrange
             Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
             notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (notification.ReceiverId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, notification.ReceiverId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             await notificationService.DeleteAsync(notification.Id);
@@ -308,8 +318,10 @@ namespace Car.UnitTests.Services
             var notification = notifications.First();
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, notification.ReceiverId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             notificationRepository
                 .Setup(repo => repo.Query())
@@ -333,8 +345,10 @@ namespace Car.UnitTests.Services
             var notification = notifications.First();
             hubContext.Setup(hub => hub.Clients.All).Returns(Mock.Of<IClientProxy>());
 
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (notification.ReceiverId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, notification.ReceiverId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             notificationRepository
                 .Setup(repo => repo.Query())
@@ -368,8 +382,9 @@ namespace Car.UnitTests.Services
         public async Task NotifyParticipantsAboutCancellationAsync_WhenJourneyHasParticipants_ExecuteSaveChangesAtLeastOnce(User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var journey = Fixture.Create<Journey>();
             var notifications = Fixture.CreateMany<Notification>();
 
@@ -387,8 +402,9 @@ namespace Car.UnitTests.Services
         public async Task JourneyUpdateNotifyUserAsync_WhenJourneyHasParticipants_ExecuteSaveChangesAtLeastOnce(User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var journey = Fixture.Create<Journey>();
             var notifications = Fixture.CreateMany<Notification>();
 
@@ -436,8 +452,9 @@ namespace Car.UnitTests.Services
         public async Task NotifyDriverAboutParticipantWithdrawal_SaveChangesOnce(Journey journey, int participantId, User user)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var notifications = Fixture.CreateMany<Notification>();
 
             NotificationInitializer(journey, notifications);

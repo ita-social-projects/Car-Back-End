@@ -16,12 +16,14 @@ namespace Car.Domain.Services.Implementation
     public class LocationService : ILocationService
     {
         private readonly IRepository<Location> locationRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public LocationService(IRepository<Location> locationRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public LocationService(IRepository<Location> locationRepository, IRepository<User> userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.locationRepository = locationRepository;
+            this.userRepository = userRepository;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
         }
@@ -31,7 +33,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<Location>> GetAllByUserIdAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             return await locationRepository
                 .Query(locationAddress => locationAddress!.Address!, locationType => locationType!.Type!)
                 .Where(location => location.UserId == userId)
@@ -41,7 +43,7 @@ namespace Car.Domain.Services.Implementation
         public async Task<Location> AddLocationAsync(LocationDto locationDTO)
         {
             var location = mapper.Map<LocationDto, Location>(locationDTO);
-            location.UserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            location.UserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             var newLocation = await locationRepository.AddAsync(location);
             await locationRepository.SaveChangesAsync();
@@ -55,7 +57,7 @@ namespace Car.Domain.Services.Implementation
 
             if (updatedLocation is not null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != updatedLocation.UserId)
                 {
@@ -78,7 +80,7 @@ namespace Car.Domain.Services.Implementation
         {
             var location = await locationRepository.GetByIdAsync(locationId);
 
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             if (userId != location.UserId)
             {
                 return false;

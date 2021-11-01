@@ -19,17 +19,20 @@ namespace Car.Domain.Services.Implementation
     public class RequestService : IRequestService
     {
         private readonly INotificationService notificationService;
+        private readonly IRepository<User> userRepository;
         private readonly IRepository<Request> requestRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public RequestService(
             INotificationService notificationService,
+            IRepository<User> userRepository,
             IRepository<Request> requestRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
             this.notificationService = notificationService;
+            this.userRepository = userRepository;
             this.requestRepository = requestRepository;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
@@ -49,7 +52,7 @@ namespace Car.Domain.Services.Implementation
         {
             var request = await requestRepository.GetByIdAsync(requestId);
 
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             if (userId != request.UserId)
             {
                 return false;
@@ -91,7 +94,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<Request>> GetRequestsByUserIdAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             var userRequests = await requestRepository
                 .Query()

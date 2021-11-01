@@ -3,10 +3,12 @@ using Car.Domain.Dto;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 namespace Car.WebApi.Controllers
 {
     [Authorize]
+    [RequiredScope("ApiAccess")]
     [Route("api/user-preferences")]
     [ApiController]
     public class UserPreferencesController : ControllerBase

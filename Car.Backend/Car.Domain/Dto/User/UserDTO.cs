@@ -21,8 +21,6 @@ namespace Car.Domain.Dto
 
         public string? ImageId { get; set; }
 
-        public string Token { get; set; } = string.Empty;
-
         public string? FCMToken { get; set; }
 
         public int JourneyCount { get; set; }

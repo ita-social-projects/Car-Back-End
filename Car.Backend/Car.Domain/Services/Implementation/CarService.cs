@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Extensions;
@@ -16,13 +17,15 @@ namespace Car.Domain.Services.Implementation
     public class CarService : ICarService
     {
         private readonly IRepository<CarEntity> carRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IImageService imageService;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public CarService(IRepository<CarEntity> carRepository, IImageService imageService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public CarService(IRepository<CarEntity> carRepository, IRepository<User> userRepository, IImageService imageService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.carRepository = carRepository;
+            this.userRepository = userRepository;
             this.imageService = imageService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
@@ -31,7 +34,7 @@ namespace Car.Domain.Services.Implementation
         public async Task<CreateCarDto> AddCarAsync(CreateCarDto createCarModel)
         {
             var carEntity = mapper.Map<CreateCarDto, CarEntity>(createCarModel);
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             carEntity.OwnerId = userId;
             await imageService.UploadImageAsync(carEntity, createCarModel.Image);
 
@@ -52,7 +55,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<CarDto>> GetAllByUserIdAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var cars = await carRepository
                 .Query()
                 .Where(car => car.OwnerId == userId)
@@ -65,7 +68,7 @@ namespace Car.Domain.Services.Implementation
         {
             var car = await carRepository.GetByIdAsync(updateCarModel.Id);
 
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             if (userId != car.OwnerId)
             {
@@ -86,7 +89,7 @@ namespace Car.Domain.Services.Implementation
         {
             var car = await carRepository.GetByIdAsync(carId);
 
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             if (userId != car.OwnerId)
             {
                 return false;

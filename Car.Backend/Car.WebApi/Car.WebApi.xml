@@ -247,12 +247,11 @@
             </summary>
             <returns>All the models</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LoginController.Login(Car.Domain.Dto.UserDto)">
+        <member name="M:Car.WebApi.Controllers.LoginController.Login">
             <summary>
             ensures the user and returns a User for client app,
             if user doesn't exist in DB it creates a user and saves them to DB
             </summary>
-            <param name="user">Sender model params</param>
             <returns>User for a client app</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.ModelController.GetAll(System.Int32)">

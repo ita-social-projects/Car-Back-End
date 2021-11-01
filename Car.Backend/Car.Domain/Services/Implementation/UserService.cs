@@ -50,7 +50,7 @@ namespace Car.Domain.Services.Implementation
 
             if (user != null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != updateUserImageDto.Id)
                 {
@@ -70,7 +70,7 @@ namespace Car.Domain.Services.Implementation
         public async Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto)
         {
             var fcmToken = mapper.Map<UserFcmTokenDto, FcmToken>(userFcmtokenDto);
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var savedFcmToken = fcmTokenRepository.Query().FirstOrDefault(token => token.Token == fcmToken.Token);
             if (savedFcmToken != null)
             {

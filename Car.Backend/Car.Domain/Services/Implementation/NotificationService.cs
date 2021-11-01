@@ -19,6 +19,7 @@ namespace Car.Domain.Services.Implementation
     public class NotificationService : INotificationService
     {
         private readonly IRepository<Notification> notificationRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IHubContext<SignalRHub> notificationHub;
         private readonly IMapper mapper;
         private readonly IPushNotificationService pushNotificationService;
@@ -27,6 +28,7 @@ namespace Car.Domain.Services.Implementation
 
         public NotificationService(
             IRepository<Notification> notificationRepository,
+            IRepository<User> userRepository,
             IHubContext<SignalRHub> notificationHub,
             IPushNotificationService pushNotificationService,
             IMapper mapper,
@@ -34,6 +36,7 @@ namespace Car.Domain.Services.Implementation
             IJourneyUserService journeyUserService)
         {
             this.notificationRepository = notificationRepository;
+            this.userRepository = userRepository;
             this.notificationHub = notificationHub;
             this.pushNotificationService = pushNotificationService;
             this.mapper = mapper;
@@ -48,7 +51,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<Notification>> GetNotificationsAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             return await notificationRepository.Query().Include(n => n.Sender)
                             .Where(p => p.ReceiverId == userId)
@@ -58,7 +61,7 @@ namespace Car.Domain.Services.Implementation
 
         public Task<int> GetUnreadNotificationsNumberAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             return notificationRepository.Query()
                        .CountAsync(p => p.ReceiverId == userId && !p.IsRead);
         }
@@ -90,7 +93,7 @@ namespace Car.Domain.Services.Implementation
 
             if (notification != null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
                 if (userId != notification.ReceiverId)
                 {
                     return false;
@@ -111,7 +114,7 @@ namespace Car.Domain.Services.Implementation
 
             if (notificationToUpdate != null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != notificationToUpdate.ReceiverId)
                 {

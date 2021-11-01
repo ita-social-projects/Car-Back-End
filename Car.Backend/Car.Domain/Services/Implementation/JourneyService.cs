@@ -84,7 +84,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<JourneyModel>> GetPastJourneysAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var journeys = await (await journeyRepository
                     .Query()
                     .IncludeSchedule()
@@ -100,7 +100,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var journeys = await (await journeyRepository
                     .Query()
                     .IncludeSchedule()
@@ -115,7 +115,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var journeys = await (await journeyRepository
                     .Query()
                     .IncludeSchedule()
@@ -131,7 +131,7 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int countToTake = 5)
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var stops = await journeyRepository
                 .Query()
                 .FilterUncancelledJourneys()
@@ -198,7 +198,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journeyToDelete != null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
                 if (userId != journeyToDelete.OrganizerId)
                 {
                     return false;
@@ -222,7 +222,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journeyToCancel is not null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != journeyToCancel.OrganizerId)
                 {
@@ -266,7 +266,7 @@ namespace Car.Domain.Services.Implementation
 
             if (invitation != null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != invitation.InvitedUserId)
                 {
@@ -338,7 +338,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journey != null && userToDelete != null)
             {
-                int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
                 if (currentUserId != journey.OrganizerId && currentUserId != userId)
                 {
                     return false;
@@ -383,7 +383,7 @@ namespace Car.Domain.Services.Implementation
                 return (true, false);
             }
 
-            int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             if (currentUserId != journey.OrganizerId && currentUserId != journeyApply.JourneyUser.UserId)
             {
@@ -558,8 +558,8 @@ namespace Car.Domain.Services.Implementation
 
         private async Task CancelUnsuitableJourneyAsync(Schedule schedule)
         {
-            var journeysToCancel = schedule.ChildJourneys.Where(journay =>
-                    !schedule.Days.ToString().Contains(journay.DepartureTime.DayOfWeek.ToString()))
+            var journeysToCancel = schedule.ChildJourneys.Where(journey =>
+                    !schedule.Days.ToString().Contains(journey.DepartureTime.DayOfWeek.ToString()))
                 .Select(journey => journey.Id)
                 .ToList();
 
@@ -571,15 +571,15 @@ namespace Car.Domain.Services.Implementation
 
         private async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel, int? parentId)
         {
-            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             bool isDepartureTimeValid = !journeyRepository.Query()
+                .FilterUnscheduledJourneys()
                 .Where(j => j.OrganizerId == userId)
                 .AsEnumerable()
-                .Any(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes <= 15 &&
-                (j.DepartureTime - journey.DepartureTime).TotalMinutes >= -15);
+                .Any(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes is <= 15 and >= -15);
 
             if (!isDepartureTimeValid)
             {
@@ -630,7 +630,7 @@ namespace Car.Domain.Services.Implementation
 
             if (journey != null)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != journey.OrganizerId)
                 {
@@ -720,7 +720,7 @@ namespace Car.Domain.Services.Implementation
             if (journey != null)
             {
                 var existingInvitations = journey.Invitations;
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
                 if (userId != updatedJourney.OrganizerId)
                 {

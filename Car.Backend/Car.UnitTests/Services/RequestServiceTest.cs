@@ -26,13 +26,20 @@ namespace Car.UnitTests.Services
         private readonly Mock<INotificationService> notificationService;
         private readonly IRequestService requestService;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
+        private readonly Mock<IRepository<User>> userRepository;
 
         public RequestServiceTest()
         {
             requestRepository = new Mock<IRepository<Request>>();
             notificationService = new Mock<INotificationService>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
-            requestService = new RequestService(notificationService.Object, requestRepository.Object, Mapper, httpContextAccessor.Object);
+            userRepository = new Mock<IRepository<User>>();
+            requestService = new RequestService(
+                notificationService.Object,
+                userRepository.Object,
+                requestRepository.Object,
+                Mapper,
+                httpContextAccessor.Object);
         }
 
         [Theory]
@@ -74,8 +81,10 @@ namespace Car.UnitTests.Services
             // Arrange
             Request request = Mapper.Map<RequestDto, Request>(requestDto);
             requestRepository.Setup(repo => repo.GetByIdAsync(request.Id)).ReturnsAsync(request);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, request.UserId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, request.UserId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             await requestService.DeleteAsync(request.Id);
@@ -91,8 +100,10 @@ namespace Car.UnitTests.Services
             // Arrange
             Request request = Mapper.Map<RequestDto, Request>(requestDto);
             requestRepository.Setup(repo => repo.GetByIdAsync(request.Id)).ReturnsAsync(request);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, (request.UserId + 1).ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, request.UserId + 1).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
             await requestService.DeleteAsync(request.Id);
@@ -170,8 +181,9 @@ namespace Car.UnitTests.Services
         public async Task GetRequestsByUserIdAsync_WhenRequestExists_ReturnsRequestCollection(User user, List<Request> requests)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             var expectedResult = Fixture.Build<Request>()
                 .With(r => r.UserId, user.Id)
                 .CreateMany();
@@ -192,8 +204,9 @@ namespace Car.UnitTests.Services
         public async Task GetRequestsByUserIdAsync_WhenRequestDoesntExist_ReturnsEmptyCollection(User user, List<Request> requests)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 

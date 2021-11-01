@@ -27,11 +27,11 @@ namespace Car.UnitTests.Controllers
         public async Task Login_WhenUserExists_ReturnsOkObjectResult(UserDto user)
         {
             // Arrange
-            loginService.Setup(service => service.LoginAsync(user))
+            loginService.Setup(service => service.LoginAsync())
                 .ReturnsAsync(user);
 
             // Act
-            var result = await loginController.Login(user);
+            var result = await loginController.Login();
 
             // Assert
             using (new AssertionScope())

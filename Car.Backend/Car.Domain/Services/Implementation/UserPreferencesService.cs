@@ -13,12 +13,14 @@ namespace Car.Domain.Services.Implementation
     public class UserPreferencesService : IUserPreferencesService
     {
         private readonly IRepository<UserPreferences> preferencesRepository;
+        private readonly IRepository<User> userRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UserPreferencesService(IRepository<UserPreferences> preferencesRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public UserPreferencesService(IRepository<UserPreferences> preferencesRepository, IRepository<User> userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.preferencesRepository = preferencesRepository;
+            this.userRepository = userRepository;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
         }
@@ -34,7 +36,7 @@ namespace Car.Domain.Services.Implementation
         {
             var preferences = await preferencesRepository.GetByIdAsync(preferencesDTO.Id);
 
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId();
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
             if (userId != preferences.Id)
             {
