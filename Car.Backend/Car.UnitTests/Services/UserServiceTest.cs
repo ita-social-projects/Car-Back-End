@@ -157,8 +157,9 @@ namespace Car.UnitTests.Services
             // Arrange
             var fcmToken = fcmTokens.First();
             var userFCMTokenDto = Mapper.Map<FcmToken, UserFcmTokenDto>(fcmToken);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) };
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             fcmTokenRepository.Setup(repo => repo.Query()).Returns(fcmTokens.AsQueryable().BuildMock().Object);
             fcmTokenRepository.Setup(repo => repo.AddAsync(It.IsAny<FcmToken>())).ReturnsAsync(fcmToken);
 
@@ -174,8 +175,6 @@ namespace Car.UnitTests.Services
         public async Task DeleteUserFcmtokenAsync_WhenTokenExists_ExecuteOnce(FcmToken fcmToken, List<FcmToken> fcmTokens)
         {
             // Arrange
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, fcmToken.UserId.ToString()) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             fcmTokens.Add(fcmToken);
             fcmTokenRepository.Setup(repo => repo.Query())
                 .Returns(fcmTokens.AsQueryable().BuildMock().Object);

@@ -219,8 +219,10 @@ namespace Car.UnitTests.Services
             // Arrange
             Notification notification = Mapper.Map<CreateNotificationDto, Notification>(notificationDto);
             notificationRepository.Setup(repo => repo.GetByIdAsync(notification.Id)).ReturnsAsync(notification);
-            var claims = new List<Claim>() { new Claim(ClaimTypes.NameIdentifier, notification.ReceiverId.ToString()) };
+            var user = Fixture.Build<User>().With(u => u.Id, notification.ReceiverId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
             notificationRepository.Setup(repo => repo.SaveChangesAsync()).Throws<DbUpdateConcurrencyException>();
 
             // Act
