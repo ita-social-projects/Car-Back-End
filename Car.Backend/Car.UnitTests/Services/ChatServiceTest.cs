@@ -158,21 +158,20 @@ namespace Car.UnitTests.Services
             var user = userList.First();
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
-            var receivedMessages = Fixture.Build<ReceivedMessages>()
-                .With(rm => rm.UserId, user.Id)
-                .CreateMany(1);
-
-            var chats = user.ReceivedMessages.Select(rm => rm.Chat)
-                 .Except(new List<Chat>() { null! });
-            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats);
-
-            userRepository.Setup(repo => repo.Query())
+            userRepository.Setup(rep => rep.Query())
+                .Returns(new[] { user }.AsQueryable());
+            userRepository.Setup(rep => rep.Query())
                 .Returns(userList.AsQueryable().BuildMock().Object);
 
-            receivedMessagesRepository.Setup(rm => rm.Query())
-                .Returns(receivedMessages.AsQueryable().BuildMock().Object);
+            user.OrganizerJourneys.ToList().ForEach(oj => oj.Chat.Journey = oj);
+            user.ParticipantJourneys.ToList().ForEach(pj => pj.Chat.Journey = pj);
+
+            var chats = user.OrganizerJourneys.Select(oj => oj.Chat)
+                .Union(user.ParticipantJourneys.Select(pj => pj.Chat))
+                .Except(new List<Chat>() { null! });
+
+            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
 
             // Act
             var result = await chatService.GetUserChatsAsync();
