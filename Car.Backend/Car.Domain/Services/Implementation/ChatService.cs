@@ -115,7 +115,8 @@ namespace Car.Domain.Services.Implementation
             var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var user = await userRepository
                 .Query()
-                .IncludeJourney()
+                .IncludeChats()
+                .IncludeReceivedMessages()
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             var chats = user.OrganizerJourneys.Select(oj => oj.Chat)
