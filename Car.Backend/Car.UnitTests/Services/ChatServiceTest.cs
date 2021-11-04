@@ -160,8 +160,6 @@ namespace Car.UnitTests.Services
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             userRepository.Setup(rep => rep.Query())
-                .Returns(new[] { user }.AsQueryable());
-            userRepository.Setup(rep => rep.Query())
                 .Returns(userList.AsQueryable().BuildMock().Object);
 
             user.OrganizerJourneys.ToList().ForEach(oj => oj.Chat.Journey = oj);
@@ -171,7 +169,7 @@ namespace Car.UnitTests.Services
                 .Union(user.ParticipantJourneys.Select(pj => pj.Chat))
                 .Except(new List<Chat>() { null! });
 
-            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
+            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats);
 
             // Act
             var result = await chatService.GetUserChatsAsync();
