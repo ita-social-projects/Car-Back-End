@@ -115,12 +115,12 @@ namespace Car.Domain.Services.Implementation
             var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var user = await userRepository
                 .Query()
-                .IncludeJourney()
+                .IncludeChats()
                 .IncludeReceivedMessages()
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            var chats = user.ReceivedMessages
-                .Select(rm => rm.Chat)
+            var chats = user.OrganizerJourneys.Select(oj => oj.Chat)
+                .Union(user.ParticipantJourneys.Select(pj => pj.Chat))
                 .OrderByDescending(chat => chat!.Journey!.DepartureTime);
 
             return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
