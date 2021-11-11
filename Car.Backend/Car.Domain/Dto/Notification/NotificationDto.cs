@@ -7,9 +7,9 @@ namespace Car.Domain.Dto
     {
         public int Id { get; set; }
 
-        public User? Sender { get; set; }
+        public UserDto? Sender { get; set; }
 
-        public User? Receiver { get; set; }
+        public UserDto? Receiver { get; set; }
 
         public int ReceiverId { get; set; }
 

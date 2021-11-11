@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace Car.WebApi.ServiceExtension
 {
@@ -17,6 +18,8 @@ namespace Car.WebApi.ServiceExtension
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSignalR()
+                .AddNewtonsoftJsonProtocol(
+                    options => options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
                 .AddAzureSignalR(
                     configuration.GetSection("AzureSignalRService")
                         .GetValue<string>("ConnectionString"));
