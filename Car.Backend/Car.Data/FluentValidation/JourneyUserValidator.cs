@@ -17,6 +17,7 @@ namespace Car.Data.FluentValidation
             RuleFor(journeyUser => journeyUser.JourneyId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(journeyUser => journeyUser.WithBaggage).NotNull();
             RuleFor(journeyUser => journeyUser.PassangersCount).GreaterThan(0);
+            RuleFor(participant => participant.PassangersCount).LessThan(5);
         }
     }
 }
