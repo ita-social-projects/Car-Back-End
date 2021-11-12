@@ -8,7 +8,7 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<UserDto> GetUserByIdAsync(int userId);
 
-        Task<IEnumerable<UserEmailDto>> GetAllUsersAsync();
+        Task<UserDto> GetUserByEmailAsync(string email);
 
         Task<(bool IsUpdated, UserDto? UpdatedUserDto)> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto);
 

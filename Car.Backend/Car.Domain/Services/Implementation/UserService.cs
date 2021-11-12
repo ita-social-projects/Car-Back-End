@@ -37,11 +37,11 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<User, UserDto>(user);
         }
 
-        public async Task<IEnumerable<UserEmailDto>> GetAllUsersAsync()
+        public async Task<UserDto> GetUserByEmailAsync(string email)
         {
-            var users = await userRepository.Query().ToListAsync();
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Email == email);
 
-            return mapper.Map<List<User>, List<UserEmailDto>>(users);
+            return mapper.Map<User, UserDto>(user);
         }
 
         public async Task<(bool IsUpdated, UserDto? UpdatedUserDto)> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto)

@@ -28,12 +28,13 @@ namespace Car.WebApi.Controllers
             Ok(await userService.GetUserByIdAsync(id));
 
         /// <summary>
-        /// Gets all users.
+        /// Gets the user by email asynchronously.
         /// </summary>
-        /// <returns>All users</returns>
-        [HttpGet("all-users")]
-        public async Task<IActionResult> GetAllUsers() =>
-            Ok(await userService.GetAllUsersAsync());
+        /// <param name="email">The user email.</param>
+        /// <returns>The user entity</returns>
+        [HttpGet("email/{email}")]
+        public async Task<IActionResult> GetUserByEmail(string email) =>
+            Ok(await userService.GetUserByEmailAsync(email));
 
         /// <summary>
         /// Updates a users image with the identifier asynchronously.
