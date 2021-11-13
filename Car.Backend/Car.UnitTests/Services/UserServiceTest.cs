@@ -70,17 +70,20 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetAllUsersAsync_WhenUsersExist_ReturnsUsersEnumerable(IEnumerable<UserEmailDto> usersDto)
+        public async Task GetUserByEmailAsync_WhenUserExists_ReturnsUserObject(IEnumerable<User> users)
         {
             // Arrange
-            var users = Mapper.Map<IEnumerable<UserEmailDto>, IEnumerable<User>>(usersDto);
+            var user = users.First();
+
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
+            var userToReturn = Mapper.Map<User, UserDto>(user);
+
             // Act
-            var result = await userService.GetAllUsersAsync();
+            var result = await userService.GetUserByEmailAsync(user.Email);
 
             // Assert
-            result.Should().BeEquivalentTo(usersDto);
+            result.Should().BeEquivalentTo(userToReturn, options => options.Excluding(u => u.ImageId));
         }
 
         [Theory]

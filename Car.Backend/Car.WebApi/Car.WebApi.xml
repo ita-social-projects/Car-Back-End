@@ -386,12 +386,6 @@
             <param name="email">The user email.</param>
             <returns>The user entity</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.UserController.GetAllUsers">
-            <summary>
-            Gets all users.
-            </summary>
-            <returns>All users</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.UserController.UpdateUserImage(Car.Domain.Dto.UpdateUserImageDto)">
             <summary>
             Updates a users image with the identifier asynchronously.

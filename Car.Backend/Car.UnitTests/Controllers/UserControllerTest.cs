@@ -45,19 +45,19 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetAllUsers_WhenUsersExist_ReturnsOkObjectResult(List<UserEmailDto> users)
+        public async Task GetUserByEmail_WhenUserExist_ReturnsOkObjectResult(UserDto user)
         {
             // Arrange
-            userService.Setup(service => service.GetAllUsersAsync()).ReturnsAsync(users);
+            userService.Setup(service => service.GetUserByEmailAsync(user.Email)).ReturnsAsync(user);
 
             // Act
-            var result = await userController.GetAllUsers();
+            var result = await userController.GetUserByEmail(user.Email);
 
             // Assert
             using (new AssertionScope())
             {
                 result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(users);
+                (result as OkObjectResult)?.Value.Should().Be(user);
             }
         }
 
