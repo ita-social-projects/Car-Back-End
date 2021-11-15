@@ -579,8 +579,8 @@ namespace Car.Domain.Services.Implementation
                 .FilterUncancelledJourneys()
                 .Where(j => j.OrganizerId == userId)
                 .AsEnumerable()
-                .All(j => (j.DepartureTime + j.Duration - journey.DepartureTime).TotalMinutes >= 15 ||
-                          (j.DepartureTime - (journey.DepartureTime + journey.Duration)).TotalMinutes <= -15);
+                .All(j => (j.DepartureTime + j.Duration - journey.DepartureTime).TotalMinutes <= -15 ||
+                          (j.DepartureTime - (journey.DepartureTime + journey.Duration)).TotalMinutes >= -15);
 
             if (!isDepartureTimeValid)
             {
