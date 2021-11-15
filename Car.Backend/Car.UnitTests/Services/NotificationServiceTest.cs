@@ -79,7 +79,7 @@ namespace Car.UnitTests.Services
             var result = await notificationService.GetNotificationAsync(notification.Id);
 
             // Assert
-            result.Should().BeEquivalentTo(notification);
+            result.Should().BeEquivalentTo(Mapper.Map<Notification, NotificationDto>(notification));
         }
 
         [Fact]
@@ -190,7 +190,7 @@ namespace Car.UnitTests.Services
             var result = await notificationService.AddNotificationAsync(notificationToAdd);
 
             // Assert
-            result.Should().BeEquivalentTo(notification);
+            result.Should().BeEquivalentTo(notificationToAdd);
         }
 
         [Fact]
