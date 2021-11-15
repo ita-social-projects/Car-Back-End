@@ -625,57 +625,6 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddAsync_WhenTimeInvalid_ReturnsJourneyModelNullIsDepartureTimeValidFalse(JourneyDto journeyDto)
-        {
-            // Arrange
-            var user = Fixture.Build<User>()
-                .With(u => u.Id, journeyDto.OrganizerId)
-                .Create();
-
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
-
-            var anotherJourney = Fixture.Build<Journey>()
-                .Without(j => j.Schedule)
-                .With(j => j.OrganizerId, journeyDto.OrganizerId)
-                .With(j => j.DepartureTime, journeyDto.DepartureTime.AddMinutes(5))
-                .CreateMany(1)
-                .ToList();
-
-            journeyRepository.Setup(r =>
-                r.Query()).Returns(anotherJourney.AsQueryable().BuildMock().Object);
-
-            // Act
-            var result = await journeyService.AddJourneyAsync(journeyDto);
-
-            // Assert
-            result.JourneyModel?.Should().BeNull();
-            result.IsDepartureTimeValid.Should().BeFalse();
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject(JourneyDto journeyDto)
-        {
-            // Arrange
-            var user = Fixture.Build<User>().Create();
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
-
-            journeyRepository.Setup(r =>
-                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
-
-            // Act
-            var result = await journeyService.AddJourneyAsync(journeyDto);
-
-            // Assert
-            result.JourneyModel.Should().BeNull();
-        }
-
-        [Theory]
-        [AutoEntityData]
         public void GetFilteredJourneys_ReturnsJourneyCollection(JourneyFilter filter)
         {
             // Arrange
