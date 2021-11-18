@@ -12,6 +12,7 @@ using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Data.Migrations;
 using Car.Domain.Dto;
+using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Implementation;
@@ -19,6 +20,7 @@ using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Hangfire.Storage.Monitoring;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
@@ -539,55 +541,86 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [AutoEntityData]
-        public async Task AddAsync_WhenTimeInvalid_ReturnsJourneyModelNullIsDepartureTimeValidFlase(JourneyDto journeyDto)
+        [InlineData("2021-10-09T02:15:00", "2:00:00")]
+        [InlineData("2021-10-12T02:15:00", "2:00:00")]
+        public async Task AddAsync_WhenJourneyIs_Valid(DateTime departureTime, string journeyDuration)
         {
             // Arrange
-            var user = Fixture.Build<User>()
-                .With(u => u.Id, journeyDto.OrganizerId)
-                .CreateMany(1)
-                .First();
+            var durationTime = TimeSpan.Parse(journeyDuration);
+            var user = Fixture.Create<User>();
 
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
-            var anotherJourney = Fixture.Build<Journey>()
-                .Without(j => j.Schedule)
-                .With(j => j.OrganizerId, journeyDto.OrganizerId)
-                .With(j => j.DepartureTime, journeyDto.DepartureTime.AddMinutes(5))
-                .CreateMany(1)
-                .ToList();
+            var nextJourney = Fixture.Create<JourneyDto>();
+            nextJourney.DepartureTime = departureTime;
+            nextJourney.Duration = durationTime;
+            nextJourney.WeekDay = WeekDays.Monday;
+            nextJourney.IsCancelled = false;
 
-            journeyRepository.Setup(r =>
-                r.Query()).Returns(anotherJourney.AsQueryable().BuildMock().Object);
+            var journeyFirst = Fixture.Create<Journey>();
+            journeyFirst.DepartureTime = new DateTime(2021, 10, 9, 0, 0, 0);
+            journeyFirst.Duration = new TimeSpan(2, 0, 0);
+            journeyFirst.OrganizerId = user.Id;
+
+            var journeySecond = Fixture.Create<Journey>();
+            journeySecond.DepartureTime = new DateTime(2021, 10, 12, 0, 0, 0);
+            journeySecond.Duration = new TimeSpan(2, 0, 0);
+            journeySecond.OrganizerId = user.Id;
+            var repositoryJourneys = new List<Journey>()
+            {
+                journeyFirst, journeySecond,
+            };
+            journeyRepository.Setup(rep => rep.Query()).Returns(repositoryJourneys.AsQueryable());
+            journeyRepository.Setup(rep => rep.AddAsync(It.IsAny<Journey>())).ReturnsAsync(Fixture.Create<Journey>());
+            scheduleRepository.Setup(rep => rep.AddAsync(It.IsAny<Schedule>())).ReturnsAsync(Fixture.Create<Schedule>());
 
             // Act
-            var result = await journeyService.AddJourneyAsync(journeyDto);
+            var result = await journeyService.AddJourneyAsync(nextJourney);
 
             // Assert
-            result.JourneyModel?.Should().BeNull();
-            result.IsDepartureTimeValid.Should().BeFalse();
+            result.JourneyModel.Should().NotBeNull();
+            result.IsDepartureTimeValid.Should().BeTrue();
         }
 
         [Theory]
-        [AutoEntityData]
-        public async Task AddAsync_WhenJourneyIsNotValid_ReturnsJourneyObject(JourneyDto journeyDto)
+        [InlineData("2021-10-09T01:00:00", "2:00:00")]
+        [InlineData("2021-10-12T01:00:00", "2:00:00")]
+        public async Task AddAsync_WhenJourneyIs_NotValid(DateTime departureTime, string journeyDuration)
         {
             // Arrange
-            var user = Fixture.Build<User>().Create();
+            var ts = TimeSpan.Parse(journeyDuration);
+            var user = Fixture.Create<User>();
+
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
-            journeyRepository.Setup(r =>
-                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync((Journey)null);
+            var nextJourney = Fixture.Create<JourneyDto>();
+            nextJourney.DepartureTime = departureTime;
+            nextJourney.Duration = ts;
+
+            var journeyFirst = Fixture.Create<Journey>();
+            journeyFirst.DepartureTime = new DateTime(2021, 10, 9, 0, 0, 0);
+            journeyFirst.Duration = new TimeSpan(2, 0, 0);
+            journeyFirst.OrganizerId = user.Id;
+            var journeySecond = Fixture.Create<Journey>();
+            journeySecond.DepartureTime = new DateTime(2021, 10, 12, 0, 0, 0);
+            journeySecond.Duration = new TimeSpan(2, 0, 0);
+            journeySecond.OrganizerId = user.Id;
+            var repositoryJourneys = new List<Journey>()
+            {
+                journeyFirst, journeySecond,
+            };
+            journeyRepository.Setup(rep => rep.Query()).Returns(repositoryJourneys.AsQueryable());
 
             // Act
-            var result = await journeyService.AddJourneyAsync(journeyDto);
+            var result = await journeyService.AddJourneyAsync(nextJourney);
 
             // Assert
             result.JourneyModel.Should().BeNull();
+            result.IsDepartureTimeValid.Should().BeFalse();
         }
 
         [Theory]
