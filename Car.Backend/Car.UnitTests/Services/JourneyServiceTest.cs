@@ -541,8 +541,9 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineData("2021-10-09T02:15:00", "2:00:00")]
-        [InlineData("2021-10-12T02:15:00", "2:00:00")]
+        [InlineData("2021-10-09T12:15:00", "2:00:00")]
+        [InlineData("2021-10-09T14:30:00", "2:00:00")]
+        [InlineData("2021-10-12T12:15:00", "2:00:00")]
         public async Task AddAsync_WhenJourneyIs_Valid(DateTime departureTime, string journeyDuration)
         {
             // Arrange
@@ -585,8 +586,8 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineData("2021-10-09T01:00:00", "2:00:00")]
-        [InlineData("2021-10-12T01:00:00", "2:00:00")]
+        [InlineData("2021-10-09T00:00:00", "2:00:00")]
+        [InlineData("2021-10-12T00:00:00", "2:00:00")]
         public async Task AddAsync_WhenJourneyIs_NotValid(DateTime departureTime, string journeyDuration)
         {
             // Arrange
