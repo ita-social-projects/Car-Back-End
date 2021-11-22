@@ -63,7 +63,7 @@ namespace Car.Domain.Services.Implementation
             {
                 int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
-                if (userId != journeyUser.UserId)
+                if (userId != journeyUser.UserId && userId != journeyUser?.Journey?.OrganizerId)
                 {
                     return (false, null);
                 }
