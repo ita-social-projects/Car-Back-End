@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Services.Interfaces;
@@ -15,15 +15,45 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<ReceivedMessages> receivedMessagesRepository;
         private readonly IRepository<User> userRepository;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IMapper mapper;
+        private readonly IRepository<Journey> journeyRepository;
 
         public ReceivedMessagesService(
             IRepository<ReceivedMessages> receivedMessagesRepository,
             IRepository<User> userRepository,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper,
+            IRepository<Journey> journeyRepository)
         {
             this.receivedMessagesRepository = receivedMessagesRepository;
             this.userRepository = userRepository;
             this.httpContextAccessor = httpContextAccessor;
+            this.mapper = mapper;
+            this.journeyRepository = journeyRepository;
+        }
+
+        public async Task AddReceivedMessages(Chat chat)
+        {
+            var addedReceivedMessages = await GetReceivedMessages(chat.Id);
+
+            if (addedReceivedMessages is not null)
+            {
+                await receivedMessagesRepository.AddAsync(mapper.Map<ReceivedMessages>(addedReceivedMessages));
+                await receivedMessagesRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task<ReceivedMessages> GetReceivedMessages(int chatId)
+        {
+            var journey = await journeyRepository.Query()
+                .FirstOrDefaultAsync(j => j.ChatId == chatId);
+            var addedReceivedMessages = new ReceivedMessages()
+            {
+                ChatId = chatId,
+                UserId = journey.OrganizerId,
+                UnreadMessagesCount = default(int),
+            };
+            return addedReceivedMessages;
         }
 
         public async Task<bool> MarkMessagesReadInChatAsync(int chatId)

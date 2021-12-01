@@ -32,9 +32,17 @@ namespace Car.Domain.Services.Implementation
 
         public async Task SendNotificationAsync(NotificationDto notification)
         {
-            var reciever = userRepository.Query().Where(u => u.Id == notification.ReceiverId).Include(u => u.FCMTokens)
-                                                                                             .FirstOrDefault();
-            var sender = userRepository.Query().Where(u => u.Id == notification.SenderId).FirstOrDefault();
+            var reciever = userRepository
+                .Query()
+                .Where(u => u.Id == notification.ReceiverId)
+                .Include(u => u.FCMTokens)
+                .FirstOrDefault();
+
+            var sender = userRepository
+                .Query()
+                .Where(u => u.Id == notification.SenderId)
+                .FirstOrDefault();
+
             if (reciever == null || sender == null)
             {
                 return;
@@ -46,6 +54,7 @@ namespace Car.Domain.Services.Implementation
                 { "navigateTab", "NotificationsTabs" },
             };
             var recieverTokens = reciever.FCMTokens.Select(t => t.Token);
+
             if (recieverTokens.Any())
             {
                 var response = await firebaseService.SendAsync(CreateNotification(title, message, recieverTokens, data));
@@ -57,23 +66,19 @@ namespace Car.Domain.Services.Implementation
         {
             var chat = await chatRepository.Query()
                 .Where(chat => chat.Id == message.ChatId)
-                .Include(chat => chat.Journey)
+                .Include(chat => chat.Journeys)
                     .ThenInclude(jour => (jour != null) ? jour.Participants : null)
                     .ThenInclude(u => u.FCMTokens)
+                .Include(chat => chat.Journeys)
+                    .ThenInclude(jour => (jour != null) ? jour.Organizer : null)
                 .FirstOrDefaultAsync();
 
-            if (chat?.Journey == null)
+            if (chat?.Journeys == null || chat?.Journeys.Any() == false)
             {
                 return;
             }
 
-            var users = chat.Journey.Participants;
-            var chatOwner = userRepository.Query().Where(u => u.Id == chat.Journey.OrganizerId).FirstOrDefault();
-
-            if (chatOwner != null)
-            {
-                users.Add(chatOwner);
-            }
+            var users = chat!.Journeys.SelectMany(j => j.Participants).Union(chat.Journeys.Select(j => j.Organizer)).Where(u => u != null).Distinct();
 
             var data = new Dictionary<string, string>
             {
@@ -82,7 +87,7 @@ namespace Car.Domain.Services.Implementation
             };
             foreach (var user in users)
             {
-                if (user.Id != message.Sender?.Id)
+                if (user!.Id != message.Sender?.Id)
                 {
                     var senderName = (message.Sender != null) ? message.Sender.Name : "User";
                     var recieverTokens = user.FCMTokens.Select(t => t.Token);
