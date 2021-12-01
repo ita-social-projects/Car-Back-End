@@ -410,7 +410,15 @@ namespace Car.Domain.Services.Implementation
             {
                 stop.UserId = userId;
                 stop.JourneyId = journeyId;
-                journey.Stops.Add(stop);
+
+                IEnumerable<Stop> stopsToAdd = from i in journey.Stops
+                                               where i.Address != stop.Address
+                                               select i;
+
+                foreach (var s in stopsToAdd)
+                {
+                    journey.Stops.Add(s);
+                }
             }
 
             await journeyRepository.SaveChangesAsync();
