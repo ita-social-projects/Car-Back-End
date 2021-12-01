@@ -25,6 +25,8 @@ namespace Car.Domain.Models.Journey
 
         public bool IsCancelled { get; set; }
 
+        public int? ChatId { get; set; }
+
         public Schedule? Schedule { get; set; }
 
         public UserDto? Organizer { get; set; }
