@@ -100,9 +100,16 @@ namespace Car.UnitTests.Services
                     .Where(c => c.Id == message.ChatId)
                     .FirstOrDefault();
 
+            var firstUserId = chat!.Journeys
+                .SelectMany(j => j.Participants)
+                .Union(chat.Journeys.Select(j => j.Organizer))
+                .Where(u => u != null)
+                .Distinct()
+                .First().Id;
+
             var users = Fixture
                 .Build<User>()
-                .With(c => c.Id, chat.Journey.OrganizerId)
+                .With(c => c.Id, firstUserId)
                 .CreateMany(10)
                 .ToList();
 
