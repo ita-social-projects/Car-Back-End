@@ -57,5 +57,21 @@ namespace Car.UnitTests.FluentValidationTests.Journey
         {
             validator.ShouldNotHaveValidationErrorFor(journeyUser => journeyUser.WithBaggage, value);
         }
+
+        [Xunit.Theory]
+        [InlineData(0)]
+        [InlineData(5)]
+        public void PassangersCount_IsNotValid_GeneratesValidationError(int value)
+        {
+            validator.ShouldHaveValidationErrorFor(journeyUserDto => journeyUserDto.PassangersCount, value);
+        }
+
+        [Xunit.Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void PassangersCount_IsValid_NotGeneratesValidationError(int value)
+        {
+            validator.ShouldNotHaveValidationErrorFor(journeyUserDto => journeyUserDto.PassangersCount, value);
+        }
     }
 }
