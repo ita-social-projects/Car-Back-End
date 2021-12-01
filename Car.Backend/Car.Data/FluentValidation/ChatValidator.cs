@@ -8,7 +8,6 @@ namespace Car.Data.FluentValidation
         {
             RuleFor(chat => chat.Id).GreaterThan(Constants.Constants.IdLength);
             RuleFor(chat => chat.Name).NotNull().NotEmpty().MaximumLength(Constants.Constants.StringMaxLength);
-            RuleFor(chat => chat.Journey).NotNull().SetValidator(new JourneyValidator()!);
             RuleForEach(chat => chat.Messages).SetValidator(new MessageValidator());
         }
     }

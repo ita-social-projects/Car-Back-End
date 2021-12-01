@@ -37,8 +37,9 @@ namespace Car.Data.EntityConfigurations
                     });
 
             builder.HasOne(journey => journey.Chat)
-                .WithOne(chat => chat!.Journey!)
-                .HasForeignKey<Chat>(chat => chat.Id);
+                .WithMany(chat => chat!.Journeys)
+                .HasForeignKey(journey => journey.ChatId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(journey => journey.Car)
                 .WithMany(car => car!.Journeys)
