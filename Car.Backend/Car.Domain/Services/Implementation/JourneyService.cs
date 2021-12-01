@@ -411,13 +411,12 @@ namespace Car.Domain.Services.Implementation
                 stop.UserId = userId;
                 stop.JourneyId = journeyId;
 
-                IEnumerable<Stop> stopsToAdd = from i in journey.Stops
-                                               where i.Address != stop.Address
-                                               select i;
-
-                foreach (var s in stopsToAdd)
+                foreach (var i in journey.Stops)
                 {
-                    journey.Stops.Add(s);
+                    if (i.Address != stop.Address)
+                    {
+                        journey.Stops.Add(stop);
+                    }
                 }
             }
 
