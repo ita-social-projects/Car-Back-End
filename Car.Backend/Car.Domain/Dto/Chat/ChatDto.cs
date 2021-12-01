@@ -16,6 +16,6 @@ namespace Car.Domain.Dto.Chat
 
         public ChatUserDto? JourneyOrganizer { get; set; }
 
-        public ChatJourneyDto? Journey { get; set; }
+        public ICollection<ChatJourneyDto?>? Journeys { get; set; }
     }
 }

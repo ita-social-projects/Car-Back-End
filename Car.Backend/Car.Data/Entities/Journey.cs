@@ -28,6 +28,8 @@ namespace Car.Data.Entities
 
         public int? CarId { get; set; }
 
+        public int? ChatId { get; set; }
+
         public int? ParentId { get; set; }
 
         [NotMapped]
