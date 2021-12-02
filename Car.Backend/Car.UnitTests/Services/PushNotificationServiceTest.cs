@@ -43,6 +43,71 @@ namespace Car.UnitTests.Services
 
         [Xunit.Theory]
         [AutoEntityData]
+        public async Task SendNotificationAsync_WhenChatJourneysNotExist_SendMessageNever(
+            [Frozen] Mock<IRepository<Chat>> chatRepository,
+            [Frozen] Mock<IRepository<User>> userRepository,
+            [Frozen] Mock<IFirebaseService> firebaseService,
+            [Frozen] Mock<IUserService> userService,
+            Data.Entities.Message message)
+        {
+            // Arrange
+            var chat = Fixture.Build<Chat>()
+                .With(chat => chat.Journeys, new List<Journey>())
+                .With(chat => chat.Id, message.ChatId)
+                .CreateMany(1);
+
+            chatRepository.Setup(repo => repo.Query())
+                .Returns(chat.AsQueryable().BuildMock().Object);
+
+            PushNotificationService pushNotificationService = new PushNotificationService(
+                chatRepository.Object, userRepository.Object, firebaseService.Object, userService.Object);
+
+            // Act
+            await pushNotificationService.SendNotificationAsync(message);
+
+            // Assert
+            firebaseService.Verify(f => f.SendAsync(It.IsAny<MulticastMessage>()), Times.Never);
+        }
+
+        [Xunit.Theory]
+        [AutoEntityData]
+        public async Task SendNotificationAsync_WhenChatJourneysExist_SendAsyncIsCalled(
+            [Frozen] Mock<IRepository<Chat>> chatRepository,
+            [Frozen] Mock<IRepository<User>> userRepository,
+            [Frozen] Mock<IFirebaseService> firebaseService,
+            [Frozen] Mock<IUserService> userService,
+            Data.Entities.Message message)
+        {
+            // Arrange
+            var fcmToken = Fixture.Build<FcmToken>()
+                .Create();
+            var participant = Fixture.Build<User>()
+                .With(participant => participant.FCMTokens, new List<FcmToken>() { fcmToken })
+                .Create();
+            var journey = Fixture.Build<Journey>()
+                .With(journey => journey.Participants, new List<User>() { participant })
+                .Create();
+            var chat = Fixture.Build<Chat>()
+                .With(chat => chat.Journeys, new List<Journey>() { journey })
+                .With(chat => chat.Id, message.ChatId)
+                .CreateMany(1);
+            message.Sender.Id = participant.Id + 1;
+
+            chatRepository.Setup(repo => repo.Query())
+                .Returns(chat.AsQueryable().BuildMock().Object);
+
+            PushNotificationService pushNotificationService = new PushNotificationService(
+                chatRepository.Object, userRepository.Object, firebaseService.Object, userService.Object);
+
+            // Act
+            await pushNotificationService.SendNotificationAsync(message);
+
+            // Assert
+            firebaseService.Verify(f => f.SendAsync(It.IsAny<MulticastMessage>()), Times.AtLeastOnce);
+        }
+
+        [Xunit.Theory]
+        [AutoEntityData]
         public async Task SendNotificationAsync_WhenNotificationIsValid_SendMessageOnce(
             [Frozen] Mock<IRepository<Chat>> chatRepository,
             [Frozen] Mock<IRepository<User>> userRepository,
