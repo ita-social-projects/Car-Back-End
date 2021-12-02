@@ -181,15 +181,36 @@ namespace Car.UnitTests.Services
             result.Should().BeNull();
         }
 
-        [Theory]
-        [AutoEntityData]
-        public async Task GetUserChatsAsync_WhenChatExist_ReturnsChatCollection(JourneyDto journeyDto)
+        [Fact]
+        public async Task GetUserChatsAsync_WhenChatExist_ReturnsChatCollection()
         {
             // Arrange
-            Journey journey = Mapper.Map<JourneyDto, Journey>(journeyDto);
+            var messageFirst = Fixture.Build<Message>()
+                .With(message => message.CreatedAt, new DateTime(2021, 12, 02))
+                .Create();
+            var chatFirst = Fixture.Build<Chat>()
+                .With(chat => chat.Messages, new List<Message>() { messageFirst })
+                .Create();
+            var journeyFirst = Fixture.Build<Journey>()
+                .With(journey => journey.Chat, chatFirst)
+                .With(journey => journey.DepartureTime, new DateTime(2021, 12, 05))
+                .Create();
+            chatFirst.Journeys = new List<Journey>() { journeyFirst };
+
+            var messageSecond = Fixture.Build<Message>()
+                .With(message => message.CreatedAt, new DateTime(2021, 12, 03))
+                .Create();
+            var chatSecond = Fixture.Build<Chat>()
+                .With(chat => chat.Messages, new List<Message>() { messageSecond })
+                .Create();
+            var journeySecond = Fixture.Build<Journey>()
+                .With(journey => journey.Chat, chatSecond)
+                .With(journey => journey.DepartureTime, new DateTime(2021, 12, 10))
+                .Create();
+            chatSecond.Journeys = new List<Journey>() { journeySecond };
 
             var users = Fixture.Build<User>()
-                .With(u => u.Id, journey.OrganizerId)
+                .With(u => u.Id, journeyFirst.OrganizerId)
                 .CreateMany(1);
             var user = users.First();
             var mock = users
@@ -206,27 +227,16 @@ namespace Car.UnitTests.Services
                 .Setup(h => h.HttpContext.User.Claims)
                 .Returns(claims);
 
-            var chat = Fixture.Build<Chat>()
-                .Create();
+            user.OrganizerJourneys = new List<Journey>() { journeyFirst };
+            user.ParticipantJourneys = new List<Journey>() { journeySecond };
 
-            var message = Fixture.Build<Message>()
-                .With(message => message.ChatId, chat.Id)
-                .Create();
-
-            journey = Fixture.Build<Journey>()
-                .With(journey => journey.Chat, chat)
-                .Create();
-
-            user.OrganizerJourneys = new List<Journey>() { journey };
-            user.ParticipantJourneys = new List<Journey>();
-
-            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(new List<Chat>() { chat });
+            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(new List<Chat>() { chatSecond, chatFirst });
 
             // Act
             var result = await chatService.GetUserChatsAsync();
 
             // Assert
-            result.Should().BeEquivalentTo(expectedChats);
+            result.Should().Equal(expectedChats, (chatResult, expectedChat) => chatResult.Id == expectedChat.Id);
         }
 
         [Theory]
