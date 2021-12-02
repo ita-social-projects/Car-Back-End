@@ -209,6 +209,15 @@ namespace Car.UnitTests.Services
                 .Create();
             chatSecond.Journeys = new List<Journey>() { journeySecond };
 
+            var chatThird = Fixture.Build<Chat>()
+                .With(chat => chat.Messages, new List<Message>())
+                .Create();
+            var journeyThird = Fixture.Build<Journey>()
+                .With(journey => journey.Chat, chatThird)
+                .With(journey => journey.DepartureTime, new DateTime(2021, 12, 10))
+                .Create();
+            chatSecond.Journeys = new List<Journey>() { journeyThird };
+
             var users = Fixture.Build<User>()
                 .With(u => u.Id, journeyFirst.OrganizerId)
                 .CreateMany(1);
@@ -228,9 +237,9 @@ namespace Car.UnitTests.Services
                 .Returns(claims);
 
             user.OrganizerJourneys = new List<Journey>() { journeyFirst };
-            user.ParticipantJourneys = new List<Journey>() { journeySecond };
+            user.ParticipantJourneys = new List<Journey>() { journeySecond, journeyThird };
 
-            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(new List<Chat>() { chatSecond, chatFirst });
+            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(new List<Chat>() { chatSecond, chatFirst, chatThird });
 
             // Act
             var result = await chatService.GetUserChatsAsync();
