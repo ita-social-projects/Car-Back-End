@@ -1806,6 +1806,7 @@ namespace Car.UnitTests.Services
                 .With(j => j.Participants, new List<User>())
                 .With(j => j.CountOfSeats, passangersCount + 1)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, new List<Stop>())
                 .CreateMany(1)
                 .ToList();
 
