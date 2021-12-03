@@ -25,6 +25,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IRepository<Journey> journeyRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IReceivedMessagesService receivedMessagesService;
 
         public ChatService(
             IRepository<User> userRepository,
@@ -33,7 +34,8 @@ namespace Car.Domain.Services.Implementation
             IRepository<ReceivedMessages> receivedMessagesRepository,
             IRepository<Journey> journeyRepository,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IReceivedMessagesService receivedMessagesService)
         {
             this.userRepository = userRepository;
             this.chatRepository = chatRepository;
@@ -42,6 +44,7 @@ namespace Car.Domain.Services.Implementation
             this.journeyRepository = journeyRepository;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
+            this.receivedMessagesService = receivedMessagesService;
         }
 
         public async Task<IEnumerable<MessageDto>> GetMessagesByChatIdAsync(int chatId, int previousMessageId)
@@ -77,37 +80,39 @@ namespace Car.Domain.Services.Implementation
             return chat;
         }
 
-        public async Task<Chat?> AddChatAsync(CreateChatDto chat)
+        public async Task<Chat?> AddChatAsync(int baseJourneyId)
         {
-            var addedChat = chatRepository.Query().FirstOrDefault(c => c.Id == chat.Id);
+            var addedChat = chatRepository.Query().Include(x => x.Journeys).FirstOrDefault(c => c.Journeys.Any(j => j.Id == baseJourneyId));
 
             if (addedChat is null)
             {
-                addedChat = await chatRepository.AddAsync(mapper.Map<Chat>(chat));
-                if (addedChat is not null)
+                var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
+                var user = await userRepository
+                    .Query()
+                    .IncludeChatsAndMessages()
+                    .IncludeReceivedMessages()
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                addedChat = await chatRepository.AddAsync(mapper.Map<Chat>(new CreateChatDto()
                 {
-                    var addedReceivedMessages = await GetReceivedMessagesFromChat(addedChat.Id);
-                    await receivedMessagesRepository.AddAsync(mapper.Map<ReceivedMessages>(addedReceivedMessages));
-                    await receivedMessagesRepository.SaveChangesAsync();
-                }
+                    Name = $"{user.Name} {user.Surname}'s ride",
+                }));
 
                 await chatRepository.SaveChangesAsync();
+
+                if (addedChat is not null)
+                {
+                    await journeyRepository
+                        .Query()
+                        .Where(j => j.ParentId == baseJourneyId || j.Id == baseJourneyId)
+                        .ForEachAsync(j => j.ChatId = addedChat.Id);
+
+                    await journeyRepository.SaveChangesAsync();
+                    await receivedMessagesService.AddReceivedMessages(addedChat);
+                }
             }
 
             return addedChat;
-        }
-
-        public async Task<ReceivedMessages> GetReceivedMessagesFromChat(int chatId)
-        {
-            var userId = await journeyRepository.Query()
-                .FirstOrDefaultAsync(j => j.Id == chatId);
-            var addedReceivedMessages = new ReceivedMessages()
-            {
-                ChatId = chatId,
-                UserId = userId.OrganizerId,
-                UnreadMessagesCount = default(int),
-            };
-            return addedReceivedMessages;
         }
 
         public async Task<IEnumerable<ChatDto>> GetUserChatsAsync()
@@ -115,13 +120,14 @@ namespace Car.Domain.Services.Implementation
             var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var user = await userRepository
                 .Query()
-                .IncludeChats()
+                .IncludeChatsAndMessages()
                 .IncludeReceivedMessages()
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             var chats = user.OrganizerJourneys.Select(oj => oj.Chat)
                 .Union(user.ParticipantJourneys.Select(pj => pj.Chat))
-                .OrderByDescending(chat => chat!.Journey!.DepartureTime);
+                .OrderByDescending(chat => chat!.Messages!.Any() ? chat.Messages.OrderByDescending(m => m.CreatedAt).First().CreatedAt : (DateTime?)null)
+                .ThenBy(chat => chat!.Journeys!.FirstOrDefault()!.DepartureTime);
 
             return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
         }
@@ -143,7 +149,7 @@ namespace Car.Domain.Services.Implementation
                     .Select(chat => new ChatDto()
                     {
                         Id = chat.Id,
-                        Journey = chat.Journey,
+                        Journeys = chat.Journeys,
                         JourneyOrganizer = chat.JourneyOrganizer,
                         MessageText = msg.Text,
                         MessageId = msg.Id,

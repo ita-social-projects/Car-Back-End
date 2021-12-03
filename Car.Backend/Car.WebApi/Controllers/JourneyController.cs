@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Car.Domain.Dto;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
@@ -10,7 +6,6 @@ using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
-using Newtonsoft.Json.Linq;
 
 namespace Car.WebApi.Controllers
 {

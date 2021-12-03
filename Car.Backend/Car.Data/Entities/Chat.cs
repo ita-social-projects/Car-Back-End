@@ -8,7 +8,7 @@ namespace Car.Data.Entities
 
         public string Name { get; set; } = string.Empty;
 
-        public Journey? Journey { get; set; }
+        public ICollection<Journey> Journeys { get; set; } = new List<Journey>();
 
         public ICollection<Message> Messages { get; set; } = new List<Message>();
 

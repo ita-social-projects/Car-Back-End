@@ -30,6 +30,7 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<ReceivedMessages>> receivedMessagesRepository;
         private readonly Mock<IRepository<Journey>> journeyRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
+        private readonly Mock<IReceivedMessagesService> receivedMessagesService;
 
         public ChatServiceTest()
         {
@@ -39,6 +40,7 @@ namespace Car.UnitTests.Services
             receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
             journeyRepository = new Mock<IRepository<Journey>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
+            receivedMessagesService = new Mock<IReceivedMessagesService>();
             chatService = new ChatService(
                 userRepository.Object,
                 chatRepository.Object,
@@ -46,7 +48,8 @@ namespace Car.UnitTests.Services
                 receivedMessagesRepository.Object,
                 journeyRepository.Object,
                 Mapper,
-                httpContextAccessor.Object);
+                httpContextAccessor.Object,
+                receivedMessagesService.Object);
         }
 
         [Theory]
@@ -90,23 +93,47 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddChatAsync_WhenChatIsValid_ReturnsChatObject(CreateChatDto chat)
+        public async Task AddChatAsync_ChatIsCreated_ReturnsChatObject(JourneyDto journeyDto)
         {
             // Arrange
-            var chatEntity = Mapper.Map<CreateChatDto, Chat>(chat);
+            Journey journey = Mapper.Map<JourneyDto, Journey>(journeyDto);
+
+            var users = Fixture
+                .Build<User>()
+                .With(u => u.Id, journey.OrganizerId)
+                .CreateMany(1);
+            var user = users.First();
+            var mock = users.AsQueryable().BuildMock();
+
+            userRepository
+                .Setup(rep => rep.Query())
+                .Returns(mock.Object);
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+
+            httpContextAccessor
+                .Setup(h => h.HttpContext.User.Claims)
+                .Returns(claims);
+
+            var chat = Fixture.Build<ChatDto>()
+                .With(chat => chat.Id, journey.ChatId)
+                .Create();
+            var chatEntity = Mapper.Map<ChatDto, Chat>(chat);
             var journeys = Fixture.Build<Journey>()
-                .With(repo => repo.Id, chat.Id)
+                .With(repo => repo.ChatId, chat.Id)
                 .CreateMany(1)
                 .ToList();
+
             journeyRepository.Setup(repo => repo
                 .Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
+
             chatRepository.Setup(repo => repo
                 .AddAsync(It.IsAny<Chat>()))
                 .ReturnsAsync(chatEntity);
 
             // Act
-            var result = await chatService.AddChatAsync(chat);
+            var result = await chatService.AddChatAsync(journey.Id);
 
             // Assert
             result.Should().BeEquivalentTo(chatEntity);
@@ -114,68 +141,111 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetReceivedMessagesFromChat_ReceivedMessagesAreCorrect(Chat chat)
+        public async Task AddChatAsync_ChatIsNotCreated_ReturnsNull(JourneyDto journeyDto)
         {
             // Arrange
-            var journeys = Fixture.Build<Journey>()
-                .With(repo => repo.Id, chat.Id)
-                .CreateMany(1)
-                .ToList();
-            journeyRepository.Setup(repo => repo
-                .Query())
-                .Returns(journeys.AsQueryable().BuildMock().Object);
+            Journey journey = Mapper.Map<JourneyDto, Journey>(journeyDto);
 
-            // Act
-            var result = await chatService.GetReceivedMessagesFromChat(chat.Id);
+            var users = Fixture.Build<User>()
+                .With(u => u.Id, journey.OrganizerId)
+                .CreateMany(1);
+            var user = users.First();
+            var mock = users
+                .AsQueryable()
+                .BuildMock();
 
-            // Assert
-            result.UnreadMessagesCount.Should().Be(0);
-        }
+            userRepository
+                .Setup(rep => rep.Query())
+                .Returns(mock.Object);
 
-        [Theory]
-        [AutoEntityData]
-        public async Task AddChatAsync_WhenChatIsNotValid_ReturnsNull(CreateChatDto chat)
-        {
-            // Arrange
-            var chatEntity = Mapper.Map<CreateChatDto, Chat>(chat);
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+
+            httpContextAccessor
+                .Setup(h => h.HttpContext.User.Claims)
+                .Returns(claims);
+
+            var chat = Fixture.Build<ChatDto>()
+                .With(chat => chat.Id, journey.ChatId)
+                .Create();
+
+            var chatEntity = Mapper.Map<ChatDto, Chat>(chat);
             chatRepository.Setup(repo => repo
                 .AddAsync(chatEntity))
                 .ReturnsAsync((Chat)null);
 
             // Act
-            var result = await chatService.AddChatAsync(chat);
+            var result = await chatService.AddChatAsync(journey.Id);
 
             // Assert
+            chatRepository.Verify(repo => repo.AddAsync(chatEntity), Times.Never());
             result.Should().BeNull();
         }
 
-        [Theory]
-        [AutoEntityData]
-        public async Task GetUserChatsAsync_WhenChatsExist_ReturnsChatCollection(IEnumerable<User> users)
+        [Fact]
+        public async Task GetUserChatsAsync_WhenChatExist_ReturnsChatCollection()
         {
             // Arrange
-            var userList = users.ToList();
-            var user = userList.First();
+            var messageFirst = Fixture.Build<Message>()
+                .With(message => message.CreatedAt, new DateTime(2021, 12, 02))
+                .Create();
+            var chatFirst = Fixture.Build<Chat>()
+                .With(chat => chat.Messages, new List<Message>() { messageFirst })
+                .Create();
+            var journeyFirst = Fixture.Build<Journey>()
+                .With(journey => journey.Chat, chatFirst)
+                .With(journey => journey.DepartureTime, new DateTime(2021, 12, 05))
+                .Create();
+            chatFirst.Journeys = new List<Journey>() { journeyFirst };
+
+            var messageSecond = Fixture.Build<Message>()
+                .With(message => message.CreatedAt, new DateTime(2021, 12, 03))
+                .Create();
+            var chatSecond = Fixture.Build<Chat>()
+                .With(chat => chat.Messages, new List<Message>() { messageSecond })
+                .Create();
+            var journeySecond = Fixture.Build<Journey>()
+                .With(journey => journey.Chat, chatSecond)
+                .With(journey => journey.DepartureTime, new DateTime(2021, 12, 10))
+                .Create();
+            chatSecond.Journeys = new List<Journey>() { journeySecond };
+
+            var chatThird = Fixture.Build<Chat>()
+                .With(chat => chat.Messages, new List<Message>())
+                .Create();
+            var journeyThird = Fixture.Build<Journey>()
+                .With(journey => journey.Chat, chatThird)
+                .With(journey => journey.DepartureTime, new DateTime(2021, 12, 10))
+                .Create();
+            chatSecond.Journeys = new List<Journey>() { journeyThird };
+
+            var users = Fixture.Build<User>()
+                .With(u => u.Id, journeyFirst.OrganizerId)
+                .CreateMany(1);
+            var user = users.First();
+            var mock = users
+                .AsQueryable()
+                .BuildMock();
+
+            userRepository
+                .Setup(rep => rep.Query())
+                .Returns(mock.Object);
+
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
-            userRepository.Setup(rep => rep.Query())
-                .Returns(userList.AsQueryable().BuildMock().Object);
+            httpContextAccessor
+                .Setup(h => h.HttpContext.User.Claims)
+                .Returns(claims);
 
-            user.OrganizerJourneys.ToList().ForEach(oj => oj.Chat.Journey = oj);
-            user.ParticipantJourneys.ToList().ForEach(pj => pj.Chat.Journey = pj);
+            user.OrganizerJourneys = new List<Journey>() { journeyFirst };
+            user.ParticipantJourneys = new List<Journey>() { journeySecond, journeyThird };
 
-            var chats = user.OrganizerJourneys.Select(oj => oj.Chat)
-                .Union(user.ParticipantJourneys.Select(pj => pj.Chat))
-                .Except(new List<Chat>() { null! });
-
-            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats);
+            var expectedChats = Mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(new List<Chat>() { chatSecond, chatFirst, chatThird });
 
             // Act
             var result = await chatService.GetUserChatsAsync();
 
             // Assert
-            result.Should().BeEquivalentTo(expectedChats);
+            result.Should().Equal(expectedChats, (chatResult, expectedChat) => chatResult.Id == expectedChat.Id);
         }
 
         [Theory]
@@ -197,7 +267,7 @@ namespace Car.UnitTests.Services
                 .Create();
             var chat = Fixture.Build<Chat>()
                 .With(chat => chat.Id, message.ChatId)
-                .With(chat => chat.Journey, journey)
+                .With(chat => chat.Id, journey.ChatId)
                 .CreateMany(1);
 
             chatRepository.Setup(repo => repo.Query())
