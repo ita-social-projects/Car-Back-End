@@ -22,16 +22,86 @@ namespace Car.UnitTests.Services
         private readonly Mock<IRepository<ReceivedMessages>> receivedMessagesRepository;
         private readonly Mock<IHttpContextAccessor> httpContextAccessor;
         private readonly Mock<IRepository<User>> userRepository;
+        private readonly Mock<IRepository<Journey>> journeyRepository;
 
         public ReceivedMessagesServiceTest()
         {
             receivedMessagesRepository = new Mock<IRepository<ReceivedMessages>>();
             userRepository = new Mock<IRepository<User>>();
             httpContextAccessor = new Mock<IHttpContextAccessor>();
+            journeyRepository = new Mock<IRepository<Journey>>();
             receivedMessagesService = new ReceivedMessagesService(
                 receivedMessagesRepository.Object,
                 userRepository.Object,
-                httpContextAccessor.Object);
+                httpContextAccessor.Object,
+                Mapper,
+                journeyRepository.Object);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddReceivedMessages_ReceivedMessagesAddedCorrect(Chat chat)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(repo => repo.ChatId, chat.Id)
+                .CreateMany(1)
+                .ToList();
+            journeyRepository.Setup(repo => repo
+                .Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            receivedMessagesRepository
+                .Setup(r => r.AddAsync(It.IsAny<ReceivedMessages>()));
+
+            // Act
+            await receivedMessagesService.AddReceivedMessages(chat);
+
+            // Assert
+            receivedMessagesRepository.Verify(mock => mock.AddAsync(It.IsAny<ReceivedMessages>()), Times.Once);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddReceivedMessages_ReceivedMessagesSavedCorrect(Chat chat)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(repo => repo.ChatId, chat.Id)
+                .CreateMany(1)
+                .ToList();
+            journeyRepository.Setup(repo => repo
+                .Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            receivedMessagesRepository
+                .Setup(r => r.SaveChangesAsync());
+
+            // Act
+            await receivedMessagesService.AddReceivedMessages(chat);
+
+            // Assert
+            receivedMessagesRepository.Verify(mock => mock.SaveChangesAsync(), Times.Once);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetReceivedMessages_ReceivedMessagesAreCorrect(Chat chat)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(repo => repo.ChatId, chat.Id)
+                .CreateMany(1)
+                .ToList();
+            journeyRepository.Setup(repo => repo
+                .Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await receivedMessagesService.GetReceivedMessages(chat.Id);
+
+            // Assert
+            result.UnreadMessagesCount.Should().Be(0);
         }
 
         [Theory]

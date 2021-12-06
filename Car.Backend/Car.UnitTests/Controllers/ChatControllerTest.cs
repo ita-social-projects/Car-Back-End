@@ -98,25 +98,6 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddChat_WhenChatIsValid_ReturnsOkObjectResult(Chat chat)
-        {
-            // Arrange
-            var createChatDto = Mapper.Map<Chat, CreateChatDto>(chat);
-            chatService.Setup(x => x.AddChatAsync(createChatDto)).ReturnsAsync(chat);
-
-            // Act
-            var result = await chatController.AddChat(createChatDto);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                (result as OkObjectResult)?.Value.Should().Be(chat);
-            }
-        }
-
-        [Theory]
-        [AutoEntityData]
         public async Task GetFiltered_WhenMessagesExist_ReturnsOkObjectResult(ChatFilter filter, IEnumerable<ChatDto> chats)
         {
             // Arrange

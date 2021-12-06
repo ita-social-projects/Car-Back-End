@@ -32,6 +32,7 @@ namespace Car.Domain.Services.Implementation
         private readonly IJourneyUserService journeyUserService;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IChatService chatService;
 
         public JourneyService(
             IRepository<Journey> journeyRepository,
@@ -45,7 +46,8 @@ namespace Car.Domain.Services.Implementation
             ILocationService locationService,
             IJourneyUserService journeyUserService,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IChatService chatService)
         {
             this.journeyRepository = journeyRepository;
             this.requestRepository = requestRepository;
@@ -59,6 +61,7 @@ namespace Car.Domain.Services.Implementation
             this.journeyUserService = journeyUserService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
+            this.chatService = chatService;
         }
 
         public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false)
@@ -176,7 +179,16 @@ namespace Car.Domain.Services.Implementation
         }
 
         public async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel)
-            => await AddJourneyAsync(journeyModel, null);
+        {
+            var journey = await AddJourneyAsync(journeyModel, null);
+
+            if (journey.JourneyModel is not null && journey.IsDepartureTimeValid)
+            {
+                await chatService.AddChatAsync(journey.JourneyModel!.Id);
+            }
+
+            return journey;
+        }
 
         public IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter) =>
             journeyRepository

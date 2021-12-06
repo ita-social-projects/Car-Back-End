@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Car.Domain.Dto.Chat;
 using Car.Domain.Filters;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -36,20 +35,6 @@ namespace Car.WebApi.Controllers
         [HttpGet("chat/{id}/{previousMessageId}")]
         public async Task<IActionResult> GetChat(int id, int previousMessageId) =>
             Ok(await chatService.GetMessagesByChatIdAsync(id, previousMessageId));
-
-        /// <summary>
-        /// Add the chat
-        /// </summary>
-        /// <param name="chat">Sender identifier</param>
-        /// <returns>New chat</returns>
-        [HttpPost]
-        public async Task<IActionResult> AddChat([FromBody] CreateChatDto chat)
-        {
-            var result = await chatService.GetChatByIdAsync(chat.Id);
-            result ??= await chatService.AddChatAsync(chat);
-
-            return Ok(result);
-        }
 
         /// <summary>
         /// Filters chats by conditions

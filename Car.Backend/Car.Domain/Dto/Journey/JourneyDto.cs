@@ -28,6 +28,8 @@ namespace Car.Domain.Dto
 
         public int? CarId { get; set; }
 
+        public int? ChatId { get; set; }
+
         public WeekDays? WeekDay { get; set; }
 
         public ICollection<StopDto> Stops { get; set; } = new List<StopDto>();

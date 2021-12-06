@@ -58,13 +58,6 @@
             <param name="previousMessageId">Oldest message identifier</param>
             <returns>Chat</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.ChatController.AddChat(Car.Domain.Dto.Chat.CreateChatDto)">
-            <summary>
-            Add the chat
-            </summary>
-            <param name="chat">Sender identifier</param>
-            <returns>New chat</returns>
-        </member>
         <member name="M:Car.WebApi.Controllers.ChatController.GetFiltered(Car.Domain.Filters.ChatFilter)">
             <summary>
             Filters chats by conditions
