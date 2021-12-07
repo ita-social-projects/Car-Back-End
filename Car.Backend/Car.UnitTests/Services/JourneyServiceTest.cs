@@ -1860,19 +1860,24 @@ namespace Car.UnitTests.Services
                 .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
                 .CreateMany(1)
                 .ToList();
+
                 var participants = Fixture.Build<User>()
                 .With(p => p.Id, journeyApply.JourneyUser.UserId)
                 .With(p => p.ReceivedMessages, receivedMessages)
                 .CreateMany(1)
                 .ToList();
+
                 participants.Add(user);
+
                 var journeys = Fixture.Build<Journey>()
                 .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
                 .With(j => j.Participants, new List<User>())
                 .With(j => j.CountOfSeats, passangersCount + 1)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, new List<Stop>())
                 .CreateMany(1)
                 .ToList();
+
                 var chats = Fixture.Build<Chat>()
                 .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
                 .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
