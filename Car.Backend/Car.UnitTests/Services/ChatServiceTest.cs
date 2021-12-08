@@ -424,7 +424,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteNotExists_NoDeletesRecordsInDb(List<Chat> chatsToDelete)
+        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteEmptyList_NoDeletesRecordsInDb(List<Chat> chatsToDelete)
         {
             // Arrange
             chatsToDelete = Fixture.Build<Chat>()
@@ -446,7 +446,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteExistsWithJourneys_NoDeletesRecordsInDb(List<Chat> chatsToDelete)
+        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteExistsWithJourneysListNotNull_NoDeletesRecordsInDb(List<Chat> chatsToDelete)
         {
             // Arrange
             var journeys = Fixture.Build<Journey>()
@@ -469,6 +469,31 @@ namespace Car.UnitTests.Services
 
             // Assert
             chatRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()), Times.Never);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteExistsWithJourneysNull_NoDeletesRecordsInDb(List<Chat> chatsToDelete)
+        {
+            // Arrange
+            List<Journey> journeys = null;
+
+            chatsToDelete = Fixture.Build<Chat>()
+                .With(x => x.Journeys, journeys)
+                .CreateMany(2)
+                .ToList();
+
+            chatRepository
+                .Setup(r => r.Query())
+                .Returns(chatsToDelete.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await chatService.DeleteUnnecessaryChatAsync();
+
+            // Assert
+            chatRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()), Times.Once);
         }
 
         private void GetInitializedChatsData(out IEnumerable<Message> messages, out ChatFilter filter, out IEnumerable<ChatDto> expectedResult)
