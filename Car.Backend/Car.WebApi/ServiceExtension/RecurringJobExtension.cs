@@ -12,17 +12,22 @@ namespace Car.WebApi.ServiceExtension
             recurringJobManager.AddOrUpdate(
                 "DeleteOutdatedJourneys",
                 () => serviceProvider.GetService<IJourneyService>()!.DeletePastJourneyAsync(),
-                Cron.Daily(),
+                Cron.Daily(12, 00),
+                TimeZoneInfo.Utc);
+            recurringJobManager.AddOrUpdate(
+                "DeleteOutdatedChats",
+                () => serviceProvider.GetService<IChatService>()!.DeleteUnnecessaryChatAsync(),
+                Cron.Daily(12, 10),
                 TimeZoneInfo.Utc);
             recurringJobManager.AddOrUpdate(
                 "DeleteOutdatedRequests",
                 () => serviceProvider.GetService<IRequestService>()!.DeleteOutdatedAsync(),
-                Cron.Daily(),
+                Cron.Daily(12, 20),
                 TimeZoneInfo.Utc);
             recurringJobManager.AddOrUpdate(
                 "CreateFutureScheduledJourneys",
                 () => serviceProvider.GetService<IJourneyService>()!.AddFutureJourneyAsync(),
-                Cron.Daily(),
+                Cron.Daily(12, 30),
                 TimeZoneInfo.Utc);
         }
     }
