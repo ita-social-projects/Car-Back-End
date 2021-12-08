@@ -199,12 +199,9 @@ namespace Car.Domain.Services.Implementation
                 .Include(chat => chat.ReceivedMessages)
                 .Include(chat => chat.Journeys)
                 .AsEnumerable()
-                .Where(chat => chat.Journeys == null || chat.Journeys.Count() == 0);
+                .Where(chat => chat.Journeys == null || !chat.Journeys.Any());
 
-            bool chatsJourneysNull = chatsToDelete
-                .All(chat => chat.Journeys.Count() == 0);
-
-            if (chatsToDelete.Count() > 0 && chatsJourneysNull)
+            if (chatsToDelete.Any())
             {
                 await chatRepository.DeleteRangeAsync(chatsToDelete);
                 await chatRepository.SaveChangesAsync();
