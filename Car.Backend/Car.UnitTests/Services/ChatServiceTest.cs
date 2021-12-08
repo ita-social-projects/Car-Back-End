@@ -395,6 +395,82 @@ namespace Car.UnitTests.Services
             result.Should().BeEquivalentTo(expectedResult);
         }
 
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteExists_DeletesRecordsInDb(List<Chat> chatsToDelete)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .CreateMany(0)
+                .ToList();
+
+            chatsToDelete = Fixture.Build<Chat>()
+                .With(x => x.Journeys, journeys)
+                .CreateMany(2)
+                .ToList();
+
+            chatRepository
+                .Setup(r => r.Query())
+                .Returns(chatsToDelete.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await chatService.DeleteUnnecessaryChatAsync();
+
+            // Assert
+            chatRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()), Times.Once);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteNotExists_NoDeletesRecordsInDb(List<Chat> chatsToDelete)
+        {
+            // Arrange
+            chatsToDelete = Fixture.Build<Chat>()
+                .CreateMany(0)
+                .ToList();
+
+            chatRepository
+                .Setup(r => r.Query())
+                .Returns(chatsToDelete.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await chatService.DeleteUnnecessaryChatAsync();
+
+            // Assert
+            chatRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()), Times.Never);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteExistsWithJourneys_NoDeletesRecordsInDb(List<Chat> chatsToDelete)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .CreateMany(2)
+                .ToList();
+
+            chatsToDelete = Fixture.Build<Chat>()
+                .With(x => x.Journeys, journeys)
+                .CreateMany(2)
+                .ToList();
+
+            chatRepository
+                .Setup(r => r.Query())
+                .Returns(chatsToDelete.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await chatService.DeleteUnnecessaryChatAsync();
+
+            // Assert
+            chatRepository.Verify(mock => mock.DeleteRangeAsync(It.IsAny<IEnumerable<Chat>>()), Times.Never);
+        }
+
         private void GetInitializedChatsData(out IEnumerable<Message> messages, out ChatFilter filter, out IEnumerable<ChatDto> expectedResult)
         {
             var chat = Fixture.Create<Chat>();
