@@ -473,7 +473,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteExistsWithJourneysNull_NoDeletesRecordsInDb(List<Chat> chatsToDelete)
+        public async Task DeleteUnnecessaryChatAsync_ChatsToDeleteExistsWithJourneysNull_DeletesRecordsInDb(List<Chat> chatsToDelete)
         {
             // Arrange
             List<Journey> journeys = null;
