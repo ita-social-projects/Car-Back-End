@@ -7,9 +7,6 @@ dev
 ## Code reviewers
 
 - [ ] @github_username
-
-### Second Level Review
-
 - [ ] @github_username
 
 ## Summary of issue
