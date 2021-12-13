@@ -1,9 +1,3 @@
-dev
-## JIRA
-
-* [Main JIRA ticket](https://jira.softserve.academy/secure/RapidBoard.jspa?rapidView=id)
-
-
 ## Code reviewers
 
 - [ ] @github_username
