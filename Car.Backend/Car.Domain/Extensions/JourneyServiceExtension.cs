@@ -75,13 +75,18 @@ namespace Car.Domain.Extensions
 
             journeys.ToList()
                 .ForEach(journey => journey.Stops.ToList()
-                .ForEach(stop => savedLocations.ToList()
-                .ForEach(location => (stop.Address!.Name = location.Name)
-                    .Where(x => stop.Address is not null
-                        && location.Address is not null
-                        && stop.Address.Name == location.Address.Name
-                        && stop.Address.Latitude == location.Address.Latitude
-                        && stop.Address.Longitude == location.Address.Longitude))));
+                    .ForEach(stop => savedLocations.ToList()
+                        .ForEach(location =>
+                        {
+                            if (stop.Address != null
+                            && location.Address != null
+                            && stop.Address.Name == location.Address.Name
+                            && stop.Address.Latitude == location.Address.Latitude
+                            && stop.Address.Longitude == location.Address.Longitude)
+                            {
+                                stop.Address.Name = location.Name;
+                            }
+                        })));
 
             return journeys;
         }
