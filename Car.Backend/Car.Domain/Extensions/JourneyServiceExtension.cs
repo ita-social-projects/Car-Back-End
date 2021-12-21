@@ -75,7 +75,7 @@ namespace Car.Domain.Extensions
 
             journeys.ToList()
                 .ForEach(journey => journey.Stops.Select(stop => stop.Address).ToList()
-                    .ForEach(address => savedLocations.ToList()
+                    .ForEach(address => savedLocations
                         .Where(location => address is not null
                             && location.Address is not null
                             && address.Name == location.Address.Name
