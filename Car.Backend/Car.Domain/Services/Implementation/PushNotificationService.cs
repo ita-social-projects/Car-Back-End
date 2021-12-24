@@ -71,6 +71,7 @@ namespace Car.Domain.Services.Implementation
                     .ThenInclude(u => u.FCMTokens)
                 .Include(chat => chat.Journeys)
                     .ThenInclude(jour => (jour != null) ? jour.Organizer : null)
+                    .ThenInclude(u => u.FCMTokens)
                 .FirstOrDefaultAsync();
 
             if (chat?.Journeys == null || chat?.Journeys.Any() == false)
@@ -78,7 +79,10 @@ namespace Car.Domain.Services.Implementation
                 return;
             }
 
-            var users = chat!.Journeys.SelectMany(j => j.Participants).Union(chat.Journeys.Select(j => j.Organizer)).Where(u => u != null).Distinct();
+            var users = chat!.Journeys.SelectMany(j => j.Participants)
+                .Union(chat.Journeys.Select(j => j.Organizer))
+                .Where(u => u != null)
+                .Distinct();
 
             var data = new Dictionary<string, string>
             {
