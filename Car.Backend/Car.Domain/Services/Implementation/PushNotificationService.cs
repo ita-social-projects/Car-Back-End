@@ -71,7 +71,7 @@ namespace Car.Domain.Services.Implementation
                     .ThenInclude(u => u.FCMTokens)
                 .Include(chat => chat.Journeys)
                     .ThenInclude(jour => (jour != null) ? jour.Organizer : null)
-                    .ThenInclude(u => u.FCMTokens)
+                    .ThenInclude(u => (u != null) ? u.FCMTokens : null)
                 .FirstOrDefaultAsync();
 
             if (chat?.Journeys == null || chat?.Journeys.Any() == false)
