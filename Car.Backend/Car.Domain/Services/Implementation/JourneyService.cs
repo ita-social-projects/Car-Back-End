@@ -423,12 +423,11 @@ namespace Car.Domain.Services.Implementation
                 stop.UserId = userId;
                 stop.JourneyId = journeyId;
 
-                foreach (var i in journey.Stops)
+                var distinctStops = from i in journey.Stops where i.Address != stop.Address select i;
+
+                foreach (var stopsToAdd in distinctStops)
                 {
-                    if (i.Address != stop.Address)
-                    {
-                        journey.Stops.Add(stop);
-                    }
+                    journey.Stops.Add(stopsToAdd);
                 }
             }
 
