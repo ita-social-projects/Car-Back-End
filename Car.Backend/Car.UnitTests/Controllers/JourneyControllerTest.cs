@@ -188,6 +188,28 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
+        public async Task AddJourney_WhenJourneyIsNotValid_ReturnsForbidObjectResult(JourneyDto journeyDto)
+        {
+            // Arrange
+            var journeyModel = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+
+            var expectedJourney = new JourneyTimeModel { JourneyModel = journeyModel, IsDepartureTimeValid = false };
+
+            journeyService.Setup(j => j.AddJourneyAsync(journeyDto))
+                .ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.AddJourney(journeyDto);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<ForbidResult>();
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
         public void GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<ApplicantJourney> expectedResult)
         {
             // Arrange
