@@ -423,12 +423,9 @@ namespace Car.Domain.Services.Implementation
                 stop.UserId = userId;
                 stop.JourneyId = journeyId;
 
-                var distinctStops = from i in journey.Stops where i.Address != stop.Address select i;
-
-                foreach (var stopsToAdd in distinctStops)
-                {
-                    journey.Stops.Add(stopsToAdd);
-                }
+                journey.Stops.Select(stop => stop.Address)
+                    .Where(address => address != stop.Address).ToList()
+                    .ForEach(address => journey.Stops.Add(stop));
             }
 
             await journeyRepository.SaveChangesAsync();
