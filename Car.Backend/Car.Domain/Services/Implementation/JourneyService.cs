@@ -422,7 +422,14 @@ namespace Car.Domain.Services.Implementation
             {
                 stop.UserId = userId;
                 stop.JourneyId = journeyId;
-                journey.Stops.Add(stop);
+
+                foreach (var i in journey.Stops)
+                {
+                    if (i.Address != stop.Address)
+                    {
+                        journey.Stops.Add(stop);
+                    }
+                }
             }
 
             await journeyRepository.SaveChangesAsync();
