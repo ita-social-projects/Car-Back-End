@@ -226,7 +226,7 @@ namespace Car.UnitTests.Controllers
 
             // Act
             var result = await journeyController.AddScheduledJourney(scheduleDto);
-            
+
             // Assert
             using (new AssertionScope())
             {
