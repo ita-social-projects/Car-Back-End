@@ -157,7 +157,7 @@ namespace Car.Domain.Services.Implementation
                         Name = chat.Name,
                         ReceivedMessages = chat.ReceivedMessages,
                     }))
-                .ToList().Union(chats);
+                .Union(chats);
             return result;
         }
 
