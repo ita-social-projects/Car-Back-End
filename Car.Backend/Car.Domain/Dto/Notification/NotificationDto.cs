@@ -25,6 +25,6 @@ namespace Car.Domain.Dto
 
         public int? JourneyId { get; set; }
 
-        public Journey? Journey { get; set; }
+        public Data.Entities.Journey? Journey { get; set; }
     }
 }
