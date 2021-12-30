@@ -350,7 +350,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [InlineData("test message", "test")]
-        [InlineData("we@ther", "@th")]
+        [InlineData("we@ther ewq", "ewq")]
         public async Task GetFilteredChatsAsync_MessagesContainSearchText_ReturnsChats(string message, string searchText)
         {
             // Arrange
