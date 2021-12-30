@@ -12,6 +12,7 @@ using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Data.Migrations;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Journey;
 using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
@@ -489,7 +490,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddAsync_WhenTimeInvalid_ReturnsJourneyModelNullIsDepartureTimeValidFalse(JourneyDto journeyDto)
+        public async Task AddJourneyAsync_WhenTimeInvalid_ReturnsJourneyModelNullIsDepartureTimeValidFalse(JourneyDto journeyDto)
         {
             // Arrange
             var user = Fixture.Build<User>()
@@ -521,7 +522,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject(JourneyDto journeyDto)
+        public async Task AddJourneyAsync_WhenJourneyIsValid_ReturnsJourneyObject(JourneyDto journeyDto)
         {
             // Arrange
             var user = Fixture.Build<User>().
@@ -544,6 +545,63 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeEquivalentTo(journeyModel, options => options.ExcludingMissingMembers());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddScheduledJourneyAsync_WhenJourneyIsValid_ReturnsJourneyObject(ScheduleDto scheduleDto)
+        {
+            // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            var addedSchedule = Mapper.Map<ScheduleDto, Schedule>(scheduleDto);
+            var addedJourney = addedSchedule.Journey;
+            var expectedJourney = Mapper.Map<Journey, JourneyModel>(addedJourney);
+
+            journeyRepository.Setup(r =>
+                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
+
+            // Act
+            var result = await journeyService.AddScheduledJourneyAsync(scheduleDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedJourney, options => options.ExcludingMissingMembers());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddScheduleAsync_WhenTimeIsValid_ReturnsScheduleObject(JourneyDto journeyDto)
+        {
+            // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
+            var addedSchedule = new Schedule
+            {
+                Id = addedJourney!.Id,
+                Days = (WeekDays)journeyDto.WeekDay!,
+            };
+
+            journeyRepository.Setup(r =>
+                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
+
+            // Act
+            var result = await journeyService.AddScheduleAsync(journeyDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(addedSchedule, options => options.ExcludingMissingMembers());
         }
 
         [Theory]
@@ -579,39 +637,10 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [AutoEntityData]
-        public async Task AddAsync_WhenJourneyIsScheduled_ExecuteThreeTimes(JourneyDto journeyDto)
-        {
-            // Arrange
-            var user = Fixture
-                .Build<User>()
-                .CreateMany(1)
-                .First();
-
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
-
-            journeyDto.WeekDay = WeekDays.Monday;
-            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
-
-            journeyRepository.Setup(r =>
-                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
-            scheduleRepository.Setup(r => r.AddAsync(It.IsAny<Schedule>())).ReturnsAsync(new Schedule
-                { Id = addedJourney.Id, Journey = addedJourney, Days = WeekDays.Monday });
-
-            // Act
-            await journeyService.AddJourneyAsync(journeyDto);
-
-            // Assert
-            journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(3));
-        }
-
-        [Theory]
         [InlineData("2021-10-09T12:15:00", "2:00:00")]
         [InlineData("2021-10-09T14:30:00", "2:00:00")]
         [InlineData("2021-10-12T12:15:00", "2:00:00")]
-        public async Task AddAsync_WhenJourneyIs_Valid(DateTime departureTime, string journeyDuration)
+        public async Task AddJourneyAsync_WhenJourneyIs_Valid(DateTime departureTime, string journeyDuration)
         {
             // Arrange
             var durationTime = TimeSpan.Parse(journeyDuration);
@@ -655,7 +684,7 @@ namespace Car.UnitTests.Services
         [Theory]
         [InlineData("2021-10-09T00:00:00", "2:00:00")]
         [InlineData("2021-10-12T00:00:00", "2:00:00")]
-        public async Task AddAsync_WhenJourneyIs_NotValid(DateTime departureTime, string journeyDuration)
+        public async Task AddJourneyAsync_WhenJourneyIs_NotValid(DateTime departureTime, string journeyDuration)
         {
             // Arrange
             var ts = TimeSpan.Parse(journeyDuration);

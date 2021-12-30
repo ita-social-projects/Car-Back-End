@@ -687,11 +687,12 @@ namespace Car.Domain.Services.Implementation
 
             var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
-            return !journeyRepository.Query()
-                .FilterUnscheduledJourneys()
+            return journeyRepository.Query()
+                .FilterUncancelledJourneys()
                 .Where(j => j.OrganizerId == userId)
                 .AsEnumerable()
-                .Any(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes is <= 15 and >= -15);
+                .All(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes >= 15 ||
+                          (j.DepartureTime - journey.DepartureTime).TotalMinutes <= -15);
         }
 
         private async Task<(bool IsUpdated, JourneyModel? UpdatedJourney)> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated)
