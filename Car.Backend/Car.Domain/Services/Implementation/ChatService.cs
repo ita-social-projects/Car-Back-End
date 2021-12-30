@@ -126,7 +126,10 @@ namespace Car.Domain.Services.Implementation
 
             var chats = user.OrganizerJourneys.Select(oj => oj.Chat)
                 .Union(user.ParticipantJourneys.Select(pj => pj.Chat))
-                .OrderByDescending(chat => chat!.Messages!.Any() ? chat.Messages.OrderByDescending(m => m.CreatedAt).First().CreatedAt : (DateTime?)null)
+                .OrderByDescending(chat => chat!.Messages!
+                    .Any() ? chat.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .First().CreatedAt : (DateTime?)null)
                 .ThenBy(chat => chat!.Journeys!.FirstOrDefault()!.DepartureTime);
 
             return mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDto>>(chats!);
@@ -141,7 +144,7 @@ namespace Car.Domain.Services.Implementation
             messages = messages.Where(msg => msg.Text.Split(' ', StringSplitOptions.None)
                 .Any(wrd => wrd.StartsWith(filter.SearchText)))
                 .OrderByDescending(message => message.CreatedAt).ToList();
-            var chats = filter!.Chats.Where(chat => chat.Name.StartsWith(filter.SearchText)).ToList();
+            var chats = filter!.Chats!.Where(chat => chat.Name.StartsWith(filter.SearchText)).ToList();
             var result = messages.SelectMany(msg => filter.Chats!
                     .Where(chat => msg.ChatId == chat.Id)
                     .Select(chat => new ChatDto()
@@ -184,6 +187,22 @@ namespace Car.Domain.Services.Implementation
         public async Task<Chat> GetChatByIdAsync(int chatId)
         {
             return await chatRepository.GetByIdAsync(chatId);
+        }
+
+        public async Task DeleteUnnecessaryChatAsync()
+        {
+            var chatsToDelete = chatRepository
+                .Query()
+                .Include(chat => chat.ReceivedMessages)
+                .Include(chat => chat.Journeys)
+                .AsEnumerable()
+                .Where(chat => chat.Journeys == null || !chat.Journeys.Any());
+
+            if (chatsToDelete.Any())
+            {
+                await chatRepository.DeleteRangeAsync(chatsToDelete);
+                await chatRepository.SaveChangesAsync();
+            }
         }
     }
 }

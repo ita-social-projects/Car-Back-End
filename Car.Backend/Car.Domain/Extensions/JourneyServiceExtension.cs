@@ -72,21 +72,16 @@ namespace Car.Domain.Extensions
         public static async Task<IQueryable<Journey>> UseSavedAdresses(this IQueryable<Journey> journeys, ILocationService locationService)
         {
             var savedLocations = await locationService.GetAllByUserIdAsync();
-            foreach (var journey in journeys)
-            {
-                foreach (var stop in journey.Stops)
-                {
-                    foreach (var location in savedLocations)
-                    {
-                        if (stop.Address != null && location.Address != null && stop.Address.Name == location.Address.Name
-                            && stop.Address.Latitude == location.Address.Latitude
-                            && stop.Address.Longitude == location.Address.Longitude)
-                        {
-                            stop.Address.Name = location.Name;
-                        }
-                    }
-                }
-            }
+
+            journeys.ToList()
+                .ForEach(journey => journey.Stops.Select(stop => stop.Address).ToList()
+                    .ForEach(address => savedLocations
+                        .Where(location => address is not null
+                            && location.Address is not null
+                            && address.Name == location.Address.Name
+                            && address.Latitude == location.Address.Latitude
+                            && address.Longitude == location.Address.Longitude).ToList()
+                                .ForEach(location => address!.Name = location.Name)));
 
             return journeys;
         }
