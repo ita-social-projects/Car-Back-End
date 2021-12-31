@@ -576,6 +576,37 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task AddScheduledJourneyAsync_WhenJourneyIsValid_CalledAddChatAsync_ReturnsJourneyObject(ScheduleDto scheduleDto)
+        {
+            // Arrange
+            var user = Fixture
+                .Build<User>()
+                .CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            var addedSchedule = Mapper.Map<ScheduleDto, Schedule>(scheduleDto);
+            var addedJourney = addedSchedule.Journey;
+
+            journeyRepository
+                .Setup(r => r.AddAsync(It.IsAny<Journey>()))
+                .ReturnsAsync(addedJourney);
+
+            chatRepository
+                .Setup(c => c.AddAsync(It.IsAny<Chat>()));
+
+            // Act
+            await journeyService.AddScheduledJourneyAsync(scheduleDto);
+
+            // Assert
+            chatService.Verify(mock => mock.AddChatAsync(addedJourney.Id), Times.Once);
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddScheduleAsync_WhenTimeIsValid_ReturnsScheduleObject(JourneyDto journeyDto)
         {
             // Arrange
@@ -606,6 +637,38 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task AddScheduleAsync_WhenTimeInvalid_ReturnsScheduleModelNullIsDepartureTimeValidFalse(JourneyDto journeyDto)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, journeyDto.OrganizerId)
+                .CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            var anotherJourney = Fixture.Build<Journey>()
+                .Without(j => j.Schedule)
+                .With(j => j.OrganizerId, journeyDto.OrganizerId)
+                .With(j => j.DepartureTime, journeyDto.DepartureTime.AddMinutes(5))
+                .CreateMany(1)
+                .ToList();
+
+            journeyRepository.Setup(r =>
+                r.Query()).Returns(anotherJourney.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.AddScheduleAsync(journeyDto);
+
+            // Assert
+            result.ScheduleModel?.Should().BeNull();
+            result.IsDepartureTimeValid.Should().BeFalse();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddAsync_WhenJourneyIsValid_CalledAddChatAsync_ReturnsJourneyObject(JourneyDto journeyDto)
         {
             // Arrange
@@ -620,7 +683,6 @@ namespace Car.UnitTests.Services
 
             journeyDto.WeekDay = null;
             var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
-            var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
 
             journeyRepository
                 .Setup(r => r.AddAsync(It.IsAny<Journey>()))
