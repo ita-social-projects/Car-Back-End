@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Journey;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
@@ -71,7 +73,34 @@ namespace Car.WebApi.Controllers
         public async Task<IActionResult> AddJourney([FromBody] JourneyDto journeyDto)
         {
             var addedJourney = await journeyService.AddJourneyAsync(journeyDto);
+
             return addedJourney.IsDepartureTimeValid ? Ok(addedJourney) : Forbid();
+        }
+
+        /// <summary>
+        /// Adds the scheduled journey asynchronously.
+        /// </summary>
+        /// /// <param name="scheduleDto">The schedule model.</param>
+        /// <returns>Added scheduled journey.</returns>
+        [HttpPost("scheduled-journey")]
+        public async Task<IActionResult> AddScheduledJourney([FromBody] ScheduleDto scheduleDto)
+        {
+            var addedJourney = await journeyService.AddScheduledJourneyAsync(scheduleDto);
+
+            return addedJourney.IsDepartureTimeValid ? Ok(addedJourney) : Forbid();
+        }
+
+        /// <summary>
+        /// Adds the scheduleDto asynchronously.
+        /// </summary>
+        /// <param name="journeyDto">The journey model.</param>
+        /// <returns>Added schedule.</returns>
+        [HttpPost("schedule")]
+        public async Task<IActionResult> AddSchedule([FromBody] JourneyDto journeyDto)
+        {
+            var addedSchedule = await journeyService.AddScheduleAsync(journeyDto);
+
+            return addedSchedule.IsDepartureTimeValid ? Ok(addedSchedule) : Forbid();
         }
 
         /// <summary>
