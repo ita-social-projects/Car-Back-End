@@ -1936,6 +1936,51 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task AddUserToJourney_WhenCurrentUserIdNotEqualJourneyOrganizerId_ReturnsFalse(JourneyApplyModel journeyApply)
+        {
+            // Arrange
+            if (journeyApply.JourneyUser != null)
+            {
+                journeyApply.JourneyUser.UserId = 1;
+                journeyApply.JourneyUser.PassangersCount = 0;
+
+                var user = Fixture.Build<User>().With(u => u.Id, journeyApply.JourneyUser.UserId + 1).Create();
+                var claims = new List<Claim>() { new("preferred_username", user.Email) };
+                httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+                var userToAdds = Fixture.Build<User>()
+                    .With(userToAdd => userToAdd.Id, journeyApply.JourneyUser.UserId)
+                    .CreateMany(1)
+                    .ToList();
+
+                userToAdds.Add(user);
+
+                var journeyUsers = Fixture.Build<JourneyUser>()
+                    .With(journeyUser => journeyUser.PassangersCount, 0)
+                    .CreateMany(1)
+                    .ToList();
+
+                var journeys = Fixture.Build<Journey>()
+                    .With(journey => journey.Id, journeyApply.JourneyUser!.JourneyId)
+                    .With(journey => journey.OrganizerId, 10)
+                    .With(journey => journey.Participants, new List<User>() { null })
+                    .With(journey => journey.CountOfSeats, 1)
+                    .With(journey => journey.JourneyUsers, journeyUsers)
+                    .CreateMany(1);
+
+                journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+                userRepository.Setup(r => r.Query()).Returns(userToAdds.AsQueryable().BuildMock().Object);
+            }
+
+            // Act
+            var result = await journeyService.AddUserToJourney(journeyApply);
+
+            // Assert
+            result.Should().Be((false, false));
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndIsAllowed_ReturnsTrue(JourneyApplyModel journeyApply, int passangersCount)
         {
             // Arrange
