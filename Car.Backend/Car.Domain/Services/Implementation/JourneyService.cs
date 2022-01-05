@@ -443,13 +443,9 @@ namespace Car.Domain.Services.Implementation
                 stop.UserId = userId;
                 stop.JourneyId = journeyId;
 
-                foreach (var i in journey.Stops)
-                {
-                    if (i.Address != stop.Address)
-                    {
-                        journey.Stops.Add(stop);
-                    }
-                }
+                journey.Stops.Select(stop => stop.Address)
+                    .Where(address => address != stop.Address).ToList()
+                    .ForEach(address => journey.Stops.Add(stop));
             }
 
             await journeyRepository.SaveChangesAsync();
