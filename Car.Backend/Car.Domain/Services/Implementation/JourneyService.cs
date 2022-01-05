@@ -175,8 +175,12 @@ namespace Car.Domain.Services.Implementation
 
             var date = DateTime.Now.AddDays(13);
 
-            schedules.Where(s => s.Days.ToString().Contains(date.DayOfWeek.ToString())).ToList()
-                .ForEach(async s => await AddFutureJourneyAsync(s, date));
+            var actualSchedules = schedules.Where(s => s.Days.ToString().Contains(date.DayOfWeek.ToString()));
+
+            foreach (var schedule in actualSchedules)
+            {
+                await AddFutureJourneyAsync(schedule, date);
+            }
         }
 
         public async Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyModel)
@@ -683,7 +687,7 @@ namespace Car.Domain.Services.Implementation
 
         private bool IsDepartureTimeValid(JourneyDto journeyModel)
         {
-            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
+            var userId = httpContextAccessor.HttpContext is not null ? httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository) : journeyModel.OrganizerId;
 
             var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
