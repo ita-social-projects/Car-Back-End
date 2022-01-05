@@ -97,6 +97,18 @@
             </summary>
             <returns>recent addresses</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetCanceled">
+            <summary>
+            Gets canceled journey.
+            </summary>
+            <returns>canceled journeys</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.GetRequested">
+            <summary>
+            Gets requested journey.
+            </summary>
+            <returns>requested journeys</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.AddJourney(Car.Domain.Dto.JourneyDto)">
             <summary>
             Adds the journey asynchronously.

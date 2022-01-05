@@ -132,6 +132,29 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
 
+        public async Task<IEnumerable<JourneyModel>> GetCanceledJourneysAsync()
+        {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
+            var journeys = await (await journeyRepository
+                    .Query()
+                    .IncludeSchedule()
+                    .IncludeJourneyInfo(userId)
+                    .FilterCanceled()
+                    .UseSavedAdresses(locationService))
+                .ToListAsync();
+
+            return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
+        }
+
+        public async Task<IEnumerable<RequestDto>> GetRequestedJourneysAsync()
+        {
+            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
+
+            var userRequests = await requestService.GetRequestsByUserIdAsync();
+
+            return mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(userRequests);
+        }
+
         public async Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int countToTake = 5)
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
