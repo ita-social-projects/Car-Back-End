@@ -2035,6 +2035,110 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndJourneyStopsAddressNotEqualStopAdddress_ReturnsTrue(JourneyApplyModel journeyApply, Address address)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, journeyApply.JourneyUser.UserId)
+                .Create();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
+                .CreateMany(1)
+                .ToList();
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, journeyApply.JourneyUser.UserId)
+                .CreateMany(1)
+                .ToList();
+
+            participants.Add(user);
+
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
+                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
+                .CreateMany(1)
+                .ToList();
+            var stops = Fixture.Build<Stop>()
+                .With(s => s.Address, address)
+                .CreateMany(1)
+                .ToList();
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
+                .With(j => j.Participants, new List<User>())
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, stops)
+                .CreateMany(1)
+                .ToList();
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+            receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.AddUserToJourney(journeyApply);
+
+            // Assert
+            journeys.First().Should().Equals(stops.First());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndJourneyStopsAddressEqualStopAdddress_ReturnsTrue(JourneyApplyModel journeyApply, Address address)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, journeyApply.JourneyUser.UserId)
+                .Create();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
+                .CreateMany(1)
+                .ToList();
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, journeyApply.JourneyUser.UserId)
+                .CreateMany(1)
+                .ToList();
+
+            participants.Add(user);
+
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
+                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
+                .CreateMany(1)
+                .ToList();
+            var stops = Fixture.Build<Stop>()
+                .With(s => s.Address, address)
+                .CreateMany(1)
+                .ToList();
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
+                .With(j => j.Participants, new List<User>())
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, new List<Stop>())
+                .CreateMany(1)
+                .ToList();
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+            receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.AddUserToJourney(journeyApply);
+
+            // Assert
+            journeys.First().Should().NotBeEquivalentTo(stops.First());
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task GetUnreadMessagesCountForNewUser_UserGainsUnreadMessagesEqualsToTotalMessages(int journeyId)
         {
             // Arrange
