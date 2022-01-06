@@ -116,6 +116,20 @@
             <param name="journeyDto">The journey model.</param>
             <returns>Added journey.</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddScheduledJourney(Car.Domain.Dto.Journey.ScheduleDto)">
+            <summary>
+            Adds the scheduled journey asynchronously.
+            </summary>
+            /// <param name="scheduleDto">The schedule model.</param>
+            <returns>Added scheduled journey.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddSchedule(Car.Domain.Dto.JourneyDto)">
+            <summary>
+            Adds the scheduleDto asynchronously.
+            </summary>
+            <param name="journeyDto">The journey model.</param>
+            <returns>Added schedule.</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetFiltered(Car.Domain.Filters.JourneyFilter)">
             <summary>
             Returns journeys filtered by given conditions.

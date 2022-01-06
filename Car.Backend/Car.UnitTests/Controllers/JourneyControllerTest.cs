@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Journey;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 using Car.Domain.Services.Interfaces;
@@ -188,18 +189,104 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddJourney_WhenJourneyIsNotValid_ReturnsForbidObjectResult(JourneyDto journeyDto)
+        public async Task AddJourney_WhenJourneyIsInValid_ReturnsForbidResult(JourneyDto journeyDto)
         {
             // Arrange
-            var journeyModel = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
-
-            var expectedJourney = new JourneyTimeModel { JourneyModel = journeyModel, IsDepartureTimeValid = false };
+            var expectedJourney = new JourneyTimeModel { JourneyModel = null, IsDepartureTimeValid = false };
 
             journeyService.Setup(j => j.AddJourneyAsync(journeyDto))
                 .ReturnsAsync(expectedJourney);
 
             // Act
             var result = await journeyController.AddJourney(journeyDto);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<ForbidResult>();
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddSchedule_WhenScheduleIsValid_ReturnsOkObjectResult(JourneyDto journeyDto)
+        {
+            // Arrange
+            var journeyModel = Mapper.Map<JourneyDto, JourneyModel>(journeyDto);
+            var scheduleModel = Mapper.Map<Schedule, ScheduleModel>(journeyModel.Schedule);
+
+            var expectedSchedule = new ScheduleTimeModel() { ScheduleModel = scheduleModel, IsDepartureTimeValid = true };
+
+            journeyService.Setup(j => j.AddScheduleAsync(journeyDto))
+                .ReturnsAsync(expectedSchedule);
+
+            // Act
+            var result = await journeyController.AddSchedule(journeyDto);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(expectedSchedule);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddSchedule_WhenScheduleIsInValid_ReturnsForbidResult(JourneyDto journeyDto)
+        {
+            // Arrange
+            var expectedSchedule = new ScheduleTimeModel() { ScheduleModel = null, IsDepartureTimeValid = false };
+
+            journeyService.Setup(j => j.AddScheduleAsync(journeyDto))
+                .ReturnsAsync(expectedSchedule);
+
+            // Act
+            var result = await journeyController.AddSchedule(journeyDto);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<ForbidResult>();
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddScheduledJourney_WhenJourneyIsValid_ReturnsOkObjectResult(ScheduleDto scheduleDto)
+        {
+            // Arrange
+            var schedule = Mapper.Map<ScheduleDto, Schedule>(scheduleDto);
+            var journeyModel = Mapper.Map<Journey, JourneyModel>(schedule.Journey);
+
+            var expectedJourney = new JourneyTimeModel() { JourneyModel = journeyModel, IsDepartureTimeValid = true };
+
+            journeyService.Setup(j => j.AddScheduledJourneyAsync(scheduleDto))
+                .ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.AddScheduledJourney(scheduleDto);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(expectedJourney);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddScheduledJourney_WhenJourneyIsInValid_ReturnsForbidResult(ScheduleDto scheduleDto)
+        {
+            // Arrange
+            var expectedJourney = new JourneyTimeModel() { JourneyModel = null, IsDepartureTimeValid = false };
+
+            journeyService.Setup(j => j.AddScheduledJourneyAsync(scheduleDto))
+                .ReturnsAsync(expectedJourney);
+
+            // Act
+            var result = await journeyController.AddScheduledJourney(scheduleDto);
 
             // Assert
             using (new AssertionScope())

@@ -12,6 +12,7 @@ using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Data.Migrations;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Journey;
 using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
@@ -489,7 +490,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddAsync_WhenTimeInvalid_ReturnsJourneyModelNullIsDepartureTimeValidFalse(JourneyDto journeyDto)
+        public async Task AddJourneyAsync_WhenTimeInvalid_ReturnsJourneyModelNullIsDepartureTimeValidFalse(JourneyDto journeyDto)
         {
             // Arrange
             var user = Fixture.Build<User>()
@@ -521,7 +522,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddAsync_WhenJourneyIsValid_ReturnsJourneyObject(JourneyDto journeyDto)
+        public async Task AddJourneyAsync_WhenJourneyIsValid_ReturnsJourneyObject(JourneyDto journeyDto)
         {
             // Arrange
             var user = Fixture.Build<User>().
@@ -548,6 +549,126 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task AddScheduledJourneyAsync_WhenJourneyIsValid_ReturnsJourneyObject(ScheduleDto scheduleDto)
+        {
+            // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            var addedSchedule = Mapper.Map<ScheduleDto, Schedule>(scheduleDto);
+            var addedJourney = addedSchedule.Journey;
+            var expectedJourney = Mapper.Map<Journey, JourneyModel>(addedJourney);
+
+            journeyRepository.Setup(r =>
+                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
+
+            // Act
+            var result = await journeyService.AddScheduledJourneyAsync(scheduleDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedJourney, options => options.ExcludingMissingMembers());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddScheduledJourneyAsync_WhenJourneyIsValid_CalledAddChatAsync_ReturnsJourneyObject(ScheduleDto scheduleDto)
+        {
+            // Arrange
+            var user = Fixture
+                .Build<User>()
+                .CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            var addedSchedule = Mapper.Map<ScheduleDto, Schedule>(scheduleDto);
+            var addedJourney = addedSchedule.Journey;
+
+            journeyRepository
+                .Setup(r => r.AddAsync(It.IsAny<Journey>()))
+                .ReturnsAsync(addedJourney);
+
+            chatRepository
+                .Setup(c => c.AddAsync(It.IsAny<Chat>()));
+
+            // Act
+            await journeyService.AddScheduledJourneyAsync(scheduleDto);
+
+            // Assert
+            chatService.Verify(mock => mock.AddChatAsync(addedJourney.Id), Times.Once);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddScheduleAsync_WhenTimeIsValid_ReturnsScheduleObject(JourneyDto journeyDto)
+        {
+            // Arrange
+            var user = Fixture.Build<User>().
+                CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
+            var addedSchedule = new Schedule
+            {
+                Id = addedJourney!.Id,
+                Days = (WeekDays)journeyDto.WeekDay!,
+            };
+
+            journeyRepository.Setup(r =>
+                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
+
+            // Act
+            var result = await journeyService.AddScheduleAsync(journeyDto);
+
+            // Assert
+            result.Should().BeEquivalentTo(addedSchedule, options => options.ExcludingMissingMembers());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddScheduleAsync_WhenTimeInvalid_ReturnsScheduleModelNullIsDepartureTimeValidFalse(JourneyDto journeyDto)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, journeyDto.OrganizerId)
+                .CreateMany(1)
+                .First();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            var anotherJourney = Fixture.Build<Journey>()
+                .Without(j => j.Schedule)
+                .With(j => j.OrganizerId, journeyDto.OrganizerId)
+                .With(j => j.DepartureTime, journeyDto.DepartureTime.AddMinutes(5))
+                .CreateMany(1)
+                .ToList();
+
+            journeyRepository.Setup(r =>
+                r.Query()).Returns(anotherJourney.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.AddScheduleAsync(journeyDto);
+
+            // Assert
+            result.ScheduleModel?.Should().BeNull();
+            result.IsDepartureTimeValid.Should().BeFalse();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddAsync_WhenJourneyIsValid_CalledAddChatAsync_ReturnsJourneyObject(JourneyDto journeyDto)
         {
             // Arrange
@@ -562,7 +683,6 @@ namespace Car.UnitTests.Services
 
             journeyDto.WeekDay = null;
             var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
-            var journeyModel = Mapper.Map<Journey, JourneyModel>(addedJourney);
 
             journeyRepository
                 .Setup(r => r.AddAsync(It.IsAny<Journey>()))
@@ -579,39 +699,10 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [AutoEntityData]
-        public async Task AddAsync_WhenJourneyIsScheduled_ExecuteThreeTimes(JourneyDto journeyDto)
-        {
-            // Arrange
-            var user = Fixture
-                .Build<User>()
-                .CreateMany(1)
-                .First();
-
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
-
-            journeyDto.WeekDay = WeekDays.Monday;
-            var addedJourney = Mapper.Map<JourneyDto, Journey>(journeyDto);
-
-            journeyRepository.Setup(r =>
-                r.AddAsync(It.IsAny<Journey>())).ReturnsAsync(addedJourney);
-            scheduleRepository.Setup(r => r.AddAsync(It.IsAny<Schedule>())).ReturnsAsync(new Schedule
-                { Id = addedJourney.Id, Journey = addedJourney, Days = WeekDays.Monday });
-
-            // Act
-            await journeyService.AddJourneyAsync(journeyDto);
-
-            // Assert
-            journeyRepository.Verify(r => r.SaveChangesAsync(), Times.Exactly(3));
-        }
-
-        [Theory]
         [InlineData("2021-10-09T12:15:00", "2:00:00")]
         [InlineData("2021-10-09T14:30:00", "2:00:00")]
         [InlineData("2021-10-12T12:15:00", "2:00:00")]
-        public async Task AddAsync_WhenJourneyIs_Valid(DateTime departureTime, string journeyDuration)
+        public async Task AddJourneyAsync_WhenJourneyIs_Valid(DateTime departureTime, string journeyDuration)
         {
             // Arrange
             var durationTime = TimeSpan.Parse(journeyDuration);
@@ -655,7 +746,7 @@ namespace Car.UnitTests.Services
         [Theory]
         [InlineData("2021-10-09T00:00:00", "2:00:00")]
         [InlineData("2021-10-12T00:00:00", "2:00:00")]
-        public async Task AddAsync_WhenJourneyIs_NotValid(DateTime departureTime, string journeyDuration)
+        public async Task AddJourneyAsync_WhenJourneyIs_NotValid(DateTime departureTime, string journeyDuration)
         {
             // Arrange
             var ts = TimeSpan.Parse(journeyDuration);
@@ -1845,6 +1936,51 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task AddUserToJourney_WhenCurrentUserIdNotEqualJourneyOrganizerId_ReturnsFalse(JourneyApplyModel journeyApply)
+        {
+            // Arrange
+            if (journeyApply.JourneyUser != null)
+            {
+                journeyApply.JourneyUser.UserId = 1;
+                journeyApply.JourneyUser.PassangersCount = 0;
+
+                var user = Fixture.Build<User>().With(u => u.Id, journeyApply.JourneyUser.UserId + 1).Create();
+                var claims = new List<Claim>() { new("preferred_username", user.Email) };
+                httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+                var userToAdds = Fixture.Build<User>()
+                    .With(userToAdd => userToAdd.Id, journeyApply.JourneyUser.UserId)
+                    .CreateMany(1)
+                    .ToList();
+
+                userToAdds.Add(user);
+
+                var journeyUsers = Fixture.Build<JourneyUser>()
+                    .With(journeyUser => journeyUser.PassangersCount, 0)
+                    .CreateMany(1)
+                    .ToList();
+
+                var journeys = Fixture.Build<Journey>()
+                    .With(journey => journey.Id, journeyApply.JourneyUser!.JourneyId)
+                    .With(journey => journey.OrganizerId, 10)
+                    .With(journey => journey.Participants, new List<User>() { null })
+                    .With(journey => journey.CountOfSeats, 1)
+                    .With(journey => journey.JourneyUsers, journeyUsers)
+                    .CreateMany(1);
+
+                journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+                userRepository.Setup(r => r.Query()).Returns(userToAdds.AsQueryable().BuildMock().Object);
+            }
+
+            // Act
+            var result = await journeyService.AddUserToJourney(journeyApply);
+
+            // Assert
+            result.Should().Be((false, false));
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndIsAllowed_ReturnsTrue(JourneyApplyModel journeyApply, int passangersCount)
         {
             // Arrange
@@ -1895,6 +2031,110 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().Be((true, true));
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndJourneyStopsAddressNotEqualStopAdddress_ReturnsTrue(JourneyApplyModel journeyApply, Address address)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, journeyApply.JourneyUser.UserId)
+                .Create();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
+                .CreateMany(1)
+                .ToList();
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, journeyApply.JourneyUser.UserId)
+                .CreateMany(1)
+                .ToList();
+
+            participants.Add(user);
+
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
+                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
+                .CreateMany(1)
+                .ToList();
+            var stops = Fixture.Build<Stop>()
+                .With(s => s.Address, address)
+                .CreateMany(1)
+                .ToList();
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
+                .With(j => j.Participants, new List<User>())
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, stops)
+                .CreateMany(1)
+                .ToList();
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+            receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.AddUserToJourney(journeyApply);
+
+            // Assert
+            journeys.First().Should().Equals(stops.First());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndJourneyStopsAddressEqualStopAdddress_ReturnsTrue(JourneyApplyModel journeyApply, Address address)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, journeyApply.JourneyUser.UserId)
+                .Create();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            var receivedMessages = Fixture.Build<ReceivedMessages>()
+                .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
+                .CreateMany(1)
+                .ToList();
+            var participants = Fixture.Build<User>()
+                .With(p => p.Id, journeyApply.JourneyUser.UserId)
+                .CreateMany(1)
+                .ToList();
+
+            participants.Add(user);
+
+            var chats = Fixture.Build<Chat>()
+                .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
+                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
+                .CreateMany(1)
+                .ToList();
+            var stops = Fixture.Build<Stop>()
+                .With(s => s.Address, address)
+                .CreateMany(1)
+                .ToList();
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
+                .With(j => j.Participants, new List<User>())
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, new List<Stop>())
+                .CreateMany(1)
+                .ToList();
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
+            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
+            receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.AddUserToJourney(journeyApply);
+
+            // Assert
+            journeys.First().Should().NotBeEquivalentTo(stops.First());
         }
 
         [Theory]

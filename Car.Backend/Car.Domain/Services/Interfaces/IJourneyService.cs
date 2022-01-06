@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Journey;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
 
@@ -28,6 +29,10 @@ namespace Car.Domain.Services.Interfaces
         Task DeletePastJourneyAsync();
 
         Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel);
+
+        Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyModel);
+
+        Task<JourneyTimeModel> AddScheduledJourneyAsync(ScheduleDto schedule);
 
         IEnumerable<Journey> GetFilteredJourneys(JourneyFilter filter);
 
