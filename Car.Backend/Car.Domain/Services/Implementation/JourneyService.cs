@@ -8,6 +8,7 @@ using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Journey;
 using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
@@ -195,8 +196,31 @@ namespace Car.Domain.Services.Implementation
 
             var date = DateTime.Now.AddDays(13);
 
-            schedules.Where(s => s.Days.ToString().Contains(date.DayOfWeek.ToString())).ToList()
-                .ForEach(async s => await AddFutureJourneyAsync(s, date));
+            var actualSchedules = schedules.Where(s => s.Days.ToString().Contains(date.DayOfWeek.ToString()));
+
+            foreach (var schedule in actualSchedules)
+            {
+                await AddFutureJourneyAsync(schedule, date);
+            }
+        }
+
+        public async Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyModel)
+        {
+            var schedule = await AddScheduleAsync(journeyModel, null);
+
+            return schedule;
+        }
+
+        public async Task<JourneyTimeModel> AddScheduledJourneyAsync(ScheduleDto schedule)
+        {
+            var journey = await AddScheduledJourneyAsync(schedule, schedule.Journey!);
+
+            if (journey.JourneyModel is not null && journey.IsDepartureTimeValid)
+            {
+                await chatService.AddChatAsync(journey.JourneyModel!.Id);
+            }
+
+            return journey;
         }
 
         public async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel)
@@ -444,13 +468,9 @@ namespace Car.Domain.Services.Implementation
                 stop.UserId = userId;
                 stop.JourneyId = journeyId;
 
-                foreach (var i in journey.Stops)
-                {
-                    if (i.Address != stop.Address)
-                    {
-                        journey.Stops.Add(stop);
-                    }
-                }
+                journey.Stops.Select(stop => stop.Address)
+                    .Where(address => address != stop.Address).ToList()
+                    .ForEach(address => journey.Stops.Add(stop));
             }
 
             await journeyRepository.SaveChangesAsync();
@@ -611,21 +631,12 @@ namespace Car.Domain.Services.Implementation
 
         private async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel, int? parentId)
         {
-            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
-
-            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
-
-            bool isDepartureTimeValid = journeyRepository.Query()
-                .FilterUncancelledJourneys()
-                .Where(j => j.OrganizerId == userId)
-                .AsEnumerable()
-                .All(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes >= 15 ||
-                          (j.DepartureTime - journey.DepartureTime).TotalMinutes <= -15);
-
-            if (!isDepartureTimeValid)
+            if (!IsDepartureTimeValid(journeyModel))
             {
                 return new JourneyTimeModel { JourneyModel = null, IsDepartureTimeValid = false };
             }
+
+            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             var addedJourney = await journeyRepository.AddAsync(journey);
 
@@ -638,27 +649,71 @@ namespace Car.Domain.Services.Implementation
 
             if (addedJourney is not null)
             {
-                if (journeyModel.WeekDay is not null)
-                {
-                    var schedule = await scheduleRepository.AddAsync(new Schedule
-                    {
-                        Id = addedJourney.Id,
-                        Days = (WeekDays)journeyModel.WeekDay,
-                    });
-                    await scheduleRepository.SaveChangesAsync();
-                    await AddFutureJourneysAsync(schedule);
-                }
-                else
-                {
-                    await CheckForSuitableRequests(addedJourney);
-                    await NotifyInvitedUsers(addedJourney.Invitations, addedJourney.OrganizerId, addedJourney.Id);
-                }
+                await CheckForSuitableRequests(addedJourney);
+                await NotifyInvitedUsers(addedJourney.Invitations, addedJourney.OrganizerId, addedJourney.Id);
             }
 
             journeyRepository.Detach(addedJourney!);
 
             return new JourneyTimeModel()
             { JourneyModel = mapper.Map<Journey, JourneyModel>(addedJourney!), IsDepartureTimeValid = true };
+        }
+
+        private async Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyModel, int? parentId)
+        {
+            if (!IsDepartureTimeValid(journeyModel))
+            {
+                return new ScheduleTimeModel { ScheduleModel = null, IsDepartureTimeValid = false };
+            }
+
+            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
+
+            var addedJourney = await journeyRepository.AddAsync(journey);
+
+            if (addedJourney is not null)
+            {
+                addedJourney.ParentId = parentId;
+            }
+
+            await journeyRepository.SaveChangesAsync();
+
+            var addedSchedule = new Schedule
+            {
+                Id = addedJourney!.Id,
+                Days = (WeekDays)journeyModel.WeekDay!,
+            };
+
+            await scheduleRepository.AddAsync(addedSchedule);
+            await scheduleRepository.SaveChangesAsync();
+
+            return new ScheduleTimeModel()
+                { ScheduleModel = mapper.Map<Schedule, ScheduleModel>(addedSchedule!), IsDepartureTimeValid = true };
+        }
+
+        private async Task<JourneyTimeModel> AddScheduledJourneyAsync(ScheduleDto scheduleDto, Journey addedJourney)
+        {
+            var schedule = mapper.Map<ScheduleDto, Schedule>(scheduleDto);
+
+            await AddFutureJourneysAsync(schedule);
+
+            journeyRepository.Detach(addedJourney!);
+
+            return new JourneyTimeModel()
+                { JourneyModel = mapper.Map<Journey, JourneyModel>(addedJourney!), IsDepartureTimeValid = true };
+        }
+
+        private bool IsDepartureTimeValid(JourneyDto journeyModel)
+        {
+            var userId = httpContextAccessor.HttpContext is not null ? httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository) : journeyModel.OrganizerId;
+
+            var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
+
+            return journeyRepository.Query()
+                .FilterUncancelledJourneys()
+                .Where(j => j.OrganizerId == userId)
+                .AsEnumerable()
+                .All(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes >= 15 ||
+                          (j.DepartureTime - journey.DepartureTime).TotalMinutes <= -15);
         }
 
         private async Task<(bool IsUpdated, JourneyModel? UpdatedJourney)> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated)
