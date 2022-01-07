@@ -148,8 +148,6 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<RequestDto>> GetRequestedJourneysAsync()
         {
-            int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
-
             var userRequests = await requestService.GetRequestsByUserIdAsync();
 
             return mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(userRequests);

@@ -63,8 +63,7 @@ namespace Car.Domain.Extensions
 
         public static IQueryable<Journey> FilterCanceled(this IQueryable<Journey> journeys)
         {
-            return journeys.Where(journey =>
-                journey.IsCancelled == true);
+            return journeys.Where(journey => journey.IsCancelled);
         }
 
         public static IQueryable<Journey> FilterEditable(this IQueryable<Journey> journeys)
