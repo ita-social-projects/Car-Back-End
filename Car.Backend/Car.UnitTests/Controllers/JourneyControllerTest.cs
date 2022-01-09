@@ -89,6 +89,44 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
+        public async Task GetCanceledJourneysAsync_WhenCanceledJourneysExist_ReturnsJourneyCollection(List<JourneyModel> journeys)
+        {
+            // Arrange
+            journeyService.Setup(j => j.GetCanceledJourneysAsync())
+                .ReturnsAsync(journeys);
+
+            // Act
+            var result = await journeyController.GetCanceled();
+
+            // Assert
+            using (new AssertionScope())
+            {
+                (result as OkObjectResult)?.StatusCode.Should().Be(200);
+                (result as OkObjectResult)?.Value.Should().Be(journeys);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRequestedJourneysAsync_WhenCanceledJourneysExist_ReturnsJourneyCollection(List<RequestDto> journeys)
+        {
+            // Arrange
+            journeyService.Setup(j => j.GetRequestedJourneysAsync())
+                .ReturnsAsync(journeys);
+
+            // Act
+            var result = await journeyController.GetRequested();
+
+            // Assert
+            using (new AssertionScope())
+            {
+                (result as OkObjectResult)?.StatusCode.Should().Be(200);
+                (result as OkObjectResult)?.Value.Should().Be(journeys);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey, bool withCancelledStops)
         {
             // Arrange
