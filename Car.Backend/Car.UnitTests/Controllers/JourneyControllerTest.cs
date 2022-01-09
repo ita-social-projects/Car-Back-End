@@ -108,7 +108,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetRequestedJourneysAsync_WhenCanceledJourneysExist_ReturnsJourneyCollection(List<RequestDto> journeys)
+        public async Task GetRequestedJourneysAsync_WhenRequestedJourneysExist_ReturnsJourneyCollection(List<RequestDto> journeys)
         {
             // Arrange
             journeyService.Setup(j => j.GetRequestedJourneysAsync())
