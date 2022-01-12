@@ -33,8 +33,8 @@ namespace Car.UnitTests.Services
     public class JourneyServiceTest : TestBase
     {
         private readonly IJourneyService journeyService;
-        private readonly IRequestService requestService;
-        private readonly Mock<IRequestService> requestServices;
+        private readonly IRequestService requestServiceObject;
+        private readonly Mock<IRequestService> requestService;
         private readonly Mock<IJourneyUserService> journeyUserService;
         private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
@@ -54,7 +54,7 @@ namespace Car.UnitTests.Services
             journeyRepository = new Mock<IRepository<Journey>>();
             requestRepository = new Mock<IRepository<Request>>();
             scheduleRepository = new Mock<IRepository<Schedule>>();
-            requestServices = new Mock<IRequestService>();
+            requestService = new Mock<IRequestService>();
             locationService = new Mock<ILocationService>();
             journeyUserService = new Mock<IJourneyUserService>();
             userRepository = new Mock<IRepository<User>>();
@@ -65,7 +65,7 @@ namespace Car.UnitTests.Services
             httpContextAccessor = new Mock<IHttpContextAccessor>();
             notificationService = new Mock<INotificationService>();
             chatService = new Mock<IChatService>();
-            requestService = new RequestService(
+            requestServiceObject = new RequestService(
                 notificationService.Object,
                 userRepository.Object,
                 requestRepository.Object,
@@ -79,7 +79,7 @@ namespace Car.UnitTests.Services
                 invitationRepository.Object,
                 chatRepository.Object,
                 notificationService.Object,
-                requestServices.Object,
+                requestService.Object,
                 locationService.Object,
                 journeyUserService.Object,
                 Mapper,
@@ -430,7 +430,7 @@ namespace Car.UnitTests.Services
 
             var expectedResult = Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requestedJourney);
             // Act
-            var result = await requestService.GetRequestsByUserIdAsync();
+            var result = await requestServiceObject.GetRequestsByUserIdAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
@@ -444,19 +444,14 @@ namespace Car.UnitTests.Services
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
-            var requestedJourney = Fixture.Build<Request>()
-                .CreateMany();
-            requests.AddRange(requestedJourney);
-
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
-            var expectedResult = Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requestedJourney);
             // Act
-            var result = await requestService.GetRequestsByUserIdAsync();
+            var result = await requestServiceObject.GetRequestsByUserIdAsync();
 
             // Assert
-            result.Should().NotBeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
+            result.Should().BeEmpty();
         }
 
         [Theory]
@@ -1904,7 +1899,7 @@ namespace Car.UnitTests.Services
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
-            requestServices
+            requestService
                 .Setup(r =>
                     r.NotifyUserAsync(
                         It.IsAny<RequestDto>(),
@@ -1916,7 +1911,7 @@ namespace Car.UnitTests.Services
             await journeyService.CheckForSuitableRequests(journey);
 
             // Assert
-            requestServices.Verify(
+            requestService.Verify(
                 r => r.NotifyUserAsync(
                 It.IsAny<RequestDto>(),
                 It.IsAny<Journey>(),
