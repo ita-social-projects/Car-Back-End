@@ -219,6 +219,53 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetRequestsJourneysAsync_WhenJourneysExists_ReturnsRequestCollection(User user, List<Request> requests)
+        {
+            // Arrange
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+            var requestedJourney = Fixture.Build<Request>()
+                .With(r => r.UserId, user.Id)
+                .CreateMany();
+            requests.AddRange(requestedJourney);
+
+            requestRepository.Setup(r => r.Query())
+                .Returns(requests.AsQueryable().BuildMock().Object);
+
+            var expectedResult = Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requestedJourney);
+            // Act
+            var result = await requestService.GetRequestsByUserIdAsync();
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetRequestsJourneysAsync_WhenJourneysDoesntExists_ReturnsRequestCollection(User user, List<Request> requests)
+        {
+            // Arrange
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+            var requestedJourney = Fixture.Build<Request>()
+                .CreateMany();
+            requests.AddRange(requestedJourney);
+
+            requestRepository.Setup(r => r.Query())
+                .Returns(requests.AsQueryable().BuildMock().Object);
+
+            var expectedResult = Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requestedJourney);
+            // Act
+            var result = await requestService.GetRequestsByUserIdAsync();
+
+            // Assert
+            result.Should().NotBeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task NotifyUserAsync_AddsNotificationOnce(RequestDto request, Journey journey, IEnumerable<StopDto> stops)
         {
             // Arrange

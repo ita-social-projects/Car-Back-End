@@ -333,6 +333,80 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetCanceledJourneysAsync_UserHaveCanceledJourneys_ReturnsJourneyCollection([Range(1, 3)] int days, User organizer)
+        {
+            // Arrange
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
+                .With(j => j.OrganizerId, organizer.Id)
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = true } })
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Schedule, null as Schedule)
+                .CreateMany()
+                .ToList();
+            var canceledJourneys = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
+                .With(j => j.OrganizerId, organizer.Id)
+                .With(j => j.IsCancelled, true)
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Schedule, null as Schedule)
+                .CreateMany()
+                .ToList();
+            journeys.AddRange(canceledJourneys);
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(canceledJourneys);
+
+            // Act
+            var result = await journeyService.GetCanceledJourneysAsync();
+
+            // Assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetCanceledJourneysAsync_UserHaveNotCanceledJourneys_ReturnsJourneyCollection([Range(1, 3)] int days, User organizer)
+        {
+            // Arrange
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
+                .With(j => j.OrganizerId, organizer.Id)
+                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = true } })
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Schedule, null as Schedule)
+                .CreateMany()
+                .ToList();
+            var canceledJourneys = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(days))
+                .With(j => j.OrganizerId, organizer.Id)
+                .With(j => j.IsCancelled, false)
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Schedule, null as Schedule)
+                .CreateMany()
+                .ToList();
+            journeys.AddRange(canceledJourneys);
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+            var expected = Mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(canceledJourneys);
+
+            // Act
+            var result = await journeyService.GetCanceledJourneysAsync();
+
+            // Assert
+            result.Should().NotBeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task GetScheduledJourneysAsync_ScheduledJourneysExistForParticipant_ReturnsJourneyCollection(User participant)
         {
             // Arrange
