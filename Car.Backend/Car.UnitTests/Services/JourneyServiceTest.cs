@@ -33,8 +33,8 @@ namespace Car.UnitTests.Services
     public class JourneyServiceTest : TestBase
     {
         private readonly IJourneyService journeyService;
-        private readonly IRequestService requestServices;
-        private readonly Mock<IRequestService> requestService;
+        private readonly IRequestService requestService;
+        private readonly Mock<IRequestService> requestServices;
         private readonly Mock<IJourneyUserService> journeyUserService;
         private readonly Mock<INotificationService> notificationService;
         private readonly Mock<IRepository<Request>> requestRepository;
@@ -54,7 +54,7 @@ namespace Car.UnitTests.Services
             journeyRepository = new Mock<IRepository<Journey>>();
             requestRepository = new Mock<IRepository<Request>>();
             scheduleRepository = new Mock<IRepository<Schedule>>();
-            requestService = new Mock<IRequestService>();
+            requestServices = new Mock<IRequestService>();
             locationService = new Mock<ILocationService>();
             journeyUserService = new Mock<IJourneyUserService>();
             userRepository = new Mock<IRepository<User>>();
@@ -73,13 +73,13 @@ namespace Car.UnitTests.Services
                 invitationRepository.Object,
                 chatRepository.Object,
                 notificationService.Object,
-                requestService.Object,
+                requestServices.Object,
                 locationService.Object,
                 journeyUserService.Object,
                 Mapper,
                 httpContextAccessor.Object,
                 chatService.Object);
-            requestServices = new RequestService(
+            requestService = new RequestService(
                 notificationService.Object,
                 userRepository.Object,
                 requestRepository.Object,
@@ -430,7 +430,7 @@ namespace Car.UnitTests.Services
 
             var expectedResult = Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requestedJourney);
             // Act
-            var result = await requestServices.GetRequestsByUserIdAsync();
+            var result = await requestService.GetRequestsByUserIdAsync();
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
@@ -453,7 +453,7 @@ namespace Car.UnitTests.Services
 
             var expectedResult = Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requestedJourney);
             // Act
-            var result = await requestServices.GetRequestsByUserIdAsync();
+            var result = await requestService.GetRequestsByUserIdAsync();
 
             // Assert
             result.Should().NotBeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
@@ -1904,7 +1904,7 @@ namespace Car.UnitTests.Services
             requestRepository.Setup(r => r.Query())
                 .Returns(requests.AsQueryable().BuildMock().Object);
 
-            requestService
+            requestServices
                 .Setup(r =>
                     r.NotifyUserAsync(
                         It.IsAny<RequestDto>(),
@@ -1916,7 +1916,7 @@ namespace Car.UnitTests.Services
             await journeyService.CheckForSuitableRequests(journey);
 
             // Assert
-            requestService.Verify(
+            requestServices.Verify(
                 r => r.NotifyUserAsync(
                 It.IsAny<RequestDto>(),
                 It.IsAny<Journey>(),
