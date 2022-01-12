@@ -65,6 +65,12 @@ namespace Car.UnitTests.Services
             httpContextAccessor = new Mock<IHttpContextAccessor>();
             notificationService = new Mock<INotificationService>();
             chatService = new Mock<IChatService>();
+            requestService = new RequestService(
+                notificationService.Object,
+                userRepository.Object,
+                requestRepository.Object,
+                Mapper,
+                httpContextAccessor.Object);
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
@@ -79,12 +85,6 @@ namespace Car.UnitTests.Services
                 Mapper,
                 httpContextAccessor.Object,
                 chatService.Object);
-            requestService = new RequestService(
-                notificationService.Object,
-                userRepository.Object,
-                requestRepository.Object,
-                Mapper,
-                httpContextAccessor.Object);
         }
 
         [Theory]
