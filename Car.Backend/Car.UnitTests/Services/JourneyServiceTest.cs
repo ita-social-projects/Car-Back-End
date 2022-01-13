@@ -33,7 +33,6 @@ namespace Car.UnitTests.Services
     public class JourneyServiceTest : TestBase
     {
         private readonly IJourneyService journeyService;
-        private readonly IRequestService requestServiceObject;
         private readonly Mock<IRequestService> requestService;
         private readonly Mock<IJourneyUserService> journeyUserService;
         private readonly Mock<INotificationService> notificationService;
@@ -65,12 +64,6 @@ namespace Car.UnitTests.Services
             httpContextAccessor = new Mock<IHttpContextAccessor>();
             notificationService = new Mock<INotificationService>();
             chatService = new Mock<IChatService>();
-            requestServiceObject = new RequestService(
-                notificationService.Object,
-                userRepository.Object,
-                requestRepository.Object,
-                Mapper,
-                httpContextAccessor.Object);
             journeyService = new JourneyService(
                 journeyRepository.Object,
                 requestRepository.Object,
@@ -377,7 +370,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetCanceledJourneysAsync_UserHaveNotCanceledJourneys_ReturnsJourneyCollection([Range(1, 3)] int days, User organizer)
+        public async Task GetCanceledJourneysAsync_UserHaveNotCanceledJourneys_ReturnsEmptyCollection([Range(1, 3)] int days, User organizer)
         {
             // Arrange
             var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
@@ -414,44 +407,53 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetRequestsJourneysAsync_WhenJourneysExists_ReturnsRequestCollection(User user, List<Request> requests)
+        public async Task GetRequestsJourneysAsync_WhenJourneysExists_ReturnsRequestCollection(User organizer, List<Request> requests)
         {
             // Arrange
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
-            var requestedJourney = Fixture.Build<Request>()
-                .With(r => r.UserId, user.Id)
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
+
+            var expectedResult = Fixture.Build<Request>()
+                .With(r => r.UserId, organizer.Id)
                 .CreateMany();
-            requests.AddRange(requestedJourney);
+            requests.AddRange(expectedResult);
 
-            requestRepository.Setup(r => r.Query())
-                .Returns(requests.AsQueryable().BuildMock().Object);
+            requestService.Setup(r => r.GetRequestsByUserIdAsync())
+                .Returns(Task.FromResult(requests.AsEnumerable()));
 
-            var expectedResult = Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requestedJourney);
+            Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requests);
+
             // Act
-            var result = await requestServiceObject.GetRequestsByUserIdAsync();
+            var result = await journeyService.GetRequestedJourneysAsync();
 
             // Assert
-            result.Should().BeEquivalentTo(expectedResult, options => options.ExcludingMissingMembers());
+            requestService.Verify(x => x.GetRequestsByUserIdAsync(), Times.Once);
+            result.Should().BeEquivalentTo(requests, options => options.ExcludingMissingMembers());
         }
 
         [Theory]
         [AutoEntityData]
-        public async Task GetRequestsJourneysAsync_WhenJourneysDoesntExists_ReturnsRequestCollection(User user, List<Request> requests)
+        public async Task GetRequestsJourneysAsync_WhenJourneysDoesntExists_ReturnsEmptyCollection(User organizer, List<Request> requests)
         {
             // Arrange
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            var claims = new List<Claim>() { new("preferred_username", organizer.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
-            requestRepository.Setup(r => r.Query())
-                .Returns(requests.AsQueryable().BuildMock().Object);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { organizer }.AsQueryable());
+
+            var expectedResult = Fixture.Build<Request>()
+                .With(r => r.UserId, organizer.Id)
+                .CreateMany();
+            requests.AddRange(expectedResult);
+
+            Mapper.Map<IEnumerable<Request>, IEnumerable<RequestDto>>(requests);
 
             // Act
-            var result = await requestServiceObject.GetRequestsByUserIdAsync();
+            var result = await journeyService.GetRequestedJourneysAsync();
 
             // Assert
-            result.Should().BeEmpty();
+            requestService.Verify(x => x.GetRequestsByUserIdAsync(), Times.Once);
+            result.Should().NotBeEquivalentTo(requests, options => options.ExcludingMissingMembers());
         }
 
         [Theory]
