@@ -65,6 +65,22 @@ namespace Car.WebApi.Controllers
             Ok(await journeyService.GetStopsFromRecentJourneysAsync());
 
         /// <summary>
+        /// Gets canceled journey.
+        /// </summary>
+        /// <returns>canceled journeys</returns>
+        [HttpGet("canceled")]
+        public async Task<IActionResult> GetCanceled() =>
+            Ok(await journeyService.GetCanceledJourneysAsync());
+
+        /// <summary>
+        /// Gets requested journey.
+        /// </summary>
+        /// <returns>requested journeys</returns>
+        [HttpGet("requested")]
+        public async Task<IActionResult> GetRequested() =>
+            Ok(await journeyService.GetRequestedJourneysAsync());
+
+        /// <summary>
         /// Adds the journey asynchronously.
         /// </summary>
         /// <param name="journeyDto">The journey model.</param>

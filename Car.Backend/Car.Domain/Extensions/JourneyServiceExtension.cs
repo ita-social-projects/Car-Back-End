@@ -61,6 +61,11 @@ namespace Car.Domain.Extensions
                 journey.DepartureTime > now);
         }
 
+        public static IQueryable<Journey> FilterCanceled(this IQueryable<Journey> journeys)
+        {
+            return journeys.Where(journey => journey.IsCancelled);
+        }
+
         public static IQueryable<Journey> FilterEditable(this IQueryable<Journey> journeys)
         {
             DateTime now = DateTime.UtcNow;

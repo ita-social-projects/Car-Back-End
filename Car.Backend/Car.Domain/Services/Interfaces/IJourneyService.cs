@@ -16,6 +16,10 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<JourneyModel>> GetScheduledJourneysAsync();
 
+        Task<IEnumerable<JourneyModel>> GetCanceledJourneysAsync();
+
+        Task<IEnumerable<RequestDto>> GetRequestedJourneysAsync();
+
         Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false);
 
         Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int countToTake = 5);
