@@ -2463,6 +2463,46 @@ namespace Car.UnitTests.Services
             journeyRepository.Verify(j => j.SaveChangesAsync(), Times.Exactly(1));
         }
 
+        [Fact]
+        public async Task AddFutureJourneyAsync_ChildJourneysNotValid_ExecuteNever()
+        {
+            // Arrange
+            var user = Fixture.Build<User>().Create();
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            const WeekDays days = WeekDays.Monday | WeekDays.Tuesday | WeekDays.Wednesday | WeekDays.Thursday | WeekDays.Friday |
+                                  WeekDays.Saturday | WeekDays.Sunday;
+
+            var now = DateTime.Now;
+
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.IsCancelled, false)
+                .With(j => j.DepartureTime, now.AddDays(13))
+                .CreateMany();
+            var childJourneys = Fixture.Build<Journey>()
+                .With(cj => cj.DepartureTime, now.AddDays(13))
+                .CreateMany(1)
+                .ToList();
+            var schedules = Fixture.Build<Schedule>()
+                .With(s => s.Id, journeys.FirstOrDefault().Id)
+                .With(s => s.Journey, journeys.FirstOrDefault())
+                .With(s => s.Days, days)
+                .With(s => s.ChildJourneys, childJourneys)
+                .CreateMany(1);
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            scheduleRepository.Setup(r => r.Query()).Returns(schedules.AsQueryable().BuildMock().Object);
+
+            // Act
+            await journeyService.AddFutureJourneyAsync();
+
+            // Assert
+            journeyRepository.Verify(j => j.SaveChangesAsync(), Times.Never);
+        }
+
         private (IPostprocessComposer<Journey> Journeys, IPostprocessComposer<JourneyFilter> Filter) GetInitializedJourneyAndFilter()
         {
             var departureTime = DateTime.UtcNow.AddHours(1);
