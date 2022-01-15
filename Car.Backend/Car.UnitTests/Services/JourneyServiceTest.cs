@@ -2435,13 +2435,22 @@ namespace Car.UnitTests.Services
 
             const WeekDays days = WeekDays.Monday | WeekDays.Tuesday | WeekDays.Wednesday | WeekDays.Thursday | WeekDays.Friday |
                                   WeekDays.Saturday | WeekDays.Sunday;
+
+            var now = DateTime.Now;
+
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.IsCancelled, false)
+                .With(j => j.DepartureTime, now)
                 .CreateMany();
+            var childJourneys = Fixture.Build<Journey>()
+                .With(cj => cj.DepartureTime, now.AddDays(1))
+                .CreateMany()
+                .ToList();
             var schedules = Fixture.Build<Schedule>()
                 .With(s => s.Id, journeys.FirstOrDefault().Id)
                 .With(s => s.Journey, journeys.FirstOrDefault())
                 .With(s => s.Days, days)
+                .With(s => s.ChildJourneys, childJourneys)
                 .CreateMany(1);
 
             journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
