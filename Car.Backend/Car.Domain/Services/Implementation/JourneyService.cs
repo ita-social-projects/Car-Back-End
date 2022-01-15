@@ -196,7 +196,8 @@ namespace Car.Domain.Services.Implementation
 
             var date = DateTime.Now.AddDays(13);
 
-            var actualSchedules = schedules.Where(s => s.Days.ToString().Contains(date.DayOfWeek.ToString()));
+            var actualSchedules = schedules
+                .Where(s => s.Days.ToString().Contains(date.DayOfWeek.ToString()) && s.ChildJourneys.All(cj => cj.DepartureTime.Date != date.Date));
 
             foreach (var schedule in actualSchedules)
             {
@@ -601,10 +602,13 @@ namespace Car.Domain.Services.Implementation
 
         private async Task AddFutureJourneysAsync(Schedule schedule)
         {
-            var now = DateTime.Today;
+            var startDay = DateTime.UtcNow.TimeOfDay < schedule.Journey!.DepartureTime.ToUniversalTime().TimeOfDay
+                    ? DateTime.Today
+                    : DateTime.Today.AddDays(1);
+
             var termInDays = 14;
             var dates = Enumerable.Range(0, termInDays)
-                .Select(day => now.AddDays(day))
+                .Select(day => startDay.AddDays(day))
                 .Where(date =>
                     schedule.Days.ToString().Contains(date.DayOfWeek.ToString()) &&
                     !schedule.ChildJourneys.Any(journey => journey.DepartureTime.Date.Equals(date)))
@@ -631,7 +635,7 @@ namespace Car.Domain.Services.Implementation
 
         private async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel, int? parentId)
         {
-            if (!IsDepartureTimeValid(journeyModel))
+            if (!IsDepartureTimeValid(journeyModel) && parentId == null)
             {
                 return new JourneyTimeModel { JourneyModel = null, IsDepartureTimeValid = false };
             }
