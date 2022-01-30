@@ -24,5 +24,7 @@ namespace Car.Domain.Services.Interfaces
         Task<Chat> GetChatByIdAsync(int chatId);
 
         Task DeleteUnnecessaryChatAsync();
+
+        Task UnsubscribeUserFromChat(int userId, int chatId);
     }
 }

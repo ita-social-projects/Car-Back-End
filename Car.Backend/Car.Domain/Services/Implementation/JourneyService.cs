@@ -409,6 +409,7 @@ namespace Car.Domain.Services.Implementation
                         .ToList()
                         .ForEach(stop => stop.IsCancelled = true);
 
+                    await chatService.UnsubscribeUserFromChat(userToDelete.Id, (int)journey.ChatId!);
                     await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
                     await journeyRepository.SaveChangesAsync();
                 }
