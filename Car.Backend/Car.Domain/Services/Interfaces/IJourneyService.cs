@@ -20,7 +20,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<RequestDto>> GetRequestedJourneysAsync();
 
-        Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false);
+        Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool isJourneyCanceled = false);
 
         Task<List<IEnumerable<StopDto>>> GetStopsFromRecentJourneysAsync(int countToTake = 5);
 
@@ -61,6 +61,6 @@ namespace Car.Domain.Services.Interfaces
         Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
             int journeyId,
             int userId,
-            bool withCancelledStops = false);
+            bool isJourneyCanceled = false);
     }
 }

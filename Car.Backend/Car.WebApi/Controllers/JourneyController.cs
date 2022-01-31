@@ -50,11 +50,11 @@ namespace Car.WebApi.Controllers
         /// Gets journey by identifier.
         /// </summary>
         /// <param name="id">Journey identifier</param>
-        /// <param name="withCancelledStops">Include cancelled stops</param>
+        /// <param name="isJourneyCanceled">Include journey cancelation status</param>
         /// <returns>Journey</returns>
-        [HttpGet("{id}/{withCancelledStops}")]
-        public async Task<IActionResult> GetJourneyById(int id, bool withCancelledStops = false) =>
-            Ok(await journeyService.GetJourneyByIdAsync(id, withCancelledStops));
+        [HttpGet("{id}/{isJourneyCanceled}")]
+        public async Task<IActionResult> GetJourneyById(int id, bool isJourneyCanceled = false) =>
+            Ok(await journeyService.GetJourneyByIdAsync(id, isJourneyCanceled));
 
         /// <summary>
         /// Gets recent addresses by identifier.
@@ -222,14 +222,14 @@ namespace Car.WebApi.Controllers
             return isAddingAllowed ? Ok(isUserAdded) : Forbid();
         }
 
-        [HttpGet("journey-user/{journeyId}/{userId}/{withCancelledStops}")]
+        [HttpGet("journey-user/{journeyId}/{userId}/{isJourneyCanceled}")]
         public async Task<IActionResult> GetJourneyWithJourneyUser(
             int journeyId,
             int userId,
-            bool withCancelledStops = false)
+            bool isJourneyCanceled = false)
         {
             var journeyWithUser =
-                await journeyService.GetJourneyWithJourneyUserByIdAsync(journeyId, userId, withCancelledStops);
+                await journeyService.GetJourneyWithJourneyUserByIdAsync(journeyId, userId, isJourneyCanceled);
             return Ok(journeyWithUser);
         }
     }
