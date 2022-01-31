@@ -65,7 +65,7 @@ namespace Car.Domain.Services.Implementation
             this.chatService = chatService;
         }
 
-        public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool withCancelledStops = false)
+        public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool isJourneyCanceled = false)
         {
             var journeyQueryable = journeyRepository
                 .Query()
@@ -75,7 +75,7 @@ namespace Car.Domain.Services.Implementation
                 .IncludeSchedule()
                 .IncludeJourneyInvitations();
 
-            var journey = withCancelledStops
+            var journey = isJourneyCanceled
                 ? await journeyQueryable
                     .IgnoreQueryFilters()
                     .FirstOrDefaultAsync(j => j.Id == journeyId)
@@ -493,9 +493,9 @@ namespace Car.Domain.Services.Implementation
         }
 
         public async Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
-            int journeyId, int userId, bool withCancelledStops = false)
+            int journeyId, int userId, bool isJourneyCanceled = false)
         {
-            var journey = await GetJourneyByIdAsync(journeyId, withCancelledStops);
+            var journey = await GetJourneyByIdAsync(journeyId, isJourneyCanceled);
 
             var journeyUser = await journeyUserService.GetJourneyUserByIdAsync(journeyId, userId);
 
