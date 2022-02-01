@@ -14,6 +14,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using MockQueryable.Moq;
 using Moq;
@@ -293,6 +294,29 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().BeNull();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UnsubscribeUserFromChat_ReceivedMessagesObjectIsNotNull_ReceivedMessagesObjectOfSpecificChatHasRemovedFromUser(int userId, int chatId)
+        {
+            // Arrange
+            var receivedMessagesObject = Fixture.Build<ReceivedMessages>()
+                .With(x => x.ChatId, chatId)
+                .With(x => x.UserId, userId)
+                .CreateMany(1)
+                .ToList();
+
+            receivedMessagesRepository.Setup(x => x.Query())
+                .Returns(receivedMessagesObject.AsQueryable().BuildMock().Object);
+
+            // Act
+            await chatService.UnsubscribeUserFromChat(userId, chatId);
+            var receivedMessage = receivedMessagesObject
+                .FirstOrDefault(x => x.ChatId == chatId && x.UserId == userId);
+
+            // Assert
+            receivedMessagesRepository.Verify(mock => mock.Delete(receivedMessage), Times.Once);
         }
 
         [Theory]
