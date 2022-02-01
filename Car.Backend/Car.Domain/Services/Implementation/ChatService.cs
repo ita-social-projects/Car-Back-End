@@ -204,5 +204,23 @@ namespace Car.Domain.Services.Implementation
                 await chatRepository.SaveChangesAsync();
             }
         }
+
+        /// <summary>
+        /// Unsubscribes user from receiving messages of specific chat
+        /// </summary>
+        /// <param name="userId">User`s Id</param>
+        /// <param name="chatId">Chat`s Id</param>
+        /// <returns>Returns nothing</returns>
+        public async Task UnsubscribeUserFromChat(int userId, int chatId)
+        {
+            var receivedMessagesToDelete = receivedMessagesRepository
+                .Query()
+                .FirstOrDefault(x => x.ChatId == chatId && x.UserId == userId);
+            if (receivedMessagesToDelete != null)
+            {
+                await Task.Run(() => receivedMessagesRepository.Delete(receivedMessagesToDelete));
+                await receivedMessagesRepository.SaveChangesAsync();
+            }
+        }
     }
 }
