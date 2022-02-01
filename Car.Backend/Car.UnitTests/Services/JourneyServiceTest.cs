@@ -1012,8 +1012,8 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [InlineData("2121-1-1T12:00:00", "2121-1-1T12:00:00", 1, 1)]
-        [InlineData("2121-1-1T12:00:00", "2121-1-1T14:00:00", 1, 1)]
-        [InlineData("2121-1-1T12:00:00", "2121-1-1T10:00:00", 1, 1)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T13:00:00", 1, 1)]
+        [InlineData("2121-1-1T12:00:00", "2121-1-1T11:00:00", 1, 1)]
         [InlineData("2121-1-1T12:00:00", "2121-1-1T15:00:00", 1, 0)]
         [InlineData("2121-1-1T12:00:00", "2121-1-1T09:00:00", 1, 0)]
         public void GetFilteredJourneys_FilteringByDepartureTime_ReturnsJourneysCollection(string journeyTime, string filterTime, int journeysToCreateCount, int expectedCount)
