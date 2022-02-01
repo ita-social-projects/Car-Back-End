@@ -127,11 +127,11 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey, bool withCancelledStops)
+        public async Task GetJourneyById_WhenJourneyExists_ReturnsJourneyObject(JourneyModel journey, bool isJourneyCanceled)
         {
             // Arrange
-            withCancelledStops = false;
-            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, withCancelledStops))
+            isJourneyCanceled = false;
+            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, isJourneyCanceled))
                 .ReturnsAsync(journey);
 
             // Act
@@ -147,10 +147,10 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetJourneyById_WhenJourneyNotExist_ReturnsNull(JourneyModel journey, bool withCancelledStops = false)
+        public async Task GetJourneyById_WhenJourneyNotExist_ReturnsNull(JourneyModel journey, bool isJourneyCanceled = false)
         {
             // Arrange
-            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, withCancelledStops))
+            journeyService.Setup(j => j.GetJourneyByIdAsync(journey.Id, isJourneyCanceled))
                 .ReturnsAsync((JourneyModel)null);
 
             // Act
@@ -616,7 +616,7 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task GetJourneyWithJourneyUser_ReturnsOkObjectResult(int journeyId, int userId, bool withCancelledStops, (JourneyModel Journey, JourneyUserDto JourneyUser) journeyWithUser)
+        public async Task GetJourneyWithJourneyUser_ReturnsOkObjectResult(int journeyId, int userId, bool isJourneyCanceled, (JourneyModel Journey, JourneyUserDto JourneyUser) journeyWithUser)
         {
             // Arrange
             journeyService
@@ -624,7 +624,7 @@ namespace Car.UnitTests.Controllers
                 .ReturnsAsync(journeyWithUser);
 
             // Act
-            var result = await journeyController.GetJourneyWithJourneyUser(journeyId, userId, withCancelledStops);
+            var result = await journeyController.GetJourneyWithJourneyUser(journeyId, userId, isJourneyCanceled);
 
             // Assert
             using (new AssertionScope())

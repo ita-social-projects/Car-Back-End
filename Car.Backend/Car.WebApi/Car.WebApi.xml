@@ -88,7 +88,7 @@
             Gets journey by identifier.
             </summary>
             <param name="id">Journey identifier</param>
-            <param name="withCancelledStops">Include cancelled stops</param>
+            <param name="isJourneyCanceled">Include journey cancelation status</param>
             <returns>Journey</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyController.GetRecentAddresses">
