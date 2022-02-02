@@ -22,10 +22,6 @@ namespace Car.Data.Entities
 
         public string? ImageId { get; set; }
 
-        public int BadgeCount { get; set; }
-
-        public int JourneyCount { get; set; }
-
         public string? PhoneNumber { get; set; }
 
         [NotMapped]
