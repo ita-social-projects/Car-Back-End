@@ -39,6 +39,7 @@ namespace Car.Domain.Services.Implementation
             }
 
             user.UserPreferences = new UserPreferences();
+            user.UserStatistic = new UserStatistic();
             var newUser = await userRepository.AddAsync(user);
             await userRepository.SaveChangesAsync();
 

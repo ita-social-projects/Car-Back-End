@@ -22,10 +22,6 @@ namespace Car.Data.Entities
 
         public string? ImageId { get; set; }
 
-        public int BadgeCount { get; set; }
-
-        public int JourneyCount { get; set; }
-
         public string? PhoneNumber { get; set; }
 
         [NotMapped]
@@ -36,6 +32,8 @@ namespace Car.Data.Entities
         public ICollection<Car> Cars { get; set; } = new List<Car>();
 
         public UserPreferences? UserPreferences { get; set; }
+
+        public UserStatistic? UserStatistic { get; set; }
 
         public ICollection<Notification> ReceivedNotifications { get; set; } = new List<Notification>();
 

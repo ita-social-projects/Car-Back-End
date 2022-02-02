@@ -342,6 +342,7 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
+                .With(j => j.IsCancelled, false)
                 .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = true } })
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .With(j => j.Schedule, null as Schedule)
@@ -886,10 +887,12 @@ namespace Car.UnitTests.Services
             nextJourney.Duration = ts;
 
             var journeyFirst = Fixture.Create<Journey>();
+            journeyFirst.IsCancelled = false;
             journeyFirst.DepartureTime = new DateTime(2021, 10, 9, 0, 0, 0);
             journeyFirst.Duration = new TimeSpan(2, 0, 0);
             journeyFirst.OrganizerId = user.Id;
             var journeySecond = Fixture.Create<Journey>();
+            journeySecond.IsCancelled = false;
             journeySecond.DepartureTime = new DateTime(2021, 10, 12, 0, 0, 0);
             journeySecond.Duration = new TimeSpan(2, 0, 0);
             journeySecond.OrganizerId = user.Id;

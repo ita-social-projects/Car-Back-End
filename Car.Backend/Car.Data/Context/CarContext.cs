@@ -28,6 +28,8 @@ namespace Car.Data.Context
 
         public DbSet<UserPreferences>? UserPreferences { get; set; }
 
+        public DbSet<UserStatistic>? UserStatistics { get; set; }
+
         public DbSet<Brand>? Brands { get; set; }
 
         public DbSet<Model>? Models { get; set; }
@@ -71,6 +73,7 @@ namespace Car.Data.Context
             modelBuilder.ApplyConfiguration(new LocationTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RequestConfiguration());
             modelBuilder.ApplyConfiguration(new ReceivedMessagesConfiguration());
+            modelBuilder.ApplyConfiguration(new UserStatisticConfiguration());
 
             modelBuilder.Seed();
         }
