@@ -886,10 +886,12 @@ namespace Car.UnitTests.Services
             nextJourney.Duration = ts;
 
             var journeyFirst = Fixture.Create<Journey>();
+            journeyFirst.IsCancelled = false;
             journeyFirst.DepartureTime = new DateTime(2021, 10, 9, 0, 0, 0);
             journeyFirst.Duration = new TimeSpan(2, 0, 0);
             journeyFirst.OrganizerId = user.Id;
             var journeySecond = Fixture.Create<Journey>();
+            journeySecond.IsCancelled = false;
             journeySecond.DepartureTime = new DateTime(2021, 10, 12, 0, 0, 0);
             journeySecond.Duration = new TimeSpan(2, 0, 0);
             journeySecond.OrganizerId = user.Id;

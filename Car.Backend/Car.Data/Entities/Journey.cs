@@ -32,6 +32,8 @@ namespace Car.Data.Entities
 
         public int? ParentId { get; set; }
 
+        public bool IsMarkedAsFinished { get; set; }
+
         [NotMapped]
         public DateTime EndTime => DepartureTime.Add(Duration);
 
