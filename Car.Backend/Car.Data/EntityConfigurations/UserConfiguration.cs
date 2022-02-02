@@ -15,6 +15,9 @@ namespace Car.Data.EntityConfigurations
             builder.HasOne(user => user.UserPreferences)
                 .WithOne(pref => pref!.User!)
                 .HasForeignKey<UserPreferences>(user => user.Id);
+            builder.HasOne(user => user.UserStatistic)
+                .WithOne(ustatistic => ustatistic!.User!)
+                .HasForeignKey<UserStatistic>(ustatistic => ustatistic.Id);
 
             builder.Property(user => user.Email).HasMaxLength(100).IsRequired();
             builder.Property(user => user.Location).HasMaxLength(100);

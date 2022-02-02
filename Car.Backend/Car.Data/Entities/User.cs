@@ -33,6 +33,8 @@ namespace Car.Data.Entities
 
         public UserPreferences? UserPreferences { get; set; }
 
+        public UserStatistic? UserStatistic { get; set; }
+
         public ICollection<Notification> ReceivedNotifications { get; set; } = new List<Notification>();
 
         public ICollection<Notification> SentNotifications { get; set; } = new List<Notification>();
