@@ -425,6 +425,7 @@ namespace Car.Domain.Services.Implementation
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
+                .IncludeStopsWithAddresses()
                 .Include(j => j.Chat)
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
@@ -461,18 +462,18 @@ namespace Car.Domain.Services.Implementation
                 userToAdd.ReceivedMessages.Add(receivedMessages);
             }
 
-            var stops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
+            var applicantStops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
 
             journey.Participants.Add(userToAdd);
 
-            foreach (var stop in stops)
+            foreach (var astop in applicantStops)
             {
-                stop.UserId = userId;
-                stop.JourneyId = journeyId;
-
-                journey.Stops.Select(stop => stop.Address)
-                    .Where(address => address != stop.Address).ToList()
-                    .ForEach(address => journey.Stops.Add(stop));
+                if (!journey.Stops.Any(jstop => jstop.Address?.Name == astop.Address?.Name))
+                {
+                    astop.UserId = userId;
+                    astop.JourneyId = journeyId;
+                    journey.Stops.Add(astop);
+                }
             }
 
             await journeyRepository.SaveChangesAsync();
@@ -692,7 +693,7 @@ namespace Car.Domain.Services.Implementation
             await scheduleRepository.SaveChangesAsync();
 
             return new ScheduleTimeModel()
-                { ScheduleModel = mapper.Map<Schedule, ScheduleModel>(addedSchedule!), IsDepartureTimeValid = true };
+            { ScheduleModel = mapper.Map<Schedule, ScheduleModel>(addedSchedule!), IsDepartureTimeValid = true };
         }
 
         private async Task<JourneyTimeModel> AddScheduledJourneyAsync(ScheduleDto scheduleDto, Journey addedJourney)
@@ -704,7 +705,7 @@ namespace Car.Domain.Services.Implementation
             journeyRepository.Detach(addedJourney!);
 
             return new JourneyTimeModel()
-                { JourneyModel = mapper.Map<Journey, JourneyModel>(addedJourney!), IsDepartureTimeValid = true };
+            { JourneyModel = mapper.Map<Journey, JourneyModel>(addedJourney!), IsDepartureTimeValid = true };
         }
 
         private bool IsDepartureTimeValid(JourneyDto journeyModel)
@@ -714,11 +715,11 @@ namespace Car.Domain.Services.Implementation
             var journey = mapper.Map<JourneyDto, Journey>(journeyModel);
 
             return journeyRepository.Query()
-                .FilterUncancelledJourneys()
-                .Where(j => j.OrganizerId == userId)
-                .AsEnumerable()
-                .All(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes >= 15 ||
-                          (j.DepartureTime - journey.DepartureTime).TotalMinutes <= -15);
+                            .FilterUncancelledJourneys()
+                            .Where(j => j.OrganizerId == userId)
+                            .AsEnumerable()
+                            .All(j => (j.DepartureTime - journey.DepartureTime).TotalMinutes >= 15 ||
+                                      (j.DepartureTime - journey.DepartureTime).TotalMinutes <= -15);
         }
 
         private async Task<(bool IsUpdated, JourneyModel? UpdatedJourney)> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated)
