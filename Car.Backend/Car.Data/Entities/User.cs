@@ -24,9 +24,6 @@ namespace Car.Data.Entities
 
         public string? PhoneNumber { get; set; }
 
-        [NotMapped]
-        public string Token { get; set; } = string.Empty;
-
         public ICollection<FcmToken> FCMTokens { get; set; } = new List<FcmToken>();
 
         public ICollection<Car> Cars { get; set; } = new List<Car>();
