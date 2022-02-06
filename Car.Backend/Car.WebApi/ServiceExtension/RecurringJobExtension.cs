@@ -29,6 +29,11 @@ namespace Car.WebApi.ServiceExtension
                 () => serviceProvider.GetService<IJourneyService>()!.AddFutureJourneyAsync(),
                 Cron.Daily(12, 30),
                 TimeZoneInfo.Utc);
+            recurringJobManager.AddOrUpdate(
+                "UpdateUserStatistics",
+                () => serviceProvider.GetService<IBadgeService>()!.UpdateStatisticsAsync(),
+                Cron.Hourly(40),
+                TimeZoneInfo.Utc);
         }
     }
 }

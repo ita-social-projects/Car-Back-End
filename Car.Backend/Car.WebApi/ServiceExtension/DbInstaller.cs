@@ -57,6 +57,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<ILocationTypeService, LocationTypeService>();
             services.AddScoped<IJourneyUserService, JourneyUserService>();
             services.AddScoped<IReceivedMessagesService, ReceivedMessagesService>();
+            services.AddScoped<IBadgeService, BadgeService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Data.Entities.Car>, Repository<Data.Entities.Car>>();
