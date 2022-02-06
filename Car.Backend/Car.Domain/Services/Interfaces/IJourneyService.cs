@@ -18,6 +18,8 @@ namespace Car.Domain.Services.Interfaces
 
         Task<IEnumerable<JourneyModel>> GetCanceledJourneysAsync();
 
+        Task<IEnumerable<Journey>> GetUncheckedJourneysAsync();
+
         Task<IEnumerable<RequestDto>> GetRequestedJourneysAsync();
 
         Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool isJourneyCanceled = false);
