@@ -5,6 +5,7 @@ using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Configurations;
 using Car.Domain.Extensions;
+using Car.Domain.Hubs;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Microsoft.Extensions.Configuration;

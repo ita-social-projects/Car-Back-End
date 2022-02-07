@@ -149,11 +149,9 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<IEnumerable<Journey>> GetUncheckedJourneysAsync()
         {
-            var journeys = await (await journeyRepository
+            var journeys = await journeyRepository
                     .Query()
-                    .IncludeSchedule()
                     .FilterPast()
-                    .UseSavedAdresses(locationService))
                     .FilterUnmarked()
                 .ToListAsync();
 

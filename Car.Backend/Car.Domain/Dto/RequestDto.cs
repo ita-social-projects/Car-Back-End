@@ -6,6 +6,8 @@ namespace Car.Domain.Dto
 {
     public class RequestDto
     {
+        public int Id { get; set; }
+
         public Point? From { get; set; }
 
         public Point? To { get; set; }

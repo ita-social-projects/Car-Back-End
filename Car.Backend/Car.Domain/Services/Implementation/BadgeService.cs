@@ -45,7 +45,8 @@ namespace Car.Domain.Services.Implementation
             foreach (var journey in journeys)
             {
                 var passangerStatistics = new List<UserStatistic>();
-                var organizer = journey.Organizer!;
+                var organizerId = journey.OrganizerId;
+                var organizer = await userRepository.GetByIdAsync(organizerId);
                 var organizerStat = await GetUserStatisticByUserIdAsync(organizer.Id);
                 var passangers = journey.Participants;
 
@@ -73,12 +74,11 @@ namespace Car.Domain.Services.Implementation
                 await userStatisticRepository.UpdateAsync(organizerStat);
                 await userStatisticRepository.UpdateRangeAsync(passangerStatistics);
                 await userStatisticRepository.SaveChangesAsync();
-                await hub.Clients.User(organizer.Email).SendAsync("RecieveStats", organizer);
+                await hub.Clients.Group($"{organizer.Id}").SendAsync("RecieveStats");
                 foreach (var passanger in passangers)
                 {
-                    await hub.Clients.User(passanger.Email).SendAsync(
-                        "RecieveStats",
-                        GetUserStatisticByUserIdAsync(passanger.Id));
+                    await hub.Clients.Group($"{passanger.Id}").SendAsync(
+                        "RecieveStats");
                 }
             }
         }

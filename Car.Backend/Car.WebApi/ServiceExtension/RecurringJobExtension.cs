@@ -32,7 +32,7 @@ namespace Car.WebApi.ServiceExtension
             recurringJobManager.AddOrUpdate(
                 "UpdateUserStatistics",
                 () => serviceProvider.GetService<IBadgeService>()!.UpdateStatisticsAsync(),
-                Cron.Hourly(40),
+                Cron.MinuteInterval(3),
                 TimeZoneInfo.Utc);
         }
     }
