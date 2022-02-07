@@ -261,7 +261,36 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetUserStatistic_UserStatisticsNotExists_ReturnsNull([Range(10, 15)] int userId)
+        public async Task GetUserStatistic_NoUserStatisticsExist_ReturnsNull([Range(10, 15)] int userId)
+        {
+            // Arrange
+            var user = Fixture.Build<User>()
+                .With(u => u.Id, userId)
+                .Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query())
+                .Returns(new[] { user }.AsQueryable().BuildMock().Object);
+            var users = new List<UserStatistic>();
+
+            var otherUserStat = Fixture.Build<UserStatistic>()
+                .With(u => u.Id, 30)
+                .Create();
+            users.Add(otherUserStat);
+
+            userStatisticRepository.Setup(r => r.Query())
+                .Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await badgeService.GetUserStatistic();
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUserStatistic_NoUserExist_ReturnsNull([Range(-15, -10)] int userId)
         {
             // Arrange
             var user = Fixture.Build<User>()
