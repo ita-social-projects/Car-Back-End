@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
@@ -48,101 +49,94 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateUserStatistics_OnOwnCar_OrganizerDriverStatisticUpdated(
-            [Range(100, 500)] int distance,
+        public async Task UpdateJourneyStatistic_UncheckedJourneyExists_StatisticUpdated(
             User organizer,
-            [Range(1, 4)] int participantCount)
+            User passanger)
         {
             // Arrange
-            var participants = Fixture.Build<User>()
-                .CreateMany(participantCount);
+            var passangerStats = Fixture.Build<UserStatistic>()
+                .With(u => u.Id, passanger.Id)
+                .Create();
             var organizerStats = Fixture.Build<UserStatistic>()
                 .With(u => u.Id, organizer.Id)
                 .Create();
+            var stats = new[] { organizerStats, passangerStats };
 
-            var journeyNotMarked = Fixture.Build<Journey>()
-                .With(j => j.RouteDistance, distance)
+            var journeyUnmarked = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, new DateTime(2020, 5, 5))
+                .With(j => j.Duration, new TimeSpan(5, 5, 5))
+                .With(j => j.OrganizerId, organizer.Id)
                 .With(j => j.Organizer, organizer)
-                .With(j => j.Participants, participants.ToList())
+                .With(j => j.Participants, new[] { passanger })
                 .With(j => j.IsMarkedAsFinished, false)
-                .With(j => j.IsOnOwnCar, true)
-                .Create();
-            var journeyMarked = Fixture.Build<Journey>()
-                .With(j => j.IsMarkedAsFinished, true)
                 .Create();
             journeyRepository.Setup(r => r.Query()).Returns(
-                new[]
-                {
-                    journeyMarked,
-                    journeyNotMarked,
-                }.AsQueryable().BuildMock().Object);
-
-            var users = participants.ToList();
-            users.Add(organizer);
-            userRepository.Setup(r => r.Query())
-                .Returns(users.AsQueryable().BuildMock().Object);
+                new[] { journeyUnmarked }.AsQueryable().BuildMock().Object);
+            journeyService.Setup(j => j.GetUncheckedJourneysAsync())
+                .ReturnsAsync(new[] { journeyUnmarked }.AsEnumerable());
 
             userStatisticRepository.Setup(r => r.Query())
-                .Returns(new[] { organizerStats }.AsQueryable().BuildMock().Object);
+                .Returns(stats.AsQueryable().BuildMock().Object);
+
+            userStatisticRepository.Setup(r => r.SaveChangesAsync()).ReturnsAsync(It.IsAny<int>);
+
+            foreach (var stat in stats)
+            {
+                hub.Setup(hub => hub.Clients.Group($"{stat.Id}")).Returns(Mock.Of<IClientProxy>());
+            }
 
             // Act
             await badgeService.UpdateStatisticsAsync();
-            organizerStats.DriverJourneysAmount += 1;
-            organizerStats.TotalKm += journeyNotMarked.RouteDistance;
-
-            var result = badgeService.GetUserStatisticByUserIdAsync(organizer.Id).Result;
 
             // Assert
-            result.Should().BeEquivalentTo(organizerStats);
+            userStatisticRepository.Verify(
+                repository => repository.SaveChangesAsync(),
+                Times.Once);
         }
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateUserStatistics_NotOnOwnCar_OrganizerPassangerStatisticUpdated(
-            [Range(100, 500)] int distance,
+        public async Task UpdateJourneyStatistic_NoUncheckedJourneyExists_NeverExecuted(
             User organizer,
-            [Range(1, 4)] int participantCount)
+            User passanger)
         {
             // Arrange
-            var participants = Fixture.Build<User>()
-                .CreateMany(participantCount);
+            var passangerStats = Fixture.Build<UserStatistic>()
+                .With(u => u.Id, passanger.Id)
+                .Create();
             var organizerStats = Fixture.Build<UserStatistic>()
                 .With(u => u.Id, organizer.Id)
                 .Create();
+            var stats = new[] { organizerStats, passangerStats };
 
-            var journeyNotMarked = Fixture.Build<Journey>()
-                .With(j => j.RouteDistance, distance)
+            var journeyUnmarked = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, new DateTime(2020, 5, 5))
+                .With(j => j.Duration, new TimeSpan(5, 5, 5))
+                .With(j => j.OrganizerId, organizer.Id)
                 .With(j => j.Organizer, organizer)
-                .With(j => j.Participants, participants.ToList())
-                .With(j => j.IsMarkedAsFinished, false)
-                .With(j => j.IsOnOwnCar, false)
-                .Create();
-            var journeyMarked = Fixture.Build<Journey>()
+                .With(j => j.Participants, new[] { passanger })
                 .With(j => j.IsMarkedAsFinished, true)
                 .Create();
             journeyRepository.Setup(r => r.Query()).Returns(
-                new[]
-                {
-                    journeyMarked,
-                    journeyNotMarked,
-                }.AsQueryable().BuildMock().Object);
-
-            var users = participants.ToList();
-            users.Add(organizer);
-            userRepository.Setup(r => r.Query())
-                .Returns(users.AsQueryable().BuildMock().Object);
+                new[] { journeyUnmarked }.AsQueryable().BuildMock().Object);
+            journeyService.Setup(j => j.GetUncheckedJourneysAsync())
+                .ReturnsAsync(Array.Empty<Journey>().AsEnumerable());
 
             userStatisticRepository.Setup(r => r.Query())
-                .Returns(new[] { organizerStats }.AsQueryable().BuildMock().Object);
+                .Returns(stats.AsQueryable().BuildMock().Object);
+
+            foreach (var stat in stats)
+            {
+                hub.Setup(hub => hub.Clients.Group($"{stat.Id}")).Returns(Mock.Of<IClientProxy>());
+            }
 
             // Act
             await badgeService.UpdateStatisticsAsync();
-            organizerStats.PassangerJourneysAmount += 1;
-
-            var result = badgeService.GetUserStatisticByUserIdAsync(organizer.Id).Result;
 
             // Assert
-            result.Should().BeEquivalentTo(organizerStats);
+            userStatisticRepository.Verify(
+                repository => repository.SaveChangesAsync(),
+                Times.Never);
         }
 
         [Theory]

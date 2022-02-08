@@ -12,16 +12,13 @@ namespace Car.Domain.Hubs
     {
         private readonly IChatService userManager;
         private readonly IPushNotificationService pushNotificationService;
-        private readonly IRepository<User> userRepository;
 
         public SignalRHub(
             IChatService userManager,
-            IPushNotificationService pushNotificationService,
-            IRepository<User> userRepository)
+            IPushNotificationService pushNotificationService)
         {
             this.userManager = userManager;
             this.pushNotificationService = pushNotificationService;
-            this.userRepository = userRepository;
         }
 
         public async Task EnterToGroup(string groupName)

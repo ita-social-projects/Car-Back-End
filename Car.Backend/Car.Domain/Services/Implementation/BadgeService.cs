@@ -44,11 +44,9 @@ namespace Car.Domain.Services.Implementation
 
             foreach (var journey in journeys)
             {
-                var passangerStatistics = new List<UserStatistic>();
-                var organizerId = journey.OrganizerId;
-                var organizer = await userRepository.GetByIdAsync(organizerId);
-                var organizerStat = await GetUserStatisticByUserIdAsync(organizer.Id);
-                var passangers = journey.Participants;
+                var statistics = new List<UserStatistic>();
+                var organizerStat = await GetUserStatisticByUserIdAsync(journey.OrganizerId);
+                var passangers = journey.Participants.Select(p => p.Id);
 
                 if (journey.IsOnOwnCar)
                 {
@@ -60,25 +58,25 @@ namespace Car.Domain.Services.Implementation
                     organizerStat.PassangerJourneysAmount += 1;
                 }
 
+                statistics.Add(organizerStat);
+
                 foreach (var passanger in passangers)
                 {
-                    var passangerStat = await GetUserStatisticByUserIdAsync(passanger.Id);
+                    var passangerStat = await GetUserStatisticByUserIdAsync(passanger);
 
                     passangerStat.PassangerJourneysAmount += 1;
 
-                    passangerStatistics.Add(passangerStat);
+                    statistics.Add(passangerStat);
                 }
 
                 journey.IsMarkedAsFinished = true;
                 await journeyRepository.UpdateAsync(journey);
-                await userStatisticRepository.UpdateAsync(organizerStat);
-                await userStatisticRepository.UpdateRangeAsync(passangerStatistics);
+                await userStatisticRepository.UpdateRangeAsync(statistics);
                 await userStatisticRepository.SaveChangesAsync();
-                await hub.Clients.Group($"{organizer.Id}").SendAsync("RecieveStats");
-                foreach (var passanger in passangers)
+
+                foreach (var user in statistics)
                 {
-                    await hub.Clients.Group($"{passanger.Id}").SendAsync(
-                        "RecieveStats");
+                    await SendStatisticToUser(user);
                 }
             }
         }
@@ -96,6 +94,12 @@ namespace Car.Domain.Services.Implementation
             var userStatistic = await GetUserStatisticByUserIdAsync(userId);
 
             return userStatistic;
+        }
+
+        private async Task SendStatisticToUser(UserStatistic userStat)
+        {
+            await hub.Clients.Group($"{userStat.Id}")
+                .SendAsync("RecieveStats", userStat);
         }
     }
 }
