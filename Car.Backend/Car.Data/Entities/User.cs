@@ -24,6 +24,8 @@ namespace Car.Data.Entities
 
         public string? PhoneNumber { get; set; }
 
+        public bool IsPolicyAccepted { get; set; } = false;
+
         public ICollection<FcmToken> FCMTokens { get; set; } = new List<FcmToken>();
 
         public ICollection<Car> Cars { get; set; } = new List<Car>();

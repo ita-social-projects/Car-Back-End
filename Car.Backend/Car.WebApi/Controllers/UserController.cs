@@ -47,6 +47,13 @@ namespace Car.WebApi.Controllers
             return isUserUpdated ? Ok(updatedUser) : Forbid();
         }
 
+        [HttpPost("accept-policy")]
+        public async Task<IActionResult> AcceptPrivacyPolicy()
+        {
+            var (isPolicyAccepted, updatedUser) = await userService.AcceptPolicyAsync();
+            return isPolicyAccepted ? Ok(updatedUser) : Forbid();
+        }
+
         /// <summary>
         /// Adds fcmtoken to user asynchronously.
         /// </summary>
