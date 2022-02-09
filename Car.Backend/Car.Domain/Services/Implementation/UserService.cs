@@ -70,20 +70,21 @@ namespace Car.Domain.Services.Implementation
         public async Task<(bool IsPolicyAccepted, UserDto? UpdatedUserDto)> AcceptPolicyAsync()
         {
             var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
+
             var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user == null)
+            if (user != null)
             {
-                return (false, null);
+                user.IsPolicyAccepted = true;
+
+                await userRepository.UpdateAsync(user);
+
+                await userRepository.SaveChangesAsync();
+
+                return (true, mapper.Map<User, UserDto>(user));
             }
 
-            user.IsPolicyAccepted = true;
-
-            await userRepository.UpdateAsync(user);
-
-            await userRepository.SaveChangesAsync();
-
-            return (true, mapper.Map<User, UserDto>(user));
+            return (false, null);
         }
 
         public async Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto)
