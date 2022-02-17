@@ -137,8 +137,7 @@ namespace Car.UnitTests.Services
         public async Task AcceptPolicyAsync_WhenUserIsValid_ReturnsTrue(List<User> users)
         {
             // Arrange
-            var userDto = Fixture.Build<UserDto>().With(u => u.IsPolicyAccepted, false).Create();
-            var user = Mapper.Map<UserDto, User>(userDto);
+            var user = Fixture.Build<User>().With(u => u.IsPolicyAccepted, false).Create();
             users.Add(user);
 
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
@@ -148,10 +147,10 @@ namespace Car.UnitTests.Services
 
             // Act
             var result = await userService.AcceptPolicyAsync();
-            userDto.IsPolicyAccepted = true;
+            user.IsPolicyAccepted = true;
 
             // Assert
-            result.Should().BeEquivalentTo((true, userDto), options => options.Excluding(u => u.userDto.JourneyCount).Excluding(u => u.userDto.FCMToken));
+            result.Should().Be(Mapper.Map<User, UserDto>(user));
         }
 
         [Theory]

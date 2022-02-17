@@ -67,24 +67,16 @@ namespace Car.Domain.Services.Implementation
             return (true, mapper.Map<User, UserDto>(user!));
         }
 
-        public async Task<(bool IsPolicyAccepted, UserDto? UpdatedUserDto)> AcceptPolicyAsync()
+        public async Task<UserDto> AcceptPolicyAsync()
         {
             var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
-
             var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user != null)
-            {
-                user.IsPolicyAccepted = true;
+            user.IsPolicyAccepted = true;
+            await userRepository.UpdateAsync(user);
+            await userRepository.SaveChangesAsync();
 
-                await userRepository.UpdateAsync(user);
-
-                await userRepository.SaveChangesAsync();
-
-                return (true, mapper.Map<User, UserDto>(user));
-            }
-
-            return (false, null);
+            return mapper.Map<User, UserDto>(user);
         }
 
         public async Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto)

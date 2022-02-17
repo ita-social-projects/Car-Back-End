@@ -47,11 +47,15 @@ namespace Car.WebApi.Controllers
             return isUserUpdated ? Ok(updatedUser) : Forbid();
         }
 
+        /// <summary>
+        /// Accept privacy policy and terms of use for logged user.
+        /// </summary>
+        /// <returns>Updated user.</returns>
         [HttpPost("accept-policy")]
         public async Task<IActionResult> AcceptPrivacyPolicy()
         {
-            var (isPolicyAccepted, updatedUser) = await userService.AcceptPolicyAsync();
-            return isPolicyAccepted ? Ok(updatedUser) : Forbid();
+            var updatedUser = await userService.AcceptPolicyAsync();
+            return Ok(updatedUser);
         }
 
         /// <summary>

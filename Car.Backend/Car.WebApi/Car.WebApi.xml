@@ -411,6 +411,12 @@
             <param name="updateUserImageDto">User object to update.</param>
             <returns>Updated user.</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.UserController.AcceptPrivacyPolicy">
+            <summary>
+            Accept privacy policy and terms of use for logged user.
+            </summary>
+            <returns>Updated user.</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.UserController.AddUserFcmtoken(Car.Domain.Dto.UserFcmTokenDto)">
             <summary>
             Adds fcmtoken to user asynchronously.

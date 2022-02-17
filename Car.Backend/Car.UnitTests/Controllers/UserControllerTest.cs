@@ -105,26 +105,13 @@ namespace Car.UnitTests.Controllers
             // Arrange
             var user = Fixture.Build<UserDto>().Create();
 
-            userService.Setup(service => service.AcceptPolicyAsync()).ReturnsAsync((true, user));
+            userService.Setup(service => service.AcceptPolicyAsync()).ReturnsAsync(user);
 
             // Act
             var result = await userController.AcceptPrivacyPolicy();
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
-        }
-
-        [Fact]
-        public async Task AcceptPrivacyPolicy_WhenUserDoesntExist_ReturnsForbidResult()
-        {
-            // Arrange
-            userService.Setup(service => service.AcceptPolicyAsync()).ReturnsAsync((false, null));
-
-            // Act
-            var result = await userController.AcceptPrivacyPolicy();
-
-            // Assert
-            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]
