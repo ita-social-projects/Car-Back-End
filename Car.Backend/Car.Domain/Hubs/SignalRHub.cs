@@ -2,10 +2,12 @@
 using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Car.Domain.Hubs
 {
+    [Authorize]
     public class SignalRHub : Hub
     {
         private readonly IChatService userManager;
