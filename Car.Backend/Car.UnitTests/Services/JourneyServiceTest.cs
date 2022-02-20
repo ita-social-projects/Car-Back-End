@@ -632,6 +632,7 @@ namespace Car.UnitTests.Services
                 .Without(j => j.Schedule)
                 .With(j => j.OrganizerId, journeyDto.OrganizerId)
                 .With(j => j.DepartureTime, journeyDto.DepartureTime.AddMinutes(5))
+                .With(j => j.IsCancelled, false)
                 .CreateMany(1)
                 .ToList();
 
@@ -779,6 +780,7 @@ namespace Car.UnitTests.Services
                 .Without(j => j.Schedule)
                 .With(j => j.OrganizerId, journeyDto.OrganizerId)
                 .With(j => j.DepartureTime, journeyDto.DepartureTime.AddMinutes(5))
+                .With(j => j.IsCancelled, false)
                 .CreateMany(1)
                 .ToList();
 
