@@ -99,6 +99,21 @@ namespace Car.UnitTests.Controllers
             result.Should().BeOfType<ForbidResult>();
         }
 
+        [Fact]
+        public async Task AcceptPrivacyPolicy_WhenUserExists_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var user = Fixture.Build<UserDto>().Create();
+
+            userService.Setup(service => service.AcceptPolicyAsync()).ReturnsAsync(user);
+
+            // Act
+            var result = await userController.AcceptPrivacyPolicy();
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
         [Theory]
         [AutoEntityData]
         public async Task AddUserFcmtoken_WhenUserExists_ReturnsOkObjectResult(UserFcmTokenDto userFCMTokenDto)

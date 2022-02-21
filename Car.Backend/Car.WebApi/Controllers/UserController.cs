@@ -48,6 +48,17 @@ namespace Car.WebApi.Controllers
         }
 
         /// <summary>
+        /// Accept privacy policy and terms of use for logged user.
+        /// </summary>
+        /// <returns>Updated user.</returns>
+        [HttpPost("accept-policy")]
+        public async Task<IActionResult> AcceptPrivacyPolicy()
+        {
+            var updatedUser = await userService.AcceptPolicyAsync();
+            return Ok(updatedUser);
+        }
+
+        /// <summary>
         /// Adds fcmtoken to user asynchronously.
         /// </summary>
         /// <param name="userFCMTokenDto">fcm token to add.</param>

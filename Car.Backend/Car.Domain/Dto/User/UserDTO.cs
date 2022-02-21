@@ -26,5 +26,7 @@ namespace Car.Domain.Dto
         public int JourneyCount { get; set; }
 
         public string? PhoneNumber { get; set; }
+
+        public bool IsPolicyAccepted { get; set; } = false;
     }
 }
