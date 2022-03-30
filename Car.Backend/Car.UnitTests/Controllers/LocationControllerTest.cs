@@ -50,7 +50,7 @@ namespace Car.UnitTests.Controllers
         {
             // Arrange
             var expectedLocation = Mapper.Map<LocationDto, Location>(locationDto);
-            locationService.Setup(service => service.AddLocationAsync(locationDto)).ReturnsAsync(expectedLocation);
+            locationService.Setup(service => service.AddLocationAsync(locationDto)).ReturnsAsync((true, expectedLocation));
 
             // Act
             var result = await locationController.Add(locationDto);
@@ -61,6 +61,21 @@ namespace Car.UnitTests.Controllers
                 result.Should().BeOfType<OkObjectResult>();
                 (result as OkObjectResult)?.Value.Should().Be(expectedLocation);
             }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddLocation_WhenLocationIsNotValid_ReturnsForbid(LocationDto locationDto)
+        {
+            // Arrange
+            var expectedLocation = Mapper.Map<LocationDto, Location>(locationDto);
+            locationService.Setup(service => service.AddLocationAsync(locationDto)).ReturnsAsync((false, null));
+
+            // Act
+            var result = await locationController.Add(locationDto);
+
+            // Assert
+            result.Should().BeOfType<ForbidResult>();
         }
 
         [Theory]
