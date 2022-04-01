@@ -20,6 +20,8 @@ namespace Car.Data.Infrastructure
 
         Task<TEntity> UpdateAsync(TEntity entity);
 
+        Task UpdateRangeAsync(IEnumerable<TEntity> entities);
+
         Task<int> SaveChangesAsync();
 
         ValueTask<TEntity> GetByIdAsync(params object[] keys);

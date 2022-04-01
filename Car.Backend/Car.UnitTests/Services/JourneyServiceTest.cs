@@ -408,6 +408,56 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetUncheckedJourneysAsync_NoUncheckedJourneysExist_ReturnsEmpty(
+            [Range(1, 5)] int days)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
+                .With(j => j.IsMarkedAsFinished, true)
+                .CreateMany()
+                .ToList();
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetUncheckedJourneysAsync();
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task GetUncheckedJourneysAsync_UncheckedJourneysExist_ReturnsJourneys(
+            [Range(1, 5)] int days)
+        {
+            // Arrange
+            var journeys = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
+                .With(j => j.IsMarkedAsFinished, true)
+                .CreateMany()
+                .ToList();
+            var uncheckedJourneys = Fixture.Build<Journey>()
+                .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
+                .With(j => j.IsMarkedAsFinished, false)
+                .CreateMany()
+                .ToList();
+            journeys.AddRange(uncheckedJourneys);
+
+            journeyRepository.Setup(r => r.Query())
+                .Returns(journeys.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await journeyService.GetUncheckedJourneysAsync();
+
+            // Assert
+            result.ToList().Should().BeEquivalentTo(uncheckedJourneys);
+        }
+
+        [Theory]
+        [AutoEntityData]
         public async Task GetRequestsJourneysAsync_WhenJourneysExists_ReturnsRequestCollection(User organizer, List<Request> requests)
         {
             // Arrange

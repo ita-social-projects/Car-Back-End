@@ -147,6 +147,17 @@ namespace Car.Domain.Services.Implementation
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
 
+        public async Task<IEnumerable<Journey>> GetUncheckedJourneysAsync()
+        {
+            var journeys = await journeyRepository
+                    .Query()
+                    .FilterPast()
+                    .FilterUnmarked()
+                .ToListAsync();
+
+            return mapper.Map<IEnumerable<Journey>>(journeys);
+        }
+
         public async Task<IEnumerable<RequestDto>> GetRequestedJourneysAsync()
         {
             var userRequests = await requestService.GetRequestsByUserIdAsync();
