@@ -35,8 +35,11 @@ namespace Car.WebApi.Controllers
         /// <param name="location">The location.</param>
         /// <returns>New location</returns>
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] LocationDto location) =>
-            Ok(await locationService.AddLocationAsync(location));
+        public async Task<IActionResult> Add([FromBody] LocationDto location)
+        {
+            var (isLocationAdded, addedLocation) = await locationService.AddLocationAsync(location);
+            return isLocationAdded ? Ok(addedLocation) : Forbid();
+        }
 
         /// <summary>
         /// updates location

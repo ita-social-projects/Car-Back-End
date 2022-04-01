@@ -40,15 +40,19 @@ namespace Car.Domain.Services.Implementation
                 .ToListAsync();
         }
 
-        public async Task<Location> AddLocationAsync(LocationDto locationDTO)
+        public async Task<(bool IsAdded, Location? AddedLocation)> AddLocationAsync(LocationDto locationDTO)
         {
             var location = mapper.Map<LocationDto, Location>(locationDTO);
             location.UserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
+            if (IsLocationValid(location))
+            {
+                var newLocation = await locationRepository.AddAsync(location);
+                await locationRepository.SaveChangesAsync();
 
-            var newLocation = await locationRepository.AddAsync(location);
-            await locationRepository.SaveChangesAsync();
+                return (true, newLocation);
+            }
 
-            return newLocation;
+            return (false, null);
         }
 
         public async Task<(bool IsUpdated, Location? UpdatedLocation)> UpdateAsync(UpdateLocationDto location)
@@ -59,7 +63,7 @@ namespace Car.Domain.Services.Implementation
             {
                 int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
-                if (userId != updatedLocation.UserId)
+                if (userId != updatedLocation.UserId && !IsLocationValid(updatedLocation))
                 {
                     return (false, null);
                 }
@@ -90,6 +94,13 @@ namespace Car.Domain.Services.Implementation
             await locationRepository.SaveChangesAsync();
 
             return true;
+        }
+
+        private bool IsLocationValid(Location location)
+        {
+            return locationRepository.Query()
+                            .Where(l => l.UserId == location.UserId)
+                            .All(l => l.Name != location.Name);
         }
     }
 }
