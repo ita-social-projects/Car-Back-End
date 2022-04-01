@@ -82,7 +82,7 @@ namespace Car.UnitTests.Services
 
             foreach (var stat in stats)
             {
-                hub.Setup(hub => hub.Clients.Group($"{stat.Id}")).Returns(Mock.Of<IClientProxy>());
+                hub.Setup(hub => hub.Clients.Group($"statistic{stat.Id}")).Returns(Mock.Of<IClientProxy>());
             }
 
             // Act
@@ -127,7 +127,7 @@ namespace Car.UnitTests.Services
 
             foreach (var stat in stats)
             {
-                hub.Setup(hub => hub.Clients.Group($"{stat.Id}")).Returns(Mock.Of<IClientProxy>());
+                hub.Setup(hub => hub.Clients.Group($"statistic{stat.Id}")).Returns(Mock.Of<IClientProxy>());
             }
 
             // Act
