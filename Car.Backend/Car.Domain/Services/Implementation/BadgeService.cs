@@ -83,8 +83,10 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<UserStatistic> GetUserStatisticByUserIdAsync(int userId)
         {
-            return await userStatisticRepository.Query()
+            var userStatistic = await userStatisticRepository.Query()
                 .Where(user => user.Id == userId).FirstOrDefaultAsync();
+
+            return userStatistic;
         }
 
         public async Task<UserStatistic> GetUserStatistic()
@@ -98,8 +100,7 @@ namespace Car.Domain.Services.Implementation
 
         private async Task SendStatisticToUser(UserStatistic userStat)
         {
-            await hub.Clients.Group($"{userStat.Id}")
-                .SendAsync("RecieveStats", userStat);
+             await hub.Clients.Group($"statistic{userStat.Id}").SendAsync("RecieveStats", userStat);
         }
     }
 }
