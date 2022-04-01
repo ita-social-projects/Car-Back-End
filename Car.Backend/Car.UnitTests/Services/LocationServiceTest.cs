@@ -14,6 +14,7 @@ using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
@@ -132,7 +133,7 @@ namespace Car.UnitTests.Services
             var result = await locationService.AddLocationAsync(locationDto);
 
             // Assert
-            result.Id.Should().Be(locationDto.Id);
+            result.AddedLocation.Id.Should().Be(locationDto.Id);
         }
 
         [Theory]
@@ -150,7 +151,41 @@ namespace Car.UnitTests.Services
             var result = await locationService.AddLocationAsync(locationDto);
 
             // Assert
-            result.Should().BeNull();
+            using (new AssertionScope())
+            {
+                result.IsAdded.Should().BeTrue();
+                result.AddedLocation.Should().BeNull();
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddLocationAsync_WhenLocationHasDuplicateName_ReturnsNull(LocationDto locationDto, User user)
+        {
+            // Arrange
+            var exsistingLocation = Fixture.Build<Location>()
+                .With(model => model.Name, locationDto.Name)
+                .With(model => model.UserId, user.Id)
+                .Create();
+            var locations = new List<Location>();
+            locations.Add(exsistingLocation);
+
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+            locationRepository.Setup(repo => repo.Query())
+                .Returns(locations.AsQueryable());
+
+            // Act
+            var result = await locationService.AddLocationAsync(locationDto);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.IsAdded.Should().BeFalse();
+                result.AddedLocation.Should().BeNull();
+            }
         }
 
         [Theory]
@@ -199,6 +234,32 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().Be((false, null));
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateLocation_WhenLocationHasDuplicateName_ReturnsNull(Location[] locations)
+        {
+            // Arrange
+            var updatedLocationModel = Fixture.Build<UpdateLocationDto>()
+                .With(model => model.Id, locations.First().Id)
+                .With(model => model.Name, locations.First().Name)
+                .Create();
+            var expectedLocation = locations.First();
+
+            locationRepository.Setup(r => r.Query())
+                .Returns(locations.AsQueryable().BuildMock().Object);
+
+            var user = Fixture.Build<User>().With(u => u.Id, expectedLocation.UserId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
+            // Act
+            var result = await locationService.UpdateAsync(updatedLocationModel);
+
+            // Assert
+            result.Should().BeEquivalentTo((true, expectedLocation));
         }
 
         [Theory]
