@@ -21,10 +21,6 @@ namespace Car.Domain.Dto
 
         public string? ImageId { get; set; }
 
-        public string? FCMToken { get; set; }
-
-        public int JourneyCount { get; set; }
-
         public string? PhoneNumber { get; set; }
     }
 }

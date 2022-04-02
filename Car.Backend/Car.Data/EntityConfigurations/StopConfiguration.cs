@@ -15,9 +15,7 @@ namespace Car.Data.EntityConfigurations
                 .HasForeignKey(stop => stop.AddressId);
             builder.HasOne(stop => stop.Journey).WithMany(journey => journey!.Stops)
                 .HasForeignKey(stop => stop.JourneyId);
-            builder.HasOne(stop => stop.User).WithMany(user => user!.Stops)
-                .HasForeignKey(stop => stop.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasQueryFilter(stop => !stop.IsCancelled);
         }
     }

@@ -3,7 +3,7 @@ using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Dto.Journey;
 using Car.Domain.Filters;
-using Car.Domain.Models.Journey;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -125,8 +125,8 @@ namespace Car.WebApi.Controllers
         /// <param name="journeyFilterModel">Model that contains needed parameters to filter by</param>
         /// <returns>Collection of filtered journeys.</returns>
         [HttpGet("filter/")]
-        public IActionResult GetFiltered([FromQuery] JourneyFilter journeyFilterModel) =>
-            Ok(journeyService.GetApplicantJourneys(journeyFilterModel));
+        public async Task<IActionResult> GetFiltered([FromQuery] JourneyFilter journeyFilterModel) =>
+            Ok(await journeyService.GetApplicantJourneysAsync(journeyFilterModel));
 
         /// <summary>
         /// deletes journey by identifier
@@ -213,12 +213,12 @@ namespace Car.WebApi.Controllers
         /// <summary>
         /// Adds user to journey
         /// </summary>
-        /// <param name="journeyApply">Journey Apply Model</param>
+        /// <param name="applyModel">Applicant Apply Model</param>
         /// <returns>OkResult</returns>
         [HttpPut("add-user/")]
-        public async Task<IActionResult> AddUserToJourney([FromBody] JourneyApplyModel journeyApply)
+        public async Task<IActionResult> AddUserToJourney([FromBody] ApplicantApplyModel applyModel)
         {
-            var (isAddingAllowed, isUserAdded) = await journeyService.AddUserToJourney(journeyApply);
+            var (isAddingAllowed, isUserAdded) = await journeyService.AddUserToJourney(applyModel);
             return isAddingAllowed ? Ok(isUserAdded) : Forbid();
         }
 

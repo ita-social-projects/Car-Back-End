@@ -104,7 +104,7 @@ namespace Car.Domain.Services.Implementation
             return userRequests;
         }
 
-        public async Task NotifyUserAsync(RequestDto request, Journey journey, IEnumerable<StopDto> stops)
+        public async Task NotifyUserAsync(RequestDto request, Journey journey)
         {
             var serializeOptions = new JsonSerializerOptions
             {
@@ -118,7 +118,7 @@ namespace Car.Domain.Services.Implementation
                 Type = NotificationType.RequestedJourneyCreated,
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow,
-                JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id, passangersCount = request.PassengersCount, applicantStops = stops }, serializeOptions),
+                JsonData = JsonSerializer.Serialize(new { journeyId = journey.Id, passangersCount = request.PassengersCount }, serializeOptions),
                 JourneyId = journey.Id,
             };
 

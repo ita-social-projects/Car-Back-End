@@ -26,6 +26,23 @@ namespace Car.Data.EntityConfigurations
             builder.Property(user => user.Surname).HasMaxLength(64).IsRequired();
             builder.Property(user => user.HireDate).HasColumnType("date");
             builder.Property(user => user.ImageId).HasMaxLength(1500);
+
+            builder.HasMany(u => u.Stops)
+                .WithMany(s => s.Users)
+                .UsingEntity<UserStop>(
+                    usBuilder =>
+                        usBuilder.HasOne(us => us.Stop!)
+                            .WithMany(u => u.UserStops)
+                            .HasForeignKey(us => us.StopId),
+                    usBuilder =>
+                        usBuilder.HasOne(us => us.User!)
+                            .WithMany(s => s.UserStops)
+                            .HasForeignKey(us => us.UserId),
+                    usBuilder =>
+                    {
+                        usBuilder.HasKey(us => new { us.UserId, us.StopId });
+                        usBuilder.ToTable("UserStop");
+                    });
         }
     }
 }

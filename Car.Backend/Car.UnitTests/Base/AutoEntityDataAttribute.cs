@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Xunit2;
+using Car.UnitTests.Base.Customizations;
 
 namespace Car.UnitTests.Base
 {
@@ -12,6 +13,7 @@ namespace Car.UnitTests.Base
         {
             Fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             Fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            Fixture.Customize(new GenerateValidGeoCustomization());
         }
     }
     #pragma warning restore CS0618

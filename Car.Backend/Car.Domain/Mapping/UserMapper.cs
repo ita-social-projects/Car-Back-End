@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.User;
 
 namespace Car.Domain.Mapping
 {
@@ -13,6 +14,7 @@ namespace Car.Domain.Mapping
             CreateMap<UserFcmTokenDto, FcmToken>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<User, UserEmailDto>().ReverseMap();
+            CreateMap<UserStop, UserStopDto>().ReverseMap();
         }
     }
 }

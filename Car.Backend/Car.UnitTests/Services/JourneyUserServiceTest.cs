@@ -8,6 +8,7 @@ using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -123,10 +124,10 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateJourneyUserAsync_JourneyUserExistsAndIsAllowed_ReturnsUpdatedJourneyUser(JourneyUserDto journeyUserDto)
+        public async Task UpdateJourneyUserAsync_JourneyUserExistsAndIsAllowed_ReturnsUpdatedJourneyUser(JourneyUserModel requestModel)
         {
             // Arrange
-            var journeyUser = Mapper.Map<JourneyUserDto, JourneyUser>(journeyUserDto);
+            var journeyUser = Mapper.Map<JourneyUserModel, JourneyUser>(requestModel);
             var journeyUsers = Fixture.Build<JourneyUser>()
                 .With(j => j.JourneyId, journeyUser.JourneyId)
                 .With(j => j.UserId, journeyUser.UserId)
@@ -134,13 +135,13 @@ namespace Car.UnitTests.Services
             journeyUserRepository.Setup(r => r.Query()).Returns(journeyUsers.AsQueryable().BuildMock().Object);
             journeyUserRepository.Setup(r => r.UpdateAsync(It.IsAny<JourneyUser>())).ReturnsAsync(journeyUser);
 
-            var user = Fixture.Build<User>().With(u => u.Id, journeyUserDto.UserId).Create();
+            var user = Fixture.Build<User>().With(u => u.Id, requestModel.UserId).Create();
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
-            var result = await journeyUserService.UpdateJourneyUserAsync(journeyUserDto);
+            var result = await journeyUserService.UpdateJourneyUserAsync(requestModel);
 
             // Assert
             result.Should().BeEquivalentTo((true, journeyUser), options =>
@@ -149,10 +150,10 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateJourneyUserAsync_JourneyUserExistsAndIsNotAllowed_ReturnsNull(JourneyUserDto journeyUserDto)
+        public async Task UpdateJourneyUserAsync_JourneyUserExistsAndIsNotAllowed_ReturnsNull(JourneyUserModel requestModel)
         {
             // Arrange
-            var journeyUser = Mapper.Map<JourneyUserDto, JourneyUser>(journeyUserDto);
+            var journeyUser = Mapper.Map<JourneyUserModel, JourneyUser>(requestModel);
             var journeyUsers = Fixture.Build<JourneyUser>()
                 .With(j => j.JourneyId, journeyUser.JourneyId)
                 .With(j => j.UserId, journeyUser.UserId)
@@ -160,13 +161,13 @@ namespace Car.UnitTests.Services
             journeyUserRepository.Setup(r => r.Query()).Returns(journeyUsers.AsQueryable().BuildMock().Object);
             journeyUserRepository.Setup(r => r.UpdateAsync(It.IsAny<JourneyUser>())).ReturnsAsync(journeyUser);
 
-            var user = Fixture.Build<User>().With(u => u.Id, journeyUserDto.UserId + 1).Create();
+            var user = Fixture.Build<User>().With(u => u.Id, requestModel.UserId + 1).Create();
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
 
             // Act
-            var result = await journeyUserService.UpdateJourneyUserAsync(journeyUserDto);
+            var result = await journeyUserService.UpdateJourneyUserAsync(requestModel);
 
             // Assert
             result.Should().Be((false, null));
@@ -174,10 +175,10 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task UpdateJourneyUserAsync_JourneyUserDoesNotExist_ReturnsNull(JourneyUserDto journeyUserDto)
+        public async Task UpdateJourneyUserAsync_JourneyUserDoesNotExist_ReturnsNull(JourneyUserModel journeyUserDto)
         {
             // Arrange
-            var journeyUser = Mapper.Map<JourneyUserDto, JourneyUser>(journeyUserDto);
+            var journeyUser = Mapper.Map<JourneyUserModel, JourneyUser>(journeyUserDto);
             var journeyUsers = Fixture.Build<JourneyUser>()
                 .With(j => j.JourneyId, journeyUser.JourneyId + 1)
                 .With(j => j.UserId, journeyUser.JourneyId)

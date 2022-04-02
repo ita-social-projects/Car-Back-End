@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
+using Car.Domain.Models.User;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -13,7 +14,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<bool> HasBaggage(int journeyId, int userId);
 
-        Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> UpdateJourneyUserAsync(JourneyUserDto updateJourneyUserDto);
+        Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> UpdateJourneyUserAsync(JourneyUserModel updateJourneyUserDto);
 
         Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> SetWithBaggageAsync(int journeyId, int userId, bool withBaggage);
     }

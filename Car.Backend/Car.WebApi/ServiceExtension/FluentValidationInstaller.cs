@@ -1,10 +1,10 @@
 using Car.Domain.Dto;
 using Car.Domain.Dto.Address;
 using Car.Domain.Dto.Location;
+using Car.Domain.Dto.Stop;
 using Car.Domain.Filters;
 using Car.Domain.FluentValidation;
-using Car.Domain.FluentValidation.Journey;
-using Car.Domain.Models.Journey;
+using Car.Domain.Models.User;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +22,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddTransient<IValidator<CreateCarDto>, CreateCarDtoValidator>();
             services.AddTransient<IValidator<UpdateCarDto>, UpdateCarDtoValidator>();
 
-            services.AddTransient<IValidator<JourneyApplyModel>, JourneyApplyModelValidator>();
+            services.AddTransient<IValidator<ApplicantApplyModel>, ApplicantApplyModelValidator>();
             services.AddTransient<IValidator<JourneyDto>, JourneyDtoValidator>();
             services.AddTransient<IValidator<JourneyFilter>, JourneyFilterValidator>();
             services.AddTransient<IValidator<JourneyUserDto>, JourneyUserDtoValidator>();

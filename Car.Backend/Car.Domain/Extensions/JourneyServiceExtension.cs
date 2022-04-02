@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.Enums;
-using Car.Domain.Dto;
 using Car.Domain.Dto.Address;
+using Car.Domain.Dto.Stop;
 using Car.Domain.Filters;
+using Car.Domain.Models.Common;
 using Car.Domain.Services.Interfaces;
 using Geolocation;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,13 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> IncludeStopsWithAddresses(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.Stops.OrderBy(stop => stop.Index))
                 .ThenInclude(stop => stop.Address);
+
+        public static IQueryable<Journey> IncludeStopsWithUserStops(this IQueryable<Journey> journeys) =>
+            journeys.Include(journey => journey.Stops.OrderBy(stop => stop.Index))
+                .ThenInclude(stop => stop.UserStops);
+
+        public static IQueryable<Journey> IncludeStopsWithAddressesAndUserStops(this IQueryable<Journey> journeys) =>
+            journeys.IncludeStopsWithAddresses().IncludeStopsWithUserStops();
 
         public static IQueryable<Journey> IncludeJourneyPoints(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.JourneyPoints.OrderBy(point => point.Index));
@@ -96,7 +104,6 @@ namespace Car.Domain.Extensions
             var result = journeys.Select(journey => journey.Stops.Select(stop => new StopDto
             {
                 Id = stop.Id,
-                Type = stop.Type,
                 Address = new AddressDto
                 {
                     Id = stop.Address!.Id,
@@ -157,13 +164,53 @@ namespace Car.Domain.Extensions
                 longitude,
                 distanceUnit: DistanceUnit.Kilometers);
 
+        public static double CalculateDistance(this Address address, double latitude, double longitude) =>
+            GeoCalculator.GetDistance(
+                address.Latitude,
+                address.Longitude,
+                latitude,
+                longitude,
+                distanceUnit: DistanceUnit.Kilometers);
+
+        public static double CalculateDistance(double slatitude, double slongitude, double dlatitude, double dlongitude, int numberOfDecimalPalces = 1) =>
+            GeoCalculator.GetDistance(
+                slatitude,
+                slongitude,
+                dlatitude,
+                dlongitude,
+                distanceUnit: DistanceUnit.Kilometers,
+                decimalPlaces: numberOfDecimalPalces);
+
+        public static bool TryToGetSuitableDistance(this ICollection<JourneyPoint> journeyPoints, double latitude, double longitide, out SuitablePoint? suitablePoint)
+        {
+            var mostSuitablePoint = journeyPoints.Select(x => new { JourneyPoint = x, Distance = x.CalculateDistance(latitude, longitide) })
+                .OrderBy(x => x.Distance)
+                .First();
+
+            if (mostSuitablePoint.Distance > Constants.JourneySearchRadiusKm)
+            {
+                suitablePoint = null;
+                return false;
+            }
+
+            suitablePoint = new SuitablePoint(mostSuitablePoint.JourneyPoint, mostSuitablePoint.Distance);
+            return true;
+        }
+
+        public static MergeStop? GetStopWithSuitableMergeAddress(this ICollection<Stop> stops, double latitude, double longitide) =>
+            stops.Select(stop => new MergeStop(stop, stop.Address!.CalculateDistance(latitude, longitide)))
+            .Where(stop => stop.Distance < Constants.JourneySearchRadiusKm)
+            .OrderBy(stop => stop.Distance)
+            .FirstOrDefault();
+
         private static bool IsSuitablePoints(Journey journey, JourneyFilter filter)
         {
-            var pointsFromStart = journey.JourneyPoints
-                .SkipWhile(point => CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) > Constants.JourneySearchRadiusKm);
+            var hasSuitablePointsForStart = journey.JourneyPoints.Any(point =>
+                CalculateDistance(point, filter.FromLatitude, filter.FromLongitude) < Constants.JourneySearchRadiusKm);
+            var hasSuitablePointsForFinish = journey.JourneyPoints.Any(point =>
+                CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
 
-            return pointsFromStart.Any() && pointsFromStart
-                .Any(point => CalculateDistance(point, filter.ToLatitude, filter.ToLongitude) < Constants.JourneySearchRadiusKm);
+            return hasSuitablePointsForStart && hasSuitablePointsForFinish;
         }
 
         private static bool IsSuitableSeatsCount(Journey journey, JourneyFilter filter)

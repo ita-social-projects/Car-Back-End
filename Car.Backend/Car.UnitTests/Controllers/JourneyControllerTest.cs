@@ -5,8 +5,10 @@ using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Dto.Journey;
+using Car.Domain.Dto.Stop;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -335,13 +337,13 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public void GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<ApplicantJourney> expectedResult)
+        public async Task GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<JourneyModel> expectedResult)
         {
             // Arrange
-            journeyService.Setup(j => j.GetApplicantJourneys(filterModel)).Returns(expectedResult);
+            journeyService.Setup(j => j.GetApplicantJourneysAsync(filterModel)).ReturnsAsync(expectedResult);
 
             // Act
-            var result = journeyController.GetFiltered(filterModel);
+            var result = await journeyController.GetFiltered(filterModel);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -580,15 +582,15 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_IsAllowed_ReturnsOkObjectResult(JourneyApplyModel journeyApply, bool expectedResult)
+        public async Task AddUserToJourney_IsAllowed_ReturnsOkObjectResult(ApplicantApplyModel journeyApplyRequest, bool expectedResult)
         {
             // Arrange
             journeyService
-                .Setup(service => service.AddUserToJourney(It.IsAny<JourneyApplyModel>()))
+                .Setup(service => service.AddUserToJourney(It.IsAny<ApplicantApplyModel>()))
                 .ReturnsAsync((true, expectedResult));
 
             // Act
-            var result = await journeyController.AddUserToJourney(journeyApply);
+            var result = await journeyController.AddUserToJourney(journeyApplyRequest);
 
             // Assert
             using (new AssertionScope())
@@ -600,15 +602,15 @@ namespace Car.UnitTests.Controllers
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_IsNotAllowed_ReturnsForbidObjectResult(JourneyApplyModel journeyApply, bool expectedResult)
+        public async Task AddUserToJourney_IsNotAllowed_ReturnsForbidObjectResult(ApplicantApplyModel journeyApplyRequest, bool expectedResult)
         {
             // Arrange
             journeyService
-                .Setup(service => service.AddUserToJourney(It.IsAny<JourneyApplyModel>()))
+                .Setup(service => service.AddUserToJourney(It.IsAny<ApplicantApplyModel>()))
                 .ReturnsAsync((false, expectedResult));
 
             // Act
-            var result = await journeyController.AddUserToJourney(journeyApply);
+            var result = await journeyController.AddUserToJourney(journeyApplyRequest);
 
             // Assert
             result.Should().BeOfType<ForbidResult>();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
@@ -90,11 +91,11 @@ namespace Car.UnitTests.Controllers
         public async Task Update_WhenJourneyUserExistsAndAllowed_ReturnsUpdatedJourneyUser(JourneyUserDto journeyUser)
         {
             // Arrange
-            journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserDto>()))
+            journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserModel>()))
                 .ReturnsAsync((true, journeyUser));
 
             // Act
-            var result = await journeyUserController.Update(journeyUser);
+            var result = await journeyUserController.Update(It.IsAny<JourneyUserModel>());
 
             // Assert
             using (new AssertionScope())
@@ -105,31 +106,29 @@ namespace Car.UnitTests.Controllers
             }
         }
 
-        [Theory]
-        [AutoEntityData]
-        public async Task Update_WhenJourneyUserExistsAndNotAllowed_ReturnsForbid(JourneyUserDto journeyUser)
+        [Fact]
+        public async Task Update_WhenJourneyUserExistsAndNotAllowed_ReturnsForbid()
         {
             // Arrange
-            journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserDto>()))
+            journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserModel>()))
                 .ReturnsAsync((false, null));
 
             // Act
-            var result = await journeyUserController.Update(journeyUser);
+            var result = await journeyUserController.Update(It.IsAny<JourneyUserModel>());
 
             // Assert
             result.Should().BeOfType<ForbidResult>();
         }
 
-        [Theory]
-        [AutoEntityData]
-        public async Task Update_WhenJourneyUserDoesNotExists_ReturnsNull(JourneyUserDto journeyUser)
+        [Fact]
+        public async Task Update_WhenJourneyUserDoesNotExists_ReturnsNull()
         {
             // Arrange
-            journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserDto>()))
+            journeyService.Setup(j => j.UpdateJourneyUserAsync(It.IsAny<JourneyUserModel>()))
                 .ReturnsAsync((true, (JourneyUserDto)null));
 
             // Act
-            var result = await journeyUserController.Update(journeyUser);
+            var result = await journeyUserController.Update(It.IsAny<JourneyUserModel>());
 
             // Assert
             using (new AssertionScope())

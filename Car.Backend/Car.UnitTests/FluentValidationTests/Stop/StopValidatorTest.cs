@@ -77,28 +77,5 @@ namespace Car.UnitTests.FluentValidationTests.Stop
         {
             validator.ShouldNotHaveValidationErrorFor(stop => stop.AddressId, value);
         }
-
-        [Xunit.Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void UserId_IsNotValid_GeneratesValidationError(int value)
-        {
-            validator.ShouldHaveValidationErrorFor(stop => stop.UserId, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(1)]
-        [InlineData(10)]
-        public void UserId_IsSpecified_NotGeneratesValidationError(int value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(stop => stop.UserId, value);
-        }
-
-        [Xunit.Theory]
-        [InlineData(StopType.Start)]
-        public void Type_IsSpecified_NotGeneratesValidationError(StopType value)
-        {
-            validator.ShouldNotHaveValidationErrorFor(stop => stop.Type, value);
-        }
     }
 }

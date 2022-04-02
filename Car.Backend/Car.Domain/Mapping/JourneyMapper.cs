@@ -3,7 +3,9 @@ using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Dto.Address;
 using Car.Domain.Dto.Journey;
+using Car.Domain.Dto.Stop;
 using Car.Domain.Models.Journey;
+using Car.Domain.Models.Stops;
 
 namespace Car.Domain.Mapping
 {
@@ -20,6 +22,8 @@ namespace Car.Domain.Mapping
             CreateMap<JourneyDto, JourneyModel>().ReverseMap();
             CreateMap<JourneyPoint, JourneyPointDto>().ReverseMap();
             CreateMap<ScheduleDto, Schedule>().ReverseMap();
+            CreateMap<Stop, StopModel>().ReverseMap();
+            CreateMap<Address, AddressModel>().ReverseMap();
         }
     }
 }

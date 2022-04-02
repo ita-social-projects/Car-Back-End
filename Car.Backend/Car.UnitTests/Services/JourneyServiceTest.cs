@@ -10,18 +10,18 @@ using AutoFixture.Xunit2;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
-using Car.Data.Migrations;
 using Car.Domain.Dto;
 using Car.Domain.Dto.Journey;
-using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
+using Car.Domain.Models.Stops;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
+using Car.UnitTests.Extensions;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Hangfire.Storage.Monitoring;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
@@ -216,7 +216,7 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = false } })
+                .With(j => j.Stops, new List<Stop>() { new Stop() })
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .With(j => j.Schedule, null as Schedule)
                 .CreateMany()
@@ -343,7 +343,7 @@ namespace Car.UnitTests.Services
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
                 .With(j => j.IsCancelled, false)
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = true } })
+                .With(j => j.Stops, new List<Stop>() { new Stop() })
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .With(j => j.Schedule, null as Schedule)
                 .CreateMany()
@@ -380,7 +380,7 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.OrganizerId, organizer.Id)
-                .With(j => j.Stops, new List<Stop>() { new Stop() { IsCancelled = true } })
+                .With(j => j.Stops, new List<Stop>() { new Stop() })
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
                 .With(j => j.Schedule, null as Schedule)
                 .CreateMany()
@@ -1654,6 +1654,7 @@ namespace Car.UnitTests.Services
                 .With(dto => dto.OrganizerId, user.Id)
                 .With(dto => dto.WeekDay, () => WeekDays.Monday)
                 .Create();
+
             var expectedJourney = Mapper.Map<Journey, JourneyModel>(journeys.First());
             expectedJourney.Duration = updatedJourneyDto.Duration;
             expectedJourney.Stops = updatedJourneyDto.Stops;
@@ -1834,15 +1835,15 @@ namespace Car.UnitTests.Services
         }
 
         [Theory]
-        [InlineAutoData(3)]
-        public void GetApplicantJourneys_SuitableJourneysExist_ReturnsNotEmptyApplicantJourneyCollection(int journeysCount)
+        [AutoEntityData]
+        public async Task GetApplicantJourneys_SuitableJourneysExist_ReturnsNotEmptyApplicantJourneyCollection(User applicant)
         {
             // Arrange
             var (journeyComposer, filterComposer) = GetInitializedJourneyAndFilter();
             var journeys = journeyComposer
                 .With(j => j.IsFree, false)
                 .With(j => j.Schedule, null as Schedule)
-                .CreateMany(journeysCount)
+                .CreateMany(3)
                 .ToList();
 
             var filter = filterComposer
@@ -1851,24 +1852,25 @@ namespace Car.UnitTests.Services
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(applicant);
 
             // Act
-            var result = journeyService.GetApplicantJourneys(filter).ToList();
+            var result = await journeyService.GetApplicantJourneysAsync(filter);
 
             // Assert
             result.Should().HaveCount(journeys.Count);
-            result.Should().BeOfType<List<ApplicantJourney>>();
+            result.Should().BeOfType<List<JourneyModel>>();
         }
 
         [Theory]
-        [InlineAutoData(3)]
-        public void GetApplicantJourneys_SuitableJourneysNotExist_ReturnsEmptyApplicantJourneyCollection(int journeysCount)
+        [AutoEntityData]
+        public async Task GetApplicantJourneys_SuitableJourneysNotExist_ReturnsEmptyApplicantJourneyCollection(User applicant)
         {
             // Arrange
             var (journeyComposer, filterComposer) = GetInitializedJourneyAndFilter();
             var journeys = journeyComposer
                 .With(j => j.IsFree, false)
-                .CreateMany(journeysCount);
+                .CreateMany(3);
 
             var filter = filterComposer
                 .With(f => f.Fee, FeeType.Free)
@@ -1876,13 +1878,14 @@ namespace Car.UnitTests.Services
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(applicant);
 
             // Act
-            var result = journeyService.GetApplicantJourneys(filter).ToList();
+            var result = await journeyService.GetApplicantJourneysAsync(filter);
 
             // Assert
             result.Should().BeEmpty();
-            result.Should().BeOfType<List<ApplicantJourney>>();
+            result.Should().BeOfType<List<JourneyModel>>();
         }
 
         [Theory]
@@ -1908,8 +1911,7 @@ namespace Car.UnitTests.Services
                 .Setup(r =>
                     r.NotifyUserAsync(
                         It.IsAny<RequestDto>(),
-                        It.IsAny<Journey>(),
-                        It.IsAny<IEnumerable<StopDto>>()))
+                        It.IsAny<Journey>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -1919,8 +1921,7 @@ namespace Car.UnitTests.Services
             requestService.Verify(
                 r => r.NotifyUserAsync(
                 It.IsAny<RequestDto>(),
-                It.IsAny<Journey>(),
-                It.IsAny<IEnumerable<StopDto>>()),
+                It.IsAny<Journey>()),
                 Times.AtLeastOnce);
         }
 
@@ -2038,70 +2039,66 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(JourneyApplyModel journeyApply)
+        public async Task AddUserToJourney_WhenJourneyDoesNotExist_ReturnsFalse(ApplicantApplyModel applyModel)
         {
             // Arrange
-            if (journeyApply.JourneyUser != null)
-            {
-                var journeys = Fixture.Build<Journey>()
-                .With(j => j.Id, journeyApply.JourneyUser.JourneyId + 1)
-                .With(j => j.Participants, new List<User>())
-                .CreateMany(1);
-                var participants = Fixture.Build<User>()
-                .With(p => p.Id, journeyApply.JourneyUser.UserId)
-                .CreateMany(1)
-                .ToList();
-                journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
-                userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
-            }
+            var journeys = Fixture.Build<Journey>()
+            .With(j => j.Id, applyModel.JourneyUser.JourneyId + 1)
+            .With(j => j.Participants, new List<User>())
+            .CreateMany(1);
+            var participants = Fixture.Build<User>()
+            .With(p => p.Id, applyModel.JourneyUser.UserId)
+            .CreateMany(1)
+            .ToList();
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
 
             // Act
-            var result = await journeyService.AddUserToJourney(journeyApply);
+            var result = await journeyService.AddUserToJourney(applyModel);
 
             // Assert
             result.Should().Be((true, false));
         }
 
         [Theory]
-        [AutoEntityData]
-        public async Task AddUserToJourney_WhenCurrentUserIdNotEqualJourneyOrganizerId_ReturnsFalse(JourneyApplyModel journeyApply)
+        [InlineData(1, 2, 3)]
+        public async Task AddUserToJourney_WhenAddingIsNotAllowed_ReturnsFalse(int applicantId, int currentUserId, int organizerId)
         {
             // Arrange
-            if (journeyApply.JourneyUser != null)
-            {
-                journeyApply.JourneyUser.UserId = 1;
-                journeyApply.JourneyUser.PassangersCount = 0;
+            var journeyApplyRequest = Fixture.Build<ApplicantApplyModel>()
+                .With(j => j.JourneyUser, new JourneyUserModel()
+                {
+                    UserId = applicantId,
+                    PassangersCount = 1,
+                })
+                .Create();
 
-                var user = Fixture.Build<User>().With(u => u.Id, journeyApply.JourneyUser.UserId + 1).Create();
-                var claims = new List<Claim>() { new("preferred_username", user.Email) };
-                httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            var applicant = Fixture.Build<User>()
+                .With(u => u.Id, applicantId)
+                .Create();
 
-                var userToAdds = Fixture.Build<User>()
-                    .With(userToAdd => userToAdd.Id, journeyApply.JourneyUser.UserId)
-                    .CreateMany(1)
-                    .ToList();
+            var users = Fixture.Build<User>()
+                .With(u => u.Id, currentUserId)
+                .CreateMany(1)
+                .ToList();
 
-                userToAdds.Add(user);
+            var claims = new List<Claim>() { new("preferred_username", users[0].Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
-                var journeyUsers = Fixture.Build<JourneyUser>()
-                    .With(journeyUser => journeyUser.PassangersCount, 0)
-                    .CreateMany(1)
-                    .ToList();
+            var journeys = Fixture.Build<Journey>()
+                .OmitAutoProperties()
+                .With(journey => journey.Id, journeyApplyRequest.JourneyUser!.JourneyId)
+                .With(journey => journey.OrganizerId, organizerId)
+                .With(journey => journey.CountOfSeats, 1)
+                .With(journey => journey.JourneyUsers, new List<JourneyUser>())
+                .CreateMany(1);
 
-                var journeys = Fixture.Build<Journey>()
-                    .With(journey => journey.Id, journeyApply.JourneyUser!.JourneyId)
-                    .With(journey => journey.OrganizerId, 10)
-                    .With(journey => journey.Participants, new List<User>() { null })
-                    .With(journey => journey.CountOfSeats, 1)
-                    .With(journey => journey.JourneyUsers, journeyUsers)
-                    .CreateMany(1);
-
-                journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
-                userRepository.Setup(r => r.Query()).Returns(userToAdds.AsQueryable().BuildMock().Object);
-            }
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.Query()).Returns(users.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(applicant);
 
             // Act
-            var result = await journeyService.AddUserToJourney(journeyApply);
+            var result = await journeyService.AddUserToJourney(journeyApplyRequest);
 
             // Assert
             result.Should().Be((false, false));
@@ -2109,160 +2106,278 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndIsAllowed_ReturnsTrue(JourneyApplyModel journeyApply, int passangersCount)
+        public async Task AddUserToJourney_ThereAreNoPointsSuitableForApplicant_ThrowsException(User applicant)
         {
             // Arrange
-            if (journeyApply.JourneyUser != null)
+            // distance between stops reproduced below is approximately 1500 meters
+            var journeyApplyRequest = Fixture.Build<ApplicantApplyModel>()
+                .With(j => j.JourneyUser, new JourneyUserModel()
+                {
+                    UserId = applicant.Id,
+                    PassangersCount = 1,
+                })
+                .With(j => j.ApplicantStops, new List<StopModel>()
+                {
+                    new StopModel()
+                    {
+                        StopType = StopType.Start,
+                        Address = new AddressModel()
+                        {
+                            Latitude = 24,
+                            Longitude = 90.015,
+                        },
+                    },
+                })
+                .Create();
+
+            // The most closer point to applicant stop is first point in this list,
+            // so in this case, should be created a new stop with first point's coordinates
+            // *The distance between second point and applicant stop is approximately 1200 meters
+            var journeyPoints = new List<JourneyPoint>()
             {
-                journeyApply.JourneyUser.PassangersCount = passangersCount;
+                new JourneyPoint()
+                    {
+                        Index = 1,
+                        Latitude = 24.001,
+                        Longitude = 90.003,
+                    },
+            };
 
-                var user = Fixture.Build<User>().With(u => u.Id, journeyApply.JourneyUser.UserId).Create();
-                var claims = new List<Claim>() { new("preferred_username", user.Email) };
-                httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-
-                var receivedMessages = Fixture.Build<ReceivedMessages>()
-                .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
-                .CreateMany(1)
-                .ToList();
-
-                var participants = Fixture.Build<User>()
-                .With(p => p.Id, journeyApply.JourneyUser.UserId)
-                .With(p => p.ReceivedMessages, receivedMessages)
-                .CreateMany(1)
-                .ToList();
-
-                participants.Add(user);
-
-                var journeys = Fixture.Build<Journey>()
-                .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
+            var journeys = Fixture.Build<Journey>()
+                .OmitAutoProperties()
+                .With(j => j.Id, journeyApplyRequest.JourneyUser.JourneyId)
                 .With(j => j.Participants, new List<User>())
-                .With(j => j.CountOfSeats, passangersCount + 1)
+                .With(j => j.CountOfSeats, 1)
                 .With(j => j.JourneyUsers, new List<JourneyUser>())
-                .With(j => j.Stops, new List<Stop>())
+                .With(j => j.Stops, new List<Stop>()
+                {
+                    new Stop()
+                    {
+                        Address = new Address()
+                        {
+                            Latitude = 24,
+                            Longitude = 90,
+                        },
+                    },
+                })
+                .With(j => j.JourneyPoints, journeyPoints)
                 .CreateMany(1)
                 .ToList();
 
-                var chats = Fixture.Build<Chat>()
-                .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
-                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
-                .CreateMany(1)
-                .ToList();
+            var repoUsers = new List<User>() { applicant };
+            var claims = new List<Claim>() { new("preferred_username", applicant.Email) };
 
-                journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
-                userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
-                chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
-                receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
-            }
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(applicant);
+            userRepository.Setup(r => r.Query()).Returns(repoUsers.AsQueryable().BuildMock().Object);
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             // Act
-            var result = await journeyService.AddUserToJourney(journeyApply);
+            Func<Task> act = async () => await journeyService.AddUserToJourney(journeyApplyRequest);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_WhenApplicantStopIsNotSuitableToMergeButThereIsASuitableJourneyPoint_AddsNewStop(User applicant)
+        {
+            // Arrange
+            // distance between stops reproduced below is approximately 1500 meters
+            var journeyApplyRequest = Fixture.Build<ApplicantApplyModel>()
+                .With(j => j.JourneyUser, new JourneyUserModel()
+                {
+                    UserId = applicant.Id,
+                    PassangersCount = 1,
+                })
+                .With(j => j.ApplicantStops, new List<StopModel>()
+                {
+                    new StopModel()
+                    {
+                        StopType = StopType.Start,
+                        Address = new AddressModel()
+                        {
+                            Latitude = 24,
+                            Longitude = 90.015,
+                        },
+                    },
+                })
+                .Create();
+
+            // The most closer point to applicant stop is first point in this list,
+            // so in this case, should be created a new stop with first point's coordinates
+            // *The distance between first point and applicant stop is approximately 700 meters
+            // *The distance between second point and applicant stop is approximately 900 meters
+            var journeyPoints = new List<JourneyPoint>()
+            {
+                new JourneyPoint()
+                    {
+                        Index = 0,
+                        Latitude = 24.001,
+                        Longitude = 90.008,
+                    },
+                new JourneyPoint()
+                    {
+                        Index = 1,
+                        Latitude = 24.001,
+                        Longitude = 90.006,
+                    },
+            };
+
+            var journeys = Fixture.Build<Journey>()
+                .OmitAutoProperties()
+                .With(j => j.Id, journeyApplyRequest.JourneyUser.JourneyId)
+                .With(j => j.Participants, new List<User>())
+                .With(j => j.CountOfSeats, 1)
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, new List<Stop>()
+                {
+                    new Stop()
+                    {
+                        Address = new Address()
+                        {
+                            Latitude = 24,
+                            Longitude = 90,
+                        },
+                    },
+                })
+                .With(j => j.JourneyPoints, journeyPoints)
+                .CreateMany(1)
+                .ToList();
+
+            var repoUsers = new List<User>() { applicant };
+            var claims = new List<Claim>() { new("preferred_username", applicant.Email) };
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(applicant);
+            userRepository.Setup(r => r.Query()).Returns(repoUsers.AsQueryable().BuildMock().Object);
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            // Act
+            await journeyService.AddUserToJourney(journeyApplyRequest);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                journeys.First().Stops.Should().HaveCount(2);
+                journeys.First().Stops.Last().Address.Latitude.Should().Be(journeyPoints[0].Latitude);
+                journeys.First().Stops.Last().Address.Longitude.Should().Be(journeyPoints[0].Longitude);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_WhenApplicantStopIsSuitableToMerge_MergesApplicantStop(User applicant)
+        {
+            // Arrange
+            // distance between stops reproduced below is approximately 100 meters
+            var journeyApplyRequest = Fixture.Build<ApplicantApplyModel>()
+                .With(j => j.JourneyUser, new JourneyUserModel()
+                {
+                    UserId = applicant.Id,
+                    PassangersCount = 1,
+                })
+                .With(j => j.ApplicantStops, new List<StopModel>()
+                {
+                    new StopModel()
+                    {
+                        StopType = StopType.Start,
+                        Address = new AddressModel()
+                        {
+                            Latitude = 24,
+                            Longitude = 90.001,
+                        },
+                    },
+                })
+                .Create();
+
+            var journeys = Fixture.Build<Journey>()
+                .OmitAutoProperties()
+                .With(j => j.Id, journeyApplyRequest.JourneyUser.JourneyId)
+                .With(j => j.Participants, new List<User>())
+                .With(j => j.CountOfSeats, 1)
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, new List<Stop>()
+                {
+                    new Stop()
+                    {
+                        Address = new Address()
+                        {
+                            Latitude = 24,
+                            Longitude = 90,
+                        },
+                        Users = new List<User>(),
+                        UserStops = new List<UserStop>(),
+                    },
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var repoUsers = new List<User>() { applicant };
+            var claims = new List<Claim>() { new("preferred_username", applicant.Email) };
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(applicant);
+            userRepository.Setup(r => r.Query()).Returns(repoUsers.AsQueryable().BuildMock().Object);
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            // Act
+            await journeyService.AddUserToJourney(journeyApplyRequest);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                journeys.First().Stops.First().Users.Should().HaveCount(1);
+                journeys.First().Stops.First().Users.First().Id.Should().Be(applicant.Id);
+            }
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndIsAllowed_ReturnsTrue(User applicant, StopModel stopModel, Stop stop)
+        {
+            // Arrange
+            var journeyApplyRequest = Fixture.Build<ApplicantApplyModel>()
+                .With(j => j.JourneyUser, new JourneyUserModel()
+                {
+                    UserId = applicant.Id,
+                    PassangersCount = 1,
+                })
+                .With(j => j.ApplicantStops, new List<StopModel>() { stopModel })
+                .Create();
+
+            var journeys = Fixture.Build<Journey>()
+                .OmitAutoProperties()
+                .With(j => j.Id, journeyApplyRequest.JourneyUser.JourneyId)
+                .With(j => j.Participants, new List<User>())
+                .With(j => j.CountOfSeats, 1)
+                .With(j => j.JourneyUsers, new List<JourneyUser>())
+                .With(j => j.Stops, new List<Stop>() { stop })
+                .With(j => j.JourneyPoints, new List<JourneyPoint>()
+                {
+                    new JourneyPoint()
+                    {
+                        Latitude = stopModel.Address.Latitude,
+                        Longitude = stopModel.Address.Longitude,
+                    },
+                })
+                .CreateMany(1)
+                .ToList();
+
+            var repoUsers = new List<User>() { applicant };
+            var claims = new List<Claim>() { new("preferred_username", applicant.Email) };
+
+            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
+            userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(applicant);
+            userRepository.Setup(r => r.Query()).Returns(repoUsers.AsQueryable().BuildMock().Object);
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+
+            // Act
+            var result = await journeyService.AddUserToJourney(journeyApplyRequest);
 
             // Assert
             result.Should().Be((true, true));
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndJourneyStopsAddressNotEqualStopAdddress_ReturnsTrue(JourneyApplyModel journeyApply, Address address)
-        {
-            // Arrange
-            var user = Fixture.Build<User>()
-                .With(u => u.Id, journeyApply.JourneyUser.UserId)
-                .Create();
-
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-
-            var receivedMessages = Fixture.Build<ReceivedMessages>()
-                .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
-                .CreateMany(1)
-                .ToList();
-            var participants = Fixture.Build<User>()
-                .With(p => p.Id, journeyApply.JourneyUser.UserId)
-                .CreateMany(1)
-                .ToList();
-
-            participants.Add(user);
-
-            var chats = Fixture.Build<Chat>()
-                .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
-                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
-                .CreateMany(1)
-                .ToList();
-            var stops = Fixture.Build<Stop>()
-                .With(s => s.Address, address)
-                .CreateMany(1)
-                .ToList();
-            var journeys = Fixture.Build<Journey>()
-                .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
-                .With(j => j.Participants, new List<User>())
-                .With(j => j.JourneyUsers, new List<JourneyUser>())
-                .With(j => j.Stops, stops)
-                .CreateMany(1)
-                .ToList();
-
-            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
-            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
-            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
-            receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
-
-            // Act
-            await journeyService.AddUserToJourney(journeyApply);
-
-            // Assert
-            journeys.First().Should().Equals(stops.First());
-        }
-
-        [Theory]
-        [AutoEntityData]
-        public async Task AddUserToJourney_WhenJourneyAndUserAreValidAndJourneyStopsAddressEqualStopAdddress_ReturnsTrue(JourneyApplyModel journeyApply, Address address)
-        {
-            // Arrange
-            var user = Fixture.Build<User>()
-                .With(u => u.Id, journeyApply.JourneyUser.UserId)
-                .Create();
-
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
-            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
-
-            var receivedMessages = Fixture.Build<ReceivedMessages>()
-                .With(rm => rm.ChatId, journeyApply.JourneyUser.JourneyId)
-                .CreateMany(1)
-                .ToList();
-            var participants = Fixture.Build<User>()
-                .With(p => p.Id, journeyApply.JourneyUser.UserId)
-                .CreateMany(1)
-                .ToList();
-
-            participants.Add(user);
-
-            var chats = Fixture.Build<Chat>()
-                .With(c => c.Id, journeyApply.JourneyUser.JourneyId)
-                .With(c => c.ReceivedMessages, new List<ReceivedMessages>())
-                .CreateMany(1)
-                .ToList();
-            var stops = Fixture.Build<Stop>()
-                .With(s => s.Address, address)
-                .CreateMany(1)
-                .ToList();
-            var journeys = Fixture.Build<Journey>()
-                .With(j => j.Id, journeyApply.JourneyUser.JourneyId)
-                .With(j => j.Participants, new List<User>())
-                .With(j => j.JourneyUsers, new List<JourneyUser>())
-                .With(j => j.Stops, new List<Stop>())
-                .CreateMany(1)
-                .ToList();
-
-            journeyRepository.Setup(r => r.Query()).Returns(journeys.AsQueryable().BuildMock().Object);
-            userRepository.Setup(r => r.Query()).Returns(participants.AsQueryable().BuildMock().Object);
-            chatRepository.Setup(r => r.Query()).Returns(chats.AsQueryable().BuildMock().Object);
-            receivedMessagesRepository.Setup(r => r.Query()).Returns(receivedMessages.AsQueryable().BuildMock().Object);
-
-            // Act
-            await journeyService.AddUserToJourney(journeyApply);
-
-            // Assert
-            journeys.First().Should().NotBeEquivalentTo(stops.First());
         }
 
         [Theory]
@@ -2288,7 +2403,7 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().Be(expected);
-         }
+        }
 
         [Theory]
         [AutoEntityData]
@@ -2312,7 +2427,7 @@ namespace Car.UnitTests.Services
 
             // Assert
             result.Should().Be(0);
-         }
+        }
 
         [Theory]
         [AutoEntityData]
@@ -2510,6 +2625,28 @@ namespace Car.UnitTests.Services
         {
             var departureTime = DateTime.UtcNow.AddHours(1);
 
+            var stops = new List<Stop>()
+                {
+                    new Stop()
+                    {
+                        Index = 0,
+                        Address = new Address()
+                        {
+                            Latitude = Fixture.CreateInRange<double>(-90, 90),
+                            Longitude = Fixture.CreateInRange<double>(-180, 180),
+                        },
+                    },
+                    new Stop()
+                    {
+                        Index = 1,
+                        Address = new Address()
+                        {
+                            Latitude = Fixture.CreateInRange<double>(-90, 90),
+                            Longitude = Fixture.CreateInRange<double>(-180, 180),
+                        },
+                    },
+                };
+
             var journeyPoints = new List<JourneyPoint>
                 {
                     new JourneyPoint { Latitude = 30, Longitude = 30 },
@@ -2522,6 +2659,7 @@ namespace Car.UnitTests.Services
                 .ToList();
 
             var journey = Fixture.Build<Journey>()
+                .With(j => j.Stops, stops)
                 .With(j => j.CountOfSeats, 4)
                 .With(j => j.IsFree, true)
                 .With(j => j.DepartureTime, departureTime)

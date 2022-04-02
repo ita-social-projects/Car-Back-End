@@ -19,6 +19,6 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeleteOutdatedAsync();
 
-        Task NotifyUserAsync(RequestDto request, Journey journey, IEnumerable<StopDto> stops);
+        Task NotifyUserAsync(RequestDto request, Journey journey);
     }
 }

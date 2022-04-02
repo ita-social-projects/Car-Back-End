@@ -187,11 +187,11 @@
             <param name="userId">user Id</param>
             <returns>OkResult</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyController.AddUserToJourney(Car.Domain.Models.Journey.JourneyApplyModel)">
+        <member name="M:Car.WebApi.Controllers.JourneyController.AddUserToJourney(Car.Domain.Models.User.ApplicantApplyModel)">
             <summary>
             Adds user to journey
             </summary>
-            <param name="journeyApply">Journey Apply Model</param>
+            <param name="applyModel">Applicant Apply Model</param>
             <returns>OkResult</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.JourneyUserController.GetJourneyUserById(System.Int32,System.Int32)">
@@ -210,7 +210,7 @@
             <param name="userId">User identifier</param>
             <returns>bool value that indicates whether JourneyUser has a baggage</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.JourneyUserController.Update(Car.Domain.Dto.JourneyUserDto)">
+        <member name="M:Car.WebApi.Controllers.JourneyUserController.Update(Car.Domain.Models.User.JourneyUserModel)">
             <summary>
             Updates the JourneyUser asynchronously
             </summary>

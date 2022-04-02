@@ -10,10 +10,9 @@ namespace Car.Data.FluentValidation
             RuleFor(stop => stop.Index).GreaterThanOrEqualTo(Constants.Constants.NumberMin);
             RuleFor(stop => stop.JourneyId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(stop => stop.AddressId).GreaterThan(Constants.Constants.IdLength);
-            RuleFor(stop => stop.UserId).GreaterThan(Constants.Constants.IdLength);
-            RuleFor(stop => stop.Type).NotNull();
-            RuleFor(stop => stop.Address).SetValidator(new AddressValidator()!);
-            RuleFor(stop => stop.User).SetValidator(new UserValidator()!);
+            RuleForEach(stop => stop.Users).SetValidator(new UserValidator());
+            RuleForEach(stop => stop.UserStops).SetValidator(new UserStopValidator());
+            RuleFor(stop => stop.Address).NotNull().SetValidator(new AddressValidator()!);
         }
     }
 }
