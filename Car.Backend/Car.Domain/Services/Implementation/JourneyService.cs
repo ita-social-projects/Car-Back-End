@@ -238,9 +238,9 @@ namespace Car.Domain.Services.Implementation
             return journey;
         }
 
-        public async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel)
+        public async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyDto)
         {
-            var journey = await AddJourneyAsync(journeyModel, null);
+            var journey = await AddJourneyAsync(journeyDto, null);
 
             if (journey.JourneyModel is not null && journey.IsDepartureTimeValid)
             {
@@ -354,13 +354,13 @@ namespace Car.Domain.Services.Implementation
             return (true, mapper.Map<Invitation, InvitationDto>(invitation!));
         }
 
-        public async Task<IEnumerable<JourneyModel>> GetApplicantJourneysAsync(JourneyFilter filter)
+        public async Task<(bool IsAccessed, IEnumerable<JourneyModel>? JourneyModels)> GetApplicantJourneysAsync(JourneyFilter filter)
         {
             var applicant = await userRepository.GetByIdAsync(filter.ApplicantId);
 
             if (applicant is null)
             {
-                throw new Exception($"{nameof(GetApplicantJourneysAsync)} applicant has not been found");
+                return (false, null);
             }
 
             var filteredJourneys = GetFilteredJourneys(filter);
@@ -371,7 +371,9 @@ namespace Car.Domain.Services.Implementation
                 ProcessApplicantStop(journey, applicant, filter.ToLatitude, filter.ToLongitude, StopType.Finish);
             }
 
-            return filteredJourneys.Select(journey => mapper.Map<Journey, JourneyModel>(journey)).ToList();
+            var result = filteredJourneys.Select(journey => mapper.Map<Journey, JourneyModel>(journey)).ToList();
+
+            return (true, result);
         }
 
         public async Task CheckForSuitableRequests(Journey journey)
@@ -485,7 +487,12 @@ namespace Car.Domain.Services.Implementation
 
             foreach (var stop in applyModel.ApplicantStops)
             {
-                ProcessApplicantStop(journey, userToAdd, stop.Address!.Latitude, stop.Address!.Longitude, stop.StopType);
+                var isPointProcessed = ProcessApplicantStop(journey, userToAdd, stop.Address!.Latitude, stop.Address!.Longitude, stop.StopType);
+
+                if (!isPointProcessed)
+                {
+                    return (false, false);
+                }
             }
 
             await journeyRepository.SaveChangesAsync();
@@ -822,7 +829,7 @@ namespace Car.Domain.Services.Implementation
             return (true, mapper.Map<Journey, JourneyModel>(updatedJourney!));
         }
 
-        private void ProcessApplicantStop(Journey journey, User applicant, double latitude, double longitude, StopType stopType)
+        private bool ProcessApplicantStop(Journey journey, User applicant, double latitude, double longitude, StopType stopType)
         {
             var suggestedStop = journey.Stops.GetStopWithSuitableMergeAddress(latitude, longitude);
 
@@ -845,20 +852,26 @@ namespace Car.Domain.Services.Implementation
 
                 if (!hasSuitablePoint)
                 {
-                    throw new Exception("There is no suitable point for merging");
+                    return false;
                 }
 
                 var newStopIndex = GetStopIndex(journey, suitablePoint!.JourneyPoint.Index);
+
+                if (!newStopIndex.IsIndexFound)
+                {
+                    return false;
+                }
+
                 var orderedStops = journey.Stops.OrderBy(x => x.Index);
 
-                foreach (var stop in orderedStops.SkipWhile(x => x.Index != newStopIndex))
+                foreach (var stop in orderedStops.SkipWhile(x => x.Index != newStopIndex.Index))
                 {
                     stop.Index++;
                 }
 
                 journey.Stops.Add(new Stop()
                 {
-                    Index = newStopIndex,
+                    Index = (int)newStopIndex.Index!,
                     JourneyId = journey.Id,
                     Address = new Address()
                     {
@@ -876,9 +889,11 @@ namespace Car.Domain.Services.Implementation
                     },
                 });
             }
+
+            return true;
         }
 
-        private int GetStopIndex(Journey journey, int jounrneyPointIndex)
+        private (bool IsIndexFound, int? Index) GetStopIndex(Journey journey, int jounrneyPointIndex)
         {
             int pointsPerStop = (int)Math.Ceiling((double)journey.JourneyPoints.Count / journey.Stops.Count);
 
@@ -889,11 +904,11 @@ namespace Car.Domain.Services.Implementation
 
                 if (lowerLim <= jounrneyPointIndex && jounrneyPointIndex <= higherLim)
                 {
-                    return i + 1;
+                    return (true, i + 1);
                 }
             }
 
-            throw new Exception($"{nameof(GetStopIndex)} didn't return the value");
+            return (false, null);
         }
 
         private async Task UpdateChildDetailsAsync(JourneyDto journeyDto)

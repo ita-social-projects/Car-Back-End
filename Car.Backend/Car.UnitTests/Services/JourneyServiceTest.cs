@@ -964,16 +964,20 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetApplicantJourneys_WhenApplicantNotExist_ThrowsException(JourneyFilter filter)
+        public async Task GetApplicantJourneys_WhenApplicantNotExist_ReturnsNoAccess(JourneyFilter filter)
         {
             // Arrange
             userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(null as User);
 
             // Act
-            Func<Task> act = async () => await journeyService.GetApplicantJourneysAsync(filter);
+            var result = await journeyService.GetApplicantJourneysAsync(filter);
 
             // Assert
-            await act.Should().ThrowAsync<Exception>();
+            using (new AssertionScope())
+            {
+                result.IsAccessed.Should().BeFalse();
+                result.JourneyModels.Should().BeNull();
+            }
         }
 
         [Theory]
@@ -1919,8 +1923,11 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetApplicantJourneysAsync(filter);
 
             // Assert
-            result.Should().HaveCount(journeys.Count);
-            result.Should().BeOfType<List<JourneyModel>>();
+            using (new AssertionScope())
+            {
+                result.JourneyModels.Should().HaveCount(journeys.Count);
+                result.IsAccessed.Should().BeTrue();
+            }
         }
 
         [Theory]
@@ -1945,8 +1952,11 @@ namespace Car.UnitTests.Services
             var result = await journeyService.GetApplicantJourneysAsync(filter);
 
             // Assert
-            result.Should().BeEmpty();
-            result.Should().BeOfType<List<JourneyModel>>();
+            using (new AssertionScope())
+            {
+                result.JourneyModels.Should().BeEmpty();
+                result.IsAccessed.Should().BeTrue();
+            }
         }
 
         [Theory]
@@ -2167,7 +2177,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_ThereAreNoPointsSuitableForApplicant_ThrowsException(User applicant)
+        public async Task AddUserToJourney_ThereAreNoPointsSuitableForApplicant_ReturnsNotAllowed(User applicant)
         {
             // Arrange
             // distance between stops reproduced below is approximately 1500 meters
@@ -2234,10 +2244,10 @@ namespace Car.UnitTests.Services
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
 
             // Act
-            Func<Task> act = async () => await journeyService.AddUserToJourney(journeyApplyRequest);
+            var result = await journeyService.AddUserToJourney(journeyApplyRequest);
 
             // Assert
-            await act.Should().ThrowAsync<Exception>();
+            result.Should().Be((false, false));
         }
 
         [Theory]

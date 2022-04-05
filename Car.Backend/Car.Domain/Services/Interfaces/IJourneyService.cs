@@ -48,7 +48,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<(bool IsUpdated, InvitationDto? UpdatedInvitationDto)> UpdateInvitationAsync(InvitationDto invitationDto);
 
-        Task<IEnumerable<JourneyModel>> GetApplicantJourneysAsync(JourneyFilter filter);
+        Task<(bool IsAccessed, IEnumerable<JourneyModel>? JourneyModels)> GetApplicantJourneysAsync(JourneyFilter filter);
 
         Task CheckForSuitableRequests(Journey journey);
 

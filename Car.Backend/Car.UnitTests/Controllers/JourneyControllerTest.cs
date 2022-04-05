@@ -340,14 +340,14 @@ namespace Car.UnitTests.Controllers
         public async Task GetFiltered_ReturnsOkObjectResult(JourneyFilter filterModel, IEnumerable<JourneyModel> expectedResult)
         {
             // Arrange
-            journeyService.Setup(j => j.GetApplicantJourneysAsync(filterModel)).ReturnsAsync(expectedResult);
+            journeyService.Setup(j => j.GetApplicantJourneysAsync(filterModel)).ReturnsAsync((true, expectedResult));
 
             // Act
             var result = await journeyController.GetFiltered(filterModel);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
-            (result as OkObjectResult)?.Value.Should().Be(expectedResult);
+            (result as OkObjectResult)?.Value.Should().Be((true, expectedResult));
         }
 
         [Theory]
