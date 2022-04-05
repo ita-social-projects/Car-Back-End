@@ -5,6 +5,7 @@ using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Configurations;
 using Car.Domain.Extensions;
+using Car.Domain.Hubs;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -57,6 +58,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<ILocationTypeService, LocationTypeService>();
             services.AddScoped<IJourneyUserService, JourneyUserService>();
             services.AddScoped<IReceivedMessagesService, ReceivedMessagesService>();
+            services.AddScoped<IBadgeService, BadgeService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Data.Entities.Car>, Repository<Data.Entities.Car>>();

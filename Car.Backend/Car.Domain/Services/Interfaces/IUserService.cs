@@ -12,6 +12,8 @@ namespace Car.Domain.Services.Interfaces
 
         Task<(bool IsUpdated, UserDto? UpdatedUserDto)> UpdateUserImageAsync(UpdateUserImageDto updateUserImageDto);
 
+        Task<UserDto> AcceptPolicyAsync();
+
         Task<UserFcmTokenDto?> AddUserFcmtokenAsync(UserFcmTokenDto userFcmtokenDto);
 
         Task DeleteUserFcmtokenAsync(string tokenToDelete);

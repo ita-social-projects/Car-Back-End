@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Car.Data.Entities;
+using Car.Data.Infrastructure;
 using Car.Domain.Services.Interfaces;
+using Car.WebApi.ServiceExtension;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Car.Domain.Hubs
@@ -11,7 +15,9 @@ namespace Car.Domain.Hubs
         private readonly IChatService userManager;
         private readonly IPushNotificationService pushNotificationService;
 
-        public SignalRHub(IChatService userManager, IPushNotificationService pushNotificationService)
+        public SignalRHub(
+            IChatService userManager,
+            IPushNotificationService pushNotificationService)
         {
             this.userManager = userManager;
             this.pushNotificationService = pushNotificationService;

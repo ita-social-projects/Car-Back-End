@@ -70,6 +70,9 @@ namespace Car.Data.Infrastructure
         public async Task<TEntity> UpdateAsync(TEntity entity) =>
             await Task.Run(() => dbEntities.Update(entity).Entity);
 
+        public async Task UpdateRangeAsync(IEnumerable<TEntity> entities) =>
+            await Task.Run(() => dbEntities.UpdateRange(entities));
+
         /// <summary>
         /// Deletes range.
         /// </summary>

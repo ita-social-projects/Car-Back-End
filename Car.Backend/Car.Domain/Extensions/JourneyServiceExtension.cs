@@ -156,6 +156,11 @@ namespace Car.Domain.Extensions
                 .Where(journey => IsSuitablePoints(journey, filter))
                 .Where(journey => IsSuitableSeatsCount(journey, filter));
 
+        public static IQueryable<Journey> FilterUnmarked(this IQueryable<Journey> journeys)
+        {
+            return journeys.Where(journey => !journey.IsMarkedAsFinished);
+        }
+
         public static double CalculateDistance(this JourneyPoint point, double latitude, double longitude) =>
             GeoCalculator.GetDistance(
                 point.Latitude,

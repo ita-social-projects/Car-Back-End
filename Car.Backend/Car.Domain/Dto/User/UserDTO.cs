@@ -22,5 +22,7 @@ namespace Car.Domain.Dto
         public string? ImageId { get; set; }
 
         public string? PhoneNumber { get; set; }
+
+        public bool IsPolicyAccepted { get; set; } = false;
     }
 }

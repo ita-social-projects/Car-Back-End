@@ -1,8 +1,9 @@
-﻿using Car.Data.Enums;
+﻿using System;
+using Car.Data.Enums;
 
 namespace Car.Data.Entities
 {
-    public class Invitation : IEntity
+    public class Invitation : IEntity, IEquatable<Invitation>
     {
         public int Id { get; set; }
 
@@ -15,5 +16,19 @@ namespace Car.Data.Entities
         public User? InvitedUser { get; set; }
 
         public Journey? Journey { get; set; }
+
+        public bool Equals(Invitation other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return this.InvitedUserId == other.InvitedUserId;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as Invitation);
+
+        public override int GetHashCode() => InvitedUserId.GetHashCode();
     }
 }
