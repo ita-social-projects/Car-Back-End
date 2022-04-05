@@ -13,7 +13,6 @@ using Car.Domain.Dto.Journey;
 using Car.Domain.Dto.Stop;
 using Car.Domain.Extensions;
 using Car.Domain.Filters;
-using Car.Domain.Models.Common;
 using Car.Domain.Models.Journey;
 using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
@@ -361,7 +360,7 @@ namespace Car.Domain.Services.Implementation
 
             if (applicant is null)
             {
-                throw new ArgumentNullException($"{nameof(GetApplicantJourneysAsync)} applicant has not been found");
+                throw new Exception($"{nameof(GetApplicantJourneysAsync)} applicant has not been found");
             }
 
             var filteredJourneys = GetFilteredJourneys(filter);
@@ -846,7 +845,7 @@ namespace Car.Domain.Services.Implementation
 
                 if (!hasSuitablePoint)
                 {
-                    throw new ArgumentNullException("There is no suitable point for merging");
+                    throw new Exception("There is no suitable point for merging");
                 }
 
                 var newStopIndex = GetStopIndex(journey, suitablePoint!.JourneyPoint.Index);
@@ -894,7 +893,7 @@ namespace Car.Domain.Services.Implementation
                 }
             }
 
-            throw new ArgumentNullException($"{nameof(GetStopIndex)} didn't return the value");
+            throw new Exception($"{nameof(GetStopIndex)} didn't return the value");
         }
 
         private async Task UpdateChildDetailsAsync(JourneyDto journeyDto)

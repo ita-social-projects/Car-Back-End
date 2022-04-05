@@ -32,9 +32,9 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeletePastJourneyAsync();
 
-        Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel);
+        Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyDto);
 
-        Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyModel);
+        Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyDto);
 
         Task<JourneyTimeModel> AddScheduledJourneyAsync(ScheduleDto schedule);
 
@@ -60,7 +60,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<int> GetUnreadMessagesCountForNewUserAsync(int journeyId);
 
-        Task<(bool IsAddingAllowed, bool IsUserAdded)> AddUserToJourney(ApplicantApplyModel journeyApplyRequest);
+        Task<(bool IsAddingAllowed, bool IsUserAdded)> AddUserToJourney(ApplicantApplyModel applyModel);
 
         Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
             int journeyId,
