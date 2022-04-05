@@ -912,15 +912,24 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
+        public async Task GetApplicantJourneys_WhenApplicantNotExist_ThrowsArgumentNullException(JourneyFilter filter)
+        {
+            // Arrange
+            userRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(null as User);
+
+            // Act
+            Func<Task> act = async () => await journeyService.GetApplicantJourneysAsync(filter);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [AutoEntityData]
         public void GetFilteredJourneys_ReturnsJourneyCollection(JourneyFilter filter)
         {
             // Arrange
             var expectedJourneys = new List<Journey>();
-
-            if (expectedJourneys == null)
-            {
-                throw new ArgumentNullException(nameof(expectedJourneys));
-            }
 
             journeyRepository.Setup(r => r.Query())
                 .Returns(expectedJourneys.AsQueryable().BuildMock().Object);
@@ -2106,7 +2115,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task AddUserToJourney_ThereAreNoPointsSuitableForApplicant_ThrowsException(User applicant)
+        public async Task AddUserToJourney_ThereAreNoPointsSuitableForApplicant_ThrowsArgumentNullException(User applicant)
         {
             // Arrange
             // distance between stops reproduced below is approximately 1500 meters

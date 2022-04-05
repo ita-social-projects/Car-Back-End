@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using Car.Data.Entities;
+using Car.Domain.Filters;
 using Car.Domain.Models.Stops;
 using Car.UnitTests.Extensions;
 
@@ -23,6 +24,12 @@ namespace Car.UnitTests.Base.Customizations
                 composer
                 .With(am => am.Latitude, fixture.CreateInRange<double>(-90, 90))
                 .With(am => am.Longitude, fixture.CreateInRange<double>(-180, 180)));
+
+            fixture.Customize<JourneyFilter>(composer =>
+                composer.With(f => f.FromLatitude, fixture.CreateInRange<double>(-90, 90))
+                .With(f => f.FromLongitude, fixture.CreateInRange<double>(-180, 180))
+                .With(f => f.ToLatitude, fixture.CreateInRange<double>(-90, 90))
+                .With(f => f.ToLongitude, fixture.CreateInRange<double>(-180, 180)));
         }
     }
 }
