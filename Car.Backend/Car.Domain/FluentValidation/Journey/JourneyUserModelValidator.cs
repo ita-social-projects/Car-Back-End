@@ -8,11 +8,11 @@ namespace Car.Domain.FluentValidation.Journey
     {
         public JourneyUserModelValidator()
         {
-            RuleFor(x => x.JourneyId).LessThan(Constants.IdLength);
-            RuleFor(x => x.UserId).LessThan(Constants.IdLength);
+            RuleFor(x => x.JourneyId).GreaterThan(Constants.IdLength);
+            RuleFor(x => x.UserId).GreaterThan(Constants.IdLength);
             RuleFor(x => x.PassangersCount)
-                .LessThan(Constants.SeatsMinCount)
-                .GreaterThan(Constants.SeatsMaxCount);
+                .GreaterThanOrEqualTo(Constants.SeatsMinCount)
+                .LessThanOrEqualTo(Constants.SeatsMaxCount);
         }
     }
 }
