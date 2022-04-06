@@ -520,6 +520,24 @@ namespace Car.Domain.Services.Implementation
             return (journey, journeyUser);
         }
 
+        private static (bool IsIndexFound, int? Index) GetStopIndex(Journey journey, int jounrneyPointIndex)
+        {
+            int pointsPerStop = (int)Math.Ceiling((double)journey.JourneyPoints.Count / journey.Stops.Count);
+
+            for (int i = 0; i < journey.Stops.Count; i++)
+            {
+                var lowerLim = i * pointsPerStop;
+                var higherLim = (i * pointsPerStop) + pointsPerStop;
+
+                if (lowerLim <= jounrneyPointIndex && jounrneyPointIndex <= higherLim)
+                {
+                    return (true, i + 1);
+                }
+            }
+
+            return (false, null);
+        }
+
         private static bool IsSuitableSeatsCountForAdding(Journey journey, JourneyUserModel applicant)
         {
             var passengers = journey.JourneyUsers.Sum(journeyUser => journeyUser.PassangersCount);
@@ -891,24 +909,6 @@ namespace Car.Domain.Services.Implementation
             }
 
             return true;
-        }
-
-        private (bool IsIndexFound, int? Index) GetStopIndex(Journey journey, int jounrneyPointIndex)
-        {
-            int pointsPerStop = (int)Math.Ceiling((double)journey.JourneyPoints.Count / journey.Stops.Count);
-
-            for (int i = 0; i < journey.Stops.Count; i++)
-            {
-                var lowerLim = i * pointsPerStop;
-                var higherLim = (i * pointsPerStop) + pointsPerStop;
-
-                if (lowerLim <= jounrneyPointIndex && jounrneyPointIndex <= higherLim)
-                {
-                    return (true, i + 1);
-                }
-            }
-
-            return (false, null);
         }
 
         private async Task UpdateChildDetailsAsync(JourneyDto journeyDto)
