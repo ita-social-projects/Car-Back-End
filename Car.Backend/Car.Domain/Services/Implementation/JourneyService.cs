@@ -520,6 +520,70 @@ namespace Car.Domain.Services.Implementation
             return (journey, journeyUser);
         }
 
+        private static bool ProcessApplicantStop(Journey journey, User applicant, double latitude, double longitude, StopType stopType)
+        {
+            var suggestedStop = journey.Stops.GetStopWithSuitableMergeAddress(latitude, longitude);
+
+            if (suggestedStop is not null)
+            {
+                suggestedStop.Stop.Users.Add(applicant);
+
+                suggestedStop.Stop.UserStops.Add(new UserStop()
+                {
+                    StopId = suggestedStop.Stop.Id,
+                    UserId = applicant.Id,
+                    StopType = stopType,
+                });
+            }
+            else
+            {
+                // if suitable address for merging has not been found then
+                // we are trying to merge applicant requested stop into the most suitable curve's point
+                var hasSuitablePoint = journey.JourneyPoints.TryToGetSuitableDistance(latitude, longitude, out var suitablePoint);
+
+                if (!hasSuitablePoint)
+                {
+                    return false;
+                }
+
+                var newStopIndex = GetStopIndex(journey, suitablePoint!.JourneyPoint.Index);
+
+                if (!newStopIndex.IsIndexFound)
+                {
+                    return false;
+                }
+
+                var orderedStops = journey.Stops.OrderBy(x => x.Index);
+
+                foreach (var stop in orderedStops.SkipWhile(x => x.Index != newStopIndex.Index))
+                {
+                    stop.Index++;
+                }
+
+                journey.Stops.Add(new Stop()
+                {
+                    Index = (int)newStopIndex.Index!,
+                    JourneyId = journey.Id,
+                    Address = new Address()
+                    {
+                        Latitude = suitablePoint.JourneyPoint.Latitude,
+                        Longitude = suitablePoint.JourneyPoint.Longitude,
+                    },
+                    Users = new List<User>() { applicant },
+                    UserStops = new List<UserStop>()
+                    {
+                        new UserStop()
+                        {
+                            UserId = applicant.Id,
+                            StopType = stopType,
+                        },
+                    },
+                });
+            }
+
+            return true;
+        }
+
         private static (bool IsIndexFound, int? Index) GetStopIndex(Journey journey, int jounrneyPointIndex)
         {
             int pointsPerStop = (int)Math.Ceiling((double)journey.JourneyPoints.Count / journey.Stops.Count);
@@ -845,70 +909,6 @@ namespace Car.Domain.Services.Implementation
             }
 
             return (true, mapper.Map<Journey, JourneyModel>(updatedJourney!));
-        }
-
-        private bool ProcessApplicantStop(Journey journey, User applicant, double latitude, double longitude, StopType stopType)
-        {
-            var suggestedStop = journey.Stops.GetStopWithSuitableMergeAddress(latitude, longitude);
-
-            if (suggestedStop is not null)
-            {
-                suggestedStop.Stop.Users.Add(applicant);
-
-                suggestedStop.Stop.UserStops.Add(new UserStop()
-                {
-                    StopId = suggestedStop.Stop.Id,
-                    UserId = applicant.Id,
-                    StopType = stopType,
-                });
-            }
-            else
-            {
-                // if suitable address for merging has not been found then
-                // we are trying to merge applicant requested stop into the most suitable curve's point
-                var hasSuitablePoint = journey.JourneyPoints.TryToGetSuitableDistance(latitude, longitude, out var suitablePoint);
-
-                if (!hasSuitablePoint)
-                {
-                    return false;
-                }
-
-                var newStopIndex = GetStopIndex(journey, suitablePoint!.JourneyPoint.Index);
-
-                if (!newStopIndex.IsIndexFound)
-                {
-                    return false;
-                }
-
-                var orderedStops = journey.Stops.OrderBy(x => x.Index);
-
-                foreach (var stop in orderedStops.SkipWhile(x => x.Index != newStopIndex.Index))
-                {
-                    stop.Index++;
-                }
-
-                journey.Stops.Add(new Stop()
-                {
-                    Index = (int)newStopIndex.Index!,
-                    JourneyId = journey.Id,
-                    Address = new Address()
-                    {
-                        Latitude = suitablePoint.JourneyPoint.Latitude,
-                        Longitude = suitablePoint.JourneyPoint.Longitude,
-                    },
-                    Users = new List<User>() { applicant },
-                    UserStops = new List<UserStop>()
-                    {
-                        new UserStop()
-                        {
-                            UserId = applicant.Id,
-                            StopType = stopType,
-                        },
-                    },
-                });
-            }
-
-            return true;
         }
 
         private async Task UpdateChildDetailsAsync(JourneyDto journeyDto)
