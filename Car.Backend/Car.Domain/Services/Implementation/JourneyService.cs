@@ -153,6 +153,7 @@ namespace Car.Domain.Services.Implementation
                     .Query()
                     .FilterPast()
                     .FilterUnmarked()
+                    .FilterUncancelledJourneys()
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>>(journeys);

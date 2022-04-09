@@ -437,11 +437,13 @@ namespace Car.UnitTests.Services
             var journeys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.IsMarkedAsFinished, true)
+                .With(j => j.IsCancelled, true)
                 .CreateMany()
                 .ToList();
             var uncheckedJourneys = Fixture.Build<Journey>()
                 .With(j => j.DepartureTime, DateTime.UtcNow.AddDays(-days))
                 .With(j => j.IsMarkedAsFinished, false)
+                .With(j => j.IsCancelled, false)
                 .CreateMany()
                 .ToList();
             journeys.AddRange(uncheckedJourneys);
