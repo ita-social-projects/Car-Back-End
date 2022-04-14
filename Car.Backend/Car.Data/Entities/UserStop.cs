@@ -12,6 +12,6 @@ namespace Car.Data.Entities
 
         public Stop? Stop { get; set; }
 
-        public StopType StopType { get; set; }
+        public StopType? StopType { get; set; }
     }
 }

@@ -70,13 +70,14 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool isJourneyCanceled = false)
         {
-            var journeyQueryable = journeyRepository
+            var journeyQueryable = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
                 .IncludeSchedule()
-                .IncludeJourneyInvitations();
+                .IncludeJourneyInvitations()
+                .UseSavedAdresses(locationService);
 
             var journey = isJourneyCanceled
                 ? await journeyQueryable

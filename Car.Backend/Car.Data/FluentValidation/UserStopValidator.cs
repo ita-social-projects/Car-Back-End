@@ -9,7 +9,6 @@ namespace Car.Data.FluentValidation
         {
             RuleFor(journeyUser => journeyUser.UserId).GreaterThan(Constants.Constants.IdLength);
             RuleFor(journeyUser => journeyUser.StopId).GreaterThan(Constants.Constants.IdLength);
-            RuleFor(stop => stop.StopType).NotNull();
         }
     }
 }
