@@ -7,15 +7,15 @@ using FluentValidation;
 
 namespace Car.Domain.FluentValidation
 {
-    public class UpdateLocationDtoValidator : AbstractValidator<UpdateLocationDto>
+    public class CreateLocationDtoValidator : AbstractValidator<CreateLocationDto>
     {
         private ILocationService locationService;
 
-        public UpdateLocationDtoValidator(ILocationService locationService)
+        public CreateLocationDtoValidator(ILocationService locationService)
         {
             this.locationService = locationService;
 
-            RuleFor(location => location.Address).SetValidator(new UpdateAddressToLocationDtoValidator()!);
+            RuleFor(location => location.Address).SetValidator(new AddressDtoValidator()!);
             RuleFor(location => location.TypeId).GreaterThan(Constants.IdLength);
             RuleFor(location => location.Name)
                 .NotNull()
@@ -28,7 +28,7 @@ namespace Car.Domain.FluentValidation
                 .WithMessage("Location name must be unique");
         }
 
-        private async Task<bool> NotHaveExistingName(UpdateLocationDto locationDto)
+        private async Task<bool> NotHaveExistingName(CreateLocationDto locationDto)
         {
             var locations = await locationService.GetAllByUserIdAsync();
             return locations.All(l => l.Name != locationDto.Name);
