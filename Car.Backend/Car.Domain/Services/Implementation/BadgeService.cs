@@ -50,9 +50,12 @@ namespace Car.Domain.Services.Implementation
 
                 if (journey.IsOnOwnCar)
                 {
+                    organizerStat.DriverJourneysAmount += 1;
+                    organizerStat.TotalKm += journey.RouteDistance;
                 }
                 else
                 {
+                    organizerStat.PassangerJourneysAmount += 1;
                 }
 
                 statistics.Add(organizerStat);
