@@ -9,7 +9,7 @@ namespace Car.Domain.FluentValidation
 {
     public class UpdateLocationDtoValidator : AbstractValidator<UpdateLocationDto>
     {
-        private ILocationService locationService;
+        private readonly ILocationService locationService;
 
         public UpdateLocationDtoValidator(ILocationService locationService)
         {

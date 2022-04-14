@@ -10,7 +10,7 @@ namespace Car.Domain.Services.Interfaces
     {
         Task<Location> GetLocationByIdAsync(int locationId);
 
-        Task<Location> AddLocationAsync(CreateLocationDto locationDTO);
+        Task<Location> AddLocationAsync(CreateLocationDto createLocationDto);
 
         Task<IEnumerable<Location>> GetAllByUserIdAsync();
 
