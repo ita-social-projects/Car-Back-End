@@ -8,26 +8,33 @@ using Car.UnitTests.Base;
 using FluentValidation.TestHelper;
 using Moq;
 using Xunit;
-using TheoryAttribute = Xunit.TheoryAttribute;
 
 namespace Car.UnitTests.FluentValidationTests.Location
 {
-    public class UpdateLocationModelValidatorTest : TestBase
+    public class CreateLocationDtoValidatorTest : TestBase
     {
+        private CreateLocationDtoValidator validator;
         private Mock<ILocationService> locationService;
-        private UpdateLocationDtoValidator validator;
 
-        public UpdateLocationModelValidatorTest()
+        public CreateLocationDtoValidatorTest()
         {
             locationService = new Mock<ILocationService>();
-            validator = new UpdateLocationDtoValidator(locationService.Object);
+            validator = new CreateLocationDtoValidator(locationService.Object);
         }
 
         [Theory]
         [InlineData(null)]
         public void LocationName_IsNull_GeneratesValidationError(string value)
         {
-            validator.ShouldHaveValidationErrorFor(locationModel => locationModel.Name, value);
+            // Assert
+            validator.ShouldHaveValidationErrorFor(locationDto => locationDto.Name, value);
+        }
+
+        [Fact]
+        public void LocationName_IsEmpty_GeneratesValidationError()
+        {
+            // Assert
+            validator.ShouldHaveValidationErrorFor(locationDto => locationDto.Name, string.Empty);
         }
 
         [Theory]
@@ -35,7 +42,7 @@ namespace Car.UnitTests.FluentValidationTests.Location
         public void LocationName_IsRepeatable_GeneratesValidationError(List<Data.Entities.Location> locations)
         {
             // Arrange
-            var location = Fixture.Build<UpdateLocationDto>()
+            var location = Fixture.Build<CreateLocationDto>()
                 .With(l => l.Name, locations.First().Name)
                 .Create();
             locationService.Setup(service => service.GetAllByUserIdAsync()).ReturnsAsync(locations);
@@ -46,20 +53,13 @@ namespace Car.UnitTests.FluentValidationTests.Location
 
         [Theory]
         [AutoEntityData]
-        public void LocationName_IsNotRepeatable_NotGeneratesValidationError(List<Data.Entities.Location> locations, UpdateLocationDto location)
+        public void LocationName_IsNotRepeatable_NotGeneratesValidationError(List<Data.Entities.Location> locations, CreateLocationDto location)
         {
             // Arrange
             locationService.Setup(service => service.GetAllByUserIdAsync()).ReturnsAsync(locations);
 
             // Assert
             validator.ShouldNotHaveValidationErrorFor(locationDto => locationDto.Name, location.Name);
-        }
-
-        [Fact]
-        public void LocationName_IsEmpty_GeneratesValidationError()
-        {
-            // Assert
-            validator.ShouldHaveValidationErrorFor(locationDto => locationDto.Name, string.Empty);
         }
 
         [Theory]
@@ -74,6 +74,7 @@ namespace Car.UnitTests.FluentValidationTests.Location
         [InlineData(-1)]
         public void TypeId_IsNotValid_GeneratesValidationError(int value)
         {
+            // Assert
             validator.ShouldHaveValidationErrorFor(locationModel => locationModel.TypeId, value);
         }
 
@@ -82,6 +83,7 @@ namespace Car.UnitTests.FluentValidationTests.Location
         [InlineData(10)]
         public void TypeId_IsSpecified_NotGeneratesValidationError(int value)
         {
+            // Assert
             validator.ShouldNotHaveValidationErrorFor(locationModel => locationModel.TypeId, value);
         }
     }

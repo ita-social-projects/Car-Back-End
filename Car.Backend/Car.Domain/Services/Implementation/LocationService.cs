@@ -5,6 +5,7 @@ using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Address;
 using Car.Domain.Dto.Location;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.ServiceExtension;
@@ -40,19 +41,15 @@ namespace Car.Domain.Services.Implementation
                 .ToListAsync();
         }
 
-        public async Task<(bool IsAdded, Location? AddedLocation)> AddLocationAsync(LocationDto locationDTO)
+        public async Task<Location> AddLocationAsync(CreateLocationDto createLocationDto)
         {
-            var location = mapper.Map<LocationDto, Location>(locationDTO);
+            var location = mapper.Map<CreateLocationDto, Location>(createLocationDto);
             location.UserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
-            if (IsLocationValid(location))
-            {
-                var newLocation = await locationRepository.AddAsync(location);
-                await locationRepository.SaveChangesAsync();
 
-                return (true, newLocation);
-            }
+            var newLocation = await locationRepository.AddAsync(location);
+            await locationRepository.SaveChangesAsync();
 
-            return (false, null);
+            return newLocation;
         }
 
         public async Task<(bool IsUpdated, Location? UpdatedLocation)> UpdateAsync(UpdateLocationDto location)
@@ -63,7 +60,7 @@ namespace Car.Domain.Services.Implementation
             {
                 int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
-                if (userId != updatedLocation.UserId && !IsLocationValid(updatedLocation))
+                if (userId != updatedLocation.UserId)
                 {
                     return (false, null);
                 }
@@ -94,13 +91,6 @@ namespace Car.Domain.Services.Implementation
             await locationRepository.SaveChangesAsync();
 
             return true;
-        }
-
-        private bool IsLocationValid(Location location)
-        {
-            return locationRepository.Query()
-                            .Where(l => l.UserId == location.UserId)
-                            .All(l => l.Name != location.Name);
         }
     }
 }

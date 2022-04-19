@@ -232,7 +232,7 @@
             </summary>
             <returns>All user's locations</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.Location.LocationDto)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.Location.CreateLocationDto)">
             <summary>
             Adds the location.
             </summary>
