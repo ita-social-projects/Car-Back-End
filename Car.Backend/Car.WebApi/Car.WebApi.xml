@@ -431,6 +431,13 @@
             <param name="token">fcm token to delete.</param>
             <returns>Updated user.</returns>
         </member>
+        <member name="M:Car.WebApi.Controllers.UserController.UpdateUserPhoneNumber(Car.Domain.Dto.User.UpdateUserNumberDto)">
+            <summary>
+            Updates user phone number asynchronously.
+            </summary>
+            <param name="userPhone">number to update.</param>
+            <returns>Updated user.</returns>
+        </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.GetPreferences(System.Int32)">
             <summary>
             returns the preferences for user
