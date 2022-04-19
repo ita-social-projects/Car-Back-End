@@ -6,10 +6,12 @@ using AutoFixture;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Dto.User;
 using Car.Domain.Services.Implementation;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using MockQueryable.Moq;
 using Moq;
@@ -209,6 +211,36 @@ namespace Car.UnitTests.Services
 
             // Assert
             fcmTokenRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task UpdateUserPhoneNumberAsync_WhenUserNumberIsValid_ReturnsUpdatedUser()
+        {
+            // Arrange
+            var userNumber = Fixture.Build<UpdateUserNumberDto>()
+                .With(number => number.Id, 145)
+                .With(number => number.PhoneNumber, "123456789123")
+                .With(number => number.IsNumberVisible, true)
+                .Create();
+
+            var users = Fixture.Build<User>()
+                .With(user => user.Id, userNumber.Id)
+                .With(user => user.PhoneNumber, string.Empty)
+                .With(user => user.IsNumberVisible, false)
+                .CreateMany(1)
+                .ToList();
+
+            userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
+
+            // Act
+            var result = await userService.UpdateUserPhoneNumberAsync(userNumber);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.IsNumberVisible.Should().Be(userNumber.IsNumberVisible);
+                result.PhoneNumber.Should().Be(userNumber.PhoneNumber);
+            }
         }
     }
 }

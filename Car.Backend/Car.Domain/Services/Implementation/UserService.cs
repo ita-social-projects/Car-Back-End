@@ -5,6 +5,7 @@ using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Dto.User;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.ServiceExtension;
 using Microsoft.AspNetCore.Http;
@@ -33,8 +34,8 @@ namespace Car.Domain.Services.Implementation
         public async Task<UserDto> GetUserByIdAsync(int userId)
         {
             var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userId);
-
-            return mapper.Map<User, UserDto>(user);
+            var userDTO = mapper.Map<User, UserDto>(user);
+            return userDTO;
         }
 
         public async Task<IEnumerable<UserEmailDto>> GetAllUsersAsync()
@@ -108,6 +109,19 @@ namespace Car.Domain.Services.Implementation
                 fcmTokenRepository.Delete(fcmToken);
                 await fcmTokenRepository.SaveChangesAsync();
             }
+        }
+
+        public async Task<UserDto> UpdateUserPhoneNumberAsync(UpdateUserNumberDto userPhone)
+        {
+            var user = await userRepository.Query().FirstOrDefaultAsync(u => u.Id == userPhone.Id);
+
+            user.PhoneNumber = userPhone.PhoneNumber;
+            user.IsNumberVisible = userPhone.IsNumberVisible;
+
+            await userRepository.UpdateAsync(user);
+            await userRepository.SaveChangesAsync();
+
+            return mapper.Map<User, UserDto>(user);
         }
     }
 }

@@ -28,5 +28,7 @@ namespace Car.Domain.Dto
         public string? PhoneNumber { get; set; }
 
         public bool IsPolicyAccepted { get; set; } = false;
+
+        public bool IsNumberVisible { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Car.Domain.Dto;
+using Car.Domain.Dto.User;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,18 @@ namespace Car.WebApi.Controllers
         {
             await userService.DeleteUserFcmtokenAsync(token);
             return Ok();
+        }
+
+        /// <summary>
+        /// Updates user phone number asynchronously.
+        /// </summary>
+        /// <param name="userPhone">number to update.</param>
+        /// <returns>Updated user.</returns>
+        [HttpPut("update-number/")]
+        public async Task<IActionResult> UpdateUserPhoneNumber(UpdateUserNumberDto userPhone)
+        {
+            var updatedUser = await userService.UpdateUserPhoneNumberAsync(userPhone);
+            return Ok(updatedUser);
         }
     }
 }
