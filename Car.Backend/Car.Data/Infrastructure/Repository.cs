@@ -91,7 +91,7 @@ namespace Car.Data.Infrastructure
             {
                 return await context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if (context.Database.CurrentTransaction != null)
                 {

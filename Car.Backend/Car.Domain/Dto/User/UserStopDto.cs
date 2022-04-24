@@ -1,4 +1,5 @@
 ﻿using Car.Data.Enums;
+using Car.Domain.Dto.Stop;
 
 namespace Car.Domain.Dto.User
 {
@@ -8,6 +9,6 @@ namespace Car.Domain.Dto.User
 
         public int StopId { get; set; }
 
-        public StopType StopType { get; set; }
+        public StopType? StopType { get; set; }
     }
 }

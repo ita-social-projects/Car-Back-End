@@ -198,7 +198,7 @@ namespace Car.Domain.Services.Implementation
                 CreatedAt = DateTime.UtcNow,
                 IsRead = false,
                 JourneyId = journey.Id,
-                JsonData = JsonSerializer.Serialize(new { JourneyUser = journeyUser }, serializeOptions),
+                JsonData = JsonSerializer.Serialize(new { JourneyUser = journeyUser, StopsRepresentation = journey.Stops }, serializeOptions),
             });
         }
 

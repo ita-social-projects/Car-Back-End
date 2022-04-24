@@ -10,7 +10,7 @@ namespace Car.Domain.FluentValidation
     {
         public ApplicantApplyModelValidator()
         {
-            RuleFor(applyModel => applyModel.JourneyUser).SetValidator(new JourneyUserModelValidator()!);
+            RuleFor(applyModel => applyModel.JourneyUser).NotNull().SetValidator(new JourneyUserModelValidator()!);
             RuleFor(applyModel => applyModel.ApplicantStops)
                 .Must(stops => stops.Count > 1)
                 .Must(stops => stops.Distinct().Count() == stops.Count);

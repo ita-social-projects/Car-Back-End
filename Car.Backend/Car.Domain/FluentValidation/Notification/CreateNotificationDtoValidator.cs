@@ -13,9 +13,7 @@ namespace Car.Domain.FluentValidation
             RuleFor(notification => notification.Type).NotNull();
             RuleFor(notification => notification.JourneyId).GreaterThan(Constants.IdLength)
                 .When(notification => notification.JourneyId is not null);
-            RuleFor(notification => notification.JsonData).NotNull()
-                                                          .MinimumLength(Constants.JsonMinLength)
-                                                          .MaximumLength(Constants.JsonMaxLength);
+            RuleFor(notification => notification.JsonData).NotNull().MinimumLength(Constants.JsonMinLength);
         }
     }
 }

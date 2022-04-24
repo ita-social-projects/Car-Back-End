@@ -37,12 +37,15 @@ namespace Car.Domain.Extensions
         public static IQueryable<Journey> IncludeJourneyInvitations(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.Invitations);
 
+        public static IQueryable<Journey> IncludeCar(this IQueryable<Journey> journeys) =>
+    journeys.Include(journey => journey.Car);
+
         public static IQueryable<Journey> IncludeAllParticipants(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.Organizer)
                 .Include(journey => journey.Participants);
 
         public static IQueryable<Journey> IncludeJourneyInfo(this IQueryable<Journey> journeys, int userId) =>
-            journeys.IncludeAllParticipants().IncludeStopsWithAddresses().FilterByUser(userId);
+            journeys.IncludeCar().IncludeAllParticipants().IncludeStopsWithAddressesAndUserStops().FilterByUser(userId);
 
         public static IQueryable<Journey> IncludeNotifications(this IQueryable<Journey> journeys) =>
             journeys.Include(journey => journey.Notifications);
