@@ -80,6 +80,7 @@ namespace Car.WebApi.ServiceExtension
             services.AddScoped<IRepository<ReceivedMessages>, Repository<ReceivedMessages>>();
             services.AddScoped<IRepository<Schedule>, Repository<Schedule>>();
             services.AddScoped<IRepository<UserStatistic>, Repository<UserStatistic>>();
+            services.AddScoped<IRepository<UserStop>, Repository<UserStop>>();
 
             services.Configure<AzureBlobStorageOptions>(configuration.GetSection("AzureBlobStorageOptions"));
             services.Configure<FirebaseOptions>(configuration.GetSection("FirebaseOptions"));

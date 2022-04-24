@@ -22,7 +22,7 @@ namespace Car.Data.EntityConfigurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(notification => notification.JsonData).IsRequired();
-            builder.Property(notification => notification.JsonData).HasMaxLength(1000).IsRequired();
+            builder.Property(notification => notification.JsonData).IsRequired();
         }
     }
 }

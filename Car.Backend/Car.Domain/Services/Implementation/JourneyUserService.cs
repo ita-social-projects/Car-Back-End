@@ -7,6 +7,7 @@ using AutoMapper;
 using Car.Data.Entities;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.ServiceExtension;
 using Microsoft.AspNetCore.Http;
@@ -51,13 +52,13 @@ namespace Car.Domain.Services.Implementation
             return journeyUser is not null && journeyUser.WithBaggage;
         }
 
-        public async Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> UpdateJourneyUserAsync(JourneyUserDto updateJourneyUserDto)
+        public async Task<(bool IsUpdated, JourneyUserDto? UpdatedJourneyUserDto)> UpdateJourneyUserAsync(JourneyUserModel updateJourneyUserDto)
         {
             var journeyUser = await journeyUserRepository
                 .Query()
                 .FirstOrDefaultAsync(ju => ju.JourneyId == updateJourneyUserDto.JourneyId
                                            && ju.UserId == updateJourneyUserDto.UserId);
-            var updatedJourneyUser = mapper.Map<JourneyUserDto, JourneyUser>(updateJourneyUserDto);
+            var updatedJourneyUser = mapper.Map<JourneyUserModel, JourneyUser>(updateJourneyUserDto);
 
             if (journeyUser is not null)
             {

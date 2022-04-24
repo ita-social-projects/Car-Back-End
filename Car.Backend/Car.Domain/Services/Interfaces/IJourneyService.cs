@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 using Car.Data.Entities;
 using Car.Domain.Dto;
 using Car.Domain.Dto.Journey;
+using Car.Domain.Dto.Stop;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
+using Car.Domain.Models.User;
 
 namespace Car.Domain.Services.Interfaces
 {
@@ -30,9 +32,9 @@ namespace Car.Domain.Services.Interfaces
 
         Task DeletePastJourneyAsync();
 
-        Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel);
+        Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyDto);
 
-        Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyModel);
+        Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyDto);
 
         Task<JourneyTimeModel> AddScheduledJourneyAsync(ScheduleDto schedule);
 
@@ -46,7 +48,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<(bool IsUpdated, InvitationDto? UpdatedInvitationDto)> UpdateInvitationAsync(InvitationDto invitationDto);
 
-        IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter);
+        Task<(bool IsAccessed, IEnumerable<JourneyModel>? JourneyModels)> GetApplicantJourneysAsync(JourneyFilter filter);
 
         Task CheckForSuitableRequests(Journey journey);
 
@@ -58,7 +60,7 @@ namespace Car.Domain.Services.Interfaces
 
         Task<int> GetUnreadMessagesCountForNewUserAsync(int journeyId);
 
-        Task<(bool IsAddingAllowed, bool IsUserAdded)> AddUserToJourney(JourneyApplyModel journeyApply);
+        Task<(bool IsAddingAllowed, bool IsUserAdded)> AddUserToJourney(ApplicantApplyModel applyModel);
 
         Task<(JourneyModel Journey, JourneyUserDto JourneyUser)> GetJourneyWithJourneyUserByIdAsync(
             int journeyId,

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Models.User;
 
 namespace Car.Domain.Mapping
 {
@@ -14,6 +10,7 @@ namespace Car.Domain.Mapping
         public JourneyUserMapper()
         {
             CreateMap<JourneyUser, JourneyUserDto>().ReverseMap();
+            CreateMap<JourneyUserModel, JourneyUser>().ReverseMap();
         }
     }
 }

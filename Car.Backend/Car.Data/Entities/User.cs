@@ -44,6 +44,8 @@ namespace Car.Data.Entities
 
         public ICollection<Stop> Stops { get; set; } = new List<Stop>();
 
+        public ICollection<UserStop> UserStops { get; set; } = new List<UserStop>();
+
         public ICollection<Journey> OrganizerJourneys { get; set; } = new List<Journey>();
 
         public ICollection<Journey> ParticipantJourneys { get; set; } = new List<Journey>();

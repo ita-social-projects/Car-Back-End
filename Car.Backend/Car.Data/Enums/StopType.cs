@@ -8,11 +8,6 @@
         Start,
 
         /// <summary>
-        /// Intermediate stop.
-        /// </summary>
-        Intermediate,
-
-        /// <summary>
         /// Finish stop
         /// </summary>
         Finish,

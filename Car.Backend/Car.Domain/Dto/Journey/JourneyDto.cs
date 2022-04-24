@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Car.Data.Enums;
+using Car.Domain.Dto.Stop;
 
 namespace Car.Domain.Dto
 {

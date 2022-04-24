@@ -157,7 +157,7 @@ namespace Car.UnitTests.Services
 
         [Theory]
         [AutoEntityData]
-        public async Task GetAllUnreadMessages_Returns_messageCount_from_all_chats(User user)
+        public async Task GetAllUnreadMessages_ThereAreSomeMessages_ReturnsValidSumOfUnreadMessages(User user)
         {
             // Arrange
             var claims = new List<Claim>() { new("preferred_username", user.Email) };
@@ -166,6 +166,7 @@ namespace Car.UnitTests.Services
 
             var receivedMessages = Fixture.Build<ReceivedMessages>()
                 .With(rm => rm.UserId, user.Id)
+                .With(rm => rm.UnreadMessagesCount, 1)
                 .CreateMany(3)
                 .ToList();
 

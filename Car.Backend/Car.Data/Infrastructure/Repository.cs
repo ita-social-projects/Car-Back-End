@@ -85,7 +85,22 @@ namespace Car.Data.Infrastructure
         /// Saves changes in the database asynchronously.
         /// </summary>
         /// <returns>Task</returns>
-        public Task<int> SaveChangesAsync() => context.SaveChangesAsync();
+        public async Task<int> SaveChangesAsync()
+        {
+            try
+            {
+                return await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                if (context.Database.CurrentTransaction != null)
+                {
+                    context.Database.CurrentTransaction.Rollback();
+                }
+
+                throw;
+            }
+        }
 
         /// <summary>
         /// Removes entity from DBContext

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Car.Data.Entities;
 using Car.Domain.Dto;
+using Car.Domain.Dto.Stop;
 
 namespace Car.Domain.Models.Journey
 {

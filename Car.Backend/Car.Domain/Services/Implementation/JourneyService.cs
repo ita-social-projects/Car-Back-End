@@ -4,14 +4,17 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using Car.Data.Constants;
 using Car.Data.Entities;
 using Car.Data.Enums;
 using Car.Data.Infrastructure;
 using Car.Domain.Dto;
 using Car.Domain.Dto.Journey;
+using Car.Domain.Dto.Stop;
 using Car.Domain.Extensions;
 using Car.Domain.Filters;
 using Car.Domain.Models.Journey;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Car.WebApi.ServiceExtension;
 using Microsoft.AspNetCore.Http;
@@ -67,13 +70,14 @@ namespace Car.Domain.Services.Implementation
 
         public async Task<JourneyModel> GetJourneyByIdAsync(int journeyId, bool isJourneyCanceled = false)
         {
-            var journeyQueryable = journeyRepository
+            var journeyQueryable = await journeyRepository
                 .Query()
-                .IncludeAllParticipants()
-                .IncludeStopsWithAddresses()
-                .IncludeJourneyPoints()
                 .IncludeSchedule()
-                .IncludeJourneyInvitations();
+                .IncludeAllParticipants()
+                .IncludeStopsWithAddressesAndUserStops()
+                .IncludeJourneyPoints()
+                .IncludeJourneyInvitations()
+                .UseSavedAdresses(locationService);
 
             var journey = isJourneyCanceled
                 ? await journeyQueryable
@@ -92,9 +96,10 @@ namespace Car.Domain.Services.Implementation
             var journeys = await (await journeyRepository
                     .Query()
                     .IncludeSchedule()
+                    .IncludeJourneyInfo(userId)
+                    .IncludeJourneyPoints()
                     .FilterUncancelledJourneys()
                     .FilterUnscheduledJourneys()
-                    .IncludeJourneyInfo(userId)
                     .FilterPast()
                     .UseSavedAdresses(locationService))
                 .ToListAsync();
@@ -108,8 +113,9 @@ namespace Car.Domain.Services.Implementation
             var journeys = await (await journeyRepository
                     .Query()
                     .IncludeSchedule()
-                    .FilterUncancelledJourneys()
                     .IncludeJourneyInfo(userId)
+                    .IncludeJourneyPoints()
+                    .FilterUncancelledJourneys()
                     .FilterScheduledJourneys()
                     .UseSavedAdresses(locationService))
                 .ToListAsync();
@@ -120,15 +126,15 @@ namespace Car.Domain.Services.Implementation
         public async Task<IEnumerable<JourneyModel>> GetUpcomingJourneysAsync()
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
-            var journeys = await (await journeyRepository
+            var journeys = await journeyRepository
                     .Query()
-                    .IncludeSchedule()
                     .FilterUncancelledJourneys()
                     .FilterUnscheduledJourneys()
+                    .IncludeJourneyPoints()
+                    .IncludeSchedule()
                     .IncludeJourneyInfo(userId)
                     .FilterUpcoming()
-                    .UseSavedAdresses(locationService))
-                .ToListAsync();
+                    .UseSavedAdresses(locationService);
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
@@ -136,13 +142,13 @@ namespace Car.Domain.Services.Implementation
         public async Task<IEnumerable<JourneyModel>> GetCanceledJourneysAsync()
         {
             int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
-            var journeys = await (await journeyRepository
+            var journeys = await journeyRepository
                     .Query()
                     .IncludeSchedule()
                     .IncludeJourneyInfo(userId)
+                    .IncludeJourneyPoints()
                     .FilterCanceled()
-                    .UseSavedAdresses(locationService))
-                .ToListAsync();
+                    .UseSavedAdresses(locationService);
 
             return mapper.Map<IEnumerable<Journey>, IEnumerable<JourneyModel>>(journeys);
         }
@@ -152,6 +158,7 @@ namespace Car.Domain.Services.Implementation
             var journeys = await journeyRepository
                     .Query()
                     .FilterPast()
+                    .IncludeJourneyPoints()
                     .FilterUnmarked()
                     .FilterUncancelledJourneys()
                 .ToListAsync();
@@ -217,9 +224,9 @@ namespace Car.Domain.Services.Implementation
             }
         }
 
-        public async Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyModel)
+        public async Task<ScheduleTimeModel> AddScheduleAsync(JourneyDto journeyDto)
         {
-            var schedule = await AddScheduleAsync(journeyModel, null);
+            var schedule = await AddScheduleAsync(journeyDto, null);
 
             return schedule;
         }
@@ -236,9 +243,9 @@ namespace Car.Domain.Services.Implementation
             return journey;
         }
 
-        public async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyModel)
+        public async Task<JourneyTimeModel> AddJourneyAsync(JourneyDto journeyDto)
         {
-            var journey = await AddJourneyAsync(journeyModel, null);
+            var journey = await AddJourneyAsync(journeyDto, null);
 
             if (journey.JourneyModel is not null && journey.IsDepartureTimeValid)
             {
@@ -254,9 +261,10 @@ namespace Car.Domain.Services.Implementation
                 .FilterUncancelledJourneys()
                 .FilterUnscheduledJourneys()
                 .IncludeAllParticipants()
-                .IncludeStopsWithAddresses()
+                .IncludeStopsWithAddressesAndUserStops()
                 .IncludeJourneyPoints()
                 .IncludeJourneyUsers()
+                .Include(j => j.Car)
                 .FilterUnsuitableJourneys(filter);
 
         public async Task<bool> DeleteAsync(int journeyId)
@@ -332,6 +340,7 @@ namespace Car.Domain.Services.Implementation
             var journey = await journeyRepository.Query()
                 .IncludeJourneyInvitations()
                 .FirstOrDefaultAsync(j => j.Id == invitationDto.JourneyId);
+
             var invitation = journey.Invitations.FirstOrDefault(i => i.InvitedUserId == invitationDto.InvitedUserId);
 
             if (invitation != null)
@@ -352,22 +361,26 @@ namespace Car.Domain.Services.Implementation
             return (true, mapper.Map<Invitation, InvitationDto>(invitation!));
         }
 
-        public IEnumerable<ApplicantJourney> GetApplicantJourneys(JourneyFilter filter)
+        public async Task<(bool IsAccessed, IEnumerable<JourneyModel>? JourneyModels)> GetApplicantJourneysAsync(JourneyFilter filter)
         {
-            var journeysResult = new List<ApplicantJourney>();
+            var applicant = await userRepository.GetByIdAsync(filter.ApplicantId);
+
+            if (applicant is null)
+            {
+                return (false, null);
+            }
 
             var filteredJourneys = GetFilteredJourneys(filter);
 
             foreach (var journey in filteredJourneys)
             {
-                journeysResult.Add(new ApplicantJourney()
-                {
-                    Journey = mapper.Map<Journey, JourneyModel>(journey),
-                    ApplicantStops = GetApplicantStops(filter, journey),
-                });
+                ProcessApplicantStop(journey, applicant, filter.FromLatitude, filter.FromLongitude, StopType.Start);
+                ProcessApplicantStop(journey, applicant, filter.ToLatitude, filter.ToLongitude, StopType.Finish);
             }
 
-            return journeysResult;
+            var result = filteredJourneys.Select(journey => mapper.Map<Journey, JourneyModel>(journey)).ToList();
+
+            return (true, result);
         }
 
         public async Task CheckForSuitableRequests(Journey journey)
@@ -381,10 +394,7 @@ namespace Car.Domain.Services.Implementation
             {
                 await requestService.NotifyUserAsync(
                     mapper.Map<Request, RequestDto>(request),
-                    journey,
-                    GetApplicantStops(
-                        mapper.Map<Request, JourneyFilter>(request),
-                        journey));
+                    journey);
             }
         }
 
@@ -402,6 +412,7 @@ namespace Car.Domain.Services.Implementation
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
+                .IncludeStopsWithUserStops()
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
             var userToDelete = journey?.Participants.FirstOrDefault(u => u.Id == userId);
@@ -416,10 +427,22 @@ namespace Car.Domain.Services.Implementation
 
                 if (journey?.Participants.Remove(userToDelete!) ?? false)
                 {
-                    journey!.Stops
-                        .Where(stop => stop.UserId == userToDelete!.Id)
-                        .ToList()
-                        .ForEach(stop => stop.IsCancelled = true);
+                    var userStops = journey.Stops.Where(stop => stop.Users.Any(x => x.Id == userToDelete.Id)).ToList();
+
+                    foreach (var stop in userStops)
+                    {
+                        stop.Users.Remove(userToDelete);
+
+                        if (stop.Users.Count == Constants.NumberMin)
+                        {
+                            stop.IsCancelled = true;
+
+                            journey.Stops.OrderBy(x => x.Index)
+                                .SkipWhile(x => x.Id != stop.Id)
+                                .ToList()
+                                .ForEach(x => x.Index--);
+                        }
+                    }
 
                     await chatService.UnsubscribeUserFromChat(userToDelete.Id, (int)journey.ChatId!);
                     await notificationService.NotifyDriverAboutParticipantWithdrawal(journey, userId);
@@ -430,34 +453,33 @@ namespace Car.Domain.Services.Implementation
             return true;
         }
 
-        public async Task<(bool IsAddingAllowed, bool IsUserAdded)> AddUserToJourney(JourneyApplyModel journeyApply)
+        public async Task<(bool IsAddingAllowed, bool IsUserAdded)> AddUserToJourney(ApplicantApplyModel applyModel)
         {
-            var journeyId = journeyApply.JourneyUser!.JourneyId;
+            var journeyId = applyModel.JourneyUser!.JourneyId;
 
             var journey = await journeyRepository
                 .Query()
                 .IncludeAllParticipants()
                 .IncludeStopsWithAddresses()
+                .IncludeJourneyPoints()
                 .Include(j => j.Chat)
                 .FirstOrDefaultAsync(j => j.Id == journeyId);
 
-            var userId = journeyApply.JourneyUser.UserId;
+            var userId = applyModel.JourneyUser.UserId;
 
-            var userToAdd = await userRepository
-                .Query()
-                .FirstOrDefaultAsync(u => u.Id == userId);
+            var userToAdd = await userRepository.GetByIdAsync(userId);
 
             if (journey == null
                 || userToAdd == null
                 || journey.Participants.Contains(userToAdd)
-                || !IsSuitableSeatsCountForAdding(journey, journeyApply.JourneyUser))
+                || !IsSuitableSeatsCountForAdding(journey, applyModel.JourneyUser))
             {
                 return (true, false);
             }
 
             int currentUserId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
 
-            if (currentUserId != journey.OrganizerId && currentUserId != journeyApply.JourneyUser.UserId)
+            if (currentUserId != journey.OrganizerId && currentUserId != applyModel.JourneyUser.UserId)
             {
                 return (false, false);
             }
@@ -474,26 +496,21 @@ namespace Car.Domain.Services.Implementation
                 userToAdd.ReceivedMessages.Add(receivedMessages);
             }
 
-            var applicantStops = mapper.Map<IEnumerable<Stop>>(journeyApply.ApplicantStops);
-
             journey.Participants.Add(userToAdd);
 
-            foreach (var astop in applicantStops)
+            foreach (var stop in applyModel.ApplicantStops)
             {
-                if (!journey.Stops.Any(jstop => jstop.Address?.Name == astop.Address?.Name))
+                var isPointProcessed = ProcessApplicantStop(journey, userToAdd, stop.Address!.Latitude, stop.Address!.Longitude, stop.StopType);
+
+                if (!isPointProcessed)
                 {
-                    astop.UserId = userId;
-                    astop.JourneyId = journeyId;
-                    journey.Stops.Add(astop);
+                    return (false, false);
                 }
             }
 
             await journeyRepository.SaveChangesAsync();
 
-            if (journeyApply.JourneyUser is not null)
-            {
-                await journeyUserService.UpdateJourneyUserAsync(journeyApply.JourneyUser);
-            }
+            await journeyUserService.UpdateJourneyUserAsync(applyModel.JourneyUser);
 
             return (true, true);
         }
@@ -516,57 +533,88 @@ namespace Car.Domain.Services.Implementation
             return (journey, journeyUser);
         }
 
-        private static IEnumerable<StopDto> GetApplicantStops(JourneyFilter filter, Journey journey)
+        private static bool ProcessApplicantStop(Journey journey, User applicant, double latitude, double longitude, StopType stopType)
         {
-            var applicantStops = new List<StopDto>();
+            var suggestedStop = journey.Stops.GetStopWithSuitableMergeAddress(latitude, longitude);
 
-            var distances = journey.JourneyPoints.Select(p => p.CalculateDistance(
-                filter.FromLatitude,
-                filter.FromLongitude)).ToList();
-
-            var startPointIndex = distances.IndexOf(distances.Min());
-            var startRoutePoint = journey.JourneyPoints.ToList()[startPointIndex];
-
-            distances = journey.JourneyPoints.ToList()
-                .GetRange(startPointIndex, journey.JourneyPoints.Count - startPointIndex)
-                .Select(p => p.CalculateDistance(
-                    filter.ToLatitude,
-                    filter.ToLongitude)).ToList();
-
-            var endRoutePoint = journey.JourneyPoints.ToList()[startPointIndex + distances.IndexOf(distances.Min())];
-
-            applicantStops.Add(new StopDto()
+            if (suggestedStop is not null)
             {
-                Id = 0,
-                Index = 0,
-                UserId = filter.ApplicantId,
-                Address = new Dto.Address.AddressDto()
-                {
-                    Latitude = startRoutePoint.Latitude,
-                    Longitude = startRoutePoint.Longitude,
-                    Name = "Start",
-                },
-                Type = StopType.Intermediate,
-            });
+                suggestedStop.Stop.Users.Add(applicant);
 
-            applicantStops.Add(new StopDto()
+                suggestedStop.Stop.UserStops.Add(new UserStop()
+                {
+                    StopId = suggestedStop.Stop.Id,
+                    UserId = applicant.Id,
+                    StopType = stopType,
+                });
+            }
+            else
             {
-                Id = 0,
-                Index = 1,
-                UserId = filter.ApplicantId,
-                Address = new Dto.Address.AddressDto()
-                {
-                    Latitude = endRoutePoint.Latitude,
-                    Longitude = endRoutePoint.Longitude,
-                    Name = "Finish",
-                },
-                Type = StopType.Intermediate,
-            });
+                // if suitable address for merging has not been found then
+                // we are trying to merge applicant requested stop into the most suitable curve's point
+                var hasSuitablePoint = journey.JourneyPoints.TryToGetSuitableDistance(latitude, longitude, out var suitablePoint);
 
-            return applicantStops;
+                if (!hasSuitablePoint)
+                {
+                    return false;
+                }
+
+                var newStopIndex = GetStopIndex(journey, suitablePoint!.JourneyPoint.Index);
+
+                if (!newStopIndex.IsIndexFound)
+                {
+                    return false;
+                }
+
+                var orderedStops = journey.Stops.OrderBy(x => x.Index);
+
+                foreach (var stop in orderedStops.SkipWhile(x => x.Index != newStopIndex.Index))
+                {
+                    stop.Index++;
+                }
+
+                journey.Stops.Add(new Stop()
+                {
+                    Index = (int)newStopIndex.Index!,
+                    JourneyId = journey.Id,
+                    Address = new Address()
+                    {
+                        Latitude = suitablePoint.JourneyPoint.Latitude,
+                        Longitude = suitablePoint.JourneyPoint.Longitude,
+                    },
+                    UserStops = new List<UserStop>()
+                    {
+                        new UserStop()
+                        {
+                            UserId = applicant.Id,
+                            StopType = stopType,
+                        },
+                    },
+                });
+            }
+
+            return true;
         }
 
-        private static bool IsSuitableSeatsCountForAdding(Journey journey, JourneyUserDto applicant)
+        private static (bool IsIndexFound, int? Index) GetStopIndex(Journey journey, int jounrneyPointIndex)
+        {
+            int pointsPerStop = (int)Math.Ceiling((double)journey.JourneyPoints.Count / journey.Stops.Count);
+
+            for (int i = 0; i < journey.Stops.Count; i++)
+            {
+                var lowerLim = i * pointsPerStop;
+                var higherLim = (i * pointsPerStop) + pointsPerStop;
+
+                if (lowerLim <= jounrneyPointIndex && jounrneyPointIndex <= higherLim)
+                {
+                    return (true, i + 1);
+                }
+            }
+
+            return (false, null);
+        }
+
+        private static bool IsSuitableSeatsCountForAdding(Journey journey, JourneyUserModel applicant)
         {
             var passengers = journey.JourneyUsers.Sum(journeyUser => journeyUser.PassangersCount);
             return passengers + applicant.PassangersCount <= journey.CountOfSeats;
@@ -736,57 +784,53 @@ namespace Car.Domain.Services.Implementation
 
         private async Task<(bool IsUpdated, JourneyModel? UpdatedJourney)> UpdateRouteAsync(JourneyDto journeyDto, bool isParentUpdated)
         {
+            var userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
             var journey = await journeyRepository.Query()
                 .FilterEditable()
                 .IncludeStopsWithAddresses()
                 .IncludeJourneyPoints()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
-            if (journey != null)
+            if (journey is null || userId != journey.OrganizerId)
             {
-                int userId = httpContextAccessor.HttpContext!.User.GetCurrentUserId(userRepository);
-
-                if (userId != journey.OrganizerId)
-                {
-                    return (false, null);
-                }
-
-                if (!isParentUpdated)
-                {
-                    journey.ParentId = null;
-                }
-
-                var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
-
-                journey.Duration = updatedJourney.Duration;
-                journey.Stops = updatedJourney.Stops;
-                journey.JourneyPoints = updatedJourney.JourneyPoints;
-                journey.RouteDistance = updatedJourney.RouteDistance;
-
-                await journeyRepository.SaveChangesAsync();
-
-                if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))
-                {
-                    scheduleRepository.Detach(journey.Schedule!);
-                    await UpdateChildRoutesAsync(journeyDto);
-                }
-                else if (journeyDto.WeekDay is not null)
-                {
-                    var schedule = await scheduleRepository.AddAsync(new Schedule
-                    { Id = journeyDto.Id, Days = (WeekDays)journeyDto.WeekDay });
-                    await scheduleRepository.SaveChangesAsync();
-                    await AddFutureJourneysAsync(schedule);
-                }
-                else
-                {
-                    await notificationService.JourneyUpdateNotifyUserAsync(await journeyRepository
-                        .Query()
-                        .IncludeAllParticipants()
-                        .FirstOrDefaultAsync(j => j.Id == journeyDto.Id));
-                }
+                return (false, null);
             }
 
-            return (true, mapper.Map<Journey, JourneyModel>(journey!));
+            if (!isParentUpdated)
+            {
+                journey.ParentId = null;
+            }
+
+            var updatedJourney = mapper.Map<Journey>(journeyDto);
+
+            journey.Duration = updatedJourney.Duration;
+            journey.Stops = updatedJourney.Stops;
+            journey.JourneyPoints = updatedJourney.JourneyPoints;
+            journey.RouteDistance = updatedJourney.RouteDistance;
+
+            await journeyRepository.SaveChangesAsync();
+
+            if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))
+            {
+                scheduleRepository.Detach(journey.Schedule!);
+                await UpdateChildRoutesAsync(journeyDto);
+            }
+            else if (journeyDto.WeekDay is not null)
+            {
+                var schedule = await scheduleRepository.AddAsync(new Schedule
+                { Id = journey.Id, Days = (WeekDays)journeyDto.WeekDay });
+                await scheduleRepository.SaveChangesAsync();
+                await AddFutureJourneysAsync(schedule);
+            }
+            else
+            {
+                await notificationService.JourneyUpdateNotifyUserAsync(await journeyRepository
+                    .Query()
+                    .IncludeAllParticipants()
+                    .FirstOrDefaultAsync(j => j.Id == journeyDto.Id));
+            }
+
+            return (true, mapper.Map<Journey, JourneyModel>(journey));
         }
 
         private async Task UpdateChildRoutesAsync(JourneyDto journeyDto)
@@ -829,7 +873,7 @@ namespace Car.Domain.Services.Implementation
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefaultAsync(j => j.Id == journeyDto.Id);
 
-            var updatedJourney = mapper.Map<JourneyDto, Journey>(journeyDto);
+            var updatedJourney = mapper.Map<Journey>(journeyDto);
 
             if (journey != null)
             {
@@ -846,7 +890,14 @@ namespace Car.Domain.Services.Implementation
                     updatedJourney.ParentId = journey.ParentId;
                 }
 
-                updatedJourney = await journeyRepository.UpdateAsync(updatedJourney);
+                journey.DepartureTime = updatedJourney.DepartureTime;
+                journey.IsOnOwnCar = updatedJourney.IsOnOwnCar;
+                journey.CarId = updatedJourney.IsOnOwnCar ? updatedJourney.CarId : null;
+                journey.IsFree = updatedJourney.IsFree;
+                journey.CountOfSeats = updatedJourney.CountOfSeats;
+                journey.Comments = updatedJourney.Comments;
+                journey.Invitations = updatedJourney.Invitations;
+
                 await journeyRepository.SaveChangesAsync();
 
                 if (await scheduleRepository.Query().AnyAsync(schedule => schedule.Id == journeyDto.Id))

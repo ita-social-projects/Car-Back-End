@@ -78,11 +78,11 @@ namespace Car.UnitTests.FluentValidationTests.Notification
             validator.ShouldHaveValidationErrorFor(notificationModel => notificationModel.JsonData, value);
         }
 
-        [Fact]
-        public void JsonData_IsNotValid_GeneratesValidationError()
+        [Xunit.Theory]
+        [InlineData("x")]
+        public void JsonData_IsLessThanItRequires_GeneratesValidationError(string value)
         {
-            string longText = new string('*', Constants.JsonMaxLength + 1);
-            validator.ShouldHaveValidationErrorFor(notificationModel => notificationModel.JsonData, longText);
+            validator.ShouldHaveValidationErrorFor(notificationModel => notificationModel.JsonData, value);
         }
 
         [Xunit.Theory]

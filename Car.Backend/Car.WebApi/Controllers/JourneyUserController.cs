@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Car.Domain.Dto;
+using Car.Domain.Models.User;
 using Car.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +54,7 @@ namespace Car.WebApi.Controllers
         /// <param name="journeyUser">JourneyUser DTO</param>
         /// <returns>OkResult with updated JourneyUser</returns>
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] JourneyUserDto journeyUser)
+        public async Task<IActionResult> Update([FromBody] JourneyUserModel journeyUser)
         {
             var (isJourneyUserUpdated, updatedJourneyUser) = await journeyUserService.UpdateJourneyUserAsync(journeyUser);
             return isJourneyUserUpdated ? Ok(updatedJourneyUser) : Forbid();

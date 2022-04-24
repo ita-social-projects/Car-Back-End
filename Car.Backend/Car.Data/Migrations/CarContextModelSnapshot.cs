@@ -8173,8 +8173,7 @@ namespace Car.Data.Migrations
 
                     b.Property<string>("JsonData")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ReceiverId")
                         .HasColumnType("int");
@@ -8272,19 +8271,11 @@ namespace Car.Data.Migrations
                     b.Property<int>("JourneyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
 
                     b.HasIndex("JourneyId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Stop");
                 });
@@ -8380,6 +8371,24 @@ namespace Car.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserStatistic");
+                });
+
+            modelBuilder.Entity("Car.Data.Entities.UserStop", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StopId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StopType")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "StopId");
+
+                    b.HasIndex("StopId");
+
+                    b.ToTable("UserStop");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.Car", b =>
@@ -8672,17 +8681,9 @@ namespace Car.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Car.Data.Entities.User", "User")
-                        .WithMany("Stops")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Address");
 
                     b.Navigation("Journey");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Car.Data.Entities.UserPreferences", b =>
@@ -8703,6 +8704,25 @@ namespace Car.Data.Migrations
                         .HasForeignKey("Car.Data.Entities.UserStatistic", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Car.Data.Entities.UserStop", b =>
+                {
+                    b.HasOne("Car.Data.Entities.Stop", "Stop")
+                        .WithMany("UserStops")
+                        .HasForeignKey("StopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Car.Data.Entities.User", "User")
+                        .WithMany("UserStops")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Stop");
 
                     b.Navigation("User");
                 });
@@ -8758,6 +8778,11 @@ namespace Car.Data.Migrations
                     b.Navigation("ChildJourneys");
                 });
 
+            modelBuilder.Entity("Car.Data.Entities.Stop", b =>
+                {
+                    b.Navigation("UserStops");
+                });
+
             modelBuilder.Entity("Car.Data.Entities.User", b =>
                 {
                     b.Navigation("Cars");
@@ -8780,11 +8805,11 @@ namespace Car.Data.Migrations
 
                     b.Navigation("SentNotifications");
 
-                    b.Navigation("Stops");
-
                     b.Navigation("UserPreferences");
 
                     b.Navigation("UserStatistic");
+
+                    b.Navigation("UserStops");
                 });
 #pragma warning restore 612, 618
         }

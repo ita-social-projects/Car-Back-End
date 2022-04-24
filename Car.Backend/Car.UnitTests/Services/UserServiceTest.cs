@@ -134,29 +134,24 @@ namespace Car.UnitTests.Services
             result.Should().Be((false, null));
         }
 
-        [Theory]
-        [AutoEntityData]
-        public async Task AcceptPolicyAsync_WhenUserIsValid_ReturnsUpdatedUser(List<User> users)
+        [Fact]
+        public async Task AcceptPolicyAsync_WhenUserIsValid_ReturnsUpdatedUserWithAcceptedPolicy()
         {
             // Arrange
-            var userDto = Fixture.Build<UserDto>()
+            var users = Fixture.Build<User>()
                 .With(u => u.IsPolicyAccepted, false)
-                .Create();
-            var user = Mapper.Map<UserDto, User>(userDto);
-            users.Add(user);
+                .CreateMany(1)
+                .ToList();
 
-            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            var claims = new List<Claim>() { new("preferred_username", users[0].Email) };
             httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
             userRepository.Setup(repo => repo.Query()).Returns(users.AsQueryable().BuildMock().Object);
 
             // Act
             var result = await userService.AcceptPolicyAsync();
-            userDto.IsPolicyAccepted = true;
 
             // Assert
-            result.Should().BeEquivalentTo(userDto, options => options
-                .Excluding(u => u.FCMToken)
-                .Excluding(u => u.JourneyCount));
+            result.IsPolicyAccepted.Should().BeTrue();
         }
 
         [Theory]
