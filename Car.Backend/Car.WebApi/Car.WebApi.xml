@@ -232,7 +232,7 @@
             </summary>
             <returns>All user's locations</returns>
         </member>
-        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.Location.LocationDto)">
+        <member name="M:Car.WebApi.Controllers.LocationController.Add(Car.Domain.Dto.Location.CreateLocationDto)">
             <summary>
             Adds the location.
             </summary>
@@ -429,6 +429,13 @@
             Removes fcmtoken from user asynchronously.
             </summary>
             <param name="token">fcm token to delete.</param>
+            <returns>Updated user.</returns>
+        </member>
+        <member name="M:Car.WebApi.Controllers.UserController.UpdateUserPhoneNumber(Car.Domain.Dto.User.UpdateUserNumberDto)">
+            <summary>
+            Updates user phone number asynchronously.
+            </summary>
+            <param name="userPhone">number to update.</param>
             <returns>Updated user.</returns>
         </member>
         <member name="M:Car.WebApi.Controllers.UserPreferencesController.GetPreferences(System.Int32)">

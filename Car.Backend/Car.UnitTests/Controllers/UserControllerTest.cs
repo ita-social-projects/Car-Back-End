@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using Car.Domain.Dto;
+using Car.Domain.Dto.User;
 using Car.Domain.Services.Interfaces;
 using Car.UnitTests.Base;
 using Car.WebApi.Controllers;
@@ -142,6 +143,26 @@ namespace Car.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory]
+        [AutoEntityData]
+        public async Task UpdateUserPhoneNumber_WhenPhoneNumberIsValid_ReturnsOkObjectResult(UpdateUserNumberDto userNumber)
+        {
+            // Arrange
+            var user = Fixture.Build<UserDto>().Create();
+
+            userService.Setup(service => service.UpdateUserPhoneNumberAsync(userNumber)).ReturnsAsync(user);
+
+            // Act
+            var result = await userController.UpdateUserPhoneNumber(userNumber);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<OkObjectResult>();
+                (result as OkObjectResult)?.Value.Should().Be(user);
+            }
         }
     }
 }

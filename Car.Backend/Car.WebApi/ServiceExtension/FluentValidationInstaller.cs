@@ -30,6 +30,7 @@ namespace Car.WebApi.ServiceExtension
 
             services.AddTransient<IValidator<LocationDto>, LocationDtoValidator>();
             services.AddTransient<IValidator<UpdateLocationDto>, UpdateLocationDtoValidator>();
+            services.AddTransient<IValidator<CreateLocationDto>, CreateLocationDtoValidator>();
 
             services.AddTransient<IValidator<NotificationDto>, NotificationDtoValidator>();
             services.AddTransient<IValidator<CreateNotificationDto>, CreateNotificationDtoValidator>();

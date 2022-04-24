@@ -14,6 +14,7 @@ namespace Car.Domain.Mapping
             CreateMap<AddressDto, Address>().ReverseMap();
             CreateMap<UpdateLocationDto, Location>();
             CreateMap<UpdateAddressToLocationDto, Address>().ReverseMap();
+            CreateMap<CreateLocationDto, Location>();
         }
     }
 }

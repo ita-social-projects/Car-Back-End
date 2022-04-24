@@ -160,6 +160,7 @@ namespace Car.Domain.Services.Implementation
                     .FilterPast()
                     .IncludeJourneyPoints()
                     .FilterUnmarked()
+                    .FilterUncancelledJourneys()
                 .ToListAsync();
 
             return mapper.Map<IEnumerable<Journey>>(journeys);
