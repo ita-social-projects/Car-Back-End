@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Car.Domain.Hubs
 {
+    [Authorize]
     public class SignalRHub : Hub
     {
         private readonly IChatService userManager;
