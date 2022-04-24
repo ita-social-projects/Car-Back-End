@@ -1889,6 +1889,11 @@ namespace Car.UnitTests.Services
                 .With(dto => dto.Id, journeys.Max(journey => journey.Id) + 1)
                 .Create();
 
+            var user = Fixture.Build<User>().With(u => u.Id, updatedJourneyDto.OrganizerId).Create();
+            var claims = new List<Claim>() { new("preferred_username", user.Email) };
+            httpContextAccessor.Setup(h => h.HttpContext.User.Claims).Returns(claims);
+            userRepository.Setup(rep => rep.Query()).Returns(new[] { user }.AsQueryable());
+
             journeyRepository.Setup(r => r.Query())
                 .Returns(journeys.AsQueryable().BuildMock().Object);
 
